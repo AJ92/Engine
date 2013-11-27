@@ -11,10 +11,12 @@ TEMPLATE = app
 
 
 SOURCES += main.cpp\
-        mainwindow.cpp \
-    Object/object.cpp
+    Object/object.cpp \
+    Debug/Ui/debugwindow.cpp
 
-HEADERS  += mainwindow.h \
-    Object/object.h
+HEADERS  += \
+    Object/object.h \
+    Debug/Ui/debugwindow.h
 
-FORMS    += mainwindow.ui
+FORMS    += mainwindow.ui \
+    Debug/Ui/debugwindow.ui

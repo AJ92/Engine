@@ -1,11 +1,13 @@
 #include <QtGui/QApplication>
-#include "mainwindow.h"
+#include "Debug/Ui/debugwindow.h"
 
 int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);
-    MainWindow w;
+    DebugWindow w;
     w.show();
+
+    w.add_log("Engine started.");
     
     return a.exec();
 }

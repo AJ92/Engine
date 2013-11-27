@@ -18,5 +18,5 @@ HEADERS  += \
     Object/object.h \
     Debug/Ui/debugwindow.h
 
-FORMS    += mainwindow.ui \
+FORMS    += \
     Debug/Ui/debugwindow.ui

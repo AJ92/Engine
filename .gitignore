@@ -220,6 +220,9 @@ pip-log.txt
 ###########
 ## AJ
 
+# for doc folder
+Docs/
+
 # for QT
 
 # C++ objects and libs

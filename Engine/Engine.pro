@@ -22,3 +22,27 @@ HEADERS  += \
 
 FORMS    += \
     Debug/Ui/debugwindow.ui
+
+
+windows: {
+    message(Windows desktop build)
+    #OPEN GL
+
+    #not shure if needed but might come in handy
+    QT += opengl
+
+    INCLUDEPATH += Graphics/freeglut/include
+    DEPENDPATH += Graphics/freeglut/include
+
+
+    LIBS += -lopengl32
+
+    #freeGLUT
+
+    LIBS += -L$$_PRO_FILE_PWD_/Graphics/freeglut/lib
+    CONFIG(release, debug|release): LIBS += -lfreeglut
+    CONFIG(debug, debug|release): LIBS += -lfreeglut
+
+    message($$INCLUDEPATH)
+    message($$LIBS)
+}

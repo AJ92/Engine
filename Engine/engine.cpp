@@ -142,7 +142,7 @@ void Engine::initialize(int argc, char *argv[]){
     w.add_log("INFO: OpenGL Renderer: " + QString((char*)glGetString(GL_RENDERER)));
     w.add_log("INFO: OpenGL Shading Language version: " + QString((char*)glGetString(GL_SHADING_LANGUAGE_VERSION)));
 
-    glClearColor(1.0f, 0.0f, 0.0f, 0.0f);
+    glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
 
 
     running = true;

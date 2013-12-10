@@ -3,13 +3,22 @@
 
 #include <QString>
 
+
+
+/*
+  Using unsigned long long: 0 to 18446744073709551615
+
+
+
+  */
+
 class Object
 {
 
 public:
     Object();
 
-    long id();
+    unsigned long long id();
 
     //equivalent to java language...
     virtual bool equal(Object obj);
@@ -20,10 +29,11 @@ public:
 
 
 private:
-    static long static_id;
+    static unsigned long long static_id;
 
-    static long next_id();
-    long my_id;
+
+    static unsigned long long next_id();
+    unsigned long long my_id;
 
 };
 

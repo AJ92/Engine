@@ -6,6 +6,7 @@ EventListener::EventListener() :
 }
 
 
-void EventListener::event(Event e){
+void EventListener::eventRecieved(Event e){
     //override this class...
+    qDebug("event recieved!");
 }

@@ -3,73 +3,14 @@
 
 //QT 5.x
 #include <QApplication>
-#include "Debug/Ui/debugwindow.h"
-#include "Graphics/freeglut/include/GL/freeglut.h"
-
-#include "Event/eventtransmitter.h"
-
-void keyboard(unsigned char key, int x, int y);
-void display(void);
-
+#include "engine.h"
 
 int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);
 
-
-
-
-    //TEST
-    EventTransmitter et;
-
-    EventListener el;
-
-    et.addListener(el);
-
-    et.removeListener(el);
-
-
-
-
-    DebugWindow w;
-    w.show();
-
-    w.add_log("Engine started.");
-
-
-    glutInit(&argc, argv);
-    glutCreateWindow("GLUT Test");
-    glutKeyboardFunc(&keyboard);
-    glutDisplayFunc(&display);
-    glutMainLoop();
+    Engine e;
+    e.initialize(argc, argv);
     
     return a.exec();
-}
-
-
-void keyboard(unsigned char key, int x, int y)
-{
-  switch (key)
-  {
-    case '\x1B':
-      exit(EXIT_SUCCESS);
-      break;
-  }
-}
-
-
-void display()
-{
-  glClear(GL_COLOR_BUFFER_BIT);
-
-  glColor3f(1.0f, 0.0f, 0.0f);
-
-  glBegin(GL_POLYGON);
-    glVertex2f(-0.5f, -0.5f);
-    glVertex2f( 0.5f, -0.5f);
-    glVertex2f( 0.5f,  0.5f);
-    glVertex2f(-0.5f,  0.5f);
-  glEnd();
-
-  glFlush();
 }

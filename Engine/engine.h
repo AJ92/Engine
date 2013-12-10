@@ -7,7 +7,12 @@ class Engine
 public:
     Engine();
 
-    void initialize();
+    void initialize(int argc, char *argv[]);
+
+    void keyboard(unsigned char key, int x, int y);
+
+    void display();
+
 
 };
 

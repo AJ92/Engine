@@ -2,7 +2,7 @@
 
 
 //init the next_id var...
-long Object::static_id = 0;
+unsigned long long Object::static_id = 0;
 
 /*!
   Constructs an Object with an unique identifier.
@@ -16,7 +16,7 @@ Object::Object():
 /*!
   Returns the identifier that was constructed during object creation.
   */
-long Object::id(){
+unsigned long long Object::id(){
     return my_id;
 }
 
@@ -25,7 +25,7 @@ long Object::id(){
 
   \sa Object()
   */
-long Object::next_id(){
+unsigned long long Object::next_id(){
     static_id++;
     return static_id;
 }

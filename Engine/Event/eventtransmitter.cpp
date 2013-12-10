@@ -33,7 +33,7 @@ bool EventTransmitter::containsListener(EventListener el){
     */
 
 
-    int i;
+    unsigned int i;
     for(i=0; i< listeners.size(); i++){
         if(listeners[i] == el){
             return true;
@@ -44,7 +44,7 @@ bool EventTransmitter::containsListener(EventListener el){
 
 void EventTransmitter::removeListener(EventListener el){
 
-    int i;
+    unsigned int i;
     for(i=0; i< listeners.size(); i++){
         if(listeners[i] == el){
             std::vector<EventListener>::iterator it = listeners.begin() + i;
@@ -55,8 +55,8 @@ void EventTransmitter::removeListener(EventListener el){
 }
 
 void EventTransmitter::transmit(Event e){
-    int i;
+    unsigned int i;
     for(i=0; i< listeners.size(); i++){
-        listeners[i].event(e);
+        listeners[i].eventRecieved(e);
     }
 }

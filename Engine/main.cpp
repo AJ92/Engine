@@ -6,6 +6,8 @@
 #include "Debug/Ui/debugwindow.h"
 #include "Graphics/freeglut/include/GL/freeglut.h"
 
+#include "Event/eventtransmitter.h"
+
 void keyboard(unsigned char key, int x, int y);
 void display(void);
 
@@ -13,6 +15,22 @@ void display(void);
 int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);
+
+
+
+
+    //TEST
+    EventTransmitter et;
+
+    EventListener el;
+
+    et.addListener(el);
+
+    et.removeListener(el);
+
+
+
+
     DebugWindow w;
     w.show();
 

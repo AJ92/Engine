@@ -14,11 +14,19 @@ TEMPLATE = app
 
 SOURCES += main.cpp\
     Object/object.cpp \
-    Debug/Ui/debugwindow.cpp
+    Debug/Ui/debugwindow.cpp \
+    engine.cpp \
+    Event/event.cpp \
+    Event/eventlistener.cpp \
+    Event/eventtransmitter.cpp
 
 HEADERS  += \
     Object/object.h \
-    Debug/Ui/debugwindow.h
+    Debug/Ui/debugwindow.h \
+    engine.h \
+    Event/event.h \
+    Event/eventlistener.h \
+    Event/eventtransmitter.h
 
 FORMS    += \
     Debug/Ui/debugwindow.ui

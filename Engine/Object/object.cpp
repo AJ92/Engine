@@ -50,3 +50,11 @@ bool Object::equal(Object obj){
 QString Object::to_string(){
     return "Object: " + QString::number(this->my_id);
 }
+
+
+//friend
+
+bool operator==(const Object &o1, const Object &o2){
+    return o1.my_id == o2.my_id;
+}
+

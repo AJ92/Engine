@@ -16,11 +16,14 @@ public:
     virtual QString to_string();
 
 
+    friend bool operator==(const Object &o1, const Object &o2);
+
+
 private:
     static long static_id;
 
     static long next_id();
-    const long my_id;
+    long my_id;
 
 };
 

@@ -234,3 +234,21 @@ void Engine::hideDebugWindow(){
         debug_visible = false;
     }
 }
+
+void Engine::setWindowSize(int width, int height){
+    if(running){
+        glutReshapeWindow(width, height);
+    }
+}
+
+int Engine::getWindowWidth(){
+    return window_width;
+}
+
+int Engine::getWindowHeight(){
+    return window_height;
+}
+
+int Engine::getFps(){
+    return fps;
+}

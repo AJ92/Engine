@@ -18,6 +18,7 @@ public:
     Engine();
     void initialize(int argc, char *argv[]);
 
+
     void keyboard(unsigned char key, int x, int y);
     void resize(int width, int height);
     void idle();
@@ -28,6 +29,12 @@ public:
     void setWindowTitle(QString title);
     void showDebugWindow();
     void hideDebugWindow();
+
+    void setWindowSize(int width, int height);
+    int getWindowWidth();
+    int getWindowHeight();
+
+    int getFps();
 
 private:
 
@@ -47,6 +54,7 @@ private:
     //FPS settings
     int frame_count;
     int fps;
+
 };
 
 #endif // ENGINE_H

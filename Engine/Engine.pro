@@ -39,17 +39,27 @@ windows: {
     #not shure if needed but might come in handy
     QT += opengl
 
-    INCLUDEPATH += Graphics/freeglut/include
-    DEPENDPATH += Graphics/freeglut/include
 
 
     LIBS += -lopengl32
 
     #freeGLUT
+    INCLUDEPATH += Graphics/freeglut/include
+    DEPENDPATH += Graphics/freeglut/include
 
     LIBS += -L$$_PRO_FILE_PWD_/Graphics/freeglut/lib
     CONFIG(release, debug|release): LIBS += -lfreeglut
     CONFIG(debug, debug|release): LIBS += -lfreeglut
+
+
+    #GLEW
+    INCLUDEPATH += Graphics/glew/include
+    DEPENDPATH += Graphics/glew/include
+
+    LIBS += -L$$_PRO_FILE_PWD_/Graphics/glew/lib
+    CONFIG(release, debug|release): LIBS += -lglew32
+    CONFIG(debug, debug|release): LIBS += -lglew32
+
 
     message($$INCLUDEPATH)
     message($$LIBS)

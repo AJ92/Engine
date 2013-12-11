@@ -18,7 +18,8 @@ SOURCES += main.cpp\
     engine.cpp \
     Event/event.cpp \
     Event/eventlistener.cpp \
-    Event/eventtransmitter.cpp
+    Event/eventtransmitter.cpp \
+    Debug/debugger.cpp
 
 HEADERS  += \
     Object/object.h \
@@ -26,7 +27,8 @@ HEADERS  += \
     engine.h \
     Event/event.h \
     Event/eventlistener.h \
-    Event/eventtransmitter.h
+    Event/eventtransmitter.h \
+    Debug/debugger.h
 
 FORMS    += \
     Debug/Ui/debugwindow.ui

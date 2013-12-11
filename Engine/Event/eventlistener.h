@@ -7,7 +7,7 @@
 class EventListener : public Object
 {
 public:
-    EventListener();   
+    EventListener();
     virtual void eventRecieved(Event e);
 };
 

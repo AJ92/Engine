@@ -20,15 +20,16 @@ public:
     EventTransmitter();
     EventTransmitter(int reserved_space);
 
-    virtual void addListener(EventListener el);
-    virtual bool containsListener(EventListener el);
-    virtual void removeListener(EventListener el);
+    //WE USE POINTER FOR PROPPER INHERITANCE
+    virtual void addListener(EventListener * el);
+    virtual bool containsListener(EventListener * el);
+    virtual void removeListener(EventListener * el);
 
     virtual void transmit(Event e);
 
 private:
 
-    std::vector<EventListener> listeners;
+    std::vector<EventListener*> listeners;
 
 };
 

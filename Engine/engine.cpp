@@ -51,30 +51,33 @@ void keyboard_callback(unsigned char key, int x, int y){
 /*!
   Sets on object creation the pointer for the C callback wrapper.
   */
-Engine::Engine()
+Engine::Engine() :
+    EventTransmitter()
 {
     ptr_global_engine_instance = this;
-
     running = false;
-
     window_title = "Engine";
-
     window_width = 600;
     window_height = 400;
-
     window_handle = 0;
-
     debug_visible = false;
     frame_count = 0;
     fps = 0;
+    debugger = new Debugger();
+    addListener(debugger);
+
+    Event e(Event::EventDebuggerMessage);
+    e.setString("Starting...");
+    this->transmit(e);
 }
 
 /*!
   If everything is set up, this command starts the engine.
   */
 void Engine::initialize(int argc, char *argv[]){
-
-    w.add_log("Engine started.");
+    Event e(Event::EventDebuggerMessage);
+    e.setString("initializing...");
+    this->transmit(e);
 
 
     //threads should start here...
@@ -86,11 +89,8 @@ void Engine::initialize(int argc, char *argv[]){
     //GLEW
     GLenum GlewInitResult;
 
-
     //freeGLUT
     glutInit(&argc, argv);
-
-
     glutInitContextVersion(4, 0);
     glutInitContextFlags(GLUT_FORWARD_COMPATIBLE);
     glutInitContextProfile(GLUT_CORE_PROFILE);
@@ -101,14 +101,11 @@ void Engine::initialize(int argc, char *argv[]){
     );
 
     glutInitWindowSize(window_width, window_height);
-
     glutInitDisplayMode(GLUT_DEPTH | GLUT_DOUBLE | GLUT_RGBA);
-
-
     window_handle = glutCreateWindow(window_title.toUtf8().constData());
-
     if(window_handle < 1) {
-        w.add_log("ERROR (1): Window could not be created.");
+        e.setString("ERROR (1): Window could not be created.");
+        this->transmit(e);
         exit(EXIT_FAILURE);
     }
 
@@ -118,12 +115,10 @@ void Engine::initialize(int argc, char *argv[]){
     //glutDisplayFunc(&display);
 
     //register c function callbacks
-
     glutReshapeFunc(&resize_callback);
     glutDisplayFunc(&render_callback);
     glutIdleFunc(&idle_callback);
     glutTimerFunc(0, &timer_callback, 0);
-
     glutKeyboardFunc(&keyboard_callback);
     //freeGLUT END
 
@@ -131,32 +126,45 @@ void Engine::initialize(int argc, char *argv[]){
 
     //GLEW
     GlewInitResult = glewInit();
-
     if (GLEW_OK != GlewInitResult) {
-        w.add_log("ERROR (2): " + QString((char*)glewGetErrorString(GlewInitResult)));
+        e.setString("ERROR (2): " + QString((char*)glewGetErrorString(GlewInitResult)));
+        this->transmit(e);
         exit(EXIT_FAILURE);
     }
 
-    w.add_log("INFO: OpenGL Version: " + QString((char*)glGetString(GL_VERSION)));
-    w.add_log("INFO: OpenGL Vendor: " + QString((char*)glGetString(GL_VENDOR)));
-    w.add_log("INFO: OpenGL Renderer: " + QString((char*)glGetString(GL_RENDERER)));
-    w.add_log("INFO: OpenGL Shading Language version: " + QString((char*)glGetString(GL_SHADING_LANGUAGE_VERSION)));
+    //Debugging OpenGL info...
+    e.setString("INFO: OpenGL Version: " + QString((char*)glGetString(GL_VERSION)));
+    this->transmit(e);
+    e.setString("INFO: OpenGL Vendor: " + QString((char*)glGetString(GL_VENDOR)));
+    this->transmit(e);
+    e.setString("INFO: OpenGL Renderer: " + QString((char*)glGetString(GL_RENDERER)));
+    this->transmit(e);
+    e.setString("INFO: OpenGL Shading Language version: " + QString((char*)glGetString(GL_SHADING_LANGUAGE_VERSION)));
+    this->transmit(e);
+
 
     glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
 
-
     running = true;
 
+    //here the "main thread starts"
     glutMainLoop();
 
+    //The window was closed...
+    e.setString("OpenGL window closed.");
+    this->transmit(e);
 
-    w.add_log("Window closed.");
+
+    this->removeListener(debugger);
 }
 
 
 void Engine::keyboard(unsigned char key, int x, int y)
 {
-    w.add_log("Keypress: " + QString(key));
+    Event e(Event::EventDebuggerMessage);
+    e.setString("Keypress: " + QString(key));
+    this->transmit(e);
+
     switch (key)
     {
     case '\x1B':
@@ -223,14 +231,20 @@ void Engine::setWindowTitle(QString title){
 
 void Engine::showDebugWindow(){
     if(!debug_visible){
-        w.show();
+
+        Event e(Event::EventDebuggerShow);
+        this->transmit(e);
+
         debug_visible = true;
     }
 }
 
 void Engine::hideDebugWindow(){
     if(debug_visible){
-        w.hide();
+
+        Event e(Event::EventDebuggerHide);
+        this->transmit(e);
+
         debug_visible = false;
     }
 }

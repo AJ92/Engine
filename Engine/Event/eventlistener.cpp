@@ -8,5 +8,5 @@ EventListener::EventListener() :
 
 void EventListener::eventRecieved(Event e){
     //override this class...
-    qDebug("event recieved!");
+
 }

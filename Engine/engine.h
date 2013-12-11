@@ -5,6 +5,7 @@
 #include <QTime>
 
 #include "Debug/Ui/debugwindow.h"
+#include "Debug/debugger.h"
 
 #include "Graphics/glew/include/GL/glew.h"
 #include "Graphics/freeglut/include/GL/freeglut.h"
@@ -12,19 +13,17 @@
 #include "Event/eventtransmitter.h"
 
 
-class Engine
+class Engine : public EventTransmitter
 {
 public:
     Engine();
     void initialize(int argc, char *argv[]);
-
 
     void keyboard(unsigned char key, int x, int y);
     void resize(int width, int height);
     void idle();
     void timer(int value);
     void render();
-
 
     void setWindowTitle(QString title);
     void showDebugWindow();
@@ -46,9 +45,9 @@ private:
     int window_height;
     int window_handle;
 
-
     //Debug settings
-    DebugWindow w;
+    //this is actually a Debbug window but hidden behind an EventListener
+    EventListener * debugger;
     bool debug_visible;
 
     //FPS settings

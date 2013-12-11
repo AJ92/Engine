@@ -2,6 +2,8 @@
 #define DEBUGWINDOW_H
 
 #include <QMainWindow>
+#include <QTextCursor>
+#include <QString>
 
 namespace Ui {
 class DebugWindow;

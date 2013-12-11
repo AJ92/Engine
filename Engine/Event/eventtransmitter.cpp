@@ -14,13 +14,13 @@ EventTransmitter::EventTransmitter(int reserved_space) :
     listeners.reserve(reserved_space);
 }
 
-void EventTransmitter::addListener(EventListener el){
+void EventTransmitter::addListener(EventListener * el){
     if(!containsListener(el)){
         listeners.push_back(el);
     }
 }
 
-bool EventTransmitter::containsListener(EventListener el){
+bool EventTransmitter::containsListener(EventListener * el){
 
     //contains    needs algorithm, ~ o(n)
     /*
@@ -35,19 +35,19 @@ bool EventTransmitter::containsListener(EventListener el){
 
     unsigned int i;
     for(i=0; i< listeners.size(); i++){
-        if(listeners[i] == el){
+        if(el->equal(*listeners[i])){
             return true;
         }
     }
     return false;
 }
 
-void EventTransmitter::removeListener(EventListener el){
+void EventTransmitter::removeListener(EventListener * el){
 
     unsigned int i;
     for(i=0; i< listeners.size(); i++){
         if(listeners[i] == el){
-            std::vector<EventListener>::iterator it = listeners.begin() + i;
+            std::vector<EventListener*>::iterator it = listeners.begin() + i;
             listeners.erase(it);
             break;
         }
@@ -57,6 +57,6 @@ void EventTransmitter::removeListener(EventListener el){
 void EventTransmitter::transmit(Event e){
     unsigned int i;
     for(i=0; i< listeners.size(); i++){
-        listeners[i].eventRecieved(e);
+        listeners[i]->eventRecieved(e);
     }
 }

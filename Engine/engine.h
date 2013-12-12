@@ -2,7 +2,8 @@
 #define ENGINE_H
 
 #include <QString>
-#include <QTime>
+
+#include "Event/eventtransmitter.h"
 
 #include "Debug/Ui/debugwindow.h"
 #include "Debug/debugger.h"
@@ -10,7 +11,8 @@
 #include "Graphics/glew/include/GL/glew.h"
 #include "Graphics/freeglut/include/GL/freeglut.h"
 
-#include "Event/eventtransmitter.h"
+#include "Graphics/Window/window.h"
+
 
 
 class Engine : public EventTransmitter
@@ -20,34 +22,39 @@ public:
     void initialize(int argc, char *argv[]);
 
     void keyboard(unsigned char key, int x, int y);
-    void resize(int width, int height);
     void idle();
     void timer(int value);
     void render();
 
-    void setWindowTitle(QString title);
-    void showDebugWindow();
-    void hideDebugWindow();
 
+    void setWindowTitle(QString title);
     void setWindowSize(int width, int height);
     int getWindowWidth();
     int getWindowHeight();
 
+
+    void showDebugWindow();
+    void hideDebugWindow();
+
     int getFps();
+
+    void debugMessage(QString message);
 
 private:
 
     bool running;
 
+
+
     //window settings
-    QString window_title;
-    int window_width;
-    int window_height;
-    int window_handle;
+    EventTransmitter * windowTransmitter;
+    Window * window;
+
 
     //Debug settings
-    //this is actually a Debbug window but hidden behind an EventListener
-    EventListener * debugger;
+    //this is actually a Debug window but hidden behind an EventListener
+    EventListener * debuggerListener;
+    Debugger * debugger;
     bool debug_visible;
 
     //FPS settings

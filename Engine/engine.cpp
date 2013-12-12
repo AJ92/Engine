@@ -16,16 +16,11 @@
 // C part
 Engine * ptr_global_engine_instance = NULL;
 
-void resize_callback(int width, int height);
 void render_callback(void);
 void idle_callback(void);
 void timer_callback(int value);
 void keyboard_callback(unsigned char key, int x, int y);
 
-void resize_callback(int width, int height)
-{
-    ptr_global_engine_instance->resize(width, height);
-}
 
 void render_callback(){
     ptr_global_engine_instance->render();
@@ -56,40 +51,32 @@ Engine::Engine() :
 {
     ptr_global_engine_instance = this;
     running = false;
-    window_title = "Engine";
-    window_width = 600;
-    window_height = 400;
-    window_handle = 0;
+
     debug_visible = false;
     frame_count = 0;
     fps = 0;
-    debugger = new Debugger();
-    addListener(debugger);
 
-    Event e(Event::EventDebuggerMessage);
-    e.setString("Starting...");
-    this->transmit(e);
+    //init debugger and it's listener
+    debugger = new Debugger();
+    debuggerListener = debugger;
+    addListener(debuggerListener);
+
+    debugMessage("engine created.");
+
 }
 
 /*!
   If everything is set up, this command starts the engine.
   */
 void Engine::initialize(int argc, char *argv[]){
-    Event e(Event::EventDebuggerMessage);
-    e.setString("initializing...");
-    this->transmit(e);
-
+    debugMessage("engine initializing...");
 
     //threads should start here...
-
-
-
-    //main thread starts here (render and keyboard)...
 
     //GLEW
     GLenum GlewInitResult;
 
-    //freeGLUT
+    //init openGL 4.0
     glutInit(&argc, argv);
     glutInitContextVersion(4, 0);
     glutInitContextFlags(GLUT_FORWARD_COMPATIBLE);
@@ -100,83 +87,59 @@ void Engine::initialize(int argc, char *argv[]){
         GLUT_ACTION_GLUTMAINLOOP_RETURNS
     );
 
-    glutInitWindowSize(window_width, window_height);
-    glutInitDisplayMode(GLUT_DEPTH | GLUT_DOUBLE | GLUT_RGBA);
-    window_handle = glutCreateWindow(window_title.toUtf8().constData());
-    if(window_handle < 1) {
-        e.setString("ERROR (1): Window could not be created.");
-        this->transmit(e);
-        exit(EXIT_FAILURE);
-    }
-
-
-    //old c
-    //glutKeyboardFunc(&keyboard);
-    //glutDisplayFunc(&display);
+    //creating the window
+    window = new Window();
+    //listener has to be set before initialization for debug output.
+    windowTransmitter = window;
+    windowTransmitter->addListener(debuggerListener);
+    //CONNECT RESIZE EVENT HERE
+    window->initialize();
 
     //register c function callbacks
-    glutReshapeFunc(&resize_callback);
     glutDisplayFunc(&render_callback);
     glutIdleFunc(&idle_callback);
     glutTimerFunc(0, &timer_callback, 0);
     glutKeyboardFunc(&keyboard_callback);
-    //freeGLUT END
-
-
 
     //GLEW
     GlewInitResult = glewInit();
     if (GLEW_OK != GlewInitResult) {
-        e.setString("ERROR (2): " + QString((char*)glewGetErrorString(GlewInitResult)));
-        this->transmit(e);
+        debugMessage("ERROR (2): " + QString((char*)glewGetErrorString(GlewInitResult)));
         exit(EXIT_FAILURE);
     }
 
     //Debugging OpenGL info...
-    e.setString("INFO: OpenGL Version: " + QString((char*)glGetString(GL_VERSION)));
-    this->transmit(e);
-    e.setString("INFO: OpenGL Vendor: " + QString((char*)glGetString(GL_VENDOR)));
-    this->transmit(e);
-    e.setString("INFO: OpenGL Renderer: " + QString((char*)glGetString(GL_RENDERER)));
-    this->transmit(e);
-    e.setString("INFO: OpenGL Shading Language version: " + QString((char*)glGetString(GL_SHADING_LANGUAGE_VERSION)));
-    this->transmit(e);
-
+    debugMessage("INFO: OpenGL Version: " + QString((char*)glGetString(GL_VERSION)));
+    debugMessage("INFO: OpenGL Vendor: " + QString((char*)glGetString(GL_VENDOR)));
+    debugMessage("INFO: OpenGL Renderer: " + QString((char*)glGetString(GL_RENDERER)));
+    debugMessage("INFO: OpenGL Shading Language version: " + QString((char*)glGetString(GL_SHADING_LANGUAGE_VERSION)));
 
     glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
 
     running = true;
+    debugMessage("engine initialized. starting main loop.");
 
     //here the "main thread starts"
     glutMainLoop();
+    running = false;
 
     //The window was closed...
-    e.setString("OpenGL window closed.");
-    this->transmit(e);
+    debugMessage("window closed. mainloop terminated.");
 
-
-    this->removeListener(debugger);
+    //temporary clean up... should go into destructor...
+    this->removeListener(debuggerListener);
 }
 
 
 void Engine::keyboard(unsigned char key, int x, int y)
 {
-    Event e(Event::EventDebuggerMessage);
-    e.setString("Keypress: " + QString(key));
-    this->transmit(e);
-
+    debugMessage("Keypress: " + QString(key));
     switch (key)
     {
     case '\x1B':
         exit(EXIT_SUCCESS);
         break;
     }
-}
-
-void Engine::resize(int width, int height){
-    window_width = width;
-    window_height = height;
-    glViewport(0, 0, window_width, window_height);
 }
 
 void Engine::idle(){
@@ -187,7 +150,6 @@ void Engine::timer(int value){
     if (0 != value) {
         fps = frame_count * 4;
     }
-
     frame_count = 0;
     glutTimerFunc(250, &timer_callback, 1);
 }
@@ -214,7 +176,6 @@ void Engine::render()
 
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-
     glutSwapBuffers();
     glutPostRedisplay();
 
@@ -223,46 +184,47 @@ void Engine::render()
 
 
 void Engine::setWindowTitle(QString title){
-    window_title = title;
     if(running){
-        glutSetWindowTitle(window_title.toUtf8().constData());
+        window->setWindowTitle(title);
     }
 }
 
 void Engine::showDebugWindow(){
     if(!debug_visible){
-
         Event e(Event::EventDebuggerShow);
         this->transmit(e);
-
         debug_visible = true;
     }
 }
 
 void Engine::hideDebugWindow(){
     if(debug_visible){
-
         Event e(Event::EventDebuggerHide);
         this->transmit(e);
-
         debug_visible = false;
     }
 }
 
 void Engine::setWindowSize(int width, int height){
     if(running){
-        glutReshapeWindow(width, height);
+        window->setWindowSize(width, height);
     }
 }
 
 int Engine::getWindowWidth(){
-    return window_width;
+    return window->getWindowWidth();
 }
 
 int Engine::getWindowHeight(){
-    return window_height;
+    return window->getWindowHeight();
 }
 
 int Engine::getFps(){
     return fps;
+}
+
+void Engine::debugMessage(QString message){
+    Event e(Event::EventDebuggerMessage);
+    e.setString(message);
+    this->transmit(e);
 }

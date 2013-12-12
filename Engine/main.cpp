@@ -24,6 +24,7 @@ int main(int argc, char *argv[])
     e.initialize(argc, argv);
 
 
-    
+    //IF the debug window should close and terminate programm when openGL window is closed.
+    //return 0;
     return a.exec();
 }

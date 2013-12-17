@@ -13,6 +13,9 @@
 
 #include "Graphics/Window/window.h"
 
+#include "Threading/mainthread.h"
+
+
 
 
 class Engine : public EventTransmitter
@@ -20,11 +23,6 @@ class Engine : public EventTransmitter
 public:
     Engine();
     void initialize(int argc, char *argv[]);
-
-    void keyboard(unsigned char key, int x, int y);
-    void idle();
-    void timer(int value);
-    void render();
 
 
     void setWindowTitle(QString title);
@@ -44,6 +42,8 @@ private:
 
     bool running;
 
+    EventTransmitter * mainThreadTransmitter;
+    MainThread * mainThread;
 
 
     //window settings

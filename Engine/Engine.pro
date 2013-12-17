@@ -20,7 +20,9 @@ SOURCES += main.cpp\
     Event/eventlistener.cpp \
     Event/eventtransmitter.cpp \
     Debug/debugger.cpp \
-    Graphics/Window/window.cpp
+    Graphics/Window/window.cpp \
+    Graphics/Renderer/renderer.cpp \
+    Threading/mainthread.cpp
 
 HEADERS  += \
     Object/object.h \
@@ -30,7 +32,9 @@ HEADERS  += \
     Event/eventlistener.h \
     Event/eventtransmitter.h \
     Debug/debugger.h \
-    Graphics/Window/window.h
+    Graphics/Window/window.h \
+    Graphics/Renderer/renderer.h \
+    Threading/mainthread.h
 
 FORMS    += \
     Debug/Ui/debugwindow.ui

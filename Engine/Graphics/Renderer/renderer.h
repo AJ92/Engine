@@ -27,10 +27,20 @@ private:
     GLuint VboId;
 
 
+    //next 4 funcs need to be outsourced
     void createShaders();
     void destroyShaders();
 
+    void createVBO();
+    void destroyVBO();
+
     void debugMessage(QString message);
+
+    typedef struct
+    {
+        float XYZW[4];
+        float RGBA[4];
+    } Vertex;
 };
 
 #endif // RENDERER_H

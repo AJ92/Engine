@@ -74,6 +74,7 @@ void Engine::initialize(int argc, char *argv[]){
 
 
     //GLEW
+    glewExperimental = GL_TRUE;
     GlewInitResult = glewInit();
     if (GLEW_OK != GlewInitResult) {
         debugMessage("ERROR (2): " + QString((char*)glewGetErrorString(GlewInitResult)));
@@ -88,7 +89,7 @@ void Engine::initialize(int argc, char *argv[]){
 
     glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
 
-    debugMessage("engine initialized. starting main loop.");
+    debugMessage("engine initialized. starting threads.");
 
     //start main thread
     mainThread = new MainThread();
@@ -108,7 +109,7 @@ void Engine::initialize(int argc, char *argv[]){
     //here the "main thread starts"
     //glutMainLoop();
 
-    debugMessage("main loop started as thread. running.");
+    debugMessage("all threads should run now...");
     running = true;
 
 }

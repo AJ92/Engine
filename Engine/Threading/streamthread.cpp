@@ -30,10 +30,12 @@ void StreamThread::start_streamThread(){
     abort = false;
 
     if (!isRunning()) {
+        debugMessage("Starting StreamThread...");
         start(LowPriority);
         //start(HighPriority);
     }
     else{
+        debugMessage("StreamThread already running...");
         qDebug("StreamThread already running...");
     }
 }
@@ -48,6 +50,7 @@ void StreamThread::run(){
 
     while(true){
         if (abort){
+            //debugMessage("StreamThread aborting...");
             qDebug("StreamThread aborting...");
             return;
         }
@@ -68,6 +71,7 @@ void StreamThread::run(){
     //Thread needs to sleep too :D
     mutex.lock();
     if(!running){
+        //debugMessage("StreamThread stopped.");
         qDebug("StreamThread stopped.");
         condition.wait(&mutex);
     }

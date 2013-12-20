@@ -67,10 +67,12 @@ void MainThread::start_mainThread(){
     abort = false;
 
     if (!isRunning()) {
+        debugMessage("Starting MainThread...");
         start(LowPriority);
         //start(HighPriority);
     }
     else{
+        debugMessage("MainThread already running...");
         qDebug("MainThread already running...");
     }
 }
@@ -92,6 +94,7 @@ void MainThread::run(){
 
     while(true){
         if (abort){
+            //debugMessage("Mainthread aborting...");
             qDebug("MainThread aborting...");
             return;
         }
@@ -112,6 +115,7 @@ void MainThread::run(){
     //Thread needs to sleep too :D
     mutex.lock();
     if(!running){
+        //debugMessage("MainThread stopped.");
         qDebug("MainThread stopped.");
         condition.wait(&mutex);
     }

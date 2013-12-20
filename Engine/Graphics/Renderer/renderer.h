@@ -1,36 +1,36 @@
 #ifndef RENDERER_H
 #define RENDERER_H
 
-
-#include <QThread>
-#include <QWaitCondition>
-#include <QMutexLocker>
-#include <QMutex>
-#include <QString>
-
 #include "Graphics/glew/include/GL/glew.h"
 #include "Graphics/freeglut/include/GL/freeglut.h"
 
-class Renderer : public QThread
+#include "Event/eventtransmitter.h"
+#include <QString>
+
+class Renderer : virtual public EventTransmitter
 {
-    Q_OBJECT
 public:
-    Renderer(QObject *parent = 0);
+    Renderer();
     ~Renderer();
 
-    void start_render();
-    void stop_render();
-
-protected:
-    void run();
+    void initialize();
+    void render();
 
 private:
-    QMutex mutex;
-    QWaitCondition condition;
+    const GLchar* VertexShader;
+    const GLchar* FragmentShader;
+
+    GLuint VertexShaderId;
+    GLuint FragmentShaderId;
+    GLuint ProgramId;
+    GLuint VaoId;
+    GLuint VboId;
 
 
-    bool render;
-    bool abort;
+    void createShaders();
+    void destroyShaders();
+
+    void debugMessage(QString message);
 };
 
 #endif // RENDERER_H

@@ -7,15 +7,23 @@
 #include <QMutex>
 #include <QString>
 
+//This has to stay above freeglut include!!!
+#include "Graphics/Renderer/renderer.h"
+
 #include "Graphics/freeglut/include/GL/freeglut.h"
+#include "Event/eventlistener.h"
 #include "Event/eventtransmitter.h"
 
-class MainThread : public QThread , virtual public EventTransmitter
+
+
+class MainThread : public QThread , virtual public EventListener, virtual public EventTransmitter
 {
     Q_OBJECT
 public:
     MainThread(QObject *parent = 0);
     ~MainThread();
+
+    void init();
 
     void start_mainThread();
     void stop_mainThread();
@@ -37,12 +45,14 @@ private:
     bool running;
     bool abort;
 
-
-
     //FPS settings
     int frame_count;
     int fps;
 
+    //Renderer
+    Renderer *r;
+
+    void eventRecieved(Event e);
     void debugMessage(QString message);
 };
 

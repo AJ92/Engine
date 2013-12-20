@@ -35,12 +35,20 @@ void keyboard_callback(unsigned char key, int x, int y){
 
 //THREAD
 MainThread::MainThread(QObject *parent) :
-    QThread(parent),
+    EventListener(),
     EventTransmitter(),
+    QThread(parent),
     running(false),
     abort(false)
 {
     ptr_global_mainthread_instance = this;
+}
+
+void MainThread::init(){
+    debugMessage("creating renderer...");
+    r = new Renderer();
+    r->addListener(this);
+    r->initialize();
 }
 
 MainThread::~MainThread(){
@@ -95,7 +103,7 @@ void MainThread::run(){
 
         glutMainLoopEvent();
 
-        usleep(10000); // ~ 100 Hz
+        usleep(50000); // 50000 microseconds sleep (every 2nd frame at ~ 40 fps)
 
         //work here
     }
@@ -158,9 +166,18 @@ void MainThread::render()
 
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
+    r->render();
+
     glutSwapBuffers();
     glutPostRedisplay();
 
+}
+
+void MainThread::eventRecieved(Event e){
+    if(e.isType(Event::EventDebuggerMessage)){
+        debugMessage(e.getString());
+        return;
+    }
 }
 
 void MainThread::debugMessage(QString message){

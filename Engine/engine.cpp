@@ -37,6 +37,12 @@ Engine::Engine() :
 
 }
 
+Engine::~Engine(){
+    mainThread->stop_mainThread();
+    streamThread->stop_streamThread();
+    qDebug("engine stopped.");
+}
+
 /*!
   If everything is set up, this command starts the engine.
   */
@@ -88,7 +94,15 @@ void Engine::initialize(int argc, char *argv[]){
     mainThread = new MainThread();
     mainThreadTransmitter = mainThread;
     mainThreadTransmitter->addListener(debuggerListener);
+    mainThread->init();
     mainThread->start_mainThread();
+
+    //start stream thread
+    streamThread = new StreamThread();
+    streamThreadTransmitter = streamThread;
+    streamThreadTransmitter->addListener(debuggerListener);
+    streamThread->init();
+    streamThread->start_streamThread();
 
 
     //here the "main thread starts"
@@ -97,12 +111,6 @@ void Engine::initialize(int argc, char *argv[]){
     debugMessage("main loop started as thread. running.");
     running = true;
 
-    //running = false;
-
-
-
-    //temporary clean up... should go into destructor...
-    //this->removeListener(debuggerListener);
 }
 
 void Engine::setWindowTitle(QString title){

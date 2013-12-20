@@ -14,14 +14,16 @@
 #include "Graphics/Window/window.h"
 
 #include "Threading/mainthread.h"
+#include "Threading/streamthread.h"
 
 
 
 
-class Engine : public EventTransmitter
+class Engine : virtual public EventTransmitter
 {
 public:
     Engine();
+    ~Engine();
     void initialize(int argc, char *argv[]);
 
 
@@ -44,6 +46,9 @@ private:
 
     EventTransmitter * mainThreadTransmitter;
     MainThread * mainThread;
+
+    EventTransmitter * streamThreadTransmitter;
+    StreamThread * streamThread;
 
 
     //window settings

@@ -22,7 +22,8 @@ SOURCES += main.cpp\
     Debug/debugger.cpp \
     Graphics/Window/window.cpp \
     Graphics/Renderer/renderer.cpp \
-    Threading/mainthread.cpp
+    Threading/mainthread.cpp \
+    Threading/streamthread.cpp
 
 HEADERS  += \
     Object/object.h \
@@ -34,7 +35,8 @@ HEADERS  += \
     Debug/debugger.h \
     Graphics/Window/window.h \
     Graphics/Renderer/renderer.h \
-    Threading/mainthread.h
+    Threading/mainthread.h \
+    Threading/streamthread.h
 
 FORMS    += \
     Debug/Ui/debugwindow.ui

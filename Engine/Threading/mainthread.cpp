@@ -133,6 +133,18 @@ void MainThread::keyboard(unsigned char key, int x, int y)
     case '\x1B':
         exit(EXIT_SUCCESS);
         break;
+    case '1':
+        {
+            Event e1(Event::EventDebuggerShow);
+            this->transmit(e1);
+        }
+        break;
+    case '2':
+        {
+            Event e2(Event::EventDebuggerHide);
+            this->transmit(e2);
+        }
+        break;
     }
 }
 

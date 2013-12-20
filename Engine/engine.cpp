@@ -29,9 +29,11 @@ Engine::Engine() :
     fps = 0;
 
     //init debugger and it's listener
+
     debugger = new Debugger();
     debuggerListener = debugger;
     addListener(debuggerListener);
+
 
     debugMessage("engine created.");
 
@@ -61,7 +63,7 @@ void Engine::initialize(int argc, char *argv[]){
 
     glutSetOption(
         GLUT_ACTION_ON_WINDOW_CLOSE,
-        GLUT_ACTION_GLUTMAINLOOP_RETURNS
+        GLUT_ACTION_CONTINUE_EXECUTION
     );
 
     //creating the window

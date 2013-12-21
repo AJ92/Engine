@@ -1,8 +1,7 @@
 #ifndef RENDERER_H
 #define RENDERER_H
 
-#include "Graphics/glew/include/GL/glew.h"
-#include "Graphics/freeglut/include/GL/freeglut.h"
+#include "Graphics/OpenGL/OpenGL.h"
 
 #include "Event/eventtransmitter.h"
 #include <QString>

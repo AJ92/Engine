@@ -11,6 +11,7 @@ greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 TARGET = Engine
 TEMPLATE = app
 
+INCLUDEPATH += Math
 
 SOURCES += main.cpp\
     Object/object.cpp \
@@ -23,7 +24,16 @@ SOURCES += main.cpp\
     Graphics/Window/window.cpp \
     Graphics/Renderer/renderer.cpp \
     Threading/mainthread.cpp \
-    Threading/streamthread.cpp
+    Threading/streamthread.cpp \
+    Graphics/Model/model.cpp \
+    Graphics/Model/Components/mesh.cpp \
+    Graphics/Model/Components/material.cpp \
+    Graphics/Model/Parser/loader.cpp \
+    Graphics/Model/Parser/Format_obj/loader_obj.cpp \
+    Math/Vector/vector4.cpp \
+    Math/Vector/vector3.cpp \
+    Math/Matrix/matrix4x4.cpp \
+    Math/Matrix/matrix3x3.cpp
 
 HEADERS  += \
     Object/object.h \
@@ -36,7 +46,18 @@ HEADERS  += \
     Graphics/Window/window.h \
     Graphics/Renderer/renderer.h \
     Threading/mainthread.h \
-    Threading/streamthread.h
+    Threading/streamthread.h \
+    Graphics/Model/model.h \
+    Graphics/Model/Components/mesh.h \
+    Graphics/Model/Components/material.h \
+    Graphics/Model/Parser/loader.h \
+    Graphics/Model/Parser/Format_obj/loader_obj.h \
+    Math/Vector/vector4.h \
+    Math/Vector/vector3.h \
+    Math/Matrix/matrix4x4.h \
+    Math/Matrix/matrix3x3.h \
+    Graphics/OpenGL/OpenGL.h \
+    Math/mathematics.h
 
 FORMS    += \
     Debug/Ui/debugwindow.ui

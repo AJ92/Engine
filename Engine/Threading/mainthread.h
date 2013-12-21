@@ -10,7 +10,8 @@
 //This has to stay above freeglut include!!!
 #include "Graphics/Renderer/renderer.h"
 
-#include "Graphics/freeglut/include/GL/freeglut.h"
+#include "Graphics/OpenGL/OpenGL.h"
+
 #include "Event/eventlistener.h"
 #include "Event/eventtransmitter.h"
 

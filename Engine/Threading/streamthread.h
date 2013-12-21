@@ -7,7 +7,8 @@
 #include <QMutex>
 #include <QString>
 
-#include "Graphics/freeglut/include/GL/freeglut.h"
+#include "Graphics/OpenGL/OpenGL.h"
+
 #include "Event/eventtransmitter.h"
 
 class StreamThread : public QThread , virtual public EventTransmitter

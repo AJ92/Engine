@@ -3,7 +3,8 @@
 
 #include <QString>
 #include "Event/eventtransmitter.h"
-#include "Graphics/freeglut/include/GL/freeglut.h"
+
+#include "Graphics/OpenGL/OpenGL.h"
 
 class Window : public EventTransmitter
 {

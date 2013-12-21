@@ -8,8 +8,10 @@
 #include "Debug/Ui/debugwindow.h"
 #include "Debug/debugger.h"
 
-#include "Graphics/glew/include/GL/glew.h"
-#include "Graphics/freeglut/include/GL/freeglut.h"
+// #include "Graphics/glew/include/GL/glew.h"
+// #include "Graphics/freeglut/include/GL/freeglut.h"
+
+#include "Graphics/OpenGL/OpenGL.h"
 
 #include "Graphics/Window/window.h"
 

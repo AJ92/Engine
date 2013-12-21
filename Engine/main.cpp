@@ -21,7 +21,7 @@ int main(int argc, char *argv[])
     Engine e;
     e.showDebugWindow();
     e.initialize(argc, argv);
-    e.setWindowTitle("Engine v0.01");
+    e.setWindowTitle("Engine v0.001a");
 
     qDebug("back to main.cpp");
 

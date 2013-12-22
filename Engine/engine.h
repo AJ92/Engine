@@ -34,6 +34,7 @@ public:
     int getWindowWidth();
     int getWindowHeight();
 
+    bool isRunning();
 
     void showDebugWindow();
     void hideDebugWindow();

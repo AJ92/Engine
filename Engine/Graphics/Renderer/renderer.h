@@ -9,11 +9,20 @@
 class Renderer : virtual public EventTransmitter
 {
 public:
+
+    enum PolygonModes {
+        PolygonModePoint   = 0x00,
+        PolygonModeLine    = 0x01,
+        PolygonModeFill    = 0x02
+    };
+
     Renderer();
     ~Renderer();
 
     void initialize();
     void render();
+
+    void setPolygonMode(PolygonModes polygonMode);
 
 private:
     const GLchar* VertexShader;

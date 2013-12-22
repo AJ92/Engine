@@ -1,9 +1,5 @@
 #include "loader_obj.h"
 
-
-
-
-
 Loader_obj::Loader_obj()
 {
 

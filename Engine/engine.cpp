@@ -42,6 +42,7 @@ Engine::Engine() :
 Engine::~Engine(){
     mainThread->stop_mainThread();
     streamThread->stop_streamThread();
+    running = false;
     qDebug("engine stopped.");
 }
 
@@ -145,11 +146,21 @@ void Engine::setWindowSize(int width, int height){
 }
 
 int Engine::getWindowWidth(){
-    return window->getWindowWidth();
+    if(running){
+        return window->getWindowWidth();
+    }
+    return -1;
 }
 
 int Engine::getWindowHeight(){
-    return window->getWindowHeight();
+    if(running){
+        return window->getWindowHeight();
+    }
+    return -1;
+}
+
+bool Engine::isRunning(){
+    return running;
 }
 
 int Engine::getFps(){

@@ -3,6 +3,7 @@
 
 //init the next_id var...
 unsigned long long Object::static_id = 0;
+std::vector<unsigned long long> Object::unused_ids;
 
 /*!
   Constructs an Object with an unique identifier.
@@ -14,6 +15,13 @@ Object::Object():
 }
 
 /*!
+  Destroys the Object and puts the used ID into the unused ID vector.
+  */
+Object::~Object(){
+    unused_ids.push_back(my_id);
+}
+
+/*!
   Returns the identifier that was constructed during object creation.
   */
 unsigned long long Object::id(){
@@ -21,11 +29,19 @@ unsigned long long Object::id(){
 }
 
 /*!
-  "Generates" the identifier. Is used during construction.
+  "Generates" the identifier or takes an unused one from the vector. Is used during construction.
 
   \sa Object()
   */
 unsigned long long Object::next_id(){
+
+    if(unused_ids.size() > 0){
+        //pop front and return it
+        std::vector<unsigned long long>::iterator it = unused_ids.begin();
+        unsigned long long reuse_id = unused_ids[0];
+        unused_ids.erase(it);
+        return reuse_id;
+    }
     static_id++;
     return static_id;
 }
@@ -58,4 +74,3 @@ bool operator==(const Object &o1, const Object &o2){
     qDebug("equal check...");
     return o1.my_id == o2.my_id;
 }
-

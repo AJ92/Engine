@@ -49,6 +49,8 @@ void MainThread::init(){
     r = new Renderer();
     r->addListener(this);
     r->initialize();
+
+    r->setPolygonMode(Renderer::PolygonModeFill);
 }
 
 MainThread::~MainThread(){

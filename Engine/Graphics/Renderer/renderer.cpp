@@ -47,6 +47,20 @@ void Renderer::render(){
     glDrawArrays(GL_TRIANGLES, 0, 3);
 }
 
+
+void Renderer::setPolygonMode(PolygonModes polygonMode){
+    if(polygonMode == PolygonModePoint){
+        glPolygonMode(GL_FRONT_AND_BACK, GL_POINT);
+    }
+    else if(polygonMode == PolygonModeLine){
+        glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+    }
+    else if(polygonMode == PolygonModeFill){
+        glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+    }
+}
+
+
 void Renderer::createShaders(){
     debugMessage("creating shaders...");
     GLenum ErrorCheckValue = glGetError();

@@ -2,9 +2,9 @@
 
 Material::Material(QString name,QString path) :
     Object(),
-    tex_slots(4),
     mtl_name(name),
-    mtl_path(path)
+    mtl_path(path),
+    tex_slots(4)
 {
     // always 4 generated textures are not sooo good...
     gl_mtls = new GLuint[tex_slots];

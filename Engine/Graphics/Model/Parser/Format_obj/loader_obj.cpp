@@ -444,6 +444,7 @@ bool Loader_obj::load_model_data(Model& mdl, QString path){
         qDebug("        mesh added to model!");
     }
 
+    mdl.set_path(path);
     qDebug("    Model loaded!");
     return true;
 }

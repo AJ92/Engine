@@ -27,7 +27,15 @@ public:
 
     Matrix4x4 get_model_matrix();
 
+    void set_path(QString path);
+    QString get_path() const;
+
     void add_mesh(Mesh* mesh);
+
+    //override + overload bam
+    bool equal(const Model &mdl) const;
+
+    friend bool operator==(const Model &mdl1, const Model &mdl2);
 
 private:
     bool matrix_changed;
@@ -48,6 +56,8 @@ private:
     void set_matrix_scl();
 
     void build_model_matrix();
+
+    QString path;
 
     QList<Mesh*> meshs;
 };

@@ -16,10 +16,10 @@ public:
     Object();
     ~Object();
 
-    unsigned long long id();
+    unsigned long long id() const;
 
     //equivalent to java language...
-    virtual bool equal(Object obj);
+    virtual bool equal(const Object &obj) const;
     virtual QString to_string();
 
     friend bool operator==(const Object &o1, const Object &o2);

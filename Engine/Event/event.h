@@ -3,26 +3,37 @@
 
 #include "Object/object.h"
 #include <QString>
-#include <QDebug>
+
+//include all Events
+#include "Event/Events/eventdebugger.h"
 
 class Event : public Object
 {
 public:
 
-    enum Types {
-        EventDebuggerMessage        = 0x00,
-        EventDebuggerShow           = 0x01,
-        EventDebuggerHide           = 0x02
+    Event();
+    ~Event();
+
+    void destroy();
+
+    //EVENT TYPES SHOULD NOT BE COMBINED!!!
+    enum EventType {
+        EventDebuggerMessage        = 0x0000,
+        EventDebuggerShow           = 0x0001,
+        EventDebuggerHide           = 0x0002
+        //more to follow...
     };
 
-    Event(Types eventTypes);
-    bool isType(Types eventTypes);
-    void setString(QString string);
-    QString getString();
 
-public:
-    Types types;
-    QString string;
+    //The event type.
+    EventType type;
+
+    union {
+        EventDebugger *debugger;
+        //more to follow...
+    };
+
+
 };
 
 #endif // EVENT_H

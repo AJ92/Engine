@@ -211,7 +211,9 @@ void Renderer::destroyVBO(){
 
 
 void Renderer::debugMessage(QString message){
-    Event e(Event::EventDebuggerMessage);
-    e.setString(message);
+    Event e;
+    e.type = Event::EventDebuggerMessage;
+    EventDebugger * ed = new EventDebugger(message);
+    e.debugger = ed;
     this->transmit(e);
 }

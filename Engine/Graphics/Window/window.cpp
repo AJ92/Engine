@@ -79,7 +79,9 @@ void Window::resize(int width, int height){
 }
 
 void Window::debugMessage(QString message){
-    Event e(Event::EventDebuggerMessage);
-    e.setString(message);
+    Event e;
+    e.type = Event::EventDebuggerMessage;
+    EventDebugger * ed = new EventDebugger(message);
+    e.debugger = ed;
     this->transmit(e);
 }

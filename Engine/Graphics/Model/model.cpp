@@ -53,10 +53,31 @@ Matrix4x4 Model::get_model_matrix(){
     return mat_m;
 }
 
+
+void Model::set_path(QString path){
+    this->path = path;
+}
+
+QString Model::get_path() const{
+    return path;
+}
+
 void Model::add_mesh(Mesh* mesh){
     meshs.append(mesh);
 }
 
+
+bool Model::equal(const Model &mdl) const{
+    if(this->path.compare(mdl.get_path())==0){
+        return true;
+    }
+    return false;
+}
+
+//friend
+bool operator==(const Model &mdl1, const Model &mdl2){
+    return mdl1.equal(mdl2);
+}
 
 
 void Model::set_matrix_pos(){

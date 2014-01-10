@@ -24,7 +24,7 @@ Object::~Object(){
 /*!
   Returns the identifier that was constructed during object creation.
   */
-unsigned long long Object::id(){
+unsigned long long Object::id() const{
     return my_id;
 }
 
@@ -51,7 +51,7 @@ unsigned long long Object::next_id(){
 
   Can be overloaded...
   */
-bool Object::equal(Object obj){
+bool Object::equal(const Object &obj) const{
     if(this->my_id == obj.id()){
         return true;
     }
@@ -72,5 +72,6 @@ QString Object::to_string(){
 
 bool operator==(const Object &o1, const Object &o2){
     qDebug("equal check...");
-    return o1.my_id == o2.my_id;
+    //return o1.my_id == o2.my_id;
+    return o1.equal(o2);
 }

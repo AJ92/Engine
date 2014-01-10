@@ -1,23 +1,42 @@
 #include "event.h"
 
-Event::Event(Types eventTypes) :
-    Object(),
-    types(eventTypes)
+//not sure if even needed....
+
+Event::Event()
 {
 
 }
 
-bool Event::isType(Types eventTypes){
-    if(types == eventTypes){
-        return true;
+//destroy pointers !!! currently not working...
+Event::~Event(){
+    switch (type)
+    {
+    case EventDebuggerMessage:
+        //delete the EventDebugger pointer object!!!
+        //delete debugger;
+        break;
+    case EventDebuggerShow:
+        //no pointers for this type ... nothing to delete
+        break;
+    case EventDebuggerHide:
+        //no pointers for this type ... nothing to delete
+        break;
     }
-    return false;
 }
 
-void Event::setString(QString string){
-    this->string = string;
-}
-
-QString Event::getString(){
-    return string;
+//should be replaced by a propper destructor or so ...
+void Event::destroy(){
+    switch (type)
+    {
+    case EventDebuggerMessage:
+        //delete the EventDebugger pointer object!!!
+        delete debugger;
+        break;
+    case EventDebuggerShow:
+        //no pointers for this type ... nothing to delete
+        break;
+    case EventDebuggerHide:
+        //no pointers for this type ... nothing to delete
+        break;
+    }
 }

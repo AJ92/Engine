@@ -20,6 +20,7 @@
   Sets on object creation the pointer for the C callback wrapper.
   */
 Engine::Engine() :
+    EventListener(),
     EventTransmitter()
 {
     running = false;
@@ -125,7 +126,8 @@ void Engine::setWindowTitle(QString title){
 
 void Engine::showDebugWindow(){
     if(!debug_visible){
-        Event e(Event::EventDebuggerShow);
+        Event e;
+        e.type = Event::EventDebuggerShow;
         this->transmit(e);
         debug_visible = true;
     }
@@ -133,7 +135,8 @@ void Engine::showDebugWindow(){
 
 void Engine::hideDebugWindow(){
     if(debug_visible){
-        Event e(Event::EventDebuggerHide);
+        Event e;
+        e.type = Event::EventDebuggerHide;
         this->transmit(e);
         debug_visible = false;
     }
@@ -168,7 +171,22 @@ int Engine::getFps(){
 }
 
 void Engine::debugMessage(QString message){
-    Event e(Event::EventDebuggerMessage);
-    e.setString(message);
+    Event e;
+    e.type = Event::EventDebuggerMessage;
+    EventDebugger * ed = new EventDebugger(message);
+    e.debugger = ed;
     this->transmit(e);
+}
+
+
+//temprary...
+Model Engine::loadModel(QString path){
+    Model m = model_loader.import_model(path);
+    model_library.addModel(m);
+    transferModelsToMainThread();
+    return m;
+}
+
+void Engine::transferModelsToMainThread(){
+    mainThread->setModels(model_library);
 }

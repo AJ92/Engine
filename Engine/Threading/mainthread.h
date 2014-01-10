@@ -16,6 +16,8 @@
 #include "Event/eventtransmitter.h"
 
 
+#include "Graphics/Model/modellibrary.h"
+
 
 class MainThread : public QThread , virtual public EventListener, virtual public EventTransmitter
 {
@@ -36,6 +38,9 @@ public:
     void timer(int value);
     void render();
 
+    //temprary
+    void setModels(ModelLibrary modellib);
+
 
 protected:
     void run();
@@ -55,6 +60,10 @@ private:
 
     void eventRecieved(Event e);
     void debugMessage(QString message);
+
+
+    //temprary
+    ModelLibrary model_library;
 };
 
 #endif // MAINTHREAD_H

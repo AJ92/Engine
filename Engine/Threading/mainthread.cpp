@@ -137,13 +137,15 @@ void MainThread::keyboard(unsigned char key, int x, int y)
         break;
     case '1':
         {
-            Event e1(Event::EventDebuggerShow);
+            Event e1;
+            e1.type = Event::EventDebuggerShow;
             this->transmit(e1);
         }
         break;
     case '2':
         {
-            Event e2(Event::EventDebuggerHide);
+            Event e2;
+            e2.type = Event::EventDebuggerHide;
             this->transmit(e2);
         }
         break;
@@ -176,15 +178,26 @@ void MainThread::render()
 }
 
 void MainThread::eventRecieved(Event e){
-    if(e.isType(Event::EventDebuggerMessage)){
-        debugMessage(e.getString());
+    if(e.type == Event::EventDebuggerMessage){
+        debugMessage(e.debugger->getDebugMessage());
         return;
     }
 }
 
 void MainThread::debugMessage(QString message){
-    Event e(Event::EventDebuggerMessage);
-    e.setString(message);
+    Event e;
+    e.type = Event::EventDebuggerMessage;
+    EventDebugger * ed = new EventDebugger(message);
+    e.debugger = ed;
     this->transmit(e);
 }
 
+void MainThread::setModels(ModelLibrary modellib){
+    mutex.lock();
+    //copy thread sensitive data...
+    model_library = modellib;
+    debugMessage("MainThread has new modellib...");
+    //might need to copy model after model so a thread context switch does not happen...
+
+    mutex.unlock();
+}

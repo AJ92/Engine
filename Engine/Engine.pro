@@ -33,7 +33,11 @@ SOURCES += main.cpp\
     Math/Vector/vector4.cpp \
     Math/Vector/vector3.cpp \
     Math/Matrix/matrix4x4.cpp \
-    Math/Matrix/matrix3x3.cpp
+    Math/Matrix/matrix3x3.cpp \
+    Graphics/Shader/shader.cpp \
+    Graphics/Camera/camera.cpp \
+    Graphics/Model/modellibrary.cpp \
+    Event/Events/eventdebugger.cpp
 
 HEADERS  += \
     Object/object.h \
@@ -57,7 +61,11 @@ HEADERS  += \
     Math/Matrix/matrix4x4.h \
     Math/Matrix/matrix3x3.h \
     Graphics/OpenGL/OpenGL.h \
-    Math/mathematics.h
+    Math/mathematics.h \
+    Graphics/Shader/shader.h \
+    Graphics/Camera/camera.h \
+    Graphics/Model/modellibrary.h \
+    Event/Events/eventdebugger.h
 
 FORMS    += \
     Debug/Ui/debugwindow.ui

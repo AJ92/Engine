@@ -9,8 +9,9 @@
 
 //This has to stay above freeglut include!!!
 #include "Graphics/Renderer/renderer.h"
-
+#include "Graphics/Window/window.h"
 #include "Graphics/OpenGL/OpenGL.h"
+
 
 #include "Event/eventlistener.h"
 #include "Event/eventtransmitter.h"
@@ -18,12 +19,16 @@
 
 #include "Graphics/Model/modellibrary.h"
 
+#include "engine.h"
+//forward declaration...
+class Engine;
+
 
 class MainThread : public QThread , virtual public EventListener, virtual public EventTransmitter
 {
     Q_OBJECT
 public:
-    MainThread(QObject *parent = 0);
+    MainThread(Engine * parent, Window * w);
     ~MainThread();
 
     void init();
@@ -42,6 +47,7 @@ public:
     void setModels(ModelLibrary modellib);
 
 
+
 protected:
     void run();
 
@@ -57,6 +63,12 @@ private:
 
     //Renderer
     Renderer *r;
+
+    //Engine
+    Engine *parent;
+
+    //Window
+    Window *w;
 
     void eventRecieved(Event e);
     void debugMessage(QString message);

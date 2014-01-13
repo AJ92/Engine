@@ -15,7 +15,7 @@ class StreamThread : public QThread , virtual public EventTransmitter
 {
     Q_OBJECT
 public:
-    StreamThread(QObject *parent = 0);
+    StreamThread();
     ~StreamThread();
 
     void init();

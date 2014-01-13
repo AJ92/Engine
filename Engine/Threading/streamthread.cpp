@@ -1,8 +1,8 @@
 #include "streamthread.h"
 
-StreamThread::StreamThread(QObject *parent) :
+StreamThread::StreamThread() :
     EventTransmitter(),
-    QThread(parent),
+    QThread(),
     running(false),
     abort(false)
 {

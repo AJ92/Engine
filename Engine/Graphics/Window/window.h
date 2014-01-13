@@ -19,6 +19,9 @@ public:
     int getWindowHeight();
 
     void resize(int width, int height);
+    void close();
+
+    bool isOpen();
 
 
 private:

@@ -94,9 +94,10 @@ void Engine::initialize(int argc, char *argv[]){
     glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
 
     debugMessage("engine initialized. starting threads.");
+    debugMessage("Ideal thread number: " + QString::number(QThread::idealThreadCount()));
 
     //start main thread
-    mainThread = new MainThread();
+    mainThread = new MainThread(this, window);
     mainThreadTransmitter = mainThread;
     mainThreadTransmitter->addListener(debuggerListener);
     mainThread->init();

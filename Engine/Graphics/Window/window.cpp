@@ -7,9 +7,15 @@ Window * ptr_global_window_instance = NULL;
 
 void resize_callback(int width, int height);
 
+void windowClose_callback(void);
+
 void resize_callback(int width, int height)
 {
     ptr_global_window_instance->resize(width, height);
+}
+
+void windowClose_callback(void){
+    ptr_global_window_instance->close();
 }
 
 //C END
@@ -44,6 +50,7 @@ void Window::initialize(){
 
     //register c function callback
     glutReshapeFunc(&resize_callback);
+    glutCloseFunc(&windowClose_callback);
 
     created = true;
     debugMessage("window initialized.");
@@ -71,11 +78,22 @@ int Window::getWindowHeight(){
     return window_height;
 }
 
+//next 2 might need a rename to onResize an onClose.... so its clear it's an event or so...
+
 void Window::resize(int width, int height){
     window_width = width;
     window_height = height;
     glViewport(0, 0, window_width, window_height);
     debugMessage("Window resize: " + QString::number(window_width) + "  " + QString::number(window_height));
+}
+
+void Window::close(){
+    debugMessage("window closed.");
+    created = false;
+}
+
+bool Window::isOpen(){
+    return created;
 }
 
 void Window::debugMessage(QString message){

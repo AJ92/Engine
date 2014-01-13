@@ -24,8 +24,7 @@
 #include "Graphics/Model/Parser/loader.h"
 #include "Graphics/Model/model.h"
 
-
-
+class MainThread;
 
 class Engine : virtual public EventListener, virtual public EventTransmitter
 {

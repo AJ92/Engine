@@ -2,7 +2,8 @@
 
 //not sure if even needed....
 
-Event::Event()
+Event::Event() :
+    Object()
 {
 
 }

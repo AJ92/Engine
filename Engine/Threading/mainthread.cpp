@@ -11,7 +11,7 @@ void timer_callback(int value);
 void keyboard_callback(unsigned char key, int x, int y);
 
 
-void render_callback(){
+void render_callback(void){
     ptr_global_mainthread_instance->render();
 }
 
@@ -34,12 +34,14 @@ void keyboard_callback(unsigned char key, int x, int y){
 
 
 //THREAD
-MainThread::MainThread(QObject *parent) :
+MainThread::MainThread(Engine * parent, Window * w) :
     EventListener(),
     EventTransmitter(),
-    QThread(parent),
+    QThread(),
     running(false),
-    abort(false)
+    abort(false),
+    parent(parent),
+    w(w)
 {
     ptr_global_mainthread_instance = this;
 }
@@ -94,7 +96,7 @@ void MainThread::run(){
     glutTimerFunc(0, &timer_callback, 0);
     glutKeyboardFunc(&keyboard_callback);
 
-    while(true){
+    while(w->isOpen()){
         if (abort){
             //debugMessage("Mainthread aborting...");
             qDebug("MainThread aborting...");
@@ -105,7 +107,6 @@ void MainThread::run(){
         //copy thread sensitive data...
         mutex.unlock();
 
-
         glutMainLoopEvent();
 
         usleep(50000); // 50000 microseconds sleep (every 2nd frame at ~ 40 fps)
@@ -113,11 +114,15 @@ void MainThread::run(){
         //work here
     }
 
+    if(!w->isOpen()){
+        stop_mainThread();
+    }
+
 
     //Thread needs to sleep too :D
     mutex.lock();
     if(!running){
-        //debugMessage("MainThread stopped.");
+        //parent->debugMessage("MainThread stopped.");
         qDebug("MainThread stopped.");
         condition.wait(&mutex);
     }

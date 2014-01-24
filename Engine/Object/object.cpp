@@ -36,10 +36,9 @@ unsigned long long Object::id() const{
 unsigned long long Object::next_id(){
 
     if(unused_ids.size() > 0){
-        //pop front and return it
-        std::vector<unsigned long long>::iterator it = unused_ids.begin();
-        unsigned long long reuse_id = unused_ids[0];
-        unused_ids.erase(it);
+        //pop back and return it
+        unsigned long long reuse_id = unused_ids.back();
+        unused_ids.pop_back();
         return reuse_id;
     }
     static_id++;

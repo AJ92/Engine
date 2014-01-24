@@ -18,9 +18,10 @@ public:
 
     //EVENT TYPES SHOULD NOT BE COMBINED!!!
     enum EventType {
-        EventDebuggerMessage        = 0x0000,
-        EventDebuggerShow           = 0x0001,
-        EventDebuggerHide           = 0x0002
+        EventNone                   = 0x0000,
+        EventDebuggerMessage        = 0x0001,
+        EventDebuggerShow           = 0x0002,
+        EventDebuggerHide           = 0x0003
         //more to follow...
     };
 

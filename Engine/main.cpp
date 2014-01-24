@@ -28,6 +28,8 @@ int main(int argc, char *argv[])
     e.debugMessage(m.get_path());
     e.debugMessage(QString::number(m.id()));
 
+
+    /*
     Model * mp = &m;
 
     Model mn = *mp;
@@ -35,7 +37,7 @@ int main(int argc, char *argv[])
     e.debugMessage(mn.get_path());
     e.debugMessage(QString::number(mn.id()));
 
-
+    */
 
     return a.exec();
 }

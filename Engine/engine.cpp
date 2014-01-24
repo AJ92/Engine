@@ -174,8 +174,7 @@ int Engine::getFps(){
 void Engine::debugMessage(QString message){
     Event e;
     e.type = Event::EventDebuggerMessage;
-    EventDebugger * ed = new EventDebugger(message);
-    e.debugger = ed;
+    e.debugger = new EventDebugger(message);
     this->transmit(e);
 }
 

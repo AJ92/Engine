@@ -51,7 +51,8 @@ void keyboard_callback(unsigned char key, int x, int y){
 /*!
   Sets on object creation the pointer for the C callback wrapper.
   */
-Engine::Engine() :
+Engine::Engine(QObject *parent) :
+    QObject(parent),
     EventListener(),
     EventTransmitter()
 {
@@ -137,6 +138,7 @@ void Engine::initialize(int argc, char *argv[]){
     r->setPolygonMode(Renderer::PolygonModeFill);
 
 
+
     //register c function callbacks
     glutDisplayFunc(&render_callback);
     //glutCloseFunc(&close_callback);
@@ -163,9 +165,14 @@ void Engine::initialize(int argc, char *argv[]){
     debugMessage("all threads should run now...");
     running = true;
 
-    //here the "main thread starts"
-    // need to replace this...
-    glutMainLoop();
+    //here the "main 'thread' starts"
+
+    t = new QTimer(this);
+    QObject::connect(t,SIGNAL(timeout()),this,SLOT(eventLoop()));
+    t->setInterval(20);
+    t->start();
+
+    //glutMainLoop();
 }
 
 void Engine::setWindowTitle(QString title){
@@ -278,6 +285,12 @@ void Engine::render()
 
     glutSwapBuffers();
     glutPostRedisplay();
+}
+
+
+//SLOTS
+void Engine::eventLoop(){
+    glutMainLoopEvent();
 }
 
 

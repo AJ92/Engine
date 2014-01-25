@@ -1,6 +1,8 @@
 #ifndef ENGINE_H
 #define ENGINE_H
 
+
+#include <QObject>
 #include <QString>
 
 #include "Event/eventtransmitter.h"
@@ -24,12 +26,17 @@
 #include "Graphics/Model/Parser/loader.h"
 #include "Graphics/Model/model.h"
 
+#include <QTimer>
 
 
-class Engine : virtual public EventListener, virtual public EventTransmitter
+
+class Engine : public QObject, virtual public EventListener, virtual public EventTransmitter
 {
+
+    Q_OBJECT
+
 public:
-    Engine();
+    Engine(QObject *parent = 0);
     ~Engine();
     void initialize(int argc, char *argv[]);
 
@@ -93,6 +100,11 @@ private:
     int frame_count;
     int fps;
 
+
+    //Timer for glut event loop
+    QTimer * t;
+
+
     //Debug settings
     //this is actually a Debug window but hidden behind an EventListener
     EventListener * debuggerListener;
@@ -109,6 +121,9 @@ private:
 
     //thread stuff...
     void transferModelsToMainThread();
+
+public slots:
+    void eventLoop();
 
 };
 

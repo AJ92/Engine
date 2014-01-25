@@ -36,7 +36,8 @@ SOURCES += main.cpp\
     Graphics/Shader/shader.cpp \
     Graphics/Camera/camera.cpp \
     Graphics/Model/modellibrary.cpp \
-    Event/Events/eventdebugger.cpp
+    Event/Events/eventdebugger.cpp \
+    Threading/test.cpp
 
 HEADERS  += \
     Object/object.h \
@@ -63,7 +64,8 @@ HEADERS  += \
     Graphics/Shader/shader.h \
     Graphics/Camera/camera.h \
     Graphics/Model/modellibrary.h \
-    Event/Events/eventdebugger.h
+    Event/Events/eventdebugger.h \
+    Threading/test.h
 
 FORMS    += \
     Debug/Ui/debugwindow.ui

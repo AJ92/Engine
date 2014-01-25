@@ -169,7 +169,11 @@ void Engine::initialize(int argc, char *argv[]){
 
     t = new QTimer(this);
     QObject::connect(t,SIGNAL(timeout()),this,SLOT(eventLoop()));
-    t->setInterval(20);
+
+
+    //1000 ms / 60 fps = 16.6 ms/second
+
+    t->setInterval(16);
     t->start();
 
     //glutMainLoop();

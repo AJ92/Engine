@@ -16,6 +16,38 @@
 
 
 
+// C part (CALLBACKS AND GLOBAL POINTER)
+Engine * ptr_global_engine_instance = NULL;
+
+void render_callback(void);
+void idle_callback(void);
+void timer_callback(int value);
+void keyboard_callback(unsigned char key, int x, int y);
+
+
+void render_callback(void){
+    ptr_global_engine_instance->render();
+}
+
+void idle_callback(void)
+{
+    ptr_global_engine_instance->idle();
+}
+
+
+void timer_callback(int value){
+    ptr_global_engine_instance->timer(value);
+}
+
+void keyboard_callback(unsigned char key, int x, int y){
+    ptr_global_engine_instance->keyboard(key, x, y);
+}
+// C part END
+
+
+
+
+
 /*!
   Sets on object creation the pointer for the C callback wrapper.
   */
@@ -23,6 +55,9 @@ Engine::Engine() :
     EventListener(),
     EventTransmitter()
 {
+    //set global pointer for callbacks
+    ptr_global_engine_instance = this;
+
     running = false;
 
     debug_visible = false;
@@ -41,7 +76,7 @@ Engine::Engine() :
 }
 
 Engine::~Engine(){
-    mainThread->stop_mainThread();
+    //mainThread->stop_mainThread();
     streamThread->stop_streamThread();
     running = false;
     qDebug("engine stopped.");
@@ -93,15 +128,29 @@ void Engine::initialize(int argc, char *argv[]){
 
     glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
 
+
+
+    //init RENDERER
+    r = new Renderer();
+    r->addListener(debuggerListener);
+    r->initialize();
+    r->setPolygonMode(Renderer::PolygonModeFill);
+
+
+    //register c function callbacks
+    glutDisplayFunc(&render_callback);
+    //glutCloseFunc(&close_callback);
+    glutIdleFunc(&idle_callback);
+    glutTimerFunc(0, &timer_callback, 0);
+    glutKeyboardFunc(&keyboard_callback);
+
+
+
     debugMessage("engine initialized. starting threads.");
     debugMessage("Ideal thread number: " + QString::number(QThread::idealThreadCount()));
 
-    //start main thread
-    mainThread = new MainThread(this, window);
-    mainThreadTransmitter = mainThread;
-    mainThreadTransmitter->addListener(debuggerListener);
-    mainThread->init();
-    mainThread->start_mainThread();
+
+
 
     //start stream thread
     streamThread = new StreamThread();
@@ -111,12 +160,12 @@ void Engine::initialize(int argc, char *argv[]){
     streamThread->start_streamThread();
 
 
-    //here the "main thread starts"
-    //glutMainLoop();
-
     debugMessage("all threads should run now...");
     running = true;
 
+    //here the "main thread starts"
+    // need to replace this...
+    glutMainLoop();
 }
 
 void Engine::setWindowTitle(QString title){
@@ -179,6 +228,59 @@ void Engine::debugMessage(QString message){
 }
 
 
+
+//CALLBACKS
+void Engine::keyboard(unsigned char key, int x, int y)
+{
+    debugMessage("Keypress: " + QString(key));
+    switch (key)
+    {
+    case '\x1B':
+        exit(EXIT_SUCCESS);
+        break;
+    case '1':
+        {
+            Event e1;
+            e1.type = Event::EventDebuggerShow;
+            this->transmit(e1);
+        }
+        break;
+    case '2':
+        {
+            Event e2;
+            e2.type = Event::EventDebuggerHide;
+            this->transmit(e2);
+        }
+        break;
+    }
+}
+
+void Engine::idle(){
+    glutPostRedisplay();
+}
+
+void Engine::timer(int value){
+    if (0 != value) {
+        fps = frame_count * 4;
+    }
+    frame_count = 0;
+    glutTimerFunc(250, &timer_callback, 1);
+}
+
+
+void Engine::render()
+{
+    frame_count++;
+
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+    r->render();
+
+    glutSwapBuffers();
+    glutPostRedisplay();
+}
+
+
 //temprary...
 Model Engine::loadModel(QString path){
     Model m = model_loader.import_model(path);
@@ -188,5 +290,5 @@ Model Engine::loadModel(QString path){
 }
 
 void Engine::transferModelsToMainThread(){
-    mainThread->setModels(model_library);
+    //mainThread->setModels(model_library);
 }

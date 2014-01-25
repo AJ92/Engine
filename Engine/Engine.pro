@@ -23,7 +23,6 @@ SOURCES += main.cpp\
     Debug/debugger.cpp \
     Graphics/Window/window.cpp \
     Graphics/Renderer/renderer.cpp \
-    Threading/mainthread.cpp \
     Threading/streamthread.cpp \
     Graphics/Model/model.cpp \
     Graphics/Model/Components/mesh.cpp \
@@ -49,7 +48,6 @@ HEADERS  += \
     Debug/debugger.h \
     Graphics/Window/window.h \
     Graphics/Renderer/renderer.h \
-    Threading/mainthread.h \
     Threading/streamthread.h \
     Graphics/Model/model.h \
     Graphics/Model/Components/mesh.h \

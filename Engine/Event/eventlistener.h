@@ -11,7 +11,8 @@ class EventListener : public Object
 public:
     EventListener();
     virtual void eventRecieved(Event e);
-    Event getEvent();
+    Event getNextEvent();
+    int getEventAmount();
 
 private:
     std::queue<Event> event_queue;

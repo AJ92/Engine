@@ -60,8 +60,6 @@ void StreamThread::run(){
         mutex.unlock();
 
 
-        glutMainLoopEvent();
-
         usleep(5000);
 
         //work here

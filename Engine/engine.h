@@ -13,10 +13,10 @@
 // #include "Graphics/freeglut/include/GL/freeglut.h"
 
 #include "Graphics/OpenGL/OpenGL.h"
-
+#include "Graphics/Renderer/renderer.h"
 #include "Graphics/Window/window.h"
 
-#include "Threading/mainthread.h"
+//#include "Threading/mainthread.h"
 #include "Threading/streamthread.h"
 
 
@@ -24,7 +24,7 @@
 #include "Graphics/Model/Parser/loader.h"
 #include "Graphics/Model/model.h"
 
-class MainThread;
+
 
 class Engine : virtual public EventListener, virtual public EventTransmitter
 {
@@ -34,6 +34,7 @@ public:
     void initialize(int argc, char *argv[]);
 
 
+    //WINDOW
     void setWindowTitle(QString title);
     void setWindowSize(int width, int height);
     int getWindowWidth();
@@ -44,9 +45,26 @@ public:
     void showDebugWindow();
     void hideDebugWindow();
 
+    void debugMessage(QString message);
+
+
+
     int getFps();
 
-    void debugMessage(QString message);
+
+
+
+    //RENDER
+
+    //callbacks
+    void keyboard(unsigned char key, int x, int y);
+    void idle();
+    void timer(int value);
+    void render();
+
+
+
+
 
     //temprary model loader test
     //needs to be redirected and synced over threads...
@@ -58,7 +76,7 @@ private:
     bool running;
 
     EventTransmitter * mainThreadTransmitter;
-    MainThread * mainThread;
+    //MainThread * mainThread;
 
     EventTransmitter * streamThreadTransmitter;
     StreamThread * streamThread;
@@ -68,16 +86,18 @@ private:
     EventTransmitter * windowTransmitter;
     Window * window;
 
+    //renderer
+    Renderer *r;
+
+    //FPS settings
+    int frame_count;
+    int fps;
 
     //Debug settings
     //this is actually a Debug window but hidden behind an EventListener
     EventListener * debuggerListener;
     Debugger * debugger;
     bool debug_visible;
-
-    //FPS settings
-    int frame_count;
-    int fps;
 
 
 

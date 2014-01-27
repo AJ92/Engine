@@ -252,8 +252,7 @@ void Engine::keyboard(unsigned char key, int x, int y)
         break;
     case 'l':
         {
-            Model * m2 = loadModel("C://Users//AJ//Desktop//Code//QTProjects//Engine//Engine//misc//models//box.obj");
-            debugMessage(m2->get_path());
+            Model * m2 = loadModel("C://Users//AJ//Desktop//Code//QTProjects//Engine//Engine//misc//models//kv3.obj");
             debugMessage(QString::number(m2->id()));
         }
     }

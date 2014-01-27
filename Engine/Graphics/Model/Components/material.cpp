@@ -182,7 +182,7 @@ bool Material::load_map(QString path, int slot){
 
     if(path.endsWith(".png",Qt::CaseInsensitive)){
         if(load_map_rgba(path)){
-            qDebug("Texture map %i loaded from png file.", slot);
+            //qDebug("Texture map %i loaded from png file.", slot);
             return true;
         }
         else{

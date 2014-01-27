@@ -18,15 +18,13 @@
 #include "Graphics/Renderer/renderer.h"
 #include "Graphics/Window/window.h"
 
-//#include "Threading/mainthread.h"
-#include "Threading/streamthread.h"
-
+#include "Graphics/Model/Streamer/streamer.h"
 
 #include "Graphics/Model/modellibrary.h"
-#include "Graphics/Model/Parser/loader.h"
 #include "Graphics/Model/model.h"
 
 #include <QTimer>
+#include <QThread>
 
 
 
@@ -36,7 +34,7 @@ class Engine : public QObject, virtual public EventListener, virtual public Even
     Q_OBJECT
 
 public:
-    Engine(QObject *parent = 0);
+    explicit Engine(QObject *parent = 0);
     ~Engine();
     void initialize(int argc, char *argv[]);
 
@@ -76,17 +74,11 @@ public:
     //temprary model loader test
     //needs to be redirected and synced over threads...
 
-    Model loadModel(QString path);
+    Model * loadModel(QString path);
 
 private:
 
     bool running;
-
-    EventTransmitter * mainThreadTransmitter;
-    //MainThread * mainThread;
-
-    EventTransmitter * streamThreadTransmitter;
-    StreamThread * streamThread;
 
 
     //window settings
@@ -112,12 +104,12 @@ private:
     bool debug_visible;
 
 
+    //model loader and threads.
+    ModelLibrary * model_library;
+
+    int idealThreadCount;
 
 
-    //temprary model loader test...
-    //will be outsourced into streaming thread ...
-    Loader model_loader;
-    ModelLibrary model_library;
 
     //thread stuff...
     void transferModelsToMainThread();

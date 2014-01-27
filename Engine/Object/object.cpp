@@ -5,6 +5,7 @@
 unsigned long long Object::static_id = 0;
 std::vector<unsigned long long> Object::unused_ids;
 
+
 /*!
   Constructs an Object with an unique identifier.
   */
@@ -18,6 +19,12 @@ Object::Object():
   Destroys the Object and puts the used ID into the unused ID vector.
   */
 Object::~Object(){
+    //maybe after a while this can grow huge... so might think about cleaning it up after some time...
+    for(unsigned int i = 0; i < unused_ids.size(); i++){
+        if(unused_ids[i] == my_id){
+           return;
+        }
+    }
     unused_ids.push_back(my_id);
 }
 
@@ -34,13 +41,13 @@ unsigned long long Object::id() const{
   \sa Object()
   */
 unsigned long long Object::next_id(){
-
     if(unused_ids.size() > 0){
         //pop back and return it
         unsigned long long reuse_id = unused_ids.back();
         unused_ids.pop_back();
         return reuse_id;
     }
+
     static_id++;
     return static_id;
 }

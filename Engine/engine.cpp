@@ -52,9 +52,9 @@ void keyboard_callback(unsigned char key, int x, int y){
   Sets on object creation the pointer for the C callback wrapper.
   */
 Engine::Engine(QObject *parent) :
-    QObject(parent),
     EventListener(),
-    EventTransmitter()
+    EventTransmitter(),
+    QObject(parent)
 {
     //set global pointer for callbacks
     ptr_global_engine_instance = this;
@@ -65,20 +65,18 @@ Engine::Engine(QObject *parent) :
     frame_count = 0;
     fps = 0;
 
+    idealThreadCount = 1;
+
     //init debugger and it's listener
 
     debugger = new Debugger();
     debuggerListener = debugger;
     addListener(debuggerListener);
 
-
     debugMessage("engine created.");
-
 }
 
 Engine::~Engine(){
-    //mainThread->stop_mainThread();
-    streamThread->stop_streamThread();
     running = false;
     qDebug("engine stopped.");
 }
@@ -131,12 +129,20 @@ void Engine::initialize(int argc, char *argv[]){
 
 
 
+    debugMessage("Ideal thread number: " + QString::number(QThread::idealThreadCount()));
+    idealThreadCount = QThread::idealThreadCount();
+
+
+    //init Streamer
+    model_library = new ModelLibrary(idealThreadCount,100);
+    //we do not register this one at first...
+
+
     //init RENDERER
     r = new Renderer();
     r->addListener(debuggerListener);
     r->initialize();
     r->setPolygonMode(Renderer::PolygonModeFill);
-
 
 
     //register c function callbacks
@@ -147,36 +153,17 @@ void Engine::initialize(int argc, char *argv[]){
     glutKeyboardFunc(&keyboard_callback);
 
 
-
-    debugMessage("engine initialized. starting threads.");
-    debugMessage("Ideal thread number: " + QString::number(QThread::idealThreadCount()));
-
-
-
-
-    //start stream thread
-    streamThread = new StreamThread();
-    streamThreadTransmitter = streamThread;
-    streamThreadTransmitter->addListener(debuggerListener);
-    streamThread->init();
-    streamThread->start_streamThread();
-
-
-    debugMessage("all threads should run now...");
+    debugMessage("starting main event timer...");
     running = true;
 
     //here the "main 'thread' starts"
-
     t = new QTimer(this);
     QObject::connect(t,SIGNAL(timeout()),this,SLOT(eventLoop()));
 
 
     //1000 ms / 60 fps = 16.6 ms/second
-
     t->setInterval(16);
     t->start();
-
-    //glutMainLoop();
 }
 
 void Engine::setWindowTitle(QString title){
@@ -263,6 +250,12 @@ void Engine::keyboard(unsigned char key, int x, int y)
             this->transmit(e2);
         }
         break;
+    case 'l':
+        {
+            Model * m2 = loadModel("C://Users//AJ//Desktop//Code//QTProjects//Engine//Engine//misc//models//box.obj");
+            debugMessage(m2->get_path());
+            debugMessage(QString::number(m2->id()));
+        }
     }
 }
 
@@ -295,17 +288,15 @@ void Engine::render()
 //SLOTS
 void Engine::eventLoop(){
     glutMainLoopEvent();
+    setWindowTitle(QString::number(getFps()));
 }
 
 
 //temprary...
-Model Engine::loadModel(QString path){
-    Model m = model_loader.import_model(path);
-    model_library.addModel(m);
-    transferModelsToMainThread();
-    return m;
+Model * Engine::loadModel(QString path){
+    return model_library->loadModel(path);
 }
 
 void Engine::transferModelsToMainThread(){
-    //mainThread->setModels(model_library);
+
 }

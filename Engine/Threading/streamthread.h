@@ -20,8 +20,8 @@ public:
 
     void init();
 
-    void start_streamThread();
-    void stop_streamThread();
+    void start();
+    void stop();
 
 protected:
     void run();

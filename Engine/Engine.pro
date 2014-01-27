@@ -23,7 +23,6 @@ SOURCES += main.cpp\
     Debug/debugger.cpp \
     Graphics/Window/window.cpp \
     Graphics/Renderer/renderer.cpp \
-    Threading/streamthread.cpp \
     Graphics/Model/model.cpp \
     Graphics/Model/Components/mesh.cpp \
     Graphics/Model/Components/material.cpp \
@@ -37,7 +36,8 @@ SOURCES += main.cpp\
     Graphics/Camera/camera.cpp \
     Graphics/Model/modellibrary.cpp \
     Event/Events/eventdebugger.cpp \
-    Threading/test.cpp
+    Graphics/Model/Streamer/streamToDisk.cpp \
+    Graphics/Model/Streamer/streamer.cpp
 
 HEADERS  += \
     Object/object.h \
@@ -49,7 +49,6 @@ HEADERS  += \
     Debug/debugger.h \
     Graphics/Window/window.h \
     Graphics/Renderer/renderer.h \
-    Threading/streamthread.h \
     Graphics/Model/model.h \
     Graphics/Model/Components/mesh.h \
     Graphics/Model/Components/material.h \
@@ -65,7 +64,8 @@ HEADERS  += \
     Graphics/Camera/camera.h \
     Graphics/Model/modellibrary.h \
     Event/Events/eventdebugger.h \
-    Threading/test.h
+    Graphics/Model/Streamer/streamToDisk.h \
+    Graphics/Model/Streamer/streamer.h
 
 FORMS    += \
     Debug/Ui/debugwindow.ui

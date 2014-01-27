@@ -205,8 +205,7 @@ bool Material::load_map_rgba(QString path){
         return false;
     }
 
-    qDebug("x size: %i",image.width());
-    qDebug("y size: %i",image.height());
+
     GLuint* pTexData = new GLuint[image.width() * image.height()];
     GLuint* sdata = (GLuint*)image.bits();
     GLuint* tdata = pTexData;
@@ -227,6 +226,5 @@ bool Material::load_map_rgba(QString path){
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
     delete [] pTexData;
-    qDebug("Texture map filled.");
     return true;
 }

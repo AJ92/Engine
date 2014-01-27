@@ -15,13 +15,13 @@ class Loader
 {
 public:
     Loader();
-    Model import_model(QString path);
-    bool export_model_bin(QString path, Model mdl);
+    Model * import_model(QString path);
+    bool export_model_bin(QString path, Model * mdl);
 
 private:
-    Model import_model_format_bin(QString path);
-    Model import_model_format_fbx(QString path);
-    Model import_model_format_obj(QString path);
+    Model * import_model_format_bin(QString path);
+    Model * import_model_format_fbx(QString path);
+    Model * import_model_format_obj(QString path);
 };
 
 #endif // LOADER_H

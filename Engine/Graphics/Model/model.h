@@ -14,6 +14,9 @@ class Mesh;
 class Model : public Object
 {
 public:
+    //create a copy from mdl...
+    Model(const Model & mdl);
+    //construct empty Model
     Model();
 
     void set_position(float x, float y, float z);

@@ -23,7 +23,7 @@ StreamThread::~StreamThread(){
 }
 
 
-void StreamThread::start_streamThread(){
+void StreamThread::start(){
     QMutexLocker locker(&mutex);
 
     running = true;
@@ -40,7 +40,7 @@ void StreamThread::start_streamThread(){
     }
 }
 
-void StreamThread::stop_streamThread(){
+void StreamThread::stop(){
     QMutexLocker locker(&mutex);
     running = false;
     abort = true;

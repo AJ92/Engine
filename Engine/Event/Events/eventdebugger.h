@@ -2,9 +2,9 @@
 #define EVENTDEBUGGER_H
 
 #include <QString>
-#include "Object/object.h"
 
-class EventDebugger : public Object
+
+class EventDebugger
 {
 public:
     EventDebugger(QString debugMessage);

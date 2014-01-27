@@ -1,7 +1,6 @@
 #include "eventdebugger.h"
 
 EventDebugger::EventDebugger(QString debugMessage) :
-    Object(),
     debugMessage(debugMessage)
 {
 

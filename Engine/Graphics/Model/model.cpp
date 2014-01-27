@@ -1,5 +1,23 @@
 #include "model.h"
 
+
+Model::Model(const Model &mdl) :
+    Object()
+{
+    //copy all the stuff to this new object
+    //lets hope const keyword won't make trouble
+    this->pos = mdl.pos;
+    this->rot = mdl.rot;
+    this->scl = mdl.scl;
+    this->mat_pos = mdl.mat_pos;
+    this->mat_rot = mdl.mat_rot;
+    this->mat_scl = mdl.mat_scl;
+    this->mat_m = mdl.mat_m;
+    this->matrix_changed = mdl.matrix_changed;
+    this->path = mdl.path;
+    this->meshs = mdl.meshs;
+}
+
 Model::Model() :
     Object()
 {

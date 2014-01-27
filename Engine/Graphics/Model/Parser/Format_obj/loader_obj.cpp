@@ -6,15 +6,8 @@ Loader_obj::Loader_obj()
 }
 
 bool Loader_obj::load_model_data(Model& mdl, QString path){
-
-    qDebug("    Parsing obj file...");
-
     QStringList pathlist = path.split("/",QString::KeepEmptyParts); //KeepEmptyParts
     QString model_name = pathlist.last();
-
-    qDebug("        Model name: " + model_name.toUtf8());
-
-
 
     //LOAD MESH DATA
     QFile file(path);
@@ -207,10 +200,12 @@ bool Loader_obj::load_model_data(Model& mdl, QString path){
         mtl->load_specular_map(tex_path + mtl_specular_map[mtl_names.value(i)]);
         mtl->load_bump_map(tex_path + mtl_bump_map[mtl_names.value(i)]);
 
+        /*
         qDebug("        MTL ambient m:   " + mtl->get_ambient_map_name().toUtf8());
         qDebug("        MTL diffuse m:   " + mtl->get_diffuse_map_name().toUtf8());
         qDebug("        MTL specular m:  " + mtl->get_specular_map_name().toUtf8());
         qDebug("        MTL bump m:      " + mtl->get_bump_map_name().toUtf8());
+        */
 
         mtln_mtl[mtl_names.value(i)] = mtl;
     }
@@ -237,7 +232,7 @@ bool Loader_obj::load_model_data(Model& mdl, QString path){
 
 
         int triangle_count = mesh_faces[mesh_names.value(i)].size() / 3 / 3;
-        qDebug("        Triangles: %i",triangle_count);
+        //qDebug("        Triangles: %i",triangle_count);
         GLfloat* vertices = new GLfloat[mesh_faces[mesh_names.value(i)].size()];
         GLfloat* texcoords = new GLfloat[mesh_faces[mesh_names.value(i)].size()]; //should be wrong ... 108/3*2 is right ...
         GLfloat* normals = new GLfloat[mesh_faces[mesh_names.value(i)].size()];
@@ -252,9 +247,6 @@ bool Loader_obj::load_model_data(Model& mdl, QString path){
 
         GLuint tangent_vbo;
         GLuint binormal_vbo;
-
-
-        qDebug("        VAO size: %i",mesh_faces[mesh_names.value(i)].size());
 
 
         //qDebug("Mesh...");
@@ -411,40 +403,35 @@ bool Loader_obj::load_model_data(Model& mdl, QString path){
         }
 
 
-        qDebug("        generating buffers...");
 
 
         glGenBuffers(1, &vertex_vbo);
         glBindBuffer(GL_ARRAY_BUFFER, vertex_vbo);
         glBufferData(GL_ARRAY_BUFFER, triangle_count * 3* 3 * sizeof(GLfloat), vertices, GL_STATIC_DRAW);
-        qDebug("            Vertex buffer...");
+
 
         glGenBuffers(1, &texcoord_vbo);
         glBindBuffer(GL_ARRAY_BUFFER, texcoord_vbo);
         glBufferData(GL_ARRAY_BUFFER, triangle_count * 3 * 3 * sizeof(GLfloat), texcoords, GL_STATIC_DRAW);
-        qDebug("            Texture Coordinate buffer...");
+
 
         glGenBuffers(1, &normal_vbo);
         glBindBuffer(GL_ARRAY_BUFFER, normal_vbo);
         glBufferData(GL_ARRAY_BUFFER, triangle_count * 3 * 3 * sizeof(GLfloat), normals, GL_STATIC_DRAW);
-        qDebug("            Normal buffer...");
 
-        qDebug("            buffers generated!");
 
-        qDebug("        creating mesh...");
+
+
         //Create Mesh and add it to the Mesh-list and register those in the resman...
         Mesh* mesh = new Mesh(mesh_names.value(i),triangle_count,vertices,texcoords,normals,
                               vertex_vbo,texcoord_vbo,normal_vbo,
                               mtln_mtl.value(mesh_mtl.value(mesh_names.value(i))));
-        qDebug("        mesh created!");
-        //meshs.append(mesh);
 
-        qDebug("        adding mesh to model...");
+        //meshs.append(mesh);
         mdl.add_mesh(mesh);
-        qDebug("        mesh added to model!");
+
     }
 
     mdl.set_path(path);
-    qDebug("    Model loaded!");
     return true;
 }

@@ -24,6 +24,7 @@ public:
 
     friend bool operator==(const Object &o1, const Object &o2);
 
+
 private:
     static unsigned long long static_id;
 

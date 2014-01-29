@@ -37,7 +37,8 @@ SOURCES += main.cpp\
     Graphics/Model/modellibrary.cpp \
     Event/Events/eventdebugger.cpp \
     Graphics/Model/Streamer/streamToDisk.cpp \
-    Graphics/Model/Streamer/streamer.cpp
+    Graphics/Model/Streamer/streamer.cpp \
+    Threading/threadaccountant.cpp
 
 HEADERS  += \
     Object/object.h \
@@ -65,7 +66,8 @@ HEADERS  += \
     Graphics/Model/modellibrary.h \
     Event/Events/eventdebugger.h \
     Graphics/Model/Streamer/streamToDisk.h \
-    Graphics/Model/Streamer/streamer.h
+    Graphics/Model/Streamer/streamer.h \
+    Threading/threadaccountant.h
 
 FORMS    += \
     Debug/Ui/debugwindow.ui

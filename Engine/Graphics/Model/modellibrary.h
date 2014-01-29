@@ -8,11 +8,12 @@
 #include "Graphics/Model/Streamer/streamer.h"
 #include "Graphics/Model/model.h"
 
+#include "Threading/threadaccountant.h"
+
 class ModelLibrary : virtual public EventListener, virtual public EventTransmitter
 {
 public:
-    ModelLibrary();
-    ModelLibrary(int maxThreads, int reserved_space);
+    ModelLibrary(ThreadAccountant * ta);
 
     void initialize();
 
@@ -24,6 +25,7 @@ public:
 
 
 private:
+    ThreadAccountant * ta;
     Streamer * streamer;
     std::list<Model*> model_list;
 

@@ -132,9 +132,11 @@ void Engine::initialize(int argc, char *argv[]){
     debugMessage("Ideal thread number: " + QString::number(QThread::idealThreadCount()));
     idealThreadCount = QThread::idealThreadCount();
 
+    threadAccountant = new ThreadAccountant(idealThreadCount);
+
 
     //init Streamer
-    model_library = new ModelLibrary(idealThreadCount,100);
+    model_library = new ModelLibrary(threadAccountant);
     model_library->addListener(debuggerListener);
     model_library->initialize();
 

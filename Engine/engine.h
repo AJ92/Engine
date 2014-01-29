@@ -26,6 +26,8 @@
 #include <QTimer>
 #include <QThread>
 
+#include "Threading/threadaccountant.h"
+
 
 
 class Engine : public QObject, virtual public EventListener, virtual public EventTransmitter
@@ -108,7 +110,7 @@ private:
     ModelLibrary * model_library;
 
     int idealThreadCount;
-
+    ThreadAccountant * threadAccountant;
 
 
     //thread stuff...

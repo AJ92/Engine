@@ -1,19 +1,12 @@
 #include "modellibrary.h"
 
-ModelLibrary::ModelLibrary() :
+ModelLibrary::ModelLibrary(ThreadAccountant * ta) :
     EventListener(),
-    EventTransmitter()
-{
-    //default 2
-    streamer = new Streamer(2);
-}
-
-ModelLibrary::ModelLibrary(int maxThreads, int reserved_space) :
-    EventListener(),
-    EventTransmitter()
+    EventTransmitter(),
+    ta(ta)
 {
     //set max Threads
-    streamer = new Streamer(maxThreads);
+    streamer = new Streamer(ta);
 }
 
 void ModelLibrary::initialize(){

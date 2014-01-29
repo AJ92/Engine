@@ -3,8 +3,7 @@
 
 DebugWindow::DebugWindow(QWidget *parent) :
     QMainWindow(parent),
-    ui(new Ui::DebugWindow),
-    max_log_size(5000)
+    ui(new Ui::DebugWindow)
 {
     ui->setupUi(this);
 }
@@ -16,12 +15,7 @@ DebugWindow::~DebugWindow()
 
 
 void DebugWindow::add_log(QString log_message){
-    log.append(log_message+"\n");
-    if(log.size() >= max_log_size){
-        log = log.right(max_log_size);
-    }
-    ui->textEdit->setText(log);
-
+    ui->textEdit->append(log_message);
 
     // create / set text cursor
     QTextCursor cursor(ui->textEdit->textCursor());
@@ -29,5 +23,4 @@ void DebugWindow::add_log(QString log_message){
     ui->textEdit->setTextCursor(cursor);
     ui->textEdit->ensureCursorVisible();
 
-    //ui->textEdit->verticalScrollBar()->setValue(ui->textEdit->verticalScrollBar()->maximum());
 }

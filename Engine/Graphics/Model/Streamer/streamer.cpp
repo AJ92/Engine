@@ -6,12 +6,15 @@ Streamer::Streamer(int maxThreads, QObject *parent) :
     QObject(parent),
     maxThreads(maxThreads)
 {
-    //need to intialize all threads and just dispatch the model loads or unloads...
+
 }
 
 
 void Streamer::initialize(){
     debugMessage("streamer initializing...");
+
+    //stuff here
+
     debugMessage("streamer initialized.");
 }
 
@@ -22,6 +25,11 @@ void Streamer::streamModelToDisk(Model * m){
 
 void Streamer::streamModelFromDisk(Model * m){
     //this one is far more usefull atm...
+
+
+    //we need to check if maxThreads is reached and put models into a queue
+    //to wait till we have free threads
+
 
     //store model pointer and id
     id_model_map[m->id()] = m;

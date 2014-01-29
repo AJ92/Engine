@@ -28,13 +28,10 @@ int main(int argc, char *argv[])
     e.debugMessage(QString::number(m->id()));
 
 
-    Model * m2 = e.loadModel("C://Users//AJ//Desktop//Code//QTProjects//Engine//Engine//misc//models//box.obj");
+    Model * m2 = e.loadModel("C://Users//AJ//Desktop//Code//QTProjects//Engine//Engine//misc//models//kv3.obj");
     e.debugMessage(m2->get_path());
     e.debugMessage(QString::number(m2->id()));
 
-    Model m3(*m);
-    e.debugMessage(m3.get_path());
-    e.debugMessage(QString::number(m3.id()));
 
 
     /*

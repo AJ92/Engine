@@ -135,7 +135,9 @@ void Engine::initialize(int argc, char *argv[]){
 
     //init Streamer
     model_library = new ModelLibrary(idealThreadCount,100);
-    //we do not register this one at first...
+    model_library->addListener(debuggerListener);
+    model_library->initialize();
+
 
 
     //init RENDERER

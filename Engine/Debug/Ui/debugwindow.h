@@ -21,9 +21,6 @@ public:
     
 private:
     Ui::DebugWindow *ui;
-
-    int max_log_size;
-    QString log;
 };
 
 #endif // DEBUGWINDOW_H

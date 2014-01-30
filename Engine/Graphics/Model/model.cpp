@@ -16,6 +16,7 @@ Model::Model(const Model &mdl) :
     this->matrix_changed = mdl.matrix_changed;
     this->path = mdl.path;
     this->meshs = mdl.meshs;
+    this->isReady = mdl.isReady;
 }
 
 Model::Model() :
@@ -25,6 +26,7 @@ Model::Model() :
     rot = Vector3(0,0,0);
     scl = Vector3(1,1,1);
     matrix_changed = true;
+    isReady = false;
 }
 
 
@@ -95,6 +97,11 @@ void Model::loadGLdata(){
         mtl->loadGLdata();
         mesh->load_data();
     }
+    isReady = true;
+}
+
+bool Model::isReadyToRender(){
+    return isReady;
 }
 
 

@@ -17,11 +17,23 @@ public:
     float FOV;
 
     // local - cam rotates
-    void rotate_local_post(float angle, float axis_x, float axis_y, float axis_z);    // no gimbal lock
-    void rotate_local_pre(float angle, float axis_x, float axis_y, float axis_z);     // along axis
+    void rotate_local_post_x(float angle);    // no gimbal lock
+    void rotate_local_post_y(float angle);
+    void rotate_local_post_z(float angle);
+
+    void rotate_local_pre_x(float angle);     // along axis
+    void rotate_local_pre_y(float angle);
+    void rotate_local_pre_z(float angle);
+
     // global - world rotates
-    void rotate_global_post(float angle, float axis_x, float axis_y, float axis_z);    // no gimbal lock
-    void rotate_global_pre(float angle, float axis_x, float axis_y, float axis_z);     // along axis
+    void rotate_global_post_x(float angle);    // no gimbal lock
+    void rotate_global_post_y(float angle);
+    void rotate_global_post_z(float angle);
+
+    void rotate_global_pre_x(float angle);     // along axis
+    void rotate_global_pre_y(float angle);
+    void rotate_global_pre_z(float angle);
+
 
     void move(float x_dir, float y_dir, float z_dir);
     void translate(float x_dir, float y_dir, float z_dir);

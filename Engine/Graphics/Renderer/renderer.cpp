@@ -49,7 +49,7 @@ void Renderer::initialize(){
             "void main(void)"\
             "{"\
             "    texc = texcoord;"\
-            "    vec3 ldir = normalize(norm_matrix * vec4(0.0,0.0,-1.0,0.0)).xyz;"\
+            "    vec3 ldir = normalize(norm_matrix * vec4(0.0,0.0,1.0,0.0)).xyz;"\
             "    dir = max(dot(normal.xyz,ldir),0.0);"\
             "    gl_Position =  mvp_matrix * vertex;"\
             "}";
@@ -88,79 +88,75 @@ void Renderer::setWindow(Window * win){
 
 void Renderer::render(Model * m){
 
+    if(m->isReadyToRender()){
+        GLenum ErrorCheckValue = glGetError();
+        if (ErrorCheckValue != GL_NO_ERROR)
+        {
+            debugMessage("ERROR before rendering: " + QString((char*) gluErrorString(ErrorCheckValue)));
+        }
 
-    GLenum ErrorCheckValue = glGetError();
-    if (ErrorCheckValue != GL_NO_ERROR)
-    {
-        debugMessage("ERROR before rendering: " + QString((char*) gluErrorString(ErrorCheckValue)));
-    }
+
+        QList<Mesh*> meshs = m->get_meshs();
+
+        m_p.set_to_identity();
+        m_p.perspective(cam->FOV, float(win->getWindowWidth()) / float(win->getWindowHeight()),
+                        cam->Z_NEAR, cam->Z_FAR);
+
+        m_mvp =cam->M_camera_view.inverted() * m->get_model_matrix();
+        m_norm = m_mvp.inverted();
+        m_mvp = m_p * m_mvp;
+
+        for (int f = 0; f < 4; f++) {
+            for (int g = 0; g < 4; g++) {
+                mvp_mat[f * 4 + g] = (GLfloat) (m_mvp[f*4+g]);
+                norm_mat[f * 4 + g] = (GLfloat) (m_norm[f*4+g]);
+            }
+        }
 
 
-    QList<Mesh*> meshs = m->get_meshs();
+        glUniformMatrix4fv(mvp_mat_loc, 1, GL_FALSE, mvp_mat);
+        glUniformMatrix4fv(norm_mat_loc, 1, GL_FALSE, norm_mat);
 
-    m_p.set_to_identity();
-    m_p.perspective(cam->FOV, float(win->getWindowWidth()) / float(win->getWindowHeight()),
-                    cam->Z_NEAR, cam->Z_FAR);
 
-    m_mvp =cam->M_camera_view.inverted() * m->get_model_matrix();
-    m_norm = m_mvp.inverted();
-    m_mvp = m_p * m_mvp;
 
-    for (int f = 0; f < 4; f++) {
-        for (int g = 0; g < 4; g++) {
-            mvp_mat[f * 4 + g] = (GLfloat) (m_mvp[f*4+g]);
-            norm_mat[f * 4 + g] = (GLfloat) (m_norm[f*4+g]);
+        for(int i = 0; i < meshs.size(); i++){
+
+            Mesh * mesh = meshs.at(i);
+
+
+            //tex
+            glBindTexture(GL_TEXTURE_2D, mesh->get_material()->get_diffuse_map_texture());
+
+            //sample 2d
+            glUniform1i(samp2d_loc, 0);
+
+
+            //VAO
+
+            glBindVertexArray(mesh->get_vertex_array_object());
+
+            //VBOs
+            glBindBuffer(GL_ARRAY_BUFFER, mesh->get_vertex_vbo());
+            glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, 0);
+            glEnableVertexAttribArray(0);
+
+            glBindBuffer(GL_ARRAY_BUFFER, mesh->get_texcoord_vbo());
+            glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 0, 0);
+            glEnableVertexAttribArray(1);
+
+            glBindBuffer(GL_ARRAY_BUFFER, mesh->get_normal_vbo());
+            glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, 0, 0);
+            glEnableVertexAttribArray(2);
+
+            glDrawArrays(GL_TRIANGLES, 0, mesh->get_triangle_count()*3);
+        }
+
+        ErrorCheckValue = glGetError();
+        if (ErrorCheckValue != GL_NO_ERROR)
+        {
+            debugMessage("ERROR after rendering: " + QString((char*) gluErrorString(ErrorCheckValue)));
         }
     }
-
-
-    glUniformMatrix4fv(mvp_mat_loc, 1, GL_FALSE, mvp_mat);
-    glUniformMatrix4fv(norm_mat_loc, 1, GL_FALSE, norm_mat);
-
-
-
-    for(int i = 0; i < meshs.size(); i++){
-
-        Mesh * mesh = meshs.at(i);
-
-
-        //tex
-        glBindTexture(GL_TEXTURE_2D, mesh->get_material()->get_diffuse_map_texture());
-
-        //sample 2d
-        glUniform1i(samp2d_loc, 0);
-
-
-        //VAO
-
-        glBindVertexArray(mesh->get_vertex_array_object());
-
-        //VBOs
-        glBindBuffer(GL_ARRAY_BUFFER, mesh->get_vertex_vbo());
-        glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, 0);
-        glEnableVertexAttribArray(0);
-
-        glBindBuffer(GL_ARRAY_BUFFER, mesh->get_texcoord_vbo());
-        glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 0, 0);
-        glEnableVertexAttribArray(1);
-
-        glBindBuffer(GL_ARRAY_BUFFER, mesh->get_normal_vbo());
-        glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, 0, 0);
-        glEnableVertexAttribArray(2);
-
-        glDrawArrays(GL_TRIANGLES, 0, mesh->get_triangle_count()*3);
-
-
-
-    }
-
-    ErrorCheckValue = glGetError();
-    if (ErrorCheckValue != GL_NO_ERROR)
-    {
-        debugMessage("ERROR after rendering: " + QString((char*) gluErrorString(ErrorCheckValue)));
-    }
-
-
 }
 
 

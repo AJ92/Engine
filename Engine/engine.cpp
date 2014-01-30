@@ -149,8 +149,10 @@ void Engine::initialize(int argc, char *argv[]){
     r->setPolygonMode(Renderer::PolygonModeFill);
 
 
-    Camera * cam = new Camera();
-    cam->translate(0.0f,0.0f,0.0f);
+    cam = new Camera();
+    cam->translate(0.0f,0.0f,30.0f);
+
+
 
     r->setCamera(cam);
     r->setWindow(window);
@@ -310,6 +312,10 @@ void Engine::render()
 void Engine::eventLoop(){
     glutMainLoopEvent();
     setWindowTitle(QString::number(getFps()));
+
+    cam->rotate_global_pre_y(0.5f);
+    cam->rotate_global_pre_x(0.8f);
+    cam->rotate_global_pre_z(0.1f);
 }
 
 

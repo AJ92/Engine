@@ -35,6 +35,9 @@ private:
     //model queue for models that wait for a thread
     std::queue<Model*> model_queue;
 
+    //model queue for models that are done and need to load GL DATA
+    std::queue<Model*> finished_model_queue;
+
     //store the model ID  and  the Model pointer
     std::map<unsigned long long, Model*> id_model_map;
 

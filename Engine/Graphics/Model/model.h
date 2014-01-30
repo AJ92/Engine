@@ -38,6 +38,7 @@ public:
     QList<Mesh*> get_meshs();
 
     void loadGLdata();
+    bool isReadyToRender();
 
     //override + overload bam
     bool equal(const Model &mdl) const;
@@ -45,6 +46,8 @@ public:
     friend bool operator==(const Model &mdl1, const Model &mdl2);
 
 private:
+    bool isReady;
+
     bool matrix_changed;
 
     //translation, scale, rotation...

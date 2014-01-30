@@ -80,6 +80,10 @@ public:
 
 private:
 
+    //test values
+    Camera * cam;
+    //test values end
+
     bool running;
 
 

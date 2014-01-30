@@ -16,7 +16,7 @@ void Streamer::initialize(){
     t = new QTimer(this);
     QObject::connect(t,SIGNAL(timeout()),this,SLOT(assignModeltoThread()));
     //every 200 ms
-    t->setInterval(200);
+    t->setInterval(50);
     t->start();
 
     debugMessage("streamer initialized.");
@@ -67,6 +67,13 @@ void Streamer::assignModeltoThread(){
         model_queue.pop();
         streamModelFromDisk(m);
     }
+
+    if(finished_model_queue.size() > 0){
+        Model * m = finished_model_queue.front();
+        //we are now in mainthread and can load GL data
+        m->loadGLdata();
+        finished_model_queue.pop();
+    }
 }
 
 void Streamer::streamModelToDiskFinished(Model * m, unsigned long long id){
@@ -74,18 +81,15 @@ void Streamer::streamModelToDiskFinished(Model * m, unsigned long long id){
 }
 
 void Streamer::streamModelFromDiskFinished(Model * m, unsigned long long id){
-    //now set the pointer right...
 
+    //now set the pointer right...
     Model * mdl = id_model_map[id];
     *mdl = *m;
 
+    finished_model_queue.push(mdl);
 
     id_model_map.erase(id);
     ta->removeThread();
-
-    //we are now in mainthread and can load GL data
-    mdl->loadGLdata();
-
 }
 
 

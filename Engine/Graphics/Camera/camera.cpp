@@ -19,50 +19,128 @@ Camera::Camera() :
 
 
 //LOCAL
-void Camera::rotate_local_post(float angle, float axis_x, float axis_y, float axis_z)
+void Camera::rotate_local_post_x(float angle)
 {
-    /*
-    QMatrix4x4 camerarotation;
-    camerarotation.rotate(angle, axis_x, axis_y, axis_z);
+    Matrix4x4 camerarotation;
+    camerarotation.rotate_x(angle);
     M_camera_rotation_local =  M_camera_rotation_local * camerarotation;
-
     M_camera_view = M_camera_rotation_global * M_camera_translation * M_camera_rotation_local;
-    */
 }
 
-void Camera::rotate_local_pre(float angle, float axis_x, float axis_y, float axis_z)
+void Camera::rotate_local_post_y(float angle)
 {
-    /*
-    QMatrix4x4 camerarotation;
-    camerarotation.rotate(angle, axis_x, axis_y, axis_z);
+    Matrix4x4 camerarotation;
+    camerarotation.rotate_y(angle);
+    M_camera_rotation_local =  M_camera_rotation_local * camerarotation;
+    M_camera_view = M_camera_rotation_global * M_camera_translation * M_camera_rotation_local;
+}
+
+void Camera::rotate_local_post_z(float angle)
+{
+    Matrix4x4 camerarotation;
+    camerarotation.rotate_z(angle);
+    M_camera_rotation_local =  M_camera_rotation_local * camerarotation;
+    M_camera_view = M_camera_rotation_global * M_camera_translation * M_camera_rotation_local;
+}
+
+
+
+
+
+void Camera::rotate_local_pre_x(float angle)
+{
+    Matrix4x4 camerarotation;
+    camerarotation.rotate_x(angle);
     M_camera_rotation_local =  camerarotation * M_camera_rotation_local;
     //M_camera_rotation = M_camera_rotation_local;
     M_camera_view = M_camera_rotation_global * M_camera_translation * M_camera_rotation_local;
-    */
 }
 
-//GLOBAL
-void Camera::rotate_global_post(float angle, float axis_x, float axis_y, float axis_z)
+void Camera::rotate_local_pre_y(float angle)
 {
-    /*
-    QMatrix4x4 camerarotation;
-    camerarotation.rotate(angle, axis_x, axis_y, axis_z);
+    Matrix4x4 camerarotation;
+    camerarotation.rotate_y(angle);
+    M_camera_rotation_local =  camerarotation * M_camera_rotation_local;
+    //M_camera_rotation = M_camera_rotation_local;
+    M_camera_view = M_camera_rotation_global * M_camera_translation * M_camera_rotation_local;
+}
+
+void Camera::rotate_local_pre_z(float angle)
+{
+    Matrix4x4 camerarotation;
+    camerarotation.rotate_z(angle);
+    M_camera_rotation_local =  camerarotation * M_camera_rotation_local;
+    //M_camera_rotation = M_camera_rotation_local;
+    M_camera_view = M_camera_rotation_global * M_camera_translation * M_camera_rotation_local;
+}
+
+
+
+
+
+
+
+//GLOBAL
+void Camera::rotate_global_post_x(float angle)
+{
+    Matrix4x4 camerarotation;
+    camerarotation.rotate_x(angle);
     M_camera_rotation_global =  M_camera_rotation_global * camerarotation;
     //M_camera_rotation = M_camera_rotation_global;
     M_camera_view = M_camera_rotation_global * M_camera_translation * M_camera_rotation_local;
-    */
 }
 
-void Camera::rotate_global_pre(float angle, float axis_x, float axis_y, float axis_z)
+void Camera::rotate_global_post_y(float angle)
 {
-    /*
-    QMatrix4x4 camerarotation;
-    camerarotation.rotate(angle, axis_x, axis_y, axis_z);
+    Matrix4x4 camerarotation;
+    camerarotation.rotate_y(angle);
+    M_camera_rotation_global =  M_camera_rotation_global * camerarotation;
+    //M_camera_rotation = M_camera_rotation_global;
+    M_camera_view = M_camera_rotation_global * M_camera_translation * M_camera_rotation_local;
+}
+
+void Camera::rotate_global_post_z(float angle)
+{
+    Matrix4x4 camerarotation;
+    camerarotation.rotate_z(angle);
+    M_camera_rotation_global =  M_camera_rotation_global * camerarotation;
+    //M_camera_rotation = M_camera_rotation_global;
+    M_camera_view = M_camera_rotation_global * M_camera_translation * M_camera_rotation_local;
+}
+
+
+
+
+
+
+
+void Camera::rotate_global_pre_x(float angle)
+{
+    Matrix4x4 camerarotation;
+    camerarotation.rotate_x(angle);
     M_camera_rotation_global =  camerarotation * M_camera_rotation_global;
     //M_camera_rotation = M_camera_rotation_global;
     M_camera_view = M_camera_rotation_global * M_camera_translation * M_camera_rotation_local;
-    */
 }
+
+void Camera::rotate_global_pre_y(float angle)
+{
+    Matrix4x4 camerarotation;
+    camerarotation.rotate_y(angle);
+    M_camera_rotation_global =  camerarotation * M_camera_rotation_global;
+    //M_camera_rotation = M_camera_rotation_global;
+    M_camera_view = M_camera_rotation_global * M_camera_translation * M_camera_rotation_local;
+}
+
+void Camera::rotate_global_pre_z(float angle)
+{
+    Matrix4x4 camerarotation;
+    camerarotation.rotate_z(angle);
+    M_camera_rotation_global =  camerarotation * M_camera_rotation_global;
+    //M_camera_rotation = M_camera_rotation_global;
+    M_camera_view = M_camera_rotation_global * M_camera_translation * M_camera_rotation_local;
+}
+
 
 
 

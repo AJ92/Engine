@@ -43,7 +43,6 @@ int ModelLibrary::modelCount(){
 //private
 void ModelLibrary::addModel(Model * mdl){
     if(!containsModel(mdl)){
-        debugMessage("ModelLibrary: adding");
         model_list.push_back(mdl);
     }
 }

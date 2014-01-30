@@ -18,10 +18,15 @@ public:
     ~Material();
 
     //load the bitmaps, and creates openGL textures
-    bool load_ambient_map(QString path);
-    bool load_diffuse_map(QString path);
-    bool load_specular_map(QString path);
-    bool load_bump_map(QString path);
+    //first set the paths...
+
+
+    void loadGLdata();
+
+    bool load_ambient_map();
+    bool load_diffuse_map();
+    bool load_specular_map();
+    bool load_bump_map();
 
     //get
     QString     get_name();
@@ -68,6 +73,11 @@ public:
     void        set_specular_map_name(QString map_name);
     void        set_bump_map_name(QString map_name);
 
+    void        set_ambient_map_path(QString map_path);
+    void        set_diffuse_map_path(QString map_path);
+    void        set_specular_map_path(QString map_path);
+    void        set_bump_map_path(QString map_path);
+
     void        set_illumination(int value);
 
 private:
@@ -90,6 +100,12 @@ private:
     QString mtl_diffuse_map;
     QString mtl_specular_map;
     QString mtl_bump_map;
+
+    QString mtl_ambient_map_path;
+    QString mtl_diffuse_map_path;
+    QString mtl_specular_map_path;
+    QString mtl_bump_map_path;
+
 
     GLuint*  gl_mtls;
 

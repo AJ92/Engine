@@ -149,6 +149,13 @@ void Engine::initialize(int argc, char *argv[]){
     r->setPolygonMode(Renderer::PolygonModeFill);
 
 
+    Camera * cam = new Camera();
+    cam->translate(0.0f,0.0f,0.0f);
+
+    r->setCamera(cam);
+    r->setWindow(window);
+
+
     //register c function callbacks
     glutDisplayFunc(&render_callback);
     //glutCloseFunc(&close_callback);
@@ -256,7 +263,7 @@ void Engine::keyboard(unsigned char key, int x, int y)
         break;
     case 'l':
         {
-            Model * m2 = loadModel("C://Users//AJ//Desktop//Code//QTProjects//Engine//Engine//misc//models//kv3.obj");
+            Model * m2 = loadModel("C://Users//AJ//Desktop//Code//QTProjects//Engine//Engine//misc//models//box.obj");
             debugMessage(QString::number(m2->id()));
         }
     }
@@ -279,9 +286,20 @@ void Engine::render()
 {
     frame_count++;
 
+    glClearColor(0.5f,0.5f,0.5f,1.0f);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-    r->render();
+    std::list<Model *> model_list = model_library->getModels();
+    for (std::list<Model *>::const_iterator iterator = model_list.begin(), end = model_list.end(); iterator != end; ++iterator) {
+        //std::cout << *iterator;
+
+        Model * m = *iterator;
+
+        r->render(m);
+    }
+
+
+
 
     glutSwapBuffers();
     glutPostRedisplay();

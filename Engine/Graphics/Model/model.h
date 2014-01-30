@@ -35,6 +35,10 @@ public:
 
     void add_mesh(Mesh* mesh);
 
+    QList<Mesh*> get_meshs();
+
+    void loadGLdata();
+
     //override + overload bam
     bool equal(const Model &mdl) const;
 

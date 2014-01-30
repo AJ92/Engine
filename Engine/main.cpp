@@ -23,16 +23,17 @@ int main(int argc, char *argv[])
 
     qDebug("back to main.cpp");
 
+
     Model * m = e.loadModel("C://Users//AJ//Desktop//Code//QTProjects//Engine//Engine//misc//models//box.obj");
     e.debugMessage(m->get_path());
     e.debugMessage(QString::number(m->id()));
 
 
+    /*
     Model * m2 = e.loadModel("C://Users//AJ//Desktop//Code//QTProjects//Engine//Engine//misc//models//kv3.obj");
     e.debugMessage(m2->get_path());
     e.debugMessage(QString::number(m2->id()));
-
-
+    */
 
     /*
     Model * mp = &m;

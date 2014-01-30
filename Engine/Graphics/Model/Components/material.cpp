@@ -6,9 +6,7 @@ Material::Material(QString name,QString path) :
     mtl_path(path),
     tex_slots(4)
 {
-    // always 4 generated textures are not sooo good...
-    gl_mtls = new GLuint[tex_slots];
-    glGenTextures(tex_slots, gl_mtls);
+
 }
 
 Material::~Material(){
@@ -17,20 +15,43 @@ Material::~Material(){
     qDebug("Material DESTRUCTOR FINISHED");
 }
 
-bool Material::load_ambient_map(QString path){
-    return load_map(path,0);
+
+void Material::loadGLdata(){
+    // always 4 generated textures are not sooo good...
+    gl_mtls = new GLuint[tex_slots];
+
+    GLenum ErrorCheckValue = glGetError();
+    if (ErrorCheckValue != GL_NO_ERROR)
+    {
+        qDebug("ERROR before texture generate: " + QString((char*) gluErrorString(ErrorCheckValue)).toUtf8());
+    }
+    glGenTextures(tex_slots, gl_mtls);
+    ErrorCheckValue = glGetError();
+    if (ErrorCheckValue != GL_NO_ERROR)
+    {
+        qDebug("ERROR after texture generate: " + QString((char*) gluErrorString(ErrorCheckValue)).toUtf8());
+    }
+
+    load_ambient_map();
+    load_diffuse_map();
+    load_specular_map();
+    load_bump_map();
 }
 
-bool Material::load_diffuse_map(QString path){
-    return load_map(path,1);
+bool Material::load_ambient_map(){
+    return load_map(mtl_ambient_map_path,0);
 }
 
-bool Material::load_specular_map(QString path){
-    return load_map(path,2);
+bool Material::load_diffuse_map(){
+    return load_map(mtl_diffuse_map_path,1);
 }
 
-bool Material::load_bump_map(QString path){
-    return load_map(path,3);
+bool Material::load_specular_map(){
+    return load_map(mtl_specular_map_path,2);
+}
+
+bool Material::load_bump_map(){
+    return load_map(mtl_bump_map_path,3);
 }
 
 
@@ -170,6 +191,22 @@ void Material::set_illumination(int value){
     mtl_illumination = value;
 }
 
+void Material::set_ambient_map_path(QString map_path){
+    mtl_ambient_map_path = map_path;
+}
+
+void Material::set_diffuse_map_path(QString map_path){
+    mtl_diffuse_map_path = map_path;
+}
+
+void Material::set_specular_map_path(QString map_path){
+    mtl_specular_map_path = map_path;
+}
+
+void Material::set_bump_map_path(QString map_path){
+    mtl_bump_map_path = map_path;
+}
+
 
 //wrapper function for texture loading...
 bool Material::load_map(QString path, int slot){
@@ -178,7 +215,17 @@ bool Material::load_map(QString path, int slot){
         return false;
     }
 
+    GLenum ErrorCheckValue = glGetError();
+    if (ErrorCheckValue != GL_NO_ERROR)
+    {
+        qDebug("ERROR before texture loading: " + QString((char*) gluErrorString(ErrorCheckValue)).toUtf8());
+    }
     glBindTexture(GL_TEXTURE_2D, gl_mtls[slot]);
+    ErrorCheckValue = glGetError();
+    if (ErrorCheckValue != GL_NO_ERROR)
+    {
+        qDebug("ERROR after texture loading: " + QString((char*) gluErrorString(ErrorCheckValue)).toUtf8());
+    }
 
     if(path.endsWith(".png",Qt::CaseInsensitive)){
         if(load_map_rgba(path)){

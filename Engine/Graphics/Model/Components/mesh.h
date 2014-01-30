@@ -16,7 +16,7 @@ class Mesh : public Object
 {
 public:
     Mesh(QString name,int triangle_count,GLfloat vertices[],GLfloat texcoords[],GLfloat normals[],
-         GLuint vertex_vbo, GLuint texcoord_vbo, GLuint normal_vbo, Material *material);
+         Material *material);
     ~Mesh();
 
     QString get_name();
@@ -33,6 +33,10 @@ public:
     GLuint get_vertex_vbo();
     GLuint get_texcoord_vbo();
     GLuint get_normal_vbo();
+
+    GLuint get_vertex_array_object();
+
+    void load_data();
 
     void set_vertex(int index, float x, float y, float z);
     void set_vertex(int index, Vector3 vector);
@@ -55,6 +59,8 @@ private:
     GLuint vertex_vbo;
     GLuint texcoord_vbo;
     GLuint normal_vbo;
+
+    GLuint vertex_array_object;
 };
 
 #endif // MESH_H

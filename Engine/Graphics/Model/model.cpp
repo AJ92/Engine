@@ -84,6 +84,19 @@ void Model::add_mesh(Mesh* mesh){
     meshs.append(mesh);
 }
 
+QList<Mesh*> Model::get_meshs(){
+    return meshs;
+}
+
+void Model::loadGLdata(){
+    for(int i = 0; i < meshs.size(); i++){
+        Mesh * mesh = meshs.at(i);
+        Material * mtl = mesh->get_material();
+        mtl->loadGLdata();
+        mesh->load_data();
+    }
+}
+
 
 bool Model::equal(const Model &mdl) const{
     if(this->path.compare(mdl.get_path())==0 && this->id() == mdl.id()){

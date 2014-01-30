@@ -195,10 +195,19 @@ bool Loader_obj::load_model_data(Model& mdl, QString path){
         mtl->set_illumination(mtl_illumination[mtl_names.value(i)]);
 
         //init texture maps
+
+        //as this function gets called in a thread we need to do this in main...
+        /*
         mtl->load_ambient_map(tex_path + mtl_ambient_map[mtl_names.value(i)]);
         mtl->load_diffuse_map(tex_path + mtl_diffuse_map[mtl_names.value(i)]);
         mtl->load_specular_map(tex_path + mtl_specular_map[mtl_names.value(i)]);
         mtl->load_bump_map(tex_path + mtl_bump_map[mtl_names.value(i)]);
+        */
+
+        mtl->set_ambient_map_path(tex_path + mtl_ambient_map[mtl_names.value(i)]);
+        mtl->set_diffuse_map_path(tex_path + mtl_diffuse_map[mtl_names.value(i)]);
+        mtl->set_specular_map_path(tex_path + mtl_specular_map[mtl_names.value(i)]);
+        mtl->set_bump_map_path(tex_path + mtl_bump_map[mtl_names.value(i)]);
 
         /*
         qDebug("        MTL ambient m:   " + mtl->get_ambient_map_name().toUtf8());
@@ -241,12 +250,17 @@ bool Loader_obj::load_model_data(Model& mdl, QString path){
         GLfloat* binormals = new GLfloat[mesh_faces[mesh_names.value(i)].size()];
 
         //VAO and VBOs
+
+        /*
+        GLuint vao;
+
         GLuint vertex_vbo;
         GLuint texcoord_vbo;
         GLuint normal_vbo;
 
         GLuint tangent_vbo;
         GLuint binormal_vbo;
+        */
 
 
         //qDebug("Mesh...");
@@ -403,28 +417,35 @@ bool Loader_obj::load_model_data(Model& mdl, QString path){
         }
 
 
+        //moved to main thread, more specificly: Mesh::load_data and Material::load_xxxx and streamer
+        /*
+        glGenVertexArrays(1, &vao);
 
+        glBindVertexArray(vao);
 
         glGenBuffers(1, &vertex_vbo);
         glBindBuffer(GL_ARRAY_BUFFER, vertex_vbo);
         glBufferData(GL_ARRAY_BUFFER, triangle_count * 3* 3 * sizeof(GLfloat), vertices, GL_STATIC_DRAW);
+        glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, 0);
+        glEnableVertexAttribArray(0);
 
 
         glGenBuffers(1, &texcoord_vbo);
         glBindBuffer(GL_ARRAY_BUFFER, texcoord_vbo);
         glBufferData(GL_ARRAY_BUFFER, triangle_count * 3 * 3 * sizeof(GLfloat), texcoords, GL_STATIC_DRAW);
+        glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 0, 0);
+        glEnableVertexAttribArray(1);
 
 
         glGenBuffers(1, &normal_vbo);
         glBindBuffer(GL_ARRAY_BUFFER, normal_vbo);
         glBufferData(GL_ARRAY_BUFFER, triangle_count * 3 * 3 * sizeof(GLfloat), normals, GL_STATIC_DRAW);
-
-
-
+        glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, 0, 0);
+        glEnableVertexAttribArray(2);
+        */
 
         //Create Mesh and add it to the Mesh-list and register those in the resman...
-        Mesh* mesh = new Mesh(mesh_names.value(i),triangle_count,vertices,texcoords,normals,
-                              vertex_vbo,texcoord_vbo,normal_vbo,
+        Mesh* mesh = new Mesh(mesh_names.value(i), triangle_count, vertices, texcoords, normals,
                               mtln_mtl.value(mesh_mtl.value(mesh_names.value(i))));
 
         //meshs.append(mesh);

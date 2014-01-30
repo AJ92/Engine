@@ -1,6 +1,6 @@
 #include "mesh.h"
 
-Mesh::Mesh(QString name, int triangle_count, GLfloat vertices[], GLfloat texcoords[], GLfloat normals[], GLuint vertex_vbo, GLuint texcoord_vbo, GLuint normal_vbo, Material *material)
+Mesh::Mesh(QString name, int triangle_count, GLfloat vertices[], GLfloat texcoords[], GLfloat normals[], Material *material)
 {
     mesh_name = name;
 
@@ -11,10 +11,6 @@ Mesh::Mesh(QString name, int triangle_count, GLfloat vertices[], GLfloat texcoor
     this->normals   = normals;
 
     this->material  = material;
-
-    this->vertex_vbo = vertex_vbo;
-    this->texcoord_vbo = texcoord_vbo;
-    this->normal_vbo = normal_vbo;
 }
 
 Mesh::~Mesh(){
@@ -75,6 +71,35 @@ GLuint Mesh::get_normal_vbo(){
     return normal_vbo;
 }
 
+GLuint Mesh::get_vertex_array_object(){
+    return vertex_array_object;
+}
+
+void Mesh::load_data(){
+    glGenVertexArrays(1, &vertex_array_object);
+
+    glBindVertexArray(vertex_array_object);
+
+    glGenBuffers(1, &vertex_vbo);
+    glBindBuffer(GL_ARRAY_BUFFER, vertex_vbo);
+    glBufferData(GL_ARRAY_BUFFER, triangle_count * 3* 3 * sizeof(GLfloat), vertices, GL_STATIC_DRAW);
+    //glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, 0);
+    //glEnableVertexAttribArray(0);
+
+
+    glGenBuffers(1, &texcoord_vbo);
+    glBindBuffer(GL_ARRAY_BUFFER, texcoord_vbo);
+    glBufferData(GL_ARRAY_BUFFER, triangle_count * 3 * 3 * sizeof(GLfloat), texcoords, GL_STATIC_DRAW);
+    //glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 0, 0);
+    //glEnableVertexAttribArray(1);
+
+
+    glGenBuffers(1, &normal_vbo);
+    glBindBuffer(GL_ARRAY_BUFFER, normal_vbo);
+    glBufferData(GL_ARRAY_BUFFER, triangle_count * 3 * 3 * sizeof(GLfloat), normals, GL_STATIC_DRAW);
+    //glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, 0, 0);
+    //glEnableVertexAttribArray(2);
+}
 
 void Mesh::set_vertex(int index, float x, float y, float z){
 

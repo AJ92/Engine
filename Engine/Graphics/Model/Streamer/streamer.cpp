@@ -77,10 +77,14 @@ void Streamer::streamModelFromDiskFinished(Model * m, unsigned long long id){
     //now set the pointer right...
 
     Model * mdl = id_model_map[id];
-    mdl = m;
+    *mdl = *m;
+
 
     id_model_map.erase(id);
     ta->removeThread();
+
+    //we are now in mainthread and can load GL data
+    mdl->loadGLdata();
 
 }
 

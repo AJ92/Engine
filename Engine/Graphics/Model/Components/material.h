@@ -96,11 +96,6 @@ private:
     bool mtl_specular_loaded;
     bool mtl_bump_loaded;
 
-    GLuint * mtl_ambient_tex_data;
-    GLuint * mtl_diffuse_tex_data;
-    GLuint * mtl_specular_tex_data;
-    GLuint * mtl_bump_tex_data;
-
     QImage mtl_ambient_img;
     QImage mtl_diffuse_img;
     QImage mtl_specular_img;
@@ -125,9 +120,9 @@ private:
     //texture slots
     int tex_slots;
 
-    bool load_gl_map(int slot, QImage &image, GLuint *&tex_data);
+    bool load_gl_map(int slot, QImage &image);
 
-    bool load_map_rgba(QString path, QImage &image, GLuint *&tex_data);
+    bool load_map_rgba(QString path, QImage &image);
 
 
 

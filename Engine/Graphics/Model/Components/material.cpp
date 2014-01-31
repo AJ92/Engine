@@ -17,24 +17,26 @@ Material::~Material(){
     qDebug("Material DESTRUCTOR CALLED");
     glDeleteTextures(tex_slots,gl_mtls);
     //might need to delete those...
-    //delete [] mtl_xxxxxxxx_tex_data;
+
     qDebug("Material DESTRUCTOR FINISHED");
 }
 
 void Material::loadData(){
     //load data, GL not involved
-    if(load_map_rgba(mtl_ambient_map_path, mtl_ambient_img, mtl_ambient_tex_data)){
+
+    if(load_map_rgba(mtl_ambient_map_path, mtl_ambient_img)){
         mtl_ambient_loaded = true;
     }
-    if(load_map_rgba(mtl_diffuse_map_path, mtl_diffuse_img, mtl_diffuse_tex_data)){
+    if(load_map_rgba(mtl_diffuse_map_path, mtl_diffuse_img)){
         mtl_diffuse_loaded = true;
     }
-    if(load_map_rgba(mtl_specular_map_path, mtl_specular_img, mtl_specular_tex_data)){
+    if(load_map_rgba(mtl_specular_map_path, mtl_specular_img)){
         mtl_specular_loaded = true;
     }
-    if(load_map_rgba(mtl_bump_map_path, mtl_bump_img, mtl_bump_tex_data)){
+    if(load_map_rgba(mtl_bump_map_path, mtl_bump_img)){
         mtl_bump_loaded = true;
     }
+
 }
 
 void Material::loadGLdata(){
@@ -43,27 +45,40 @@ void Material::loadGLdata(){
     glGenTextures(tex_slots, gl_mtls);
 
     if(mtl_ambient_loaded){
-        load_gl_map(0, mtl_ambient_img, mtl_ambient_tex_data);
+        qDebug("\n"+mtl_ambient_map.toUtf8());
+        load_gl_map(0, mtl_ambient_img);
     }
     if(mtl_diffuse_loaded){
-        load_gl_map(1, mtl_diffuse_img, mtl_diffuse_tex_data);
+        qDebug("\n"+mtl_diffuse_map.toUtf8());
+        load_gl_map(1, mtl_diffuse_img);
     }
     if(mtl_specular_loaded){
-        load_gl_map(2, mtl_specular_img, mtl_specular_tex_data);
+        qDebug("\n"+mtl_specular_map.toUtf8());
+        load_gl_map(2, mtl_specular_img);
     }
     if(mtl_bump_loaded){
-        load_gl_map(3, mtl_bump_img, mtl_bump_tex_data);
+        qDebug("\n"+mtl_bump_map.toUtf8());
+        load_gl_map(3, mtl_bump_img);
     }
 }
 
-bool Material::load_gl_map(int slot, QImage &image, GLuint * &tex_data){
+bool Material::load_gl_map(int slot, QImage &image){
     glBindTexture(GL_TEXTURE_2D, gl_mtls[slot]);
+    /*
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, image.width(), image.height(), 0,
                  GL_RGBA, GL_UNSIGNED_BYTE, tex_data);
+    */
 
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, image.width(), image.height(), 0,
+                 GL_RGBA, GL_UNSIGNED_BYTE, (GLuint*)image.bits());
 
+    //glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    //glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+    glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+
+    //delete &image;
+    qDebug("loaded gl map");
     return true;
 }
 
@@ -221,7 +236,7 @@ void Material::set_bump_map_path(QString map_path){
 }
 
 
-bool Material::load_map_rgba(QString path, QImage &image, GLuint * &tex_data){
+bool Material::load_map_rgba(QString path, QImage &image){
     image = QImage(path);
 
     //If QImage failed loading the image...
@@ -230,19 +245,28 @@ bool Material::load_map_rgba(QString path, QImage &image, GLuint * &tex_data){
     }
 
 
-    GLuint* pData = new GLuint[image.width() * image.height()];
-    GLuint* sdata = (GLuint*)image.bits();
-    GLuint* tdata = pData;
 
-    for (int y = 0; y < image.height(); y++) {
-        for (int x = 0; x < image.width(); x++) {
-            *tdata = ((*sdata&255) << 16) | (((*sdata>>8)&255) << 8)
-                    | (((*sdata>>16)&255) << 0) | (((*sdata>>24)&255) << 24);
-            sdata++;
-            tdata++;
-        }
+    qDebug("loading data");
+
+    //setting the QImage bits by hand... ARGB to RGBA
+    GLuint count=0, max=(GLuint)(image.height()*image.width());
+    GLuint* p = (GLuint*)(image.bits());
+    GLuint n;
+    int size = 0;
+    while( count<max )
+    {
+        n = p[count];   //n = ARGB
+        p[count] =    ((n     &255) << 16)  |
+                     (((n>>8) &255) << 8 )  |
+                     (((n>>16)&255) << 0 )  |
+                     (((n>>24)&255) << 24);
+        // p[count] = RGBA
+        count++;
+        size++;
     }
-    tex_data = pData;
-    //delete [] pTexData;
+
+
+    qDebug("Texture size: %i byte", size);
+    qDebug("loaded data");
     return true;
 }

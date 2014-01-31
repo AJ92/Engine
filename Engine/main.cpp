@@ -16,7 +16,7 @@ int main(int argc, char *argv[])
     e.setWindowTitle("Engine v0.001a");
 
     Camera * cam = new Camera();
-    cam->translate(0.0f,0.0f,30.0f);
+    cam->translate(0.0f,0.0f,140.0f);
     e.setCamera(cam);
 
     Model * m = e.loadModel("C://Users//AJ//Desktop//Code//QTProjects//Engine//Engine//misc//models//kv3.obj");

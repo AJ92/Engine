@@ -209,6 +209,8 @@ bool Loader_obj::load_model_data(Model& mdl, QString path){
         mtl->set_specular_map_path(tex_path + mtl_specular_map[mtl_names.value(i)]);
         mtl->set_bump_map_path(tex_path + mtl_bump_map[mtl_names.value(i)]);
 
+        mtl->loadData();
+
         /*
         qDebug("        MTL ambient m:   " + mtl->get_ambient_map_name().toUtf8());
         qDebug("        MTL diffuse m:   " + mtl->get_diffuse_map_name().toUtf8());

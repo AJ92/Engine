@@ -75,7 +75,7 @@ GLuint Mesh::get_vertex_array_object(){
     return vertex_array_object;
 }
 
-void Mesh::load_data(){
+void Mesh::loadGLdata(){
     glGenVertexArrays(1, &vertex_array_object);
 
     glBindVertexArray(vertex_array_object);

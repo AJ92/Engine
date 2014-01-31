@@ -150,9 +150,6 @@ void Engine::initialize(int argc, char *argv[]){
 
 
     cam = new Camera();
-    cam->translate(0.0f,0.0f,30.0f);
-
-
 
     r->setCamera(cam);
     r->setWindow(window);
@@ -263,9 +260,18 @@ void Engine::keyboard(unsigned char key, int x, int y)
             this->transmit(e2);
         }
         break;
+    case '3':
+        r->setPolygonMode(Renderer::PolygonModeFill);
+        break;
+    case '4':
+        r->setPolygonMode(Renderer::PolygonModeLine);
+        break;
+    case '5':
+        r->setPolygonMode(Renderer::PolygonModePoint);
+        break;
     case 'l':
         {
-            Model * m2 = loadModel("C://Users//AJ//Desktop//Code//QTProjects//Engine//Engine//misc//models//box.obj");
+            Model * m2 = loadModel("C://Users//AJ//Desktop//Code//QTProjects//Engine//Engine//misc//models//kv3.obj");
             debugMessage(QString::number(m2->id()));
         }
     }
@@ -300,9 +306,6 @@ void Engine::render()
         r->render(m);
     }
 
-
-
-
     glutSwapBuffers();
     glutPostRedisplay();
 }
@@ -313,9 +316,9 @@ void Engine::eventLoop(){
     glutMainLoopEvent();
     setWindowTitle(QString::number(getFps()));
 
-    cam->rotate_global_pre_y(0.5f);
-    cam->rotate_global_pre_x(0.8f);
-    cam->rotate_global_pre_z(0.1f);
+    cam->rotate_global_post_y(0.5f);
+    cam->rotate_global_post_x(0.8f);
+    cam->rotate_global_post_z(0.1f);
 }
 
 
@@ -324,6 +327,7 @@ Model * Engine::loadModel(QString path){
     return model_library->loadModel(path);
 }
 
-void Engine::transferModelsToMainThread(){
-
+void Engine::setCamera(Camera * cam){
+    this->cam = cam;
+    r->setCamera(this->cam);
 }

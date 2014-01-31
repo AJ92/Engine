@@ -4,6 +4,10 @@ Material::Material(QString name,QString path) :
     Object(),
     mtl_name(name),
     mtl_path(path),
+    mtl_ambient_loaded(false),
+    mtl_diffuse_loaded(false),
+    mtl_specular_loaded(false),
+    mtl_bump_loaded(false),
     tex_slots(4)
 {
 
@@ -12,46 +16,55 @@ Material::Material(QString name,QString path) :
 Material::~Material(){
     qDebug("Material DESTRUCTOR CALLED");
     glDeleteTextures(tex_slots,gl_mtls);
+    //might need to delete those...
+    //delete [] mtl_xxxxxxxx_tex_data;
     qDebug("Material DESTRUCTOR FINISHED");
 }
 
+void Material::loadData(){
+    //load data, GL not involved
+    if(load_map_rgba(mtl_ambient_map_path, mtl_ambient_img, mtl_ambient_tex_data)){
+        mtl_ambient_loaded = true;
+    }
+    if(load_map_rgba(mtl_diffuse_map_path, mtl_diffuse_img, mtl_diffuse_tex_data)){
+        mtl_diffuse_loaded = true;
+    }
+    if(load_map_rgba(mtl_specular_map_path, mtl_specular_img, mtl_specular_tex_data)){
+        mtl_specular_loaded = true;
+    }
+    if(load_map_rgba(mtl_bump_map_path, mtl_bump_img, mtl_bump_tex_data)){
+        mtl_bump_loaded = true;
+    }
+}
 
 void Material::loadGLdata(){
     // always 4 generated textures are not sooo good...
     gl_mtls = new GLuint[tex_slots];
-
-    GLenum ErrorCheckValue = glGetError();
-    if (ErrorCheckValue != GL_NO_ERROR)
-    {
-        qDebug("ERROR before texture generate: " + QString((char*) gluErrorString(ErrorCheckValue)).toUtf8());
-    }
     glGenTextures(tex_slots, gl_mtls);
-    ErrorCheckValue = glGetError();
-    if (ErrorCheckValue != GL_NO_ERROR)
-    {
-        qDebug("ERROR after texture generate: " + QString((char*) gluErrorString(ErrorCheckValue)).toUtf8());
+
+    if(mtl_ambient_loaded){
+        load_gl_map(0, mtl_ambient_img, mtl_ambient_tex_data);
     }
-
-    load_ambient_map();
-    load_diffuse_map();
-    load_specular_map();
-    load_bump_map();
+    if(mtl_diffuse_loaded){
+        load_gl_map(1, mtl_diffuse_img, mtl_diffuse_tex_data);
+    }
+    if(mtl_specular_loaded){
+        load_gl_map(2, mtl_specular_img, mtl_specular_tex_data);
+    }
+    if(mtl_bump_loaded){
+        load_gl_map(3, mtl_bump_img, mtl_bump_tex_data);
+    }
 }
 
-bool Material::load_ambient_map(){
-    return load_map(mtl_ambient_map_path,0);
-}
+bool Material::load_gl_map(int slot, QImage &image, GLuint * &tex_data){
+    glBindTexture(GL_TEXTURE_2D, gl_mtls[slot]);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, image.width(), image.height(), 0,
+                 GL_RGBA, GL_UNSIGNED_BYTE, tex_data);
 
-bool Material::load_diffuse_map(){
-    return load_map(mtl_diffuse_map_path,1);
-}
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
-bool Material::load_specular_map(){
-    return load_map(mtl_specular_map_path,2);
-}
-
-bool Material::load_bump_map(){
-    return load_map(mtl_bump_map_path,3);
+    return true;
 }
 
 
@@ -121,7 +134,7 @@ QString Material::get_bump_map_name(){
 }
 
 GLuint Material::get_bump_map_texture(){
-    return gl_mtls[0];
+    return gl_mtls[3];
 }
 
 GLuint* Material::get_map_textures(){
@@ -208,44 +221,8 @@ void Material::set_bump_map_path(QString map_path){
 }
 
 
-//wrapper function for texture loading...
-bool Material::load_map(QString path, int slot){
-    if(slot < 0 || slot >= tex_slots){
-        qDebug("bool Material::load_map(QString path, int slot) slot %i is wrong...", slot);
-        return false;
-    }
-
-    GLenum ErrorCheckValue = glGetError();
-    if (ErrorCheckValue != GL_NO_ERROR)
-    {
-        qDebug("ERROR before texture loading: " + QString((char*) gluErrorString(ErrorCheckValue)).toUtf8());
-    }
-    glBindTexture(GL_TEXTURE_2D, gl_mtls[slot]);
-    ErrorCheckValue = glGetError();
-    if (ErrorCheckValue != GL_NO_ERROR)
-    {
-        qDebug("ERROR after texture loading: " + QString((char*) gluErrorString(ErrorCheckValue)).toUtf8());
-    }
-
-    if(path.endsWith(".png",Qt::CaseInsensitive)){
-        if(load_map_rgba(path)){
-            //qDebug("Texture map %i loaded from png file.", slot);
-            return true;
-        }
-        else{
-            qDebug("Texture map %i failed loaded from png file.", slot);
-            return false;
-        }
-    }
-
-    qDebug("Texture map %i loading failed...", slot);
-    return false;
-
-}
-
-
-bool Material::load_map_rgba(QString path){
-    QImage image = QImage(path);
+bool Material::load_map_rgba(QString path, QImage &image, GLuint * &tex_data){
+    image = QImage(path);
 
     //If QImage failed loading the image...
     if(image.isNull()){
@@ -253,9 +230,9 @@ bool Material::load_map_rgba(QString path){
     }
 
 
-    GLuint* pTexData = new GLuint[image.width() * image.height()];
+    GLuint* pData = new GLuint[image.width() * image.height()];
     GLuint* sdata = (GLuint*)image.bits();
-    GLuint* tdata = pTexData;
+    GLuint* tdata = pData;
 
     for (int y = 0; y < image.height(); y++) {
         for (int x = 0; x < image.width(); x++) {
@@ -265,13 +242,7 @@ bool Material::load_map_rgba(QString path){
             tdata++;
         }
     }
-
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, image.width(), image.height(), 0,
-                 GL_RGBA, GL_UNSIGNED_BYTE, pTexData);
-
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-
-    delete [] pTexData;
+    tex_data = pData;
+    //delete [] pTexData;
     return true;
 }

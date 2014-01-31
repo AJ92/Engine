@@ -5,12 +5,6 @@
 #include <QApplication>
 
 #include "engine.h"
-#include <qDebug>
-
-
-#include "Graphics/Model/Parser/loader.h"
-#include "Graphics/Model/modellibrary.h"
-
 
 int main(int argc, char *argv[])
 {
@@ -21,29 +15,11 @@ int main(int argc, char *argv[])
     e.initialize(argc, argv);
     e.setWindowTitle("Engine v0.001a");
 
-    qDebug("back to main.cpp");
-
+    Camera * cam = new Camera();
+    cam->translate(0.0f,0.0f,30.0f);
+    e.setCamera(cam);
 
     Model * m = e.loadModel("C://Users//AJ//Desktop//Code//QTProjects//Engine//Engine//misc//models//kv3.obj");
-    e.debugMessage(m->get_path());
-    e.debugMessage(QString::number(m->id()));
-
-
-    /*
-    Model * m2 = e.loadModel("C://Users//AJ//Desktop//Code//QTProjects//Engine//Engine//misc//models//kv3.obj");
-    e.debugMessage(m2->get_path());
-    e.debugMessage(QString::number(m2->id()));
-    */
-
-    /*
-    Model * mp = &m;
-
-    Model mn = *mp;
-
-    e.debugMessage(mn.get_path());
-    e.debugMessage(QString::number(mn.id()));
-
-    */
 
     return a.exec();
 }

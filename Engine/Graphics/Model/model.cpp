@@ -95,7 +95,7 @@ void Model::loadGLdata(){
         Mesh * mesh = meshs.at(i);
         Material * mtl = mesh->get_material();
         mtl->loadGLdata();
-        mesh->load_data();
+        mesh->loadGLdata();
     }
     isReady = true;
 }

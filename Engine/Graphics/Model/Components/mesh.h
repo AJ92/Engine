@@ -36,7 +36,7 @@ public:
 
     GLuint get_vertex_array_object();
 
-    void load_data();
+    void loadGLdata();
 
     void set_vertex(int index, float x, float y, float z);
     void set_vertex(int index, Vector3 vector);

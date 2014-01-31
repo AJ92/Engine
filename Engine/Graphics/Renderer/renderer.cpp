@@ -49,7 +49,7 @@ void Renderer::initialize(){
             "void main(void)"\
             "{"\
             "    texc = texcoord;"\
-            "    vec3 ldir = normalize(norm_matrix * vec4(0.0,0.0,1.0,0.0)).xyz;"\
+            "    vec3 ldir = normalize(norm_matrix * vec4(1.0,0.0,1.0,0.0)).xyz;"\
             "    dir = max(dot(normal.xyz,ldir),0.0);"\
             "    gl_Position =  mvp_matrix * vertex;"\
             "}";
@@ -62,7 +62,7 @@ void Renderer::initialize(){
             "void main(void)"\
             "{"\
             "    vec3 color = texture2D(sampler1, texc.st).rgb;"\
-            "    FragColor = vec4((color*0.1)+(color*dir*1.1),1.0);"\
+            "    FragColor = vec4((color*0.1)+(color*dir*1.5),1.0);"\
             "}";
 
 

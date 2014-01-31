@@ -77,6 +77,7 @@ public:
     //needs to be redirected and synced over threads...
 
     Model * loadModel(QString path);
+    void setCamera(Camera * cam);
 
 private:
 
@@ -117,8 +118,6 @@ private:
     ThreadAccountant * threadAccountant;
 
 
-    //thread stuff...
-    void transferModelsToMainThread();
 
 public slots:
     void eventLoop();

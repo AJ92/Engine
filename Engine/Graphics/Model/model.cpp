@@ -29,6 +29,17 @@ Model::Model() :
     isReady = false;
 }
 
+void Model::set_data(const Model &mdl){
+    this->pos = mdl.pos;
+    this->rot = mdl.rot;
+    this->scl = mdl.scl;
+    this->mat_pos = mdl.mat_pos;
+    this->mat_rot = mdl.mat_rot;
+    this->mat_scl = mdl.mat_scl;
+    this->mat_m = mdl.mat_m;
+    this->matrix_changed = mdl.matrix_changed;
+    this->isReady = mdl.isReady;
+}
 
 void Model::set_position(float x, float y, float z){
     pos[0] = x;
@@ -137,7 +148,7 @@ void Model::set_matrix_scl(){
 
 void Model::build_model_matrix(){
     if(matrix_changed){
-        mat_m = mat_scl * mat_pos * mat_rot;
+        mat_m =  mat_pos * mat_rot * mat_scl;
         matrix_changed = false;
     }
 }

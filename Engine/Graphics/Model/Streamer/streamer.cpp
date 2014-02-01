@@ -84,7 +84,10 @@ void Streamer::streamModelFromDiskFinished(Model * m, unsigned long long id){
 
     //now set the pointer right...
     Model * mdl = id_model_map[id];
+    //copy all the data back, matrix and so on...
+    m->set_data(*mdl);
     *mdl = *m;
+
 
     finished_model_queue.push(mdl);
 

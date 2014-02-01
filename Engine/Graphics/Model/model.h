@@ -19,6 +19,8 @@ public:
     //construct empty Model
     Model();
 
+    void set_data(const Model &mdl);
+
     void set_position(float x, float y, float z);
     void set_position(Vector3 position);
 

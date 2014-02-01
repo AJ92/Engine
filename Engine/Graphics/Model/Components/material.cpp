@@ -244,8 +244,6 @@ bool Material::load_map_rgba(QString path, QImage &image){
         return false;
     }
 
-
-
     qDebug("loading data");
 
     //setting the QImage bits by hand... ARGB to RGBA
@@ -264,7 +262,6 @@ bool Material::load_map_rgba(QString path, QImage &image){
         count++;
         size++;
     }
-
 
     qDebug("Texture size: %i byte", size);
     qDebug("loaded data");

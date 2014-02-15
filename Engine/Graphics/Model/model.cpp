@@ -41,7 +41,12 @@ void Model::set_data(const Model &mdl){
     this->isReady = mdl.isReady;
 }
 
-void Model::set_position(float x, float y, float z){
+void Model::instance_from(const Model &mdl){
+    this->meshs = mdl.meshs;
+    this->isReady = mdl.isReady;
+}
+
+void Model::set_position(double x, double y, double z){
     pos[0] = x;
     pos[1] = y;
     pos[2] = z;
@@ -54,7 +59,7 @@ void Model::set_position(Vector3 position){
 }
 
 
-void Model::set_rotation(float x, float y, float z){
+void Model::set_rotation(double x, double y, double z){
     rot[0] = x;
     rot[1] = y;
     rot[2] = z;
@@ -62,12 +67,12 @@ void Model::set_rotation(float x, float y, float z){
 }
 
 void Model::set_rotation(Vector3 rotation){
-    pos = rotation;
+    rot = rotation;
     set_matrix_rot();
 }
 
 
-void Model::set_scale(float x, float y, float z){
+void Model::set_scale(double x, double y, double z){
     scl[0] = x;
     scl[1] = y;
     scl[2] = z;
@@ -105,8 +110,13 @@ void Model::loadGLdata(){
     for(int i = 0; i < meshs.size(); i++){
         Mesh * mesh = meshs.at(i);
         Material * mtl = mesh->get_material();
-        mtl->loadGLdata();
-        mesh->loadGLdata();
+
+        if(!mtl->isLoaded()){
+            mtl->loadGLdata();
+        }
+        if(!mesh->isLoaded()){
+            mesh->loadGLdata();
+        }
     }
     isReady = true;
 }
@@ -115,6 +125,12 @@ bool Model::isReadyToRender(){
     return isReady;
 }
 
+bool Model::equalData(const Model &mdl) const{
+    if(this->path.compare(mdl.get_path())==0){
+        return true;
+    }
+    return false;
+}
 
 bool Model::equal(const Model &mdl) const{
     if(this->path.compare(mdl.get_path())==0 && this->id() == mdl.id()){
@@ -135,9 +151,13 @@ void Model::set_matrix_pos(){
 }
 
 void Model::set_matrix_rot(){
-    mat_rot.rotate_x(rot.x());
-    mat_rot.rotate_y(rot.y());
-    mat_rot.rotate_z(rot.z());
+    Matrix4x4 rot_x;
+    Matrix4x4 rot_y;
+    Matrix4x4 rot_z;
+    rot_x.rotate_x(rot[0]);
+    rot_y.rotate_y(rot[1]);
+    rot_z.rotate_z(rot[2]);
+    mat_rot = rot_x * rot_y * rot_z;
     matrix_changed = true;
 }
 

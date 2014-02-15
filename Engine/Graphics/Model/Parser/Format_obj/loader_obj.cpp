@@ -446,7 +446,7 @@ bool Loader_obj::load_model_data(Model& mdl, QString path){
         glEnableVertexAttribArray(2);
         */
 
-        //Create Mesh and add it to the Mesh-list and register those in the resman...
+        //Create Mesh and add it to the Mesh-list of the model.
         Mesh* mesh = new Mesh(mesh_names.value(i), triangle_count, vertices, texcoords, normals,
                               mtln_mtl.value(mesh_mtl.value(mesh_names.value(i))));
 

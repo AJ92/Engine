@@ -4,6 +4,7 @@ Streamer::Streamer(ThreadAccountant * ta, QObject *parent) :
     EventListener(),
     EventTransmitter(),
     QObject(parent),
+    models_per_thread(8),
     ta(ta)
 {
 
@@ -13,10 +14,11 @@ Streamer::Streamer(ThreadAccountant * ta, QObject *parent) :
 void Streamer::initialize(){
     debugMessage("streamer initializing...");
 
+
     t = new QTimer(this);
     QObject::connect(t,SIGNAL(timeout()),this,SLOT(assignModeltoThread()));
     //every 200 ms
-    t->setInterval(50);
+    t->setInterval(200);
     t->start();
 
     debugMessage("streamer initialized.");
@@ -28,30 +30,14 @@ void Streamer::streamModelToDisk(Model * m){
 }
 
 void Streamer::streamModelFromDisk(Model * m){
+    //put the model into the queue
+    model_list.append(m);
+    t->start();
+}
 
-    //if there is room far another thread create one!
-    if(ta->addThread()){
-        //store model pointer and id
-        id_model_map[m->id()] = m;
-
-
-        QThread* thread = new QThread();
-        StreamToDisk* worker = new StreamToDisk(m);
-        worker->moveToThread(thread);
-        connect(worker, SIGNAL(error(QString)), this, SLOT(debugMessage(QString)));
-        connect(thread, SIGNAL(started()), worker, SLOT(stream()));
-        connect(worker, SIGNAL(finished(Model*,unsigned long long)), thread, SLOT(quit()));
-
-        //here we need a slot for returning the model or so...
-        connect(worker, SIGNAL(finished(Model*, unsigned long long)), this, SLOT(streamModelFromDiskFinished(Model*, unsigned long long)));
-
-        connect(worker, SIGNAL(finished(Model*,unsigned long long)), worker, SLOT(deleteLater()));
-        connect(thread, SIGNAL(finished()), thread, SLOT(deleteLater()));
-        thread->start();
-    }
-    //ok there is none so queue the model :D
-    else{
-        model_queue.push(m);
+void Streamer::setModelsPerThread(int model_count){
+    if(model_count>0){
+        models_per_thread = model_count;
     }
 }
 
@@ -59,39 +45,92 @@ void Streamer::streamModelFromDisk(Model * m){
 //slots
 
 void Streamer::assignModeltoThread(){
-    //remove model from queue if there is any
+    //remove model from list if there is any
     //and try to assign it to a thread
     //if all threads are in use the model will go back into the list...
-    if(model_queue.size() > 0){
-        Model * m = model_queue.front();
-        model_queue.pop();
-        streamModelFromDisk(m);
+
+    //qDebug("model_list: %i     finished_model_list: %i", model_list.size(), finished_model_list.size());
+
+    bool keep_timer = false;
+
+    //process models that wait for loading (DISK IOs)
+    if(model_list.size() > 0){
+
+        //we have models in the list
+        //assign models_per_thread models per thread if possible
+        if(model_list.size() < models_per_thread){
+            models_per_thread = model_list.size();
+        }
+
+        if(ta->addThread()){
+            while(model_list.size() >= models_per_thread){
+                QList<Model*> model_list_for_thread;
+                for(int i = 0; i < models_per_thread; i++){
+                    Model *m = model_list.first();
+                    id_model_map[m->id()] = m; //map id and model
+                    model_list_for_thread.append(m);
+                    model_list.pop_front();
+                }
+                //list filled - start thread with queue
+                assignModelListToThread(model_list_for_thread);
+            }
+        }
+        keep_timer = true;
     }
 
-    if(finished_model_queue.size() > 0){
-        Model * m = finished_model_queue.front();
-        //we are now in mainthread and can load GL data
-        m->loadGLdata();
-        finished_model_queue.pop();
+
+
+    //process models that wait for gpu (GPU IOs)
+    if(finished_model_list.size() > 0){
+        for(int i = 0; i < finished_model_list.size(); i++){
+            Model * m = finished_model_list.front();
+
+            //we are now in mainthread and can load GL data
+            m->loadGLdata();
+            finished_model_list.pop_front();
+        }
+        keep_timer = true;
     }
+    if(!keep_timer){
+        //t->stop();
+    }
+
 }
 
-void Streamer::streamModelToDiskFinished(Model * m, unsigned long long id){
+void Streamer::assignModelListToThread(QList<Model *> model_list){
+    QThread* thread = new QThread();
+    StreamToDisk* worker = new StreamToDisk(model_list);
+    worker->moveToThread(thread);
+    QObject::connect(worker, SIGNAL(error(QString)), this, SLOT(debugMessage(QString)));
+    QObject::connect(thread, SIGNAL(started()), worker, SLOT(stream()));
+
+
+    //here we need a slot for returning the model or so...
+    QObject::connect(worker, SIGNAL(loaded(Model*, unsigned long long)),
+            this, SLOT(streamModelFromDiskFinished(Model*, unsigned long long)));
+
+    QObject::connect(worker, SIGNAL(finished()),this, SLOT(streamThreadFinished()));
+    QObject::connect(worker, SIGNAL(finished()),thread, SLOT(quit()));
+    QObject::connect(worker, SIGNAL(finished()),worker, SLOT(deleteLater()));
+    QObject::connect(thread, SIGNAL(finished()), thread, SLOT(deleteLater()));
+    thread->start();
+}
+
+
+void Streamer::streamModelToDiskFinished(Model* m, unsigned long long id){
     //now set the pointer right...
 }
 
-void Streamer::streamModelFromDiskFinished(Model * m, unsigned long long id){
+void Streamer::streamModelFromDiskFinished(Model* m, unsigned long long id){
 
-    //now set the pointer right...
-    Model * mdl = id_model_map[id];
-    //copy all the data back, matrix and so on...
-    m->set_data(*mdl);
-    *mdl = *m;
+    Model * stored_m = id_model_map[id];
+    m->set_data(*stored_m);
+    *stored_m = *m;
 
+    finished_model_list.push_back(stored_m);
+}
 
-    finished_model_queue.push(mdl);
-
-    id_model_map.erase(id);
+void Streamer::streamThreadFinished(){
     ta->removeThread();
 }
 

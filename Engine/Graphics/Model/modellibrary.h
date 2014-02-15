@@ -22,17 +22,20 @@ public:
 
     // should be unsigned long long or so
     int modelCount();
+    void setModelsPerThread(int model_count);
 
 
 private:
     ThreadAccountant * ta;
     Streamer * streamer;
     std::list<Model*> model_list;
+    std::list<Model*> unique_model_list; //unique by data!!!
 
     void debugMessage(QString message);
 
     void addModel(Model * mdl);
-    bool containsModel(Model * mdl) const;
+    Model * containsModelData(Model * mdl);
+    Model * containsModel(Model * mdl);
     bool removeModel(Model * mdl);
 };
 

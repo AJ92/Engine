@@ -49,7 +49,7 @@ void Renderer::initialize(){
             "void main(void)"\
             "{"\
             "    texc = texcoord;"\
-            "    vec3 ldir = normalize(norm_matrix * vec4(1.0,0.0,1.0,0.0)).xyz;"\
+            "    vec3 ldir = normalize(norm_matrix * vec4(0.0,0.0,1.0,0.0)).xyz;"\
             "    dir = max(dot(normal.xyz,ldir),0.0);"\
             "    gl_Position =  mvp_matrix * vertex;"\
             "}";

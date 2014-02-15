@@ -1,10 +1,15 @@
 #include "streamToDisk.h"
 
-StreamToDisk::StreamToDisk(Model * mdl, QObject * parent) :
+StreamToDisk::StreamToDisk(QList<Model *> model_list_for_thread, QObject * parent) :
     QObject(parent)
 {
-   m = new Model(*mdl);
-   mdl_id = mdl->id();
+    //copy models into thread...
+    QList<Model*>::iterator i;
+    for (i = model_list_for_thread.begin(); i != model_list_for_thread.end(); ++i){
+        Model *m = *i;
+        model_list.append(new Model(*m));
+        model_id_list.append(m->id());
+    }
 }
 
 StreamToDisk::~StreamToDisk(){
@@ -14,13 +19,21 @@ StreamToDisk::~StreamToDisk(){
 
 //SLOTS
 void StreamToDisk::stream(){
-    m = model_loader.import_model(m->get_path());
-    emit finished(m, mdl_id);
+    for (int i = 0; i < model_list.size(); ++i){
+        Model * m = model_list.at(i);
+        m = model_loader.import_model(m->get_path());
+        emit loaded(m,model_id_list.at(i));
+    }
+    emit finished();
 }
 
 
 //SIGNALS
-void finished(Model * m, unsigned long long id){
+void loaded(Model* m, unsigned long long id){
+
+}
+
+void finished(){
 
 }
 

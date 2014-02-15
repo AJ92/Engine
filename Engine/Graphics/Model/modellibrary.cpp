@@ -27,14 +27,29 @@ std::list<Model *> ModelLibrary::getModels() const{
 Model* ModelLibrary::loadModel(QString path){
     Model * m = new Model();
     m->set_path(path);
-    streamer->streamModelFromDisk(m);
+
+    //compair the paths (has this the same model data? instance it!)
+    Model * instance_from = containsModelData(m);
+    if(instance_from != 0){
+        //we found one, instance it!
+        debugMessage("instancing...");
+        m->instance_from(*instance_from);
+    }
+    else{
+        //load the data, the model isn't in the library
+        streamer->streamModelFromDisk(m);
+        unique_model_list.push_back(m);
+    }
     addModel(m);
-    debugMessage("ModelLibrary: count " + QString::number(modelCount()));
     return m;
 }
 
 int ModelLibrary::modelCount(){
     return model_list.size();
+}
+
+void ModelLibrary::setModelsPerThread(int model_count){
+    streamer->setModelsPerThread(model_count);
 }
 
 
@@ -47,40 +62,31 @@ void ModelLibrary::addModel(Model * mdl){
     }
 }
 
-bool ModelLibrary::containsModel(Model * mdl) const{
-    /*
-    unsigned int i;
-    for(i=0; i< model_list.size(); i++){
-        if(mdl->equal(*model_list[i])){
-            return true;
+Model * ModelLibrary::containsModelData(Model * mdl){
+    for (std::list<Model *>::const_iterator iterator = unique_model_list.begin(), end = unique_model_list.end(); iterator != end; ++iterator) {
+        //std::cout << *iterator;
+
+        Model * m = *iterator;
+        if((*m).equalData(*mdl)){
+            return m;
         }
     }
-    */
+    return 0;
+}
+
+Model * ModelLibrary::containsModel(Model * mdl){
     for (std::list<Model *>::const_iterator iterator = model_list.begin(), end = model_list.end(); iterator != end; ++iterator) {
         //std::cout << *iterator;
 
         Model * m = *iterator;
         if(*m == *mdl){
-            return true;
+            return m;
         }
     }
-
-
-    return false;
+    return 0;
 }
 
 bool ModelLibrary::removeModel(Model * mdl){
-    /*
-    unsigned int i;
-    for(i=0; i< model_list.size(); i++){
-        if(*model_list[i] == *mdl){
-            std::vector<Model *>::iterator it = model_list.begin() + i;
-            model_list.erase(it);
-            break;
-        }
-    }
-    */
-
     for (std::list<Model *>::iterator iterator = model_list.begin(), end = model_list.end(); iterator != end; ++iterator) {
         //std::cout << *iterator;
 

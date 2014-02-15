@@ -75,6 +75,8 @@ public:
 
     void        set_illumination(int value);
 
+    bool isLoaded();
+
 private:
 
     QString mtl_name;
@@ -124,7 +126,7 @@ private:
 
     bool load_map_rgba(QString path, QImage &image);
 
-
+    bool loaded;
 
     int flagBits;
 

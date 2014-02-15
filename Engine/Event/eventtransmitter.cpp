@@ -60,3 +60,11 @@ void EventTransmitter::transmit(Event e){
         listeners[i]->eventRecieved(e);
     }
 }
+
+//EVENT TRANSMITTER
+void EventTransmitter::debugMessage(QString message){
+    Event e;
+    e.type = Event::EventDebuggerMessage;
+    e.debugger = new EventDebugger(message);
+    this->transmit(e);
+}

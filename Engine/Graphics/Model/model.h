@@ -20,14 +20,15 @@ public:
     Model();
 
     void set_data(const Model &mdl);
+    void instance_from(const Model &mdl);
 
-    void set_position(float x, float y, float z);
+    void set_position(double x, double y, double z);
     void set_position(Vector3 position);
 
-    void set_rotation(float x, float y, float z);
+    void set_rotation(double x, double y, double z);
     void set_rotation(Vector3 rotation);
 
-    void set_scale(float x, float y, float z);
+    void set_scale(double x, double y, double z);
     void set_scale(Vector3 scale);
 
     Matrix4x4 get_model_matrix();
@@ -41,6 +42,8 @@ public:
 
     void loadGLdata();
     bool isReadyToRender();
+
+    bool equalData(const Model &mdl) const;
 
     //override + overload bam
     bool equal(const Model &mdl) const;

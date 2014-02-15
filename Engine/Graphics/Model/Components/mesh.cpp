@@ -1,6 +1,7 @@
 #include "mesh.h"
 
-Mesh::Mesh(QString name, int triangle_count, GLfloat vertices[], GLfloat texcoords[], GLfloat normals[], Material *material)
+Mesh::Mesh(QString name, int triangle_count, GLfloat vertices[], GLfloat texcoords[], GLfloat normals[], Material *material) :
+    loaded(false)
 {
     mesh_name = name;
 
@@ -99,6 +100,12 @@ void Mesh::loadGLdata(){
     glBufferData(GL_ARRAY_BUFFER, triangle_count * 3 * 3 * sizeof(GLfloat), normals, GL_STATIC_DRAW);
     //glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, 0, 0);
     //glEnableVertexAttribArray(2);
+
+    loaded = true;
+}
+
+bool Mesh::isLoaded(){
+    return loaded;
 }
 
 void Mesh::set_vertex(int index, float x, float y, float z){

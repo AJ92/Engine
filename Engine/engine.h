@@ -10,10 +10,6 @@
 #include "Debug/Ui/debugwindow.h"
 #include "Debug/debugger.h"
 
-// OpenGL.h
-// #include "Graphics/glew/include/GL/glew.h"
-// #include "Graphics/freeglut/include/GL/freeglut.h"
-
 #include "Graphics/OpenGL/OpenGL.h"
 #include "Graphics/Renderer/renderer.h"
 #include "Graphics/Window/window.h"
@@ -23,6 +19,7 @@
 #include "Graphics/Model/modellibrary.h"
 #include "Graphics/Model/model.h"
 
+#include <QElapsedTimer>
 #include <QTimer>
 #include <QThread>
 
@@ -52,7 +49,7 @@ public:
     void showDebugWindow();
     void hideDebugWindow();
 
-    void debugMessage(QString message);
+    //void debugMessage(QString message);
 
 
 
@@ -98,6 +95,15 @@ private:
     //FPS settings
     int frame_count;
     int fps;
+
+    //timesteps
+    double timestep;
+    qint64 frameTime;
+    qint64 time;
+    qint64 deltaTime;
+    qint64 accumulator;
+
+    QElapsedTimer elapseTimer;
 
 
     //Timer for glut event loop

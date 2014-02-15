@@ -17,24 +17,19 @@ int main(int argc, char *argv[])
     e.setWindowSize(600,400);
 
     Camera * cam = new Camera();
-    cam->translate(0.0f,0.0f,100.0f);
+    cam->Z_FAR = 20000.0;
+    cam->translate(0.0,50.0,0.0);
+    cam->rotate_global_post_x(15.0);
     e.setCamera(cam);
 
-    Model * m = e.loadModel("C://Users//AJ//Desktop//Code//QTProjects//Engine//Engine//misc//models//kv3.obj");
-    m->set_scale(2.0f,2.0f,2.0f);
+    Model *m = e.loadModel("C://Users//AJ//Desktop//Code//QTProjects//Engine//Engine//misc//models//space_box.obj");
+    m->set_scale(1100.0,1100.0,1100.0);
+    m->set_rotation(105.0,0.0,0.0);
 
-    Model * m2 = e.loadModel("C://Users//AJ//Desktop//Code//QTProjects//Engine//Engine//misc//models//box.obj");
-    m2->set_position(30.0f,0.0f,0.0f);
-    m2->set_scale(0.09f,0.09f,0.09f);
 
-    Model * m3 = e.loadModel("C://Users//AJ//Desktop//Code//QTProjects//Engine//Engine//misc//models//box.obj");
-    m3->set_position(-30.0f,0.0f,0.0f);
-    m3->set_scale(0.09f,0.09f,0.09f);
-
-    Model * m4 = e.loadModel("C://Users//AJ//Desktop//Code//QTProjects//Engine//Engine//misc//models//kv3.obj");
-    m4->set_scale(2.0f,2.0f,2.0f);
-    m4->set_position(0.0f,0.0f,-50.0f);
-
+    Model *m2 = e.loadModel("C://Users//AJ//Desktop//Code//QTProjects//Engine//Engine//misc//models//betty.obj");
+    m2->set_scale(0.05,0.05,0.05);
+    m2->set_position(200.0,0.0,0.0);
 
     return a.exec();
 }

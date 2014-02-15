@@ -26,6 +26,7 @@ public:
     virtual void removeListener(EventListener * el);
 
     virtual void transmit(Event e);
+    virtual void debugMessage(QString message);
 
 private:
 

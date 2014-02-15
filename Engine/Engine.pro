@@ -38,7 +38,11 @@ SOURCES += main.cpp\
     Event/Events/eventdebugger.cpp \
     Graphics/Model/Streamer/streamToDisk.cpp \
     Graphics/Model/Streamer/streamer.cpp \
-    Threading/threadaccountant.cpp
+    Threading/threadaccountant.cpp \
+    Graphics/Procedural/planet.cpp \
+    Graphics/Procedural/planetlod.cpp \
+    Graphics/Procedural/planetgenerator.cpp \
+    Graphics/Model/materiallibrary.cpp
 
 HEADERS  += \
     Object/object.h \
@@ -67,7 +71,11 @@ HEADERS  += \
     Event/Events/eventdebugger.h \
     Graphics/Model/Streamer/streamToDisk.h \
     Graphics/Model/Streamer/streamer.h \
-    Threading/threadaccountant.h
+    Threading/threadaccountant.h \
+    Graphics/Procedural/planet.h \
+    Graphics/Procedural/planetlod.h \
+    Graphics/Procedural/planetgenerator.h \
+    Graphics/Model/materiallibrary.h
 
 FORMS    += \
     Debug/Ui/debugwindow.ui

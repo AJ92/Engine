@@ -9,34 +9,34 @@ class Camera : public Object
 public:
     Camera();
     ~Camera();
-    float x;
-    float y;
-    float z;
-    float Z_FAR;
-    float Z_NEAR;
-    float FOV;
+    double x;
+    double y;
+    double z;
+    double Z_FAR;
+    double Z_NEAR;
+    double FOV;
 
     // local - cam rotates
-    void rotate_local_post_x(float angle);    // no gimbal lock
-    void rotate_local_post_y(float angle);
-    void rotate_local_post_z(float angle);
+    void rotate_local_post_x(double angle);    // no gimbal lock
+    void rotate_local_post_y(double angle);
+    void rotate_local_post_z(double angle);
 
-    void rotate_local_pre_x(float angle);     // along axis
-    void rotate_local_pre_y(float angle);
-    void rotate_local_pre_z(float angle);
+    void rotate_local_pre_x(double angle);     // along axis
+    void rotate_local_pre_y(double angle);
+    void rotate_local_pre_z(double angle);
 
     // global - world rotates
-    void rotate_global_post_x(float angle);    // no gimbal lock
-    void rotate_global_post_y(float angle);
-    void rotate_global_post_z(float angle);
+    void rotate_global_post_x(double angle);    // no gimbal lock
+    void rotate_global_post_y(double angle);
+    void rotate_global_post_z(double angle);
 
-    void rotate_global_pre_x(float angle);     // along axis
-    void rotate_global_pre_y(float angle);
-    void rotate_global_pre_z(float angle);
+    void rotate_global_pre_x(double angle);     // along axis
+    void rotate_global_pre_y(double angle);
+    void rotate_global_pre_z(double angle);
 
 
-    void move(float x_dir, float y_dir, float z_dir);
-    void translate(float x_dir, float y_dir, float z_dir);
+    void move(double x_dir, double y_dir, double z_dir);
+    void translate(double x_dir, double y_dir, double z_dir);
 
 
 

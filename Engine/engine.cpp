@@ -1,6 +1,7 @@
 #include "engine.h"
 
-
+//test windoof
+//#include <windows.h>
 
 
 
@@ -87,6 +88,21 @@ Engine::~Engine(){
 void Engine::initialize(int argc, char *argv[]){
     debugMessage("engine initializing...");
 
+    //windoof
+    /*
+    double PCfreq = 0.0;
+    LARGE_INTEGER li;
+    if(!QueryPerformanceFrequency(&li)){
+        debugMessage("QueryPerformanceFrequency failed!");
+    }
+    PCfreq = double(li.QuadPart)/1000.0;
+
+    debugMessage(QString::number(PCfreq));
+    */
+
+    if(QElapsedTimer::clockType() == QElapsedTimer::PerformanceCounter){
+        debugMessage("PerformanceTimer in use");
+    }
 
     //GLEW
     GLenum GlewInitResult;
@@ -132,6 +148,7 @@ void Engine::initialize(int argc, char *argv[]){
     debugMessage("Ideal thread number: " + QString::number(QThread::idealThreadCount()));
     idealThreadCount = QThread::idealThreadCount();
 
+    //-1 == keep mainthread free
     threadAccountant = new ThreadAccountant(idealThreadCount);
 
 
@@ -170,10 +187,23 @@ void Engine::initialize(int argc, char *argv[]){
     t = new QTimer(this);
     QObject::connect(t,SIGNAL(timeout()),this,SLOT(eventLoop()));
 
+    frameTime = 0;
+    time = 0;
+    //deltatime in ns (16 ms)
+    deltaTime = 1000000000/60;
+    accumulator = 0;
+    timestep = 1.0f;
+
+    elapseTimer.start();
+
 
     //1000 ms / 60 fps = 16.6 ms/second
+    //16 makes some high cpu usage
+    //17 is just fina actually but only 59 fps
     t->setInterval(16);
     t->start();
+
+
 }
 
 void Engine::setWindowTitle(QString title){
@@ -228,13 +258,14 @@ int Engine::getFps(){
     return fps;
 }
 
+/*
 void Engine::debugMessage(QString message){
     Event e;
     e.type = Event::EventDebuggerMessage;
     e.debugger = new EventDebugger(message);
     this->transmit(e);
 }
-
+*/
 
 
 //CALLBACKS
@@ -271,8 +302,21 @@ void Engine::keyboard(unsigned char key, int x, int y)
         break;
     case 'l':
         {
-            Model * m2 = loadModel("C://Users//AJ//Desktop//Code//QTProjects//Engine//Engine//misc//models//kv3.obj");
-            debugMessage(QString::number(m2->id()));
+            model_library->setModelsPerThread(20);
+            int count = 500;
+            for(int i = 0; i < count; i++){
+                Model * m = loadModel("C://Users//AJ//Desktop//Code//QTProjects//Engine//Engine//misc//models//betty.obj");
+                m->set_scale(0.12f,0.12f,0.12f);
+                m->set_position((double)((rand() & 2000)-1000) + (double)((rand() & 1000)-500) * 0.05,
+                                (double)((rand() & 20)-10) + (double)((rand() & 100)-50) * 0.05,
+                                (double)((rand() & 2000)-1000) + (double)((rand() & 1000)-500) * 0.05);
+                m->set_rotation(rand() & 361,rand() & 361,rand() & 361);
+            }
+            break;
+        }
+    case '0':
+        {
+            glutFullScreenToggle();
         }
     }
 }
@@ -281,29 +325,59 @@ void Engine::idle(){
     glutPostRedisplay();
 }
 
+//simple fps rec
 void Engine::timer(int value){
     if (0 != value) {
-        fps = frame_count * 4;
+        fps = frame_count;
     }
+
+    setWindowTitle("fps: " + QString::number(fps) +
+                   "   @ " + QString::number(frameTime) + "ns/frame    timestep: " +
+                   QString::number(timestep) + "   models: " +
+                   QString::number(model_library->modelCount()));
+
     frame_count = 0;
-    glutTimerFunc(250, &timer_callback, 1);
+    glutTimerFunc(1000, &timer_callback, 1);
 }
 
 
 void Engine::render()
 {
+
     frame_count++;
 
     glClearColor(0.5f,0.5f,0.5f,1.0f);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-    std::list<Model *> model_list = model_library->getModels();
-    for (std::list<Model *>::const_iterator iterator = model_list.begin(), end = model_list.end(); iterator != end; ++iterator) {
-        //std::cout << *iterator;
+    //timer timestep and so on...
+    frameTime = elapseTimer.nsecsElapsed();
+    elapseTimer.restart();
+    //max frame time to avoid spiral of death
+    //all values in nanosecs (1 ms = 1 000 000 ns)
+    if(frameTime > 450000000){
+        frameTime = 450000000;
+    }
+    if(frameTime < 10000000){
+        frameTime = 10000000;
+    }
+    /*
+    accumulator += frameTime;
+    time = 0;
+    while (accumulator >= deltaTime){
+        time += deltaTime;
+        accumulator -= deltaTime;
+        //simulation here...
+    }
+    */
+    timestep = (double)frameTime/(double)deltaTime;
+    cam->rotate_global_pre_y(0.08*timestep);
 
-        Model * m = *iterator;
-
-        r->render(m);
+    if(model_library->modelCount() > 0){
+        std::list<Model *> model_list = model_library->getModels();
+        for (std::list<Model *>::const_iterator iterator = model_list.begin(), end = model_list.end(); iterator != end; ++iterator) {
+            Model * m = *iterator;
+            r->render(m);
+        }
     }
 
     glutSwapBuffers();
@@ -314,11 +388,9 @@ void Engine::render()
 //SLOTS
 void Engine::eventLoop(){
     glutMainLoopEvent();
-    setWindowTitle(QString::number(getFps()));
 
-    cam->rotate_global_post_y(0.5f);
-    cam->rotate_global_post_x(0.8f);
-    cam->rotate_global_post_z(0.1f);
+    //setWindowTitle(QString::number(fps));
+
 }
 
 

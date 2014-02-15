@@ -8,7 +8,8 @@ Material::Material(QString name,QString path) :
     mtl_diffuse_loaded(false),
     mtl_specular_loaded(false),
     mtl_bump_loaded(false),
-    tex_slots(4)
+    tex_slots(4),
+    loaded(false)
 {
 
 }
@@ -45,21 +46,22 @@ void Material::loadGLdata(){
     glGenTextures(tex_slots, gl_mtls);
 
     if(mtl_ambient_loaded){
-        qDebug("\n"+mtl_ambient_map.toUtf8());
         load_gl_map(0, mtl_ambient_img);
     }
     if(mtl_diffuse_loaded){
-        qDebug("\n"+mtl_diffuse_map.toUtf8());
         load_gl_map(1, mtl_diffuse_img);
     }
     if(mtl_specular_loaded){
-        qDebug("\n"+mtl_specular_map.toUtf8());
         load_gl_map(2, mtl_specular_img);
     }
     if(mtl_bump_loaded){
-        qDebug("\n"+mtl_bump_map.toUtf8());
         load_gl_map(3, mtl_bump_img);
     }
+    loaded = true;
+}
+
+bool Material::isLoaded(){
+    return loaded;
 }
 
 bool Material::load_gl_map(int slot, QImage &image){
@@ -72,13 +74,15 @@ bool Material::load_gl_map(int slot, QImage &image){
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, image.width(), image.height(), 0,
                  GL_RGBA, GL_UNSIGNED_BYTE, (GLuint*)image.bits());
 
-    //glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-    //glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-    glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-    glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+    //smooth
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
-    //delete &image;
-    qDebug("loaded gl map");
+    //pixelated
+    //glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+    //glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+
+    image.~QImage();
     return true;
 }
 
@@ -243,14 +247,10 @@ bool Material::load_map_rgba(QString path, QImage &image){
     if(image.isNull()){
         return false;
     }
-
-    qDebug("loading data");
-
     //setting the QImage bits by hand... ARGB to RGBA
     GLuint count=0, max=(GLuint)(image.height()*image.width());
     GLuint* p = (GLuint*)(image.bits());
     GLuint n;
-    int size = 0;
     while( count<max )
     {
         n = p[count];   //n = ARGB
@@ -258,12 +258,7 @@ bool Material::load_map_rgba(QString path, QImage &image){
                      (((n>>8) &255) << 8 )  |
                      (((n>>16)&255) << 0 )  |
                      (((n>>24)&255) << 24);
-        // p[count] = RGBA
         count++;
-        size++;
     }
-
-    qDebug("Texture size: %i byte", size);
-    qDebug("loaded data");
     return true;
 }

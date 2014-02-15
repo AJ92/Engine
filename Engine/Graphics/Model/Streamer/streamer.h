@@ -8,7 +8,7 @@
 #include "Graphics/Model/Streamer/streamToDisk.h"
 #include "Graphics/Model/model.h"
 
-#include <list>
+#include <QList>
 #include <map>
 
 #include <QTimer>
@@ -25,18 +25,25 @@ public:
 
     void streamModelToDisk(Model * m);
     void streamModelFromDisk(Model * m);
+
+    void setModelsPerThread(int model_count);
+
     
 private:
+    int models_per_thread;
+
+    void assignModelListToThread(QList<Model *> model_list);
+
     ThreadAccountant * ta;
 
     //Timer to check for waiting model loads...
     QTimer * t;
 
     //model queue for models that wait for a thread
-    std::queue<Model*> model_queue;
+    QList<Model*> model_list;
 
     //model queue for models that are done and need to load GL DATA
-    std::queue<Model*> finished_model_queue;
+    QList<Model*> finished_model_list;
 
     //store the model ID  and  the Model pointer
     std::map<unsigned long long, Model*> id_model_map;
@@ -47,10 +54,10 @@ public slots:
     //called by timer to assign model to a thread
     void assignModeltoThread();
 
-    void streamModelToDiskFinished(Model * m, unsigned long long id);
-    void streamModelFromDiskFinished(Model * m, unsigned long long id);
+    void streamModelToDiskFinished(Model* m, unsigned long long id);
+    void streamModelFromDiskFinished(Model* m, unsigned long long id);
 
-
+    void streamThreadFinished();
     
 
     

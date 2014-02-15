@@ -8,18 +8,18 @@ Camera::Camera() :
     M_camera_rotation_global.set_to_identity();
     M_camera_rotation.set_to_identity();
     M_camera_translation.set_to_identity();
-    Z_FAR = 1000.0f;
+    Z_FAR = 1000.0;
     Z_NEAR = 1.0;
-    FOV = 45.0f;
-    x = 0.0f;
-    y = 0.0f;
-    z = 0.0f;
+    FOV = 45.0;
+    x = 0.0;
+    y = 0.0;
+    z = 0.0;
     M_camera_view = M_camera_translation * M_camera_rotation;
 }
 
 
 //LOCAL
-void Camera::rotate_local_post_x(float angle)
+void Camera::rotate_local_post_x(double angle)
 {
     Matrix4x4 camerarotation;
     camerarotation.rotate_x(angle);
@@ -27,7 +27,7 @@ void Camera::rotate_local_post_x(float angle)
     M_camera_view = M_camera_rotation_global * M_camera_translation * M_camera_rotation_local;
 }
 
-void Camera::rotate_local_post_y(float angle)
+void Camera::rotate_local_post_y(double angle)
 {
     Matrix4x4 camerarotation;
     camerarotation.rotate_y(angle);
@@ -35,7 +35,7 @@ void Camera::rotate_local_post_y(float angle)
     M_camera_view = M_camera_rotation_global * M_camera_translation * M_camera_rotation_local;
 }
 
-void Camera::rotate_local_post_z(float angle)
+void Camera::rotate_local_post_z(double angle)
 {
     Matrix4x4 camerarotation;
     camerarotation.rotate_z(angle);
@@ -47,7 +47,7 @@ void Camera::rotate_local_post_z(float angle)
 
 
 
-void Camera::rotate_local_pre_x(float angle)
+void Camera::rotate_local_pre_x(double angle)
 {
     Matrix4x4 camerarotation;
     camerarotation.rotate_x(angle);
@@ -56,7 +56,7 @@ void Camera::rotate_local_pre_x(float angle)
     M_camera_view = M_camera_rotation_global * M_camera_translation * M_camera_rotation_local;
 }
 
-void Camera::rotate_local_pre_y(float angle)
+void Camera::rotate_local_pre_y(double angle)
 {
     Matrix4x4 camerarotation;
     camerarotation.rotate_y(angle);
@@ -65,7 +65,7 @@ void Camera::rotate_local_pre_y(float angle)
     M_camera_view = M_camera_rotation_global * M_camera_translation * M_camera_rotation_local;
 }
 
-void Camera::rotate_local_pre_z(float angle)
+void Camera::rotate_local_pre_z(double angle)
 {
     Matrix4x4 camerarotation;
     camerarotation.rotate_z(angle);
@@ -81,7 +81,7 @@ void Camera::rotate_local_pre_z(float angle)
 
 
 //GLOBAL
-void Camera::rotate_global_post_x(float angle)
+void Camera::rotate_global_post_x(double angle)
 {
     Matrix4x4 camerarotation;
     camerarotation.rotate_x(angle);
@@ -90,7 +90,7 @@ void Camera::rotate_global_post_x(float angle)
     M_camera_view = M_camera_rotation_global * M_camera_translation * M_camera_rotation_local;
 }
 
-void Camera::rotate_global_post_y(float angle)
+void Camera::rotate_global_post_y(double angle)
 {
     Matrix4x4 camerarotation;
     camerarotation.rotate_y(angle);
@@ -99,7 +99,7 @@ void Camera::rotate_global_post_y(float angle)
     M_camera_view = M_camera_rotation_global * M_camera_translation * M_camera_rotation_local;
 }
 
-void Camera::rotate_global_post_z(float angle)
+void Camera::rotate_global_post_z(double angle)
 {
     Matrix4x4 camerarotation;
     camerarotation.rotate_z(angle);
@@ -114,7 +114,7 @@ void Camera::rotate_global_post_z(float angle)
 
 
 
-void Camera::rotate_global_pre_x(float angle)
+void Camera::rotate_global_pre_x(double angle)
 {
     Matrix4x4 camerarotation;
     camerarotation.rotate_x(angle);
@@ -123,7 +123,7 @@ void Camera::rotate_global_pre_x(float angle)
     M_camera_view = M_camera_rotation_global * M_camera_translation * M_camera_rotation_local;
 }
 
-void Camera::rotate_global_pre_y(float angle)
+void Camera::rotate_global_pre_y(double angle)
 {
     Matrix4x4 camerarotation;
     camerarotation.rotate_y(angle);
@@ -132,7 +132,7 @@ void Camera::rotate_global_pre_y(float angle)
     M_camera_view = M_camera_rotation_global * M_camera_translation * M_camera_rotation_local;
 }
 
-void Camera::rotate_global_pre_z(float angle)
+void Camera::rotate_global_pre_z(double angle)
 {
     Matrix4x4 camerarotation;
     camerarotation.rotate_z(angle);
@@ -146,7 +146,7 @@ void Camera::rotate_global_pre_z(float angle)
 
 
 
-void Camera::move(float x_dir, float y_dir, float z_dir)
+void Camera::move(double x_dir, double y_dir, double z_dir)
 {
     /*
                 right     up    forward
@@ -176,7 +176,7 @@ void Camera::move(float x_dir, float y_dir, float z_dir)
 
 }
 
-void Camera::translate(float x_dir, float y_dir, float z_dir)
+void Camera::translate(double x_dir, double y_dir, double z_dir)
 {
 
     M_camera_translation.set_to_identity();

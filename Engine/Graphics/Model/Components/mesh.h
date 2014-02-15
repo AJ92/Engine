@@ -38,6 +38,8 @@ public:
 
     void loadGLdata();
 
+    bool isLoaded();
+
     void set_vertex(int index, float x, float y, float z);
     void set_vertex(int index, Vector3 vector);
 
@@ -61,6 +63,8 @@ private:
     GLuint normal_vbo;
 
     GLuint vertex_array_object;
+
+    bool loaded;
 };
 
 #endif // MESH_H

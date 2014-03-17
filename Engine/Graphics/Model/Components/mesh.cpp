@@ -21,9 +21,9 @@ Mesh::~Mesh(){
     glDeleteBuffers(1,&vertex_vbo);
     glDeleteBuffers(1,&texcoord_vbo);
     glDeleteBuffers(1,&normal_vbo);
-    vertex_vbo = NULL;
-    texcoord_vbo = NULL;
-    normal_vbo = NULL;
+    vertex_vbo = 0;
+    texcoord_vbo = 0;
+    normal_vbo = 0;
     delete [] vertices;
     delete [] texcoords;
     delete [] normals;

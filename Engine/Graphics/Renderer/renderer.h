@@ -10,6 +10,7 @@
 #include "Graphics/Model/model.h"
 #include "Graphics/Camera/camera.h"
 #include "Graphics/Window/window.h"
+#include "Graphics/Model/modellibrary.h"
 
 class Renderer : virtual public EventTransmitter
 {
@@ -26,6 +27,10 @@ public:
 
     void initialize();
 
+    void setModelLibrary(ModelLibrary * mdllib);
+    //renders the set ModelLibrary
+    void render();
+    //render a model (inefficient compaired to a modellib rendering)
     void render(Model * m);
 
     void setCamera(Camera * cam);
@@ -53,6 +58,9 @@ private:
     GLfloat mvp_mat[16];
     Matrix4x4 m_norm;
     GLfloat norm_mat[16];
+
+    //ModelLibrary
+    ModelLibrary * mdllib;
 
     //camera and window
     Camera * cam;

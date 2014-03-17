@@ -42,7 +42,8 @@ SOURCES += main.cpp\
     Graphics/Procedural/planet.cpp \
     Graphics/Procedural/planetlod.cpp \
     Graphics/Procedural/planetgenerator.cpp \
-    Graphics/Model/materiallibrary.cpp
+    Graphics/Model/materiallibrary.cpp \
+    Event/Events/eventstreamer.cpp
 
 HEADERS  += \
     Object/object.h \
@@ -75,14 +76,15 @@ HEADERS  += \
     Graphics/Procedural/planet.h \
     Graphics/Procedural/planetlod.h \
     Graphics/Procedural/planetgenerator.h \
-    Graphics/Model/materiallibrary.h
+    Graphics/Model/materiallibrary.h \
+    Event/Events/eventstreamer.h
 
 FORMS    += \
     Debug/Ui/debugwindow.ui
 
 
 windows: {
-    message(Windows desktop build)
+    message(Windows desktop build mingw 32 bit)
     #OPEN GL
 
     #not shure if needed but might come in handy

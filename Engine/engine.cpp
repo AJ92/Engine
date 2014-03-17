@@ -302,10 +302,10 @@ void Engine::keyboard(unsigned char key, int x, int y)
         break;
     case 'l':
         {
-            model_library->setModelsPerThread(20);
-            int count = 500;
+            model_library->setModelsPerThread(1);
+            int count = 50;
             for(int i = 0; i < count; i++){
-                Model * m = loadModel("C://Users//AJ//Desktop//Code//QTProjects//Engine//Engine//misc//models//betty.obj");
+                Model * m = loadModel("E://Code//QTProjects//Engine//Engine//misc//models//betty.obj");
                 m->set_scale(0.12f,0.12f,0.12f);
                 m->set_position((double)((rand() & 2000)-1000) + (double)((rand() & 1000)-500) * 0.05,
                                 (double)((rand() & 20)-10) + (double)((rand() & 100)-50) * 0.05,
@@ -317,6 +317,12 @@ void Engine::keyboard(unsigned char key, int x, int y)
     case '0':
         {
             glutFullScreenToggle();
+            break;
+        }
+    case '9':
+        {
+            model_library->debugModelData();
+            break;
         }
     }
 }
@@ -372,13 +378,21 @@ void Engine::render()
     timestep = (double)frameTime/(double)deltaTime;
     cam->rotate_global_pre_y(0.08*timestep);
 
+    //render every model
+    /*
     if(model_library->modelCount() > 0){
-        std::list<Model *> model_list = model_library->getModels();
-        for (std::list<Model *>::const_iterator iterator = model_list.begin(), end = model_list.end(); iterator != end; ++iterator) {
-            Model * m = *iterator;
+        QList<Model *> model_list = model_library->getModels();
+        QList<Model *>::iterator i;
+        for (i = model_list.begin(); i != model_list.end(); ++i){
+            Model * m = *i;
             r->render(m);
         }
     }
+    */
+
+    //render the mdllib
+    r->setModelLibrary(model_library);
+    r->render();
 
     glutSwapBuffers();
     glutPostRedisplay();
@@ -388,9 +402,6 @@ void Engine::render()
 //SLOTS
 void Engine::eventLoop(){
     glutMainLoopEvent();
-
-    //setWindowTitle(QString::number(fps));
-
 }
 
 

@@ -4,6 +4,7 @@
 
 #include <QObject>
 #include <QString>
+#include <QList>
 
 #include "Event/eventtransmitter.h"
 

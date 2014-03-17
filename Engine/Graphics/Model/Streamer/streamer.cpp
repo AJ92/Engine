@@ -4,7 +4,7 @@ Streamer::Streamer(ThreadAccountant * ta, QObject *parent) :
     EventListener(),
     EventTransmitter(),
     QObject(parent),
-    models_per_thread(8),
+    models_per_thread(1),
     ta(ta)
 {
 
@@ -88,6 +88,11 @@ void Streamer::assignModeltoThread(){
             //we are now in mainthread and can load GL data
             m->loadGLdata();
             finished_model_list.pop_front();
+            //the model is now done and we send an event to the modellib
+            Event e;
+            e.type = Event::EventModelStreamedFromDisk;
+            e.streamer = new EventStreamer(m);
+            this->transmit(e);
         }
         keep_timer = true;
     }
@@ -133,6 +138,7 @@ void Streamer::streamModelFromDiskFinished(Model* m, unsigned long long id){
 void Streamer::streamThreadFinished(){
     ta->removeThread();
 }
+
 
 
 //EVENT TRANSMITTER  now AS SLOT

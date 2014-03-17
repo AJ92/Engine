@@ -12,6 +12,8 @@ Event::Event() :
 Event::~Event(){
     switch (type)
     {
+    case EventNone:
+        break;
     case EventDebuggerMessage:
         //delete the EventDebugger pointer object!!!
         //delete debugger;
@@ -22,6 +24,8 @@ Event::~Event(){
     case EventDebuggerHide:
         //no pointers for this type ... nothing to delete
         break;
+    case EventModelStreamedFromDisk:
+        break;
     }
 }
 
@@ -29,6 +33,8 @@ Event::~Event(){
 void Event::destroy(){
     switch (type)
     {
+    case EventNone:
+        break;
     case EventDebuggerMessage:
         //delete the EventDebugger pointer object!!!
         delete debugger;
@@ -38,6 +44,9 @@ void Event::destroy(){
         break;
     case EventDebuggerHide:
         //no pointers for this type ... nothing to delete
+        break;
+    case EventModelStreamedFromDisk:
+        delete streamer;
         break;
     }
 }

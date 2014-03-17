@@ -20,7 +20,7 @@ void ModelLibrary::initialize(){
 }
 
 //public
-std::list<Model *> ModelLibrary::getModels() const{
+QList<Model *> ModelLibrary::getModels() const{
     return model_list;
 }
 
@@ -34,13 +34,14 @@ Model* ModelLibrary::loadModel(QString path){
         //we found one, instance it!
         debugMessage("instancing...");
         m->instance_from(*instance_from);
+        addModel(m);
     }
     else{
         //load the data, the model isn't in the library
+        debugMessage("loading...");
         streamer->streamModelFromDisk(m);
-        unique_model_list.push_back(m);
+        addModelUnique(m);
     }
-    addModel(m);
     return m;
 }
 
@@ -53,20 +54,94 @@ void ModelLibrary::setModelsPerThread(int model_count){
 }
 
 
+QList<QList<Mesh*> > ModelLibrary::getMeshModelList(){
+    return mesh_model_list;
+}
+
+QList<QList<Model*> > ModelLibrary::getModelMeshList(){
+    return model_mesh_list;
+}
+
+QList<Material*> ModelLibrary::getMaterialMeshList(){
+    return material_mesh_list;
+}
+
+
+void ModelLibrary::debugModelData(){
+    debugMessage("ModelLibrary Debug:");
+    for(int i = 0; i < material_mesh_list.size(); i++){
+        debugMessage("Mtl: " + material_mesh_list[i]->get_name() +
+                     QString::number(material_mesh_list[i]->id()));
+        for(int j = 0; j < mesh_model_list[i].size(); j++){
+            debugMessage(" - Mesh: " + mesh_model_list[i].at(j)->get_name() +
+                         QString::number(mesh_model_list[i].at(j)->id()) +
+                         "   " + model_mesh_list[i].at(j)->get_path() +
+                         QString::number(model_mesh_list[i].at(j)->id()));
+        }
+    }
+}
+
+
+
+
+
 
 
 //private
+//add the model to the model list (contains also instances)
 void ModelLibrary::addModel(Model * mdl){
     if(!containsModel(mdl)){
         model_list.push_back(mdl);
+        addModelData(mdl);
+    }
+}
+
+//add the model to the unique model list (does not contain instances)
+void ModelLibrary::addModelUnique(Model * mdl){
+    //do not check if there are instances, cause we know there is a base we instanced from!
+    unique_model_list.push_back(mdl);
+}
+
+//sort in the model data so we can skip several render setup calls...
+void ModelLibrary::addModelData(Model * mdl){
+    QList<Mesh*> mdl_meshs = mdl->get_meshs();
+
+    QList<Mesh *>::iterator i;
+    for (i = mdl_meshs.begin(); i != mdl_meshs.end(); ++i){
+        Mesh * mesh = *i;
+        //we have a mesh, let's check if we have it already sorted into our lists:
+        Material* mesh_mtl = mesh->get_material();
+        bool sort_in = false;
+        int sort_in_index = -1;
+        for(int j = 0; j < material_mesh_list.size(); j++){
+            if(mesh_mtl->equal(*material_mesh_list.at(j))){
+                //we have it already sorted in, just init the addition of the
+                //resources to the existing lists
+                sort_in_index = j;
+                sort_in = true;
+                break;
+            }
+        }
+        if(sort_in){
+            mesh_model_list[sort_in_index].append(mesh);
+            model_mesh_list[sort_in_index].append(mdl);
+        }
+        else{
+            //model is not found in the lists, create a new entry
+            material_mesh_list.append(mesh_mtl);
+            mesh_model_list.append(QList<Mesh*>());
+            model_mesh_list.append(QList<Model*>());
+            int size_index = mesh_model_list.size()-1;
+            mesh_model_list[size_index].append(mesh);
+            model_mesh_list[size_index].append(mdl);
+        }
     }
 }
 
 Model * ModelLibrary::containsModelData(Model * mdl){
-    for (std::list<Model *>::const_iterator iterator = unique_model_list.begin(), end = unique_model_list.end(); iterator != end; ++iterator) {
-        //std::cout << *iterator;
-
-        Model * m = *iterator;
+    QList<Model *>::iterator i;
+    for (i = unique_model_list.begin(); i != unique_model_list.end(); ++i){
+        Model * m = *i;
         if((*m).equalData(*mdl)){
             return m;
         }
@@ -75,10 +150,9 @@ Model * ModelLibrary::containsModelData(Model * mdl){
 }
 
 Model * ModelLibrary::containsModel(Model * mdl){
-    for (std::list<Model *>::const_iterator iterator = model_list.begin(), end = model_list.end(); iterator != end; ++iterator) {
-        //std::cout << *iterator;
-
-        Model * m = *iterator;
+    QList<Model *>::iterator i;
+    for (i = model_list.begin(); i != model_list.end(); ++i){
+        Model * m = *i;
         if(*m == *mdl){
             return m;
         }
@@ -87,18 +161,28 @@ Model * ModelLibrary::containsModel(Model * mdl){
 }
 
 bool ModelLibrary::removeModel(Model * mdl){
-    for (std::list<Model *>::iterator iterator = model_list.begin(), end = model_list.end(); iterator != end; ++iterator) {
-        //std::cout << *iterator;
-
-        Model * m = *iterator;
+    QList<Model *>::iterator i;
+    int j = 0;
+    for (i = model_list.begin(); i != model_list.end(); ++i){
+        Model * m = *i;
         if(*m == *mdl){
-            model_list.erase(iterator);
+            model_list.removeAt(j);
             return true;
         }
+        j++;
     }
 
     //model not even loaded yet!
     return false;
+}
+
+
+//EVENT LISTENER
+//do not invoke the parents method...
+void ModelLibrary::eventRecieved(Event e){
+    if(e.type == Event::EventModelStreamedFromDisk){
+        addModel(e.streamer->getModel());
+    }
 }
 
 //EVENT TRANSMITTER

@@ -9,6 +9,7 @@ Renderer::Renderer() :
 
 void Renderer::initialize(){
     debugMessage("loading shader sources...");
+    mdllib = 0;
     /*
     VertexShader =
             "#version 400\n"\
@@ -77,6 +78,17 @@ Renderer::~Renderer(){
 }
 
 
+//MaterialLibrary getters:
+/*
+    QList<QList<Mesh*> > getMeshModelList();
+    QList<QList<Model*> > getModelMeshList();
+    QList<Material*> getMaterialMeshList();
+*/
+void Renderer::setModelLibrary(ModelLibrary * mdllib){
+    this->mdllib = mdllib;
+}
+
+
 void Renderer::setCamera(Camera * cam){
     this->cam = cam;
 }
@@ -85,6 +97,88 @@ void Renderer::setWindow(Window * win){
     this->win = win;
 }
 
+void Renderer::render(){
+    //check if the mdllib is ready
+    if(mdllib!=0){
+        //copy the lists so we can itterate through them
+        QList<QList<Mesh*> > mesh_model_list = mdllib->getMeshModelList();
+        QList<QList<Model*> > model_mesh_list = mdllib->getModelMeshList();
+        QList<Material*> material_mesh_list = mdllib->getMaterialMeshList();
+
+        //loop trough the material_mesh_list
+        for(int index = 0; index < material_mesh_list.size(); index++){
+            //now set up the material and mesh
+
+            //tex
+            glBindTexture(GL_TEXTURE_2D, material_mesh_list[index]->get_diffuse_map_texture());
+
+            //sample 2d
+            glUniform1i(samp2d_loc, 0);
+
+            ///////////////////////////////////////////////////////////////////////////////////
+            ///
+            /// TODO:
+            ///
+            /// WE NEED TO CHECK IF THE MESH DATA IS UNIQUE..
+            /// BUT AT THIS POINt WE ASUME IT's ALLWAYS THE SAME
+            ///
+            ///////
+
+            if(mesh_model_list[index].size()>0){
+                Mesh * mesh = mesh_model_list[index].at(0);
+
+                //VAO
+
+                glBindVertexArray(mesh->get_vertex_array_object());
+
+                //VBOs
+                glBindBuffer(GL_ARRAY_BUFFER, mesh->get_vertex_vbo());
+                glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, 0);
+                glEnableVertexAttribArray(0);
+
+                glBindBuffer(GL_ARRAY_BUFFER, mesh->get_texcoord_vbo());
+                glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 0, 0);
+                glEnableVertexAttribArray(1);
+
+                glBindBuffer(GL_ARRAY_BUFFER, mesh->get_normal_vbo());
+                glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, 0, 0);
+                glEnableVertexAttribArray(2);
+
+                //now lets draw for every model it's meshs
+
+                m_p.set_to_identity();
+                m_p.perspective(cam->FOV, float(win->getWindowWidth()) / float(win->getWindowHeight()),
+                                cam->Z_NEAR, cam->Z_FAR);
+
+                for(int mdl_index = 0; mdl_index < model_mesh_list[index].size(); mdl_index++){
+                    Model * mdl =  model_mesh_list[index].at(mdl_index);
+
+                    m_mvp =cam->M_camera_view.inverted() * mdl->get_model_matrix();
+                    m_norm = m_mvp.inverted();
+                    m_mvp = m_p * m_mvp;
+
+                    for (int f = 0; f < 4; f++) {
+                        for (int g = 0; g < 4; g++) {
+                            mvp_mat[f * 4 + g] = (GLfloat) (m_mvp[f*4+g]);
+                            norm_mat[f * 4 + g] = (GLfloat) (m_norm[f*4+g]);
+                        }
+                    }
+
+
+                    glUniformMatrix4fv(mvp_mat_loc, 1, GL_FALSE, mvp_mat);
+                    glUniformMatrix4fv(norm_mat_loc, 1, GL_FALSE, norm_mat);
+
+
+                    //draw
+                    glDrawArrays(GL_TRIANGLES, 0, mesh->get_triangle_count()*3);
+                }
+            }
+        }
+    }
+    else{
+        debugMessage("ERROR during rendering: The ModelLibrary isn't set yet!");
+    }
+}
 
 void Renderer::render(Model * m){
 
@@ -92,7 +186,7 @@ void Renderer::render(Model * m){
         GLenum ErrorCheckValue = glGetError();
         if (ErrorCheckValue != GL_NO_ERROR)
         {
-            debugMessage("ERROR before rendering: " + QString((char*) gluErrorString(ErrorCheckValue)));
+            debugMessage("ERROR before rendering: " + QString::fromLatin1((char*) gluErrorString(ErrorCheckValue)));
         }
 
 
@@ -154,7 +248,7 @@ void Renderer::render(Model * m){
         ErrorCheckValue = glGetError();
         if (ErrorCheckValue != GL_NO_ERROR)
         {
-            debugMessage("ERROR after rendering: " + QString((char*) gluErrorString(ErrorCheckValue)));
+            debugMessage("ERROR after rendering: " + QString::fromLatin1((char*) gluErrorString(ErrorCheckValue)));
         }
     }
 }

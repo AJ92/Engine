@@ -20,6 +20,7 @@
 #include "Graphics/Model/modellibrary.h"
 #include "Graphics/Model/model.h"
 
+#include <QApplication>
 #include <QElapsedTimer>
 #include <QTimer>
 #include <QThread>
@@ -50,10 +51,6 @@ public:
     void showDebugWindow();
     void hideDebugWindow();
 
-    //void debugMessage(QString message);
-
-
-
     int getFps();
 
 
@@ -67,6 +64,7 @@ public:
     void timer(int value);
     void render();
 
+    void setClearColor(float r, float g, float b, float a);
 
 
 
@@ -77,6 +75,9 @@ public:
     Model * loadModel(QString path);
     void setCamera(Camera * cam);
 
+    QString getApplicationDir();
+
+
 private:
 
     //test values
@@ -85,6 +86,8 @@ private:
 
     bool running;
 
+    //APP stuff
+    QString app_dir;
 
     //window settings
     EventTransmitter * windowTransmitter;

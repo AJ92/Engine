@@ -41,7 +41,7 @@ Window::Window() :
 void Window::initialize(){
     debugMessage("window initializing...");
     glutInitWindowSize(window_width, window_height);
-    glutInitDisplayMode(GLUT_DEPTH | GLUT_DOUBLE | GLUT_RGBA);
+    glutInitDisplayMode(GLUT_DEPTH | GLUT_DOUBLE | GLUT_RGBA | GLUT_MULTISAMPLE);
     window_handle = glutCreateWindow(window_title.toUtf8().constData());
     if(window_handle < 1) {
         debugMessage("ERROR (1): Window could not be created.");

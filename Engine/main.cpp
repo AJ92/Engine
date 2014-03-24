@@ -9,13 +9,15 @@
 int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);
-    qDebug(".");
+    qDebug("main start...");
     Engine e;
     e.showDebugWindow();
     e.initialize(argc, argv);
+
+    e.setClearColor(0.3f,0.3f,0.3f,1.0f);
+
     e.setWindowTitle("Engine v0.001a");
     e.setWindowSize(600,400);
-
 
     Camera * cam = new Camera();
     cam->Z_FAR = 20000.0;
@@ -29,11 +31,10 @@ int main(int argc, char *argv[])
     m->set_rotation(105.0,0.0,0.0);
 
 
-
     Model *m2 = e.loadModel("E://Code//QTProjects//Engine//Engine//misc//models//betty.obj");
     m2->set_scale(0.05,0.05,0.05);
     m2->set_position(200.0,0.0,0.0);
 
-
+    qDebug("main end...");
     return a.exec();
 }

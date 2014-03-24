@@ -103,7 +103,7 @@ void Streamer::assignModeltoThread(){
 }
 
 void Streamer::assignModelListToThread(QList<Model *> model_list){
-    QThread* thread = new QThread();
+    QThread* thread = new QThread(this);
     StreamToDisk* worker = new StreamToDisk(model_list);
     worker->moveToThread(thread);
     QObject::connect(worker, SIGNAL(error(QString)), this, SLOT(debugMessage(QString)));

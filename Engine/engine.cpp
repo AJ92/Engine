@@ -100,6 +100,9 @@ void Engine::initialize(int argc, char *argv[]){
     debugMessage(QString::number(PCfreq));
     */
 
+    app_dir = QApplication::applicationDirPath();
+    debugMessage("Application Dir: " + app_dir);
+
     if(QElapsedTimer::clockType() == QElapsedTimer::PerformanceCounter){
         debugMessage("PerformanceTimer in use");
     }
@@ -179,6 +182,9 @@ void Engine::initialize(int argc, char *argv[]){
     glutTimerFunc(0, &timer_callback, 0);
     glutKeyboardFunc(&keyboard_callback);
 
+    //set default gl stuff
+    glClearColor(0.5f,0.5f,0.5f,1.0f); //grey
+
 
     debugMessage("starting main event timer...");
     running = true;
@@ -250,6 +256,10 @@ int Engine::getWindowHeight(){
     return -1;
 }
 
+QString Engine::getApplicationDir(){
+    return app_dir;
+}
+
 bool Engine::isRunning(){
     return running;
 }
@@ -303,7 +313,7 @@ void Engine::keyboard(unsigned char key, int x, int y)
     case 'l':
         {
             model_library->setModelsPerThread(1);
-            int count = 50;
+            int count = 100;
             for(int i = 0; i < count; i++){
                 Model * m = loadModel("E://Code//QTProjects//Engine//Engine//misc//models//betty.obj");
                 m->set_scale(0.12f,0.12f,0.12f);
@@ -331,7 +341,7 @@ void Engine::idle(){
     glutPostRedisplay();
 }
 
-//simple fps rec
+//simple fps calc
 void Engine::timer(int value){
     if (0 != value) {
         fps = frame_count;
@@ -352,7 +362,6 @@ void Engine::render()
 
     frame_count++;
 
-    glClearColor(0.5f,0.5f,0.5f,1.0f);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     //timer timestep and so on...
@@ -396,6 +405,12 @@ void Engine::render()
 
     glutSwapBuffers();
     glutPostRedisplay();
+}
+
+
+void Engine::setClearColor(float r, float g, float b, float a){
+    //dont want to check for good values... user should do it
+    glClearColor(r,g,b,a);
 }
 
 

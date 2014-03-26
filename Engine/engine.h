@@ -14,6 +14,7 @@
 #include "Graphics/OpenGL/OpenGL.h"
 #include "Graphics/Renderer/renderer.h"
 #include "Graphics/Window/window.h"
+#include "Input/keyboard.h"
 
 #include "Graphics/Model/Streamer/streamer.h"
 
@@ -59,14 +60,18 @@ public:
     //RENDER
 
     //callbacks
-    void keyboard(unsigned char key, int x, int y);
+    //moved to own class KeyBoard
+    //void keyboard(unsigned char key, int x, int y);
     void idle();
     void timer(int value);
     void render();
 
+    //some functions
     void setClearColor(float r, float g, float b, float a);
 
 
+    //KEYBOARD (override if needed)
+    void keyFunction();
 
 
     //temprary model loader test
@@ -95,6 +100,9 @@ private:
 
     //renderer
     Renderer *r;
+
+    //keyboard
+    KeyBoard *k;
 
     //FPS settings
     int frame_count;

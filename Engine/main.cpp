@@ -31,7 +31,7 @@ int main(int argc, char *argv[])
     m->set_rotation(105.0,0.0,0.0);
 
 
-    Model *m2 = e.loadModel("E://Code//QTProjects//Engine//Engine//misc//models//betty.obj");
+    Model *m2 = e.loadModel("E://Code//QTProjects//Engine//Engine//misc//models//box.obj");
     m2->set_scale(0.05,0.05,0.05);
     m2->set_position(200.0,0.0,0.0);
 

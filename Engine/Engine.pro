@@ -43,7 +43,8 @@ SOURCES += main.cpp\
     Graphics/Procedural/planetlod.cpp \
     Graphics/Procedural/planetgenerator.cpp \
     Graphics/Model/materiallibrary.cpp \
-    Event/Events/eventstreamer.cpp
+    Event/Events/eventstreamer.cpp \
+    Input/keyboard.cpp
 
 HEADERS  += \
     Object/object.h \
@@ -77,7 +78,8 @@ HEADERS  += \
     Graphics/Procedural/planetlod.h \
     Graphics/Procedural/planetgenerator.h \
     Graphics/Model/materiallibrary.h \
-    Event/Events/eventstreamer.h
+    Event/Events/eventstreamer.h \
+    Input/keyboard.h
 
 FORMS    += \
     Debug/Ui/debugwindow.ui

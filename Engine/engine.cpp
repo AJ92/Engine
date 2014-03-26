@@ -23,7 +23,7 @@ Engine * ptr_global_engine_instance = NULL;
 void render_callback(void);
 void idle_callback(void);
 void timer_callback(int value);
-void keyboard_callback(unsigned char key, int x, int y);
+//void keyboard_callback(unsigned char key, int x, int y);
 
 
 void render_callback(void){
@@ -40,9 +40,11 @@ void timer_callback(int value){
     ptr_global_engine_instance->timer(value);
 }
 
+/*
 void keyboard_callback(unsigned char key, int x, int y){
     ptr_global_engine_instance->keyboard(key, x, y);
 }
+*/
 // C part END
 
 
@@ -161,6 +163,10 @@ void Engine::initialize(int argc, char *argv[]){
     model_library->initialize();
 
 
+    //init keyboard
+    k = new KeyBoard();
+    k->addListener(debuggerListener);
+    k->initialize();
 
     //init RENDERER
     r = new Renderer();
@@ -180,7 +186,7 @@ void Engine::initialize(int argc, char *argv[]){
     //glutCloseFunc(&close_callback);
     glutIdleFunc(&idle_callback);
     glutTimerFunc(0, &timer_callback, 0);
-    glutKeyboardFunc(&keyboard_callback);
+    //glutKeyboardFunc(&keyboard_callback);
 
     //set default gl stuff
     glClearColor(0.5f,0.5f,0.5f,1.0f); //grey
@@ -279,6 +285,7 @@ void Engine::debugMessage(QString message){
 
 
 //CALLBACKS
+/*
 void Engine::keyboard(unsigned char key, int x, int y)
 {
     debugMessage("Keypress: " + QString(key));
@@ -313,9 +320,9 @@ void Engine::keyboard(unsigned char key, int x, int y)
     case 'l':
         {
             model_library->setModelsPerThread(1);
-            int count = 100;
+            int count = 1000;
             for(int i = 0; i < count; i++){
-                Model * m = loadModel("E://Code//QTProjects//Engine//Engine//misc//models//betty.obj");
+                Model * m = loadModel("E://Code//QTProjects//Engine//Engine//misc//models//box.obj");
                 m->set_scale(0.12f,0.12f,0.12f);
                 m->set_position((double)((rand() & 2000)-1000) + (double)((rand() & 1000)-500) * 0.05,
                                 (double)((rand() & 20)-10) + (double)((rand() & 100)-50) * 0.05,
@@ -336,6 +343,7 @@ void Engine::keyboard(unsigned char key, int x, int y)
         }
     }
 }
+*/
 
 void Engine::idle(){
     glutPostRedisplay();
@@ -413,10 +421,61 @@ void Engine::setClearColor(float r, float g, float b, float a){
     glClearColor(r,g,b,a);
 }
 
+void Engine::keyFunction(){
+    if(k->isPressed('\x1B')){
+        exit(EXIT_SUCCESS);
+    }
+
+    if(k->isPressed('1')){
+        Event e1;
+        e1.type = Event::EventDebuggerShow;
+        this->transmit(e1);
+    }
+
+    if(k->isPressed('2'))
+        {
+            Event e2;
+            e2.type = Event::EventDebuggerHide;
+            this->transmit(e2);
+        }
+
+    if(k->isPressed('3')){
+        r->setPolygonMode(Renderer::PolygonModeFill);
+    }
+    if(k->isPressed('4')){
+        r->setPolygonMode(Renderer::PolygonModeLine);
+    }
+    if(k->isPressed('5')){
+        r->setPolygonMode(Renderer::PolygonModePoint);
+    }
+    if(k->isPressed('l'))
+    {
+        model_library->setModelsPerThread(1);
+        int count = 1000;
+        for(int i = 0; i < count; i++){
+            Model * m = loadModel("E://Code//QTProjects//Engine//Engine//misc//models//box.obj");
+            m->set_scale(0.12f,0.12f,0.12f);
+            m->set_position((double)((rand() & 2000)-1000) + (double)((rand() & 1000)-500) * 0.05,
+                            (double)((rand() & 20)-10) + (double)((rand() & 100)-50) * 0.05,
+                            (double)((rand() & 2000)-1000) + (double)((rand() & 1000)-500) * 0.05);
+            m->set_rotation(rand() & 361,rand() & 361,rand() & 361);
+        }
+    }
+
+    if(k->isPressed('0')){
+        glutFullScreenToggle();
+    }
+    if(k->isPressed('9')){
+        model_library->debugModelData();
+    }
+
+}
+
 
 //SLOTS
 void Engine::eventLoop(){
     glutMainLoopEvent();
+    keyFunction();
 }
 
 

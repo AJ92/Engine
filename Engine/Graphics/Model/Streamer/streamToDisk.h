@@ -20,7 +20,7 @@ class StreamToDisk : public QObject
 {
     Q_OBJECT
 public:
-    StreamToDisk(QList<Model*> model_list_for_thread, QObject * parent = 0);
+    StreamToDisk(QList<Model*> model_list_for_thread);
     ~StreamToDisk();
 
 public slots:

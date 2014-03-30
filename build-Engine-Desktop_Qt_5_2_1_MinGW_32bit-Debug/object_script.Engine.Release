@@ -29,6 +29,8 @@ INPUT(
 ./release\planetlod.o
 ./release\planetgenerator.o
 ./release\materiallibrary.o
+./release\eventstreamer.o
+./release\keyboard.o
 ./release\moc_debugwindow.o
 ./release\moc_engine.o
 ./release\moc_streamToDisk.o

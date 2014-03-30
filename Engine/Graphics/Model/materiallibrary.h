@@ -2,7 +2,7 @@
 #define MATERIALLIBRARY_H
 
 #include "Object/object.h"
-#include "Event/eventtransmitter.h".h"
+#include "Event/eventtransmitter.h"
 #include <QString>
 #include <list>
 #include "Graphics/Model/model.h"

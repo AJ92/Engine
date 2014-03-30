@@ -1,7 +1,6 @@
 #include "streamToDisk.h"
 
-StreamToDisk::StreamToDisk(QList<Model *> model_list_for_thread, QObject * parent) :
-    QObject(parent)
+StreamToDisk::StreamToDisk(QList<Model *> model_list_for_thread)
 {
     //copy models into thread...
     QList<Model*>::iterator i;

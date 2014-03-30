@@ -34,7 +34,14 @@ Model* ModelLibrary::loadModel(QString path){
         //we found one, instance it!
         debugMessage("instancing...");
         m->instance_from(*instance_from);
-        addModel(m);
+        if(m->isReadyToRender()){
+            //if the model was already loaded from the disk sort it in
+            addModel(m);
+        }
+        else{
+            //add it to the instances_to_load_list so it get's sorted in as soon as it's loaded
+            addModelInstanceToLoad(m);
+        }
     }
     else{
         //load the data, the model isn't in the library
@@ -100,7 +107,22 @@ void ModelLibrary::addModel(Model * mdl){
 void ModelLibrary::addModelUnique(Model * mdl){
     //do not check if there are instances, cause we know there is a base we instanced from!
     unique_model_list.push_back(mdl);
+    unique_model_path_list.push_back(mdl->get_path());
+    instances_to_load_list.append(QList<Model*>());
 }
+
+void ModelLibrary::addModelInstanceToLoad(Model * mdl){
+    for(int i = 0; i < unique_model_path_list.size(); i++){
+        //get the right index to sort it in
+        if(unique_model_path_list.at(i).compare(mdl->get_path()) == 0){
+            instances_to_load_list[i].push_back(mdl);
+            return;
+        }
+    }
+    debugMessage("ModelLibrary::addModelInstanceToLoad: could not sort in the instance: " +
+                 mdl->get_path());
+}
+
 
 //sort in the model data so we can skip several render setup calls...
 void ModelLibrary::addModelData(Model * mdl){
@@ -134,6 +156,21 @@ void ModelLibrary::addModelData(Model * mdl){
             int size_index = mesh_model_list.size()-1;
             mesh_model_list[size_index].append(mesh);
             model_mesh_list[size_index].append(mdl);
+        }
+    }
+}
+
+void ModelLibrary::updateInstances(Model * mdl){
+    for(int i = 0; i < unique_model_path_list.size(); i++){
+        //get the right index to sort it in
+        if(unique_model_path_list.at(i).compare(mdl->get_path()) == 0){
+            //update all instances and sort them in correctly to render
+            for(int j = 0; j < instances_to_load_list.at(i).size(); j++){
+                Model * m = instances_to_load_list.at(i).at(j);
+                m->instance_from(*mdl);
+                addModel(m);
+            }
+            instances_to_load_list[i].clear();
         }
     }
 }
@@ -177,11 +214,15 @@ bool ModelLibrary::removeModel(Model * mdl){
 }
 
 
+
 //EVENT LISTENER
 //do not invoke the parents method...
 void ModelLibrary::eventRecieved(Event e){
     if(e.type == Event::EventModelStreamedFromDisk){
         addModel(e.streamer->getModel());
+        //check if some models actually got instanced during the time this model was loading...
+        //and assign the new model data to them...
+        updateInstances(e.streamer->getModel());
     }
 }
 

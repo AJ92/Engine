@@ -36,8 +36,15 @@ private:
     ThreadAccountant * ta;
     Streamer * streamer;
     //models
-    QList<Model*> model_list;           //all models (includes instances)
-    QList<Model*> unique_model_list;    //unique by data!!!
+
+
+    //model lists
+    QList<Model*> model_list;               //all models (includes instances)
+    QList<Model*> unique_model_list;        //unique by data!!!
+    QList<QString> unique_model_path_list;  //unique paths of models
+    QList<QList<Model*> > instances_to_load_list;   //instances which need to be loaded,
+                                                    //because the base model wans't loaded
+                                                    //during the instance process...
 
     //model data sorted by material / single mesh
     QList<QList<Mesh*> > mesh_model_list;
@@ -49,8 +56,11 @@ private:
 
     void addModel(Model * mdl);
     void addModelUnique(Model * mdl);
+    void addModelInstanceToLoad(Model * mdl);
 
     void addModelData(Model * mdl);
+
+    void updateInstances(Model * mdl);
 
     Model * containsModelData(Model * mdl);
     Model * containsModel(Model * mdl);

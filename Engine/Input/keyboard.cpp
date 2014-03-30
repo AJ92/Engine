@@ -37,6 +37,11 @@ KeyBoard::KeyBoard() :
     ptr_global_keyboard_instance = this;
     keyStates = new bool[256];
     keySpecialStates = new bool[256];
+
+    for(int i = 0; i < 256; i++){
+        keyStates[i] = false;
+        keySpecialStates[i] = false;
+    }
 }
 
 void KeyBoard::initialize(){
@@ -62,6 +67,7 @@ void KeyBoard::keyPressed (unsigned char key, int x, int y) {
 }
 
 void KeyBoard::keyUp (unsigned char key, int x, int y) {
+    debugMessage("key: " + QString::number(key));
     keyStates[key] = false; // Set the state of the current key to not pressed
 }
 
@@ -70,6 +76,7 @@ void KeyBoard::keySpecialPressed (int key, int x, int y) {
 }
 
 void KeyBoard::keySpecialUp (int key, int x, int y) {
+    debugMessage("special key: " + QString::number(key));
     keySpecialStates[key] = false; // Set the state of the current key to not pressed
 }
 

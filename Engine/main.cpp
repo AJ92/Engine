@@ -8,8 +8,8 @@
 
 int main(int argc, char *argv[])
 {
-    QApplication a(argc, argv);
     qDebug("main start...");
+    QApplication a(argc, argv);
     Engine e;
     e.showDebugWindow();
     e.initialize(argc, argv);
@@ -26,14 +26,18 @@ int main(int argc, char *argv[])
     e.setCamera(cam);
 
 
+    /*
     Model *m = e.loadModel("E://Code//QTProjects//Engine//Engine//misc//models//space_box.obj");
     m->set_scale(1100.0,1100.0,1100.0);
     m->set_rotation(105.0,0.0,0.0);
 
 
+
     Model *m2 = e.loadModel("E://Code//QTProjects//Engine//Engine//misc//models//box.obj");
     m2->set_scale(0.05,0.05,0.05);
     m2->set_position(200.0,0.0,0.0);
+    */
+
 
     qDebug("main end...");
     return a.exec();

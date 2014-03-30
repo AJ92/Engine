@@ -1,4 +1,5 @@
 #include "streamer.h"
+#include <QApplication>
 
 Streamer::Streamer(ThreadAccountant * ta, QObject *parent) :
     EventListener(),
@@ -55,7 +56,6 @@ void Streamer::assignModeltoThread(){
 
     //process models that wait for loading (DISK IOs)
     if(model_list.size() > 0){
-
         //we have models in the list
         //assign models_per_thread models per thread if possible
         if(model_list.size() < models_per_thread){
@@ -78,8 +78,6 @@ void Streamer::assignModeltoThread(){
         keep_timer = true;
     }
 
-
-
     //process models that wait for gpu (GPU IOs)
     if(finished_model_list.size() > 0){
         for(int i = 0; i < finished_model_list.size(); i++){
@@ -99,25 +97,30 @@ void Streamer::assignModeltoThread(){
     if(!keep_timer){
         //t->stop();
     }
-
 }
 
 void Streamer::assignModelListToThread(QList<Model *> model_list){
-    QThread* thread = new QThread(this);
+    qDebug() << "Creating new thread...";
+    QThread* thread = new QThread();
+
+    qDebug() << "   QApplication's Thread (aka Mainthread): " << QApplication::instance()->thread();
+    qDebug() << "   Current thread: " << QThread::currentThread();
+    qDebug() << "   Thread to move: " << thread;
+
     StreamToDisk* worker = new StreamToDisk(model_list);
+
+    qDebug() << "   Worker thread: " << worker->thread();
+
     worker->moveToThread(thread);
-    QObject::connect(worker, SIGNAL(error(QString)), this, SLOT(debugMessage(QString)));
-    QObject::connect(thread, SIGNAL(started()), worker, SLOT(stream()));
-
-
+    QObject::connect(worker, SIGNAL(error(QString)), this, SLOT(debugMessage(QString)), Qt::QueuedConnection);
+    QObject::connect(thread, SIGNAL(started()), worker, SLOT(stream()), Qt::QueuedConnection);
     //here we need a slot for returning the model or so...
     QObject::connect(worker, SIGNAL(loaded(Model*, unsigned long long)),
-            this, SLOT(streamModelFromDiskFinished(Model*, unsigned long long)));
-
-    QObject::connect(worker, SIGNAL(finished()),this, SLOT(streamThreadFinished()));
-    QObject::connect(worker, SIGNAL(finished()),thread, SLOT(quit()));
-    QObject::connect(worker, SIGNAL(finished()),worker, SLOT(deleteLater()));
-    QObject::connect(thread, SIGNAL(finished()), thread, SLOT(deleteLater()));
+            this, SLOT(streamModelFromDiskFinished(Model*, unsigned long long)), Qt::QueuedConnection);
+    QObject::connect(worker, SIGNAL(finished()),this, SLOT(streamThreadFinished()), Qt::QueuedConnection);
+    QObject::connect(worker, SIGNAL(finished()),thread, SLOT(quit()), Qt::QueuedConnection);
+    QObject::connect(worker, SIGNAL(finished()),worker, SLOT(deleteLater()), Qt::QueuedConnection);
+    QObject::connect(thread, SIGNAL(finished()), thread, SLOT(deleteLater()), Qt::QueuedConnection);
     thread->start();
 }
 
@@ -138,8 +141,6 @@ void Streamer::streamModelFromDiskFinished(Model* m, unsigned long long id){
 void Streamer::streamThreadFinished(){
     ta->removeThread();
 }
-
-
 
 //EVENT TRANSMITTER  now AS SLOT
 void Streamer::debugMessage(QString message){

@@ -214,8 +214,6 @@ void Engine::initialize(int argc, char *argv[]){
     //17 is just fina actually but only 59 fps
     t->setInterval(16);
     t->start();
-
-
 }
 
 void Engine::setWindowTitle(QString title){
@@ -460,6 +458,17 @@ void Engine::keyFunction(){
                             (double)((rand() & 2000)-1000) + (double)((rand() & 1000)-500) * 0.05);
             m->set_rotation(rand() & 361,rand() & 361,rand() & 361);
         }
+    }
+
+    if(k->isPressed('k'))
+    {
+        model_library->setModelsPerThread(1);
+            Model * m = loadModel("E://Code//QTProjects//Engine//Engine//misc//models//betty.obj");
+            m->set_scale(0.12f,0.12f,0.12f);
+            m->set_position((double)((rand() & 2000)-1000) + (double)((rand() & 1000)-500) * 0.05,
+                            (double)((rand() & 20)-10) + (double)((rand() & 100)-50) * 0.05,
+                            (double)((rand() & 2000)-1000) + (double)((rand() & 1000)-500) * 0.05);
+            m->set_rotation(rand() & 361,rand() & 361,rand() & 361);
     }
 
     if(k->isPressed('0')){

@@ -65,6 +65,7 @@ bool Mouse::isSpun(int wheel){
         wheelspin = -1;
         return true;
     }
+    return false;
 }
 
 int Mouse::spinDirection(){

@@ -11,8 +11,10 @@ public:
     void initialize();
 
     bool isPressed(int button);
-    bool isSpun(int wheel, int direction);
-    bool isMotion(int x, int y);
+    bool isSpun(int wheel);
+    int spinDirection();
+    int posX();
+    int posY();
 
     //callbacks
     void mousePressed (int button, int state, int x, int y);

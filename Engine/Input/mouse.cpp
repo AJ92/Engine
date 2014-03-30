@@ -30,6 +30,11 @@ Mouse::Mouse() :
     ptr_global_mouse_instance = this;
     mouseButtons = new bool[10];
 
+    xpos = -1;
+    ypos = -1;
+    wheelspin = -1;
+    wheelspindir = -1;
+
     for(int i = 0; i < 10; i++){
         mouseButtons[i] = false;
     }
@@ -45,6 +50,25 @@ void Mouse::initialize(){
 
 bool Mouse::isPressed(int button){
     return mouseButtons[button];
+}
+
+int Mouse::posX(){
+    return xpos;
+}
+
+int Mouse::posY(){
+    return ypos;
+}
+
+bool Mouse::isSpun(int wheel){
+    if(wheelspin == wheel){
+        wheelspin = -1;
+        return true;
+    }
+}
+
+int Mouse::spinDirection(){
+    return wheelspindir;
 }
 
 void Mouse::mousePressed (int button, int state, int x, int y) {

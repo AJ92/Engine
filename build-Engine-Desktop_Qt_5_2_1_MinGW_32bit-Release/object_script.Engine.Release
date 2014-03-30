@@ -31,6 +31,7 @@ INPUT(
 ./release\materiallibrary.o
 ./release\eventstreamer.o
 ./release\keyboard.o
+./release\mouse.o
 ./release\moc_debugwindow.o
 ./release\moc_engine.o
 ./release\moc_streamToDisk.o

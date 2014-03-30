@@ -31,6 +31,7 @@ INPUT(
 ./debug\materiallibrary.o
 ./debug\eventstreamer.o
 ./debug\keyboard.o
+./debug\mouse.o
 ./debug\moc_debugwindow.o
 ./debug\moc_engine.o
 ./debug\moc_streamToDisk.o

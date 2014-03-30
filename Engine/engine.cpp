@@ -168,6 +168,11 @@ void Engine::initialize(int argc, char *argv[]){
     k->addListener(debuggerListener);
     k->initialize();
 
+    //init mouse
+    m = new Mouse();
+    m->addListener(debuggerListener);
+    m->initialize();
+
     //init RENDERER
     r = new Renderer();
     r->addListener(debuggerListener);

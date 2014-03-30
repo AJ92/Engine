@@ -15,6 +15,7 @@
 #include "Graphics/Renderer/renderer.h"
 #include "Graphics/Window/window.h"
 #include "Input/keyboard.h"
+#include "Input/mouse.h"
 
 #include "Graphics/Model/Streamer/streamer.h"
 
@@ -103,6 +104,9 @@ private:
 
     //keyboard
     KeyBoard *k;
+
+    //Mouse
+    Mouse *m;
 
     //FPS settings
     int frame_count;

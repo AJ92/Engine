@@ -18,6 +18,7 @@ INPUT(
 ./debug\vector3.o
 ./debug\matrix4x4.o
 ./debug\matrix3x3.o
+./debug\plane.o
 ./debug\shader.o
 ./debug\camera.o
 ./debug\modellibrary.o
@@ -28,10 +29,13 @@ INPUT(
 ./debug\planet.o
 ./debug\planetlod.o
 ./debug\planetgenerator.o
-./debug\materiallibrary.o
 ./debug\eventstreamer.o
 ./debug\keyboard.o
 ./debug\mouse.o
+./debug\light.o
+./debug\lightlibrary.o
+./debug\eventwindow.o
+./debug\frustum.o
 ./debug\moc_debugwindow.o
 ./debug\moc_engine.o
 ./debug\moc_streamToDisk.o

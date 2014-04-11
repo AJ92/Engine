@@ -84,6 +84,12 @@ void Window::resize(int width, int height){
     window_width = width;
     window_height = height;
     glViewport(0, 0, window_width, window_height);
+
+    Event e;
+    e.type = Event::EventWindowResize;
+    e.window = new EventWindow(window_width, window_height);
+    this->transmit(e);
+
     debugMessage("Window resize: " + QString::number(window_width) + "  " + QString::number(window_height));
 }
 

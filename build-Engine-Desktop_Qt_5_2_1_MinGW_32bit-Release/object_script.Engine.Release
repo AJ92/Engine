@@ -18,6 +18,7 @@ INPUT(
 ./release\vector3.o
 ./release\matrix4x4.o
 ./release\matrix3x3.o
+./release\plane.o
 ./release\shader.o
 ./release\camera.o
 ./release\modellibrary.o
@@ -28,10 +29,13 @@ INPUT(
 ./release\planet.o
 ./release\planetlod.o
 ./release\planetgenerator.o
-./release\materiallibrary.o
 ./release\eventstreamer.o
 ./release\keyboard.o
 ./release\mouse.o
+./release\light.o
+./release\lightlibrary.o
+./release\eventwindow.o
+./release\frustum.o
 ./release\moc_debugwindow.o
 ./release\moc_engine.o
 ./release\moc_streamToDisk.o

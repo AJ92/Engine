@@ -5,7 +5,7 @@
 #include "Graphics/OpenGL/OpenGL.h"
 #include "Graphics/Model/Components/material.h"
 #include "Object/object.h"
-#include "Math/Vector/vector3.h"
+#include "Math/mathematics.h"
 
 #include <QString>
 #include <QStringList>
@@ -45,6 +45,13 @@ public:
 
     Vector3 get_vertex(int index);
 
+    //bounding sphere getters and setters
+    Vector3 getBoundingSpherePos();
+    double getBoundingSphereRadius();
+
+    void setBoundingSpherePos(Vector3 pos);
+    void setBoundingSphereRadius(double radius);
+
 private:
 
     QString mesh_name;
@@ -65,6 +72,11 @@ private:
     GLuint vertex_array_object;
 
     bool loaded;
+
+    //for frustum culling
+    //the bounding sphere in model space
+    Vector3 bounding_sphere_position;
+    double bounding_sphere_radius;
 };
 
 #endif // MESH_H

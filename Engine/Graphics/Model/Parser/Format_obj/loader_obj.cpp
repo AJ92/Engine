@@ -233,13 +233,6 @@ bool Loader_obj::load_model_data(Model& mdl, QString path){
     //using mesh_mtl to iterate ...
     QList<QString> mesh_names = mesh_mtl.keys();
     for(int i = 0; i < mesh_names.length(); i++){
-        //needs .constData() every render pass in future...
-        //QVector<QVector3D> vertices;
-        //QVector<QVector2D> texcoords;
-        //QVector<QVector3D> normals;
-        //should be constant data and no need to convert...
-        //qDebug(QString::number(mesh_faces[mesh_names.value(i)].size()).toUtf8());
-        //qDebug(QString::number(mesh_faces[mesh_names.value(i)].size()*3).toUtf8());
 
 
         int triangle_count = mesh_faces[mesh_names.value(i)].size() / 3 / 3;
@@ -247,23 +240,6 @@ bool Loader_obj::load_model_data(Model& mdl, QString path){
         GLfloat* vertices = new GLfloat[mesh_faces[mesh_names.value(i)].size()];
         GLfloat* texcoords = new GLfloat[mesh_faces[mesh_names.value(i)].size()]; //should be wrong ... 108/3*2 is right ...
         GLfloat* normals = new GLfloat[mesh_faces[mesh_names.value(i)].size()];
-
-        GLfloat* tangents = new GLfloat[mesh_faces[mesh_names.value(i)].size()];
-        GLfloat* binormals = new GLfloat[mesh_faces[mesh_names.value(i)].size()];
-
-        //VAO and VBOs
-
-        /*
-        GLuint vao;
-
-        GLuint vertex_vbo;
-        GLuint texcoord_vbo;
-        GLuint normal_vbo;
-
-        GLuint tangent_vbo;
-        GLuint binormal_vbo;
-        */
-
 
         //qDebug("Mesh...");
 
@@ -283,21 +259,6 @@ bool Loader_obj::load_model_data(Model& mdl, QString path){
             vertices[6+j+1] = (GLfloat) model_vertices.value(mesh_faces[mesh_names.value(i)].value(j+6)-1).y();
             vertices[6+j+2] = (GLfloat) model_vertices.value(mesh_faces[mesh_names.value(i)].value(j+6)-1).z();
 
-            /*
-                qDebug(QString::number(vertices[j]));
-                qDebug(QString::number(vertices[j+1]));
-                qDebug(QString::number(vertices[j+2]));
-
-                qDebug(QString::number(vertices[j+3]));
-                qDebug(QString::number(vertices[j+4]));
-                qDebug(QString::number(vertices[j+5]));
-
-                qDebug(QString::number(vertices[j+6]));
-                qDebug(QString::number(vertices[j+7]));
-                qDebug(QString::number(vertices[j+8]));
-
-                qDebug("\n");
-                */
 
             //  vt
             texcoords[j]     = (GLfloat) model_vertex_texture_coordinates.value(mesh_faces[mesh_names.value(i)].value(j+1)-1).x();
@@ -312,23 +273,7 @@ bool Loader_obj::load_model_data(Model& mdl, QString path){
             texcoords[6+j+1] = (GLfloat) -model_vertex_texture_coordinates.value(mesh_faces[mesh_names.value(i)].value(j+7)-1).y();
             texcoords[6+j+2] = (GLfloat) model_vertex_texture_coordinates.value(mesh_faces[mesh_names.value(i)].value(j+7)-1).z();
 
-            /*
 
-                qDebug(QString::number(texcoords[j]));
-                qDebug(QString::number(texcoords[j+1]));
-                qDebug(QString::number(texcoords[j+2]));
-
-                qDebug(QString::number(texcoords[j+3]));
-                qDebug(QString::number(texcoords[j+4]));
-                qDebug(QString::number(texcoords[j+5]));
-
-                qDebug(QString::number(texcoords[j+6]));
-                qDebug(QString::number(texcoords[j+7]));
-                qDebug(QString::number(texcoords[j+8]));
-
-                qDebug("\n");
-
-                */
             //  vn
             normals[j]     = (GLfloat) model_vertex_normals.value(mesh_faces[mesh_names.value(i)].value(j+2)-1).x();
             normals[j+1]   = (GLfloat) model_vertex_normals.value(mesh_faces[mesh_names.value(i)].value(j+2)-1).y();
@@ -342,113 +287,37 @@ bool Loader_obj::load_model_data(Model& mdl, QString path){
             normals[6+j+1] = (GLfloat) model_vertex_normals.value(mesh_faces[mesh_names.value(i)].value(j+8)-1).y();
             normals[6+j+2] = (GLfloat) model_vertex_normals.value(mesh_faces[mesh_names.value(i)].value(j+8)-1).z();
 
-            // v1 tc u          v2 tc v           v2 tc u           v1 tc v
-            GLfloat coef = 1.0 / (texcoords[j] * texcoords[3+j+1] - texcoords[3+j] * texcoords[j+1]);
-
-            GLfloat* tangent = new GLfloat[3];
-            //v1.x              v2 tc v               v2.x              v1 tc v
-            tangent[0] = coef * ((vertices[j] * texcoords[3+j+1])  + (vertices[3+j] * -texcoords[j+1]));
-            //v1.y              v2 tc v                 v2.y            v1 tc v
-            tangent[1] = coef * ((vertices[j+1] * texcoords[3+j+1])  + (vertices[3+j+1] * -texcoords[j+1]));
-            //v1.z              v2 tc v                 v2.z            v1 tc v
-            tangent[2] = coef * ((vertices[j+2] * texcoords[3+j+1])  + (vertices[3+j+2] * -texcoords[j+1]));
-
-
-            tangents[j]     = tangent[0];
-            tangents[j+1]   = tangent[1];
-            tangents[j+2]   = tangent[2];
-
-            tangents[3+j]   = tangent[0];
-            tangents[3+j+1] = tangent[1];
-            tangents[3+j+2] = tangent[2];
-
-            tangents[6+j]   = tangent[0];
-            tangents[6+j+1] = tangent[1];
-            tangents[6+j+2] = tangent[2];
-
-            /*
-                qDebug("Tangents:");
-
-                qDebug(QString::number(tangents[j]).toUtf8());
-                qDebug(QString::number(tangents[j+1]).toUtf8());
-                qDebug(QString::number(tangents[j+2]).toUtf8());
-
-                qDebug(QString::number(tangents[j+3]).toUtf8());
-                qDebug(QString::number(tangents[j+4]).toUtf8());
-                qDebug(QString::number(tangents[j+5]).toUtf8());
-
-                qDebug(QString::number(tangents[j+6]).toUtf8());
-                qDebug(QString::number(tangents[j+7]).toUtf8());
-                qDebug(QString::number(tangents[j+8]).toUtf8());
-
-                qDebug("\n");
-                */
-
-
-            //float3 binormal = normal.crossProduct(tangent);
-
-            binormals[j]     = normals[j+1]  *tangents[j+2] - normals[j+2]  *tangents[j+1];
-            binormals[j+1]   = normals[j+2]  *tangents[j]   - normals[j]    *tangents[j+2];
-            binormals[j+2]   = normals[j]    *tangents[j+1] - normals[j+1]  *tangents[j];
-
-            binormals[3+j]     = normals[3+j+1]  *tangents[3+j+2] - normals[3+j+2]  *tangents[3+j+1];
-            binormals[3+j+1]   = normals[3+j+2]  *tangents[3+j]   - normals[3+j]    *tangents[3+j+2];
-            binormals[3+j+2]   = normals[3+j]    *tangents[3+j+1] - normals[3+j+1]  *tangents[3+j];
-
-            binormals[6+j]     = normals[6+j+1]  *tangents[6+j+2] - normals[6+j+2]  *tangents[6+j+1];
-            binormals[6+j+1]   = normals[6+j+2]  *tangents[6+j]   - normals[6+j]    *tangents[6+j+2];
-            binormals[6+j+2]   = normals[6+j]    *tangents[6+j+1] - normals[6+j+1]  *tangents[6+j];
-
-            /*
-                qDebug("Binormals:");
-
-                qDebug(QString::number(binormals[j]).toUtf8());
-                qDebug(QString::number(binormals[j+1]).toUtf8());
-                qDebug(QString::number(binormals[j+2]).toUtf8());
-
-                qDebug(QString::number(binormals[j+3]).toUtf8());
-                qDebug(QString::number(binormals[j+4]).toUtf8());
-                qDebug(QString::number(binormals[j+5]).toUtf8());
-
-                qDebug(QString::number(binormals[j+6]).toUtf8());
-                qDebug(QString::number(binormals[j+7]).toUtf8());
-                qDebug(QString::number(binormals[j+8]).toUtf8());
-
-                qDebug("\n");
-                */
         }
 
-
-        //moved to main thread, more specificly: Mesh::load_data and Material::load_xxxx and streamer
-        /*
-        glGenVertexArrays(1, &vao);
-
-        glBindVertexArray(vao);
-
-        glGenBuffers(1, &vertex_vbo);
-        glBindBuffer(GL_ARRAY_BUFFER, vertex_vbo);
-        glBufferData(GL_ARRAY_BUFFER, triangle_count * 3* 3 * sizeof(GLfloat), vertices, GL_STATIC_DRAW);
-        glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, 0);
-        glEnableVertexAttribArray(0);
+        //calculate the bounding sphere (pos and radius)
+        Vector3 bounding_sphere_pos;
+        double bounding_sphere_radius = 0.0;
 
 
-        glGenBuffers(1, &texcoord_vbo);
-        glBindBuffer(GL_ARRAY_BUFFER, texcoord_vbo);
-        glBufferData(GL_ARRAY_BUFFER, triangle_count * 3 * 3 * sizeof(GLfloat), texcoords, GL_STATIC_DRAW);
-        glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 0, 0);
-        glEnableVertexAttribArray(1);
+        for(int j = 0; j < mesh_faces[mesh_names.value(i)].size(); j+=3){
+            Vector3 vert1(vertices[j],vertices[j+1],vertices[j+2]);
+            for(int k = 0; k < mesh_faces[mesh_names.value(i)].size(); k+=3){
+                Vector3 vert2(vertices[k],vertices[k+1],vertices[k+2]);
+                double dist = vert1.distance(vert2);
+                if(dist > bounding_sphere_radius){
+                    bounding_sphere_radius = dist;
+                    bounding_sphere_pos = Vector3(  (vert1[0] + vert2[0])/2.0,
+                                                    (vert1[1] + vert2[1])/2.0,
+                                                    (vert1[2] + vert2[2])/2.0   );
+                }
+            }
+        }
+
+        bounding_sphere_radius = bounding_sphere_radius / 2.0;
 
 
-        glGenBuffers(1, &normal_vbo);
-        glBindBuffer(GL_ARRAY_BUFFER, normal_vbo);
-        glBufferData(GL_ARRAY_BUFFER, triangle_count * 3 * 3 * sizeof(GLfloat), normals, GL_STATIC_DRAW);
-        glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, 0, 0);
-        glEnableVertexAttribArray(2);
-        */
 
         //Create Mesh and add it to the Mesh-list of the model.
         Mesh* mesh = new Mesh(mesh_names.value(i), triangle_count, vertices, texcoords, normals,
                               mtln_mtl.value(mesh_mtl.value(mesh_names.value(i))));
+
+        mesh->setBoundingSpherePos(bounding_sphere_pos);
+        mesh->setBoundingSphereRadius(bounding_sphere_radius);
 
         //meshs.append(mesh);
         mdl.add_mesh(mesh);

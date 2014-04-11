@@ -5,7 +5,7 @@
 #include "Graphics/OpenGL/OpenGL.h"
 
 #include "Object/object.h"
-#include "Math/Vector/vector3.h"
+#include "Math/mathematics.h"
 
 #include <QString>
 #include <QStringList>

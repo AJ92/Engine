@@ -132,3 +132,20 @@ Vector3 Mesh::get_vertex(int index){
                    (float) vertices[index*3+1],
                    (float) vertices[index*3+2]);
 }
+
+
+Vector3 Mesh::getBoundingSpherePos(){
+    return bounding_sphere_position;
+}
+
+double Mesh::getBoundingSphereRadius(){
+    return bounding_sphere_radius;
+}
+
+void Mesh::setBoundingSpherePos(Vector3 pos){
+    this->bounding_sphere_position = pos;
+}
+
+void Mesh::setBoundingSphereRadius(double radius){
+    this->bounding_sphere_radius = radius;
+}

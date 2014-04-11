@@ -20,9 +20,9 @@ int main(int argc, char *argv[])
     e.setWindowSize(600,400);
 
     Camera * cam = new Camera();
-    cam->Z_FAR = 20000.0;
-    cam->translate(0.0,50.0,0.0);
-    cam->rotate_global_post_x(15.0);
+    cam->setZFAR(20000.0);
+    cam->set_position(0.0,350.0,0.0);
+    //cam->rotate_global_post_x(15.0);
     e.setCamera(cam);
 
 

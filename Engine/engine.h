@@ -22,6 +22,9 @@
 #include "Graphics/Model/modellibrary.h"
 #include "Graphics/Model/model.h"
 
+#include "Graphics/Model/lightlibrary.h"
+#include "Graphics/Model/light.h"
+
 #include <QApplication>
 #include <QElapsedTimer>
 #include <QTimer>
@@ -79,6 +82,7 @@ public:
     //needs to be redirected and synced over threads...
 
     Model * loadModel(QString path);
+    Light * loadLight(QString path);
     void setCamera(Camera * cam);
 
     QString getApplicationDir();
@@ -107,6 +111,9 @@ private:
 
     //Mouse
     Mouse *m;
+    double x_angle;
+    double y_angle;
+
 
     //FPS settings
     int frame_count;
@@ -136,8 +143,24 @@ private:
     //model loader and threads.
     ModelLibrary * model_library;
 
+    //light loader and threads.
+    LightLibrary * light_library;
+
+    QList<Light*> lights;
+    double lighttime;
+
     int idealThreadCount;
     ThreadAccountant * threadAccountant;
+
+
+
+
+    ///////
+    // DEBUG STUFF
+    // TESTING MATRICES
+
+    Model * cam_test;
+
 
 
 

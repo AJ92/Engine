@@ -7,6 +7,7 @@
 //include all Events
 #include "Event/Events/eventdebugger.h"
 #include "Event/Events/eventstreamer.h"
+#include "Event/Events/eventwindow.h"
 
 class Event : public Object
 {
@@ -23,7 +24,8 @@ public:
         EventDebuggerMessage        = 0x0001,
         EventDebuggerShow           = 0x0002,
         EventDebuggerHide           = 0x0003,
-        EventModelStreamedFromDisk  = 0x0004
+        EventModelStreamedFromDisk  = 0x0004,
+        EventWindowResize           = 0x0005
         //more to follow...
     };
 
@@ -32,8 +34,9 @@ public:
     EventType type;
 
     union {
-        EventDebugger *debugger;
-        EventStreamer *streamer;
+        EventDebugger   *debugger;
+        EventStreamer   *streamer;
+        EventWindow     *window;
         //more to follow...
     };
 

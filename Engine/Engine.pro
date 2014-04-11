@@ -32,6 +32,7 @@ SOURCES += main.cpp\
     Math/Vector/vector3.cpp \
     Math/Matrix/matrix4x4.cpp \
     Math/Matrix/matrix3x3.cpp \
+    Math/Geometry/plane.cpp\
     Graphics/Shader/shader.cpp \
     Graphics/Camera/camera.cpp \
     Graphics/Model/modellibrary.cpp \
@@ -42,10 +43,14 @@ SOURCES += main.cpp\
     Graphics/Procedural/planet.cpp \
     Graphics/Procedural/planetlod.cpp \
     Graphics/Procedural/planetgenerator.cpp \
-    Graphics/Model/materiallibrary.cpp \
     Event/Events/eventstreamer.cpp \
     Input/keyboard.cpp \
-    Input/mouse.cpp
+    Input/mouse.cpp \
+    Graphics/Model/light.cpp \
+    Graphics/Model/lightlibrary.cpp \
+    Event/Events/eventwindow.cpp \
+    Graphics/Camera/frustum.cpp
+
 
 HEADERS  += \
     Object/object.h \
@@ -66,6 +71,7 @@ HEADERS  += \
     Math/Vector/vector3.h \
     Math/Matrix/matrix4x4.h \
     Math/Matrix/matrix3x3.h \
+    Math/Geometry/plane.h \
     Graphics/OpenGL/OpenGL.h \
     Math/mathematics.h \
     Graphics/Shader/shader.h \
@@ -78,10 +84,14 @@ HEADERS  += \
     Graphics/Procedural/planet.h \
     Graphics/Procedural/planetlod.h \
     Graphics/Procedural/planetgenerator.h \
-    Graphics/Model/materiallibrary.h \
     Event/Events/eventstreamer.h \
     Input/keyboard.h \
-    Input/mouse.h
+    Input/mouse.h \
+    Graphics/Model/light.h \
+    Graphics/Model/lightlibrary.h \
+    Event/Events/eventwindow.h \
+    Graphics/Camera/frustum.h
+
 
 FORMS    += \
     Debug/Ui/debugwindow.ui

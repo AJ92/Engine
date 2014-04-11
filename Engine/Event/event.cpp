@@ -26,6 +26,8 @@ Event::~Event(){
         break;
     case EventModelStreamedFromDisk:
         break;
+    case EventWindowResize:
+        break;
     }
 }
 
@@ -47,6 +49,8 @@ void Event::destroy(){
         break;
     case EventModelStreamedFromDisk:
         delete streamer;
+        break;
+    case EventWindowResize:
         break;
     }
 }

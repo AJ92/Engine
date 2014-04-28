@@ -1,6 +1,7 @@
 #ifndef ENGINE_H
 #define ENGINE_H
 
+#define GLFW_DLL
 
 #include <QObject>
 #include <QString>
@@ -64,21 +65,18 @@ public:
     //RENDER
 
     //callbacks
-    //moved to own class KeyBoard
-    //void keyboard(unsigned char key, int x, int y);
-    void idle();
-    void timer(int value);
     void render();
+    void error(int error, const char* description);
 
     //some functions
     void setClearColor(float r, float g, float b, float a);
 
 
     //KEYBOARD (override if needed)
-    void keyFunction();
+    //void keyFunction();
 
 
-    //temprary model loader test
+    //temporary model loader test
     //needs to be redirected and synced over threads...
 
     Model * loadModel(QString path);
@@ -86,6 +84,9 @@ public:
     void setCamera(Camera * cam);
 
     QString getApplicationDir();
+
+    Camera* getCamera();
+    double getTimeStep();
 
 
 private:
@@ -103,6 +104,7 @@ private:
     EventTransmitter * windowTransmitter;
     Window * window;
 
+protected:
     //renderer
     Renderer *r;
 
@@ -111,8 +113,15 @@ private:
 
     //Mouse
     Mouse *m;
-    double x_angle;
-    double y_angle;
+
+    //model loader and threads.
+    ModelLibrary * model_library;
+
+    //light loader and threads.
+    LightLibrary * light_library;
+
+
+private:
 
 
     //FPS settings
@@ -131,6 +140,7 @@ private:
 
     //Timer for glut event loop
     QTimer * t;
+    QTimer * fps_timer;
 
 
     //Debug settings
@@ -140,32 +150,24 @@ private:
     bool debug_visible;
 
 
-    //model loader and threads.
-    ModelLibrary * model_library;
-
-    //light loader and threads.
-    LightLibrary * light_library;
-
-    QList<Light*> lights;
-    double lighttime;
 
     int idealThreadCount;
     ThreadAccountant * threadAccountant;
-
-
 
 
     ///////
     // DEBUG STUFF
     // TESTING MATRICES
 
-    Model * cam_test;
+    //Model * cam_test;
 
 
+    virtual void eventCall();
 
 
 public slots:
     void eventLoop();
+    void timer();
 
 };
 

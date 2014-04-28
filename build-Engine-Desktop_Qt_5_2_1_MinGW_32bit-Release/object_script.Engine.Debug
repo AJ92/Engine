@@ -36,6 +36,7 @@ INPUT(
 ./debug\lightlibrary.o
 ./debug\eventwindow.o
 ./debug\frustum.o
+./debug\test.o
 ./debug\moc_debugwindow.o
 ./debug\moc_engine.o
 ./debug\moc_streamToDisk.o

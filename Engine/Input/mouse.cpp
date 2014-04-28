@@ -3,21 +3,21 @@
 //C
 Mouse * ptr_global_mouse_instance = NULL;
 
-void mousePressed_callback(int button, int state, int x, int y);
+void mousePressed_callback(GLFWwindow* win, int button, int action, int mods);
 void wheelSpun_callback(int wheel, int direction, int x, int y);
-void mouseMoved_callback(int x, int y);
+void mouseMoved_callback(GLFWwindow* win, double x, double y);
 
 
 
-void mousePressed_callback(int button, int state, int x, int y){
-    ptr_global_mouse_instance->mousePressed(button, state, x, y);
+void mousePressed_callback(GLFWwindow* win, int button, int action, int mods){
+    ptr_global_mouse_instance->mousePressed(button, action, mods);
 }
 
 void wheelSpun_callback(int wheel, int direction, int x, int y){
     ptr_global_mouse_instance->wheelSpun(wheel, direction, x, y);
 }
 
-void mouseMoved_callback(int x, int y){
+void mouseMoved_callback(GLFWwindow* win, double x, double y){
     ptr_global_mouse_instance->mouseMoved(x, y);
 }
 
@@ -29,6 +29,7 @@ Mouse::Mouse(Window * win) :
     debugMessage("keyboard created.");
     ptr_global_mouse_instance = this;
     mouseButtons = new bool[10];
+    modifiers = 0;
 
     xpos = -1;
     ypos = -1;
@@ -40,6 +41,9 @@ Mouse::Mouse(Window * win) :
     movement = false;
     warped = false;
 
+    trapBorder = 40;
+    trapMouseInFrame = false;
+
     old_x_pos = 0;
     old_y_pos = 0;
 
@@ -50,10 +54,10 @@ Mouse::Mouse(Window * win) :
 
 void Mouse::initialize(){
     debugMessage("mouse initializing...");
-    glutMouseFunc(mousePressed_callback);
-    glutMouseWheelFunc(wheelSpun_callback);
-    glutPassiveMotionFunc(mouseMoved_callback);
-    glutMotionFunc(mouseMoved_callback);
+
+    glfwSetMouseButtonCallback(w->getGLFWwindow(),&mousePressed_callback);
+    glfwSetCursorPosCallback(w->getGLFWwindow(),&mouseMoved_callback);
+
     debugMessage("mouse initialized.");
 }
 
@@ -61,12 +65,20 @@ void Mouse::relativeCoordinates(bool move){
     this->movement = move;
 }
 
+void Mouse::setTrapBorder(int value){
+    trapBorder = value;
+}
+
+void Mouse::trapMouse(bool trap){
+    trapMouseInFrame = trap;
+}
+
 void Mouse::hideCursor(){
-    glutSetCursor(GLUT_CURSOR_NONE);
+    //glutSetCursor(GLUT_CURSOR_NONE);
 }
 
 void Mouse::showCursor(){
-    glutSetCursor(GLUT_CURSOR_LEFT_ARROW);
+    //glutSetCursor(GLUT_CURSOR_LEFT_ARROW);
 }
 
 bool Mouse::isPressed(int button){
@@ -107,16 +119,16 @@ int Mouse::spinDirection(){
     return wheelspindir;
 }
 
-void Mouse::mousePressed (int button, int state, int x, int y) {
-    //debugMessage("mouseButton: " + QString::number(button));
-    if(state == GLUT_UP){
+void Mouse::mousePressed (int button, int action, int mods) {
+    debugMessage("mouseButton: " + QString::number(button));
+
+    if(action == GLFW_PRESS){
         mouseButtons[button] = true;
     }
-    else if(state == GLUT_DOWN){
+    else if(action == GLFW_RELEASE){
         mouseButtons[button] = false;
     }
-    xpos = x;
-    ypos = y;
+    modifiers = mods;
 }
 
 void Mouse::wheelSpun (int wheel, int direction, int x, int y) {
@@ -127,22 +139,10 @@ void Mouse::wheelSpun (int wheel, int direction, int x, int y) {
     ypos = y;
 }
 
-void Mouse::mouseMoved (int x, int y) {
-    //debugMessage("mouseMove: " + QString::number(x) + "  "  + QString::number(y));
+void Mouse::mouseMoved (double x, double y) {
+    debugMessage("mouseMove: " + QString::number(x) + "  "  + QString::number(y));
     xpos = x;
     ypos = y;
-    if(movement && !warped){
-        if(xpos < 30 || ypos < 30 || xpos > (w->getWindowWidth() - 30) || ypos > (w->getWindowHeight() - 30)){
-            glutWarpPointer(w->getWindowWidth()/2,w->getWindowHeight()/2);
-            xpos = w->getWindowWidth()/2;
-            ypos = w->getWindowHeight()/2;
-            old_x_pos = xpos;
-            old_y_pos = ypos;
-            warped = true;
-            return;
-        }
-    }
-    warped = false;
 }
 
 void Mouse::debugMessage(QString message){

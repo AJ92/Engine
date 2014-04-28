@@ -23,13 +23,18 @@ public:
 
     bool isOpen();
 
+    GLFWwindow* getGLFWwindow();
+
 
 private:
     //window settings
+    GLFWwindow* window;
+
     QString window_title;
     int window_width;
     int window_height;
-    int window_handle;
+
+    //int window_handle;
 
     bool created;
 

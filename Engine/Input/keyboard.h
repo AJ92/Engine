@@ -3,28 +3,24 @@
 
 #include "Event/eventtransmitter.h"
 #include "Graphics/OpenGL/OpenGL.h"
+#include "Graphics/Window/window.h"
 
 class KeyBoard : public EventTransmitter
 {
 public:
-    KeyBoard();
+    KeyBoard(Window* window);
     void initialize();
 
-    bool isPressed(unsigned char key);
-    bool isSpecialPressed(unsigned char key);
-
-    void keyPressed (unsigned char key, int x, int y);
-    void keyUp (unsigned char key, int x, int y);
-
-    void keySpecialPressed (int key, int x, int y);
-    void keySpecialUp (int key, int x, int y);
+    void key(int key, int scancode, int action, int mods);
+    bool isPressed(int key);
 
 private:
     //ASCII KEYS
     bool* keyStates;
+    int* keyModifiers;
+    int modifier;
 
-    //SPECIAL KEYS (e.g. arrow up/down...)
-    bool* keySpecialStates;
+    Window* win;
 
     void debugMessage(QString message);
 };

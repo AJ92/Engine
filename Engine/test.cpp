@@ -1,0 +1,220 @@
+#include "test.h"
+
+Test::Test() :
+    Engine()
+{
+    x_angle = 0.0;
+    y_angle = 0.0;
+
+    lighttime = 0;
+
+    //init engine
+    showDebugWindow();
+    initialize(0, 0);
+
+    setClearColor(0.03f,0.02f,0.05f,0.0f);
+    //setClearColor(0.3f,0.3f,0.4f,0.0f);
+
+    setWindowTitle("Engine v0.001a");
+    setWindowSize(800,600);
+
+    Camera * cam = new Camera();
+    cam->setZFAR(5000.0);
+    cam->set_position(0.0,350.0,0.0);
+    //cam->rotate_global_post_x(15.0);
+    setCamera(cam);
+
+    m->trapMouse(true);
+    m->setTrapBorder(140);
+    m->hideCursor();
+    qDebug("Test constructed...");
+
+
+
+    model_library->setModelsPerThread(1);
+    int count = 200;
+    for(int i = 0; i < count; i++){
+        Model * m = loadModel("E://Code//QTProjects//Engine//Engine//misc//models//box.obj");
+        m->set_scale(0.22f,0.22f,0.22f);
+        m->set_position((double)((rand() & 2000)-1000) + (double)((rand() & 1000)-500) * 0.05,
+                        (double)((rand() & 2000)-1000) + (double)((rand() & 1000)-500) * 0.05,
+                        (double)((rand() & 2000)-1000) + (double)((rand() & 1000)-500) * 0.05);
+        m->set_rotation(rand() & 361,0.0,1.0,0.0);
+    }
+}
+
+void Test::keyFunction(){
+    //ESC
+    if(k->isPressed(1)){
+        exit(EXIT_SUCCESS);
+    }
+
+    //1
+    if(k->isPressed(2)){
+        Event e1;
+        e1.type = Event::EventDebuggerShow;
+        this->transmit(e1);
+    }
+
+    //2
+    if(k->isPressed(3)){
+        Event e2;
+        e2.type = Event::EventDebuggerHide;
+        this->transmit(e2);
+    }
+
+    //3
+    if(k->isPressed(4)){
+        r->setPolygonMode(Renderer::PolygonModeStandard);
+    }
+    //4
+    if(k->isPressed(5)){
+        r->setPolygonMode(Renderer::PolygonModeStandard | Renderer::PolygonModeWireframe);
+    }
+    //5
+    if(k->isPressed(6)){
+        r->setPolygonMode(Renderer::PolygonModeStandard | Renderer::PolygonModeVertex);
+    }
+    //6
+    if(k->isPressed(7)){
+        r->setPolygonMode(Renderer::PolygonModeStandard | Renderer::PolygonModeVertex | Renderer::PolygonModeWireframe);
+    }
+    //L
+    if(k->isPressed(38))
+    {
+        model_library->setModelsPerThread(1);
+        int count = 10;
+        for(int i = 0; i < count; i++){
+            Model * m = loadModel("E://Code//QTProjects//Engine//Engine//misc//models//box.obj");
+            m->set_scale(0.22f,0.22f,0.22f);
+            m->set_position((double)((rand() & 2000)-1000) + (double)((rand() & 1000)-500) * 0.05,
+                            (double)((rand() & 5)-20),
+                            (double)((rand() & 2000)-1000) + (double)((rand() & 1000)-500) * 0.05);
+            m->set_rotation(rand() & 361,0.0,1.0,0.0);
+        }
+    }
+
+    //K
+    if(k->isPressed(37))
+    {
+        model_library->setModelsPerThread(1);
+        Model * m = loadModel("E://Code//QTProjects//Engine//Engine//misc//models//betty.obj");
+        m->set_scale(0.92f,0.92f,0.92f);
+        m->set_position((double)((rand() & 2000)-1000) + (double)((rand() & 1000)-500) * 0.05,
+                        (double)((rand() & 20)-10) * 0.05,
+                        (double)((rand() & 2000)-1000) + (double)((rand() & 1000)-500) * 0.05);
+        m->set_rotation(rand() & 361,0.0,1.0,0.0);
+    }
+
+    //M
+    if(k->isPressed(50))
+    {
+        light_library->setLightsPerThread(1);
+
+        int count = 5;
+        for(int i = 0; i < count; i++){
+            Light * l = loadLight("E://Code//QTProjects//Engine//Engine//misc//models//light_sphere.obj");
+
+            double red = ((double)(rand() & 800)+200)* 0.001;
+            double green = ((double)(rand() & 800)+200)* 0.001;
+            double blue = ((double)(rand() & 800)+200)* 0.001;
+
+            l->setDiffuseColor(red,
+                               green,
+                               blue);
+            l->setSpecularColor(red,
+                                green,
+                                blue);
+
+            l->getModel()->set_scale(11.12f,11.12f,11.12f);
+            l->getModel()->set_position((double)((rand() & 2000)-1000) + (double)((rand() & 1000)-500) * 0.05,
+                                        (double)((rand() & 590)-20) + (double)((rand() & 60)-30) * 0.05,
+                                        (double)((rand() & 2000)-1000) + (double)((rand() & 1000)-500) * 0.05);
+            lights.append(l);
+        }
+    }
+
+    //J
+    if(k->isPressed(36))
+    {
+        model_library->setModelsPerThread(1);
+        Model * m = loadModel("E://Code//QTProjects//Engine//Engine//misc//models//box.obj");
+        m->set_scale(20.92f,0.22f,20.92f);
+        m->set_position((double)((rand() & 2000)-1000) + (double)((rand() & 1000)-500) * 0.05,
+                        -(double)((rand() & 60)-120)*0.1,
+                        (double)((rand() & 2000)-1000) + (double)((rand() & 1000)-500) * 0.05);
+
+        m->set_position(0.0,-40.0,0.0);
+        //m->set_rotation(rand() & 361,rand() & 361,rand() & 361);
+        //Sleep(1000);
+    }
+
+    //0
+    if(k->isPressed(11)){
+        //glutFullScreenToggle();
+    }
+    //Scharfes S
+    if(k->isPressed(10)){
+        model_library->debugModelData();
+    }
+
+    if(k->isPressed(24)){
+        light_library->debugLightModelData();
+    }
+
+    x_angle += getTimeStep() * 0.2 * double(m->posX());
+    y_angle += getTimeStep() * 0.2 * double(m->posY());
+
+    getCamera()->clear_rotation_local();
+    //around y axis
+    getCamera()->add_rotation_local(x_angle,Vector3(0.0,1.0,0.0));
+    //around x axis
+    getCamera()->add_rotation_local(y_angle,Vector3(1.0,0.0,0.0));
+
+    double speed_up = 1.0;
+    if(k->isPressed(42)){
+        speed_up = 3.0;
+    }
+
+    //Q W E A S D
+    if(k->isPressed(17)){
+        Vector3 cam_pos = getCamera()->getPosition();
+        getCamera()->set_position(cam_pos.x(),cam_pos.y() + 1.0*getTimeStep()* speed_up,cam_pos.z());
+    }
+
+    if(k->isPressed(30)){
+        Vector3 cam_pos = getCamera()->getPosition();
+        getCamera()->set_position(cam_pos.x() - 1.0*getTimeStep() * speed_up,cam_pos.y(),cam_pos.z());
+    }
+    if(k->isPressed(31)){
+        Vector3 cam_pos = getCamera()->getPosition();
+        getCamera()->set_position(cam_pos.x(),cam_pos.y() - 1.0*getTimeStep() * speed_up,cam_pos.z());
+    }
+    if(k->isPressed(32)){
+        Vector3 cam_pos = getCamera()->getPosition();
+        getCamera()->set_position(cam_pos.x() + 1.0*getTimeStep() * speed_up,cam_pos.y(),cam_pos.z());
+    }
+
+    if(k->isPressed(16)){
+        Vector3 cam_pos = getCamera()->getPosition();
+        getCamera()->set_position(cam_pos.x(),cam_pos.y(),cam_pos.z() - 1.0*getTimeStep() * speed_up);
+    }
+    if(k->isPressed(18)){
+        Vector3 cam_pos = getCamera()->getPosition();
+        getCamera()->set_position(cam_pos.x(),cam_pos.y(),cam_pos.z() + 1.0*getTimeStep() * speed_up);
+    }
+}
+
+void Test::eventCall(){
+    keyFunction();
+
+    for(int i = 0; i < lights.size(); i++){
+        Model *m = lights[i]->getModel();
+        m->set_position(m->getPosition().x()+sin(lighttime)*5.0,
+                        m->getPosition().y(),
+                        m->getPosition().z()+cos(lighttime)*5.0);
+    }
+
+    lighttime += 0.022 * getTimeStep();
+
+}

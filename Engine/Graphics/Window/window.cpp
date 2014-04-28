@@ -5,11 +5,11 @@
 
 Window * ptr_global_window_instance = NULL;
 
-void resize_callback(int width, int height);
+void resize_callback(GLFWwindow* win, int width, int height);
 
 void windowClose_callback(void);
 
-void resize_callback(int width, int height)
+void resize_callback(GLFWwindow* win, int width, int height)
 {
     ptr_global_window_instance->resize(width, height);
 }
@@ -35,11 +35,12 @@ Window::Window() :
     window_title = "Engine";
     window_width = 600;
     window_height = 400;
-    window_handle = 0;
+    //window_handle = 0;
 }
 
 void Window::initialize(){
     debugMessage("window initializing...");
+    /*
     glutInitWindowSize(window_width, window_height);
     glutInitDisplayMode(GLUT_DEPTH | GLUT_DOUBLE | GLUT_RGBA | GLUT_MULTISAMPLE);
     window_handle = glutCreateWindow(window_title.toUtf8().constData());
@@ -51,6 +52,19 @@ void Window::initialize(){
     //register c function callback
     glutReshapeFunc(&resize_callback);
     glutCloseFunc(&windowClose_callback);
+    */
+
+
+    //use 4.0 context
+    glfwWindowHint (GLFW_CONTEXT_VERSION_MAJOR, 4);
+    glfwWindowHint (GLFW_CONTEXT_VERSION_MINOR, 0);
+    glfwWindowHint (GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
+    glfwWindowHint (GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+
+
+    window = glfwCreateWindow(window_width, window_height, window_title.toUtf8().constData(), NULL, NULL);
+    glfwSetWindowSizeCallback(window,&resize_callback);
+    glfwMakeContextCurrent (window);
 
     created = true;
     debugMessage("window initialized.");
@@ -60,13 +74,13 @@ void Window::initialize(){
 void Window::setWindowTitle(QString title){
     window_title = title;
     if(created){
-        glutSetWindowTitle(window_title.toUtf8().constData());
+        glfwSetWindowTitle(window,window_title.toUtf8().constData());
     }
 }
 
 void Window::setWindowSize(int width, int height){
     if(created){
-        glutReshapeWindow(width, height);
+        glfwSetWindowSize(window,width, height);
     }
 }
 
@@ -76,6 +90,10 @@ int Window::getWindowWidth(){
 
 int Window::getWindowHeight(){
     return window_height;
+}
+
+GLFWwindow* Window::getGLFWwindow(){
+    return window;
 }
 
 //next 2 might need a rename to onResize an onClose.... so its clear it's an event or so...

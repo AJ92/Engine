@@ -36,6 +36,7 @@ INPUT(
 ./release\lightlibrary.o
 ./release\eventwindow.o
 ./release\frustum.o
+./release\test.o
 ./release\moc_debugwindow.o
 ./release\moc_engine.o
 ./release\moc_streamToDisk.o

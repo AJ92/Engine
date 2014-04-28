@@ -1,9 +1,5 @@
 #include "engine.h"
 
-//test windoof
-//#include <windows.h>
-
-
 
 /*!
   Main class.
@@ -21,8 +17,8 @@
 Engine * ptr_global_engine_instance = NULL;
 
 void render_callback(void);
-void idle_callback(void);
-void timer_callback(int value);
+void error_callback(int error, const char* description);
+
 //void keyboard_callback(unsigned char key, int x, int y);
 
 
@@ -30,14 +26,8 @@ void render_callback(void){
     ptr_global_engine_instance->render();
 }
 
-void idle_callback(void)
-{
-    ptr_global_engine_instance->idle();
-}
-
-
-void timer_callback(int value){
-    ptr_global_engine_instance->timer(value);
+void error_callback(int error, const char* description){
+    ptr_global_engine_instance->error(error,description);
 }
 
 /*
@@ -68,7 +58,7 @@ Engine::Engine(QObject *parent) :
     frame_count = 0;
     fps = 0;
 
-    lighttime = 0;
+    //lighttime = 0;
 
     idealThreadCount = 1;
 
@@ -83,6 +73,7 @@ Engine::Engine(QObject *parent) :
 
 Engine::~Engine(){
     running = false;
+    glfwTerminate();
     qDebug("engine stopped.");
 }
 
@@ -92,17 +83,6 @@ Engine::~Engine(){
 void Engine::initialize(int argc, char *argv[]){
     debugMessage("engine initializing...");
 
-    //windoof
-    /*
-    double PCfreq = 0.0;
-    LARGE_INTEGER li;
-    if(!QueryPerformanceFrequency(&li)){
-        debugMessage("QueryPerformanceFrequency failed!");
-    }
-    PCfreq = double(li.QuadPart)/1000.0;
-
-    debugMessage(QString::number(PCfreq));
-    */
 
     app_dir = QApplication::applicationDirPath();
     debugMessage("Application Dir: " + app_dir);
@@ -115,6 +95,7 @@ void Engine::initialize(int argc, char *argv[]){
     GLenum GlewInitResult;
 
     //init openGL 4.0
+    /*
     glutInit(&argc, argv);
     glutInitContextVersion(4, 0);
     glutInitContextFlags(GLUT_FORWARD_COMPATIBLE);
@@ -124,6 +105,12 @@ void Engine::initialize(int argc, char *argv[]){
         GLUT_ACTION_ON_WINDOW_CLOSE,
         GLUT_ACTION_CONTINUE_EXECUTION
     );
+    */
+    if (!glfwInit())
+        exit(EXIT_FAILURE);
+
+    glfwSetErrorCallback(error_callback);
+
 
     //creating the window
     window = new Window();
@@ -172,7 +159,7 @@ void Engine::initialize(int argc, char *argv[]){
 
 
     //init keyboard
-    k = new KeyBoard();
+    k = new KeyBoard(window);
     k->addListener(debuggerListener);
     k->initialize();
 
@@ -183,8 +170,10 @@ void Engine::initialize(int argc, char *argv[]){
 
     m->relativeCoordinates(true);
 
+    /*
     x_angle = 0.0;
     y_angle = 0.0;
+    */
 
 
     //init RENDERER
@@ -201,10 +190,10 @@ void Engine::initialize(int argc, char *argv[]){
 
 
     //register c function callbacks
-    glutDisplayFunc(&render_callback);
+    //glutDisplayFunc(&render_callback);
     //glutCloseFunc(&close_callback);
-    glutIdleFunc(&idle_callback);
-    glutTimerFunc(0, &timer_callback, 0);
+    //glutIdleFunc(&idle_callback);
+    //glutTimerFunc(0, &timer_callback, 0);
     //glutKeyboardFunc(&keyboard_callback);
 
     //set default gl stuff
@@ -236,9 +225,11 @@ void Engine::initialize(int argc, char *argv[]){
 
 
 
-    cam_test = loadModel("E://Code//QTProjects//Engine//Engine//misc//models//box.obj");
-    cam_test->set_scale(0.32f,0.32f,0.32f);
-    cam_test->set_position(0.0,+120.0,0.0);
+    fps_timer = new QTimer(this);
+    QObject::connect(fps_timer,SIGNAL(timeout()),this,SLOT(timer()));
+    fps_timer->setInterval(1000);
+    fps_timer->start();
+
 }
 
 void Engine::setWindowTitle(QString title){
@@ -289,6 +280,14 @@ QString Engine::getApplicationDir(){
     return app_dir;
 }
 
+Camera* Engine::getCamera(){
+    return cam;
+}
+
+double Engine::getTimeStep(){
+    return timestep;
+}
+
 bool Engine::isRunning(){
     return running;
 }
@@ -297,86 +296,9 @@ int Engine::getFps(){
     return fps;
 }
 
-/*
-void Engine::debugMessage(QString message){
-    Event e;
-    e.type = Event::EventDebuggerMessage;
-    e.debugger = new EventDebugger(message);
-    this->transmit(e);
-}
-*/
-
-
-//CALLBACKS
-/*
-void Engine::keyboard(unsigned char key, int x, int y)
-{
-    debugMessage("Keypress: " + QString(key));
-    switch (key)
-    {
-    case '\x1B':
-        exit(EXIT_SUCCESS);
-        break;
-    case '1':
-        {
-            Event e1;
-            e1.type = Event::EventDebuggerShow;
-            this->transmit(e1);
-        }
-        break;
-    case '2':
-        {
-            Event e2;
-            e2.type = Event::EventDebuggerHide;
-            this->transmit(e2);
-        }
-        break;
-    case '3':
-        r->setPolygonMode(Renderer::PolygonModeFill);
-        break;
-    case '4':
-        r->setPolygonMode(Renderer::PolygonModeLine);
-        break;
-    case '5':
-        r->setPolygonMode(Renderer::PolygonModePoint);
-        break;
-    case 'l':
-        {
-            model_library->setModelsPerThread(1);
-            int count = 1000;
-            for(int i = 0; i < count; i++){
-                Model * m = loadModel("E://Code//QTProjects//Engine//Engine//misc//models//box.obj");
-                m->set_scale(0.12f,0.12f,0.12f);
-                m->set_position((double)((rand() & 2000)-1000) + (double)((rand() & 1000)-500) * 0.05,
-                                (double)((rand() & 20)-10) + (double)((rand() & 100)-50) * 0.05,
-                                (double)((rand() & 2000)-1000) + (double)((rand() & 1000)-500) * 0.05);
-                m->set_rotation(rand() & 361,rand() & 361,rand() & 361);
-            }
-            break;
-        }
-    case '0':
-        {
-            glutFullScreenToggle();
-            break;
-        }
-    case '9':
-        {
-            model_library->debugModelData();
-            break;
-        }
-    }
-}
-*/
-
-void Engine::idle(){
-    glutPostRedisplay();
-}
-
 //simple fps calc
-void Engine::timer(int value){
-    if (0 != value) {
-        fps = frame_count;
-    }
+void Engine::timer(){
+    fps = frame_count;
 
     setWindowTitle("fps: " + QString::number(fps) +
                    "   @ " + QString::number(frameTime) + "ns/frame    timestep: " +
@@ -384,16 +306,12 @@ void Engine::timer(int value){
                    QString::number(model_library->modelCount()));
 
     frame_count = 0;
-    glutTimerFunc(1000, &timer_callback, 1);
 }
 
 
 void Engine::render()
 {
-
     frame_count++;
-
-    //glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     //timer timestep and so on...
     frameTime = elapseTimer.nsecsElapsed();
@@ -416,7 +334,7 @@ void Engine::render()
     }
     */
     timestep = (double)frameTime/(double)deltaTime;
-    //cam->rotate_global_pre_y(0.08*timestep);
+
 
     //render every model
     /*
@@ -430,209 +348,46 @@ void Engine::render()
     }
     */
 
-    //render the mdllib
-    r->setModelLibrary(model_library);
-    r->setLightLibrary(light_library);
-    r->render();
+    if(!glfwWindowShouldClose(window->getGLFWwindow()))
+    {
 
-    glutSwapBuffers();
-    glutPostRedisplay();
+        //render the mdllib
+        r->setModelLibrary(model_library);
+        r->setLightLibrary(light_library);
+        r->render();
+
+        //glutSwapBuffers();
+        //glutPostRedisplay();
+
+        glfwSwapBuffers(window->getGLFWwindow());
+        glfwPollEvents();
+    }
+    else{
+        //window gets closed
+        qDebug("window closed by user");
+        glfwTerminate();
+        exit(EXIT_SUCCESS);
+    }
+
 }
 
+void Engine::error(int error, const char* description){
+    debugMessage("GLWF Error (" + QString::number(error) + "): " + QString(description));
+}
 
 void Engine::setClearColor(float r, float g, float b, float a){
     //dont want to check for good values... user should do it
     glClearColor(r,g,b,a);
 }
 
-void Engine::keyFunction(){
-    if(k->isPressed('\x1B')){
-        exit(EXIT_SUCCESS);
-    }
-
-    if(k->isPressed('1')){
-        Event e1;
-        e1.type = Event::EventDebuggerShow;
-        this->transmit(e1);
-    }
-
-    if(k->isPressed('2'))
-        {
-            Event e2;
-            e2.type = Event::EventDebuggerHide;
-            this->transmit(e2);
-        }
-
-    if(k->isPressed('3')){
-        r->setPolygonMode(Renderer::PolygonModeStandard);
-    }
-    if(k->isPressed('4')){
-        r->setPolygonMode(Renderer::PolygonModeStandard | Renderer::PolygonModeWireframe);
-    }
-    if(k->isPressed('5')){
-        r->setPolygonMode(Renderer::PolygonModeStandard | Renderer::PolygonModeVertex);
-    }
-    if(k->isPressed('6')){
-        r->setPolygonMode(Renderer::PolygonModeStandard | Renderer::PolygonModeVertex | Renderer::PolygonModeWireframe);
-    }
-    if(k->isPressed('l'))
-    {
-        model_library->setModelsPerThread(1);
-        int count = 10;
-        for(int i = 0; i < count; i++){
-            Model * m = loadModel("E://Code//QTProjects//Engine//Engine//misc//models//box.obj");
-            m->set_scale(0.22f,0.22f,0.22f);
-            m->set_position((double)((rand() & 2000)-1000) + (double)((rand() & 1000)-500) * 0.05,
-                            (double)((rand() & 5)-20),
-                            (double)((rand() & 2000)-1000) + (double)((rand() & 1000)-500) * 0.05);
-            m->set_rotation(rand() & 361,0.0,1.0,0.0);
-        }
-    }
-
-    if(k->isPressed('k'))
-    {
-        model_library->setModelsPerThread(1);
-        Model * m = loadModel("E://Code//QTProjects//Engine//Engine//misc//models//betty.obj");
-        m->set_scale(0.92f,0.92f,0.92f);
-        m->set_position((double)((rand() & 2000)-1000) + (double)((rand() & 1000)-500) * 0.05,
-                        (double)((rand() & 20)-10) * 0.05,
-                        (double)((rand() & 2000)-1000) + (double)((rand() & 1000)-500) * 0.05);
-        m->set_rotation(rand() & 361,0.0,1.0,0.0);
-    }
-
-    if(k->isPressed('m'))
-    {
-        light_library->setLightsPerThread(1);
-
-        int count = 5;
-        for(int i = 0; i < count; i++){
-            Light * l = loadLight("E://Code//QTProjects//Engine//Engine//misc//models//light_sphere.obj");
-
-            double red = ((double)(rand() & 800)+200)* 0.001;
-            double green = ((double)(rand() & 800)+200)* 0.001;
-            double blue = ((double)(rand() & 800)+200)* 0.001;
-
-            l->setDiffuseColor(red,
-                               green,
-                               blue);
-            l->setSpecularColor(red,
-                                green,
-                                blue);
-
-            l->getModel()->set_scale(18.12f,18.12f,18.12f);
-            l->getModel()->set_position((double)((rand() & 2000)-1000) + (double)((rand() & 1000)-500) * 0.05,
-                                        (double)((rand() & 590)-20) + (double)((rand() & 60)-30) * 0.05,
-                                        (double)((rand() & 2000)-1000) + (double)((rand() & 1000)-500) * 0.05);
-            lights.append(l);
-        }
-    }
-
-    if(k->isPressed('j'))
-    {
-        model_library->setModelsPerThread(1);
-        Model * m = loadModel("E://Code//QTProjects//Engine//Engine//misc//models//box.obj");
-        m->set_scale(20.92f,0.22f,20.92f);
-        m->set_position((double)((rand() & 2000)-1000) + (double)((rand() & 1000)-500) * 0.05,
-                        -(double)((rand() & 60)-120)*0.1,
-                        (double)((rand() & 2000)-1000) + (double)((rand() & 1000)-500) * 0.05);
-
-        m->set_position(0.0,-40.0,0.0);
-        //m->set_rotation(rand() & 361,rand() & 361,rand() & 361);
-        Sleep(1000);
-    }
-
-    if(k->isPressed('0')){
-        glutFullScreenToggle();
-    }
-    if(k->isPressed('9')){
-        model_library->debugModelData();
-    }
-    if(k->isPressed('o')){
-        light_library->debugLightModelData();
-    }
-
-    x_angle += timestep * 0.2 * double(m->posX());
-    y_angle += timestep * 0.2 * double(m->posY());
-
-    cam->clear_rotation_local();
-    //around y axis
-    cam->add_rotation_local(x_angle,Vector3(0.0,1.0,0.0));
-    //around x axis
-    cam->add_rotation_local(y_angle,Vector3(1.0,0.0,0.0));
-
-    cam_test->clear_rotation();
-    //around y axis
-    cam_test->add_rotation(x_angle,Vector3(0.0,1.0,0.0));
-    //around x axis
-    cam_test->add_rotation(y_angle,Vector3(1.0,0.0,0.0));
-
-    //cam_test->set_rotation_matrix(cam->get_rotation_local_matrix());
-
-    double speed_up = 1.0;
-    if(k->isSpecialPressed(112)){
-        speed_up = 3.0;
-    }
-
-    if(k->isPressed('w')){
-        Vector3 cam_pos = cam->getPosition();
-        cam->set_position(cam_pos.x(),cam_pos.y() + 1.0*timestep,cam_pos.z() * speed_up);
-
-        //Vector3 test_pos = cam_test->getPosition();
-        //cam_test->set_position(test_pos.x(),test_pos.y() + 1.0*timestep,test_pos.z());
-    }
-    if(k->isPressed('a')){
-        Vector3 cam_pos = cam->getPosition();
-        cam->set_position(cam_pos.x() - 1.0*timestep * speed_up,cam_pos.y(),cam_pos.z());
-
-        //Vector3 test_pos = cam_test->getPosition();
-        //cam_test->set_position(test_pos.x() - 1.0*timestep,test_pos.y(),test_pos.z());
-    }
-    if(k->isPressed('s')){
-        Vector3 cam_pos = cam->getPosition();
-        cam->set_position(cam_pos.x(),cam_pos.y() - 1.0*timestep * speed_up,cam_pos.z());
-
-        //Vector3 test_pos = cam_test->getPosition();
-        //cam_test->set_position(test_pos.x(),test_pos.y() - 1.0*timestep,test_pos.z());
-    }
-    if(k->isPressed('d')){
-        Vector3 cam_pos = cam->getPosition();
-        cam->set_position(cam_pos.x() + 1.0*timestep * speed_up,cam_pos.y(),cam_pos.z());
-
-        //Vector3 test_pos = cam_test->getPosition();
-        //cam_test->set_position(test_pos.x() + 1.0*timestep,test_pos.y(),test_pos.z());
-    }
-
-    if(k->isPressed('q')){
-        Vector3 cam_pos = cam->getPosition();
-        cam->set_position(cam_pos.x(),cam_pos.y(),cam_pos.z() - 1.0*timestep * speed_up);
-
-        //Vector3 test_pos = cam_test->getPosition();
-        //cam_test->set_position(test_pos.x(),test_pos.y(),test_pos.z() - 1.0*timestep);
-    }
-    if(k->isPressed('e')){
-        Vector3 cam_pos = cam->getPosition();
-        cam->set_position(cam_pos.x(),cam_pos.y(),cam_pos.z() + 1.0*timestep * speed_up);
-
-        //Vector3 test_pos = cam_test->getPosition();
-        //cam_test->set_position(test_pos.x(),test_pos.y(),test_pos.z() + 1.0*timestep);
-    }
-
+void Engine::eventCall(){
 
 }
 
-
 //SLOTS
 void Engine::eventLoop(){
-    glutMainLoopEvent();
-    keyFunction();
-    for(int i = 0; i < lights.size(); i++){
-        Model *m = lights[i]->getModel();
-        m->set_position(m->getPosition().x()+sin(lighttime)*5.0,
-                        m->getPosition().y(),
-                        m->getPosition().z()+cos(lighttime)*5.0);
-    }
-
-    lighttime += 0.022 * timestep;
+    eventCall();
+    render();
 }
 
 

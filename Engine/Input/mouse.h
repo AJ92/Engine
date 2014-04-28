@@ -19,24 +19,33 @@ public:
     int posY();
 
     void relativeCoordinates(bool move);
+    void setTrapBorder(int value);
+    void trapMouse(bool trap);
     void hideCursor();
     void showCursor();
 
     //callbacks
-    void mousePressed (int button, int state, int x, int y);
+    void mousePressed (int button, int action, int mods);
     void wheelSpun(int wheel, int direction, int x, int y);
-    void mouseMoved(int x, int y);
+    void mouseMoved(double x, double y);
 
 private:
     bool* mouseButtons;
+
+    int modifiers;
+
     int wheelspin;
     int wheelspindir;
 
-    int xpos;
-    int ypos;
+    double xpos;
+    double ypos;
 
+    //movement == true; posX and posY will give you relative coordinates
+    //movement == false; posX and posY will give you global coordinates
     bool movement;
     bool warped;
+    int trapBorder;
+    bool trapMouseInFrame;
 
     int old_x_pos;
     int old_y_pos;

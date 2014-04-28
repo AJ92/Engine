@@ -5,7 +5,6 @@ Renderer::Renderer() :
     EventTransmitter()
 {
     shadersAndBuffersCreated = false;
-    loaded_debug = false;
 }
 
 void Renderer::initialize(){
@@ -33,38 +32,6 @@ Renderer::~Renderer(){
 
 void Renderer::setModelLibrary(ModelLibrary * mdllib){
     this->mdllib = mdllib;
-
-    if(!loaded_debug){
-        //init some debug models;
-        mdllib->setModelsPerThread(1);
-        double near_scale = 0.002;
-        double far_scale = 0.2;
-        m_ntl = mdllib->loadModel("E://Code//QTProjects//Engine//Engine//misc//models//box.obj");
-        m_ntl->set_scale(near_scale,near_scale,near_scale);
-
-        m_ntr = mdllib->loadModel("E://Code//QTProjects//Engine//Engine//misc//models//box.obj");
-        m_ntr->set_scale(near_scale,near_scale,near_scale);
-
-        m_nbl = mdllib->loadModel("E://Code//QTProjects//Engine//Engine//misc//models//box.obj");
-        m_nbl->set_scale(near_scale,near_scale,near_scale);
-
-        m_nbr = mdllib->loadModel("E://Code//QTProjects//Engine//Engine//misc//models//box.obj");
-        m_nbr->set_scale(near_scale,near_scale,near_scale);
-
-
-        m_ftl = mdllib->loadModel("E://Code//QTProjects//Engine//Engine//misc//models//box.obj");
-        m_ftl->set_scale(far_scale,far_scale,far_scale);
-
-        m_ftr = mdllib->loadModel("E://Code//QTProjects//Engine//Engine//misc//models//box.obj");
-        m_ftr->set_scale(far_scale,far_scale,far_scale);
-
-        m_fbl = mdllib->loadModel("E://Code//QTProjects//Engine//Engine//misc//models//box.obj");
-        m_fbl->set_scale(far_scale,far_scale,far_scale);
-
-        m_fbr = mdllib->loadModel("E://Code//QTProjects//Engine//Engine//misc//models//box.obj");
-        m_fbr->set_scale(far_scale,far_scale,far_scale);
-        loaded_debug = true;
-    }
 }
 
 void Renderer::setLightLibrary(LightLibrary * lightlib){
@@ -120,7 +87,7 @@ void Renderer::render(){
         //get the shader to work...
 
 
-        glClearColor (0.0f, 0.0f, 0.0f, 0.0f);
+        //glClearColor (0.0f, 0.0f, 0.0f, 0.0f);
 
         //camera matrix
         p_m.set_to_identity();
@@ -290,10 +257,11 @@ void Renderer::render(){
                         }
                     }
 
+                    /*
                     debugMessage("Rendered: " +
                                  QString::number(rendered) + " / " +
                                  QString::number(model_mesh_list[index].size()) + " models.");
-
+                    */
                 }
             }
 
@@ -308,7 +276,8 @@ void Renderer::render(){
             //
 
             glBindFramebuffer (GL_FRAMEBUFFER, 0);
-            glClearColor (0.012, 0.012, 0.012, 1.0f); // added ambient light here
+            //glDrawBuffer(GL_BACK);
+            //glClearColor (0.012, 0.012, 0.012, 1.0f); // added ambient light here
             glClear (GL_COLOR_BUFFER_BIT);
 
             glEnable (GL_BLEND); // --- could reject background frags!
@@ -334,6 +303,7 @@ void Renderer::render(){
 
 
             glUseProgram (DR_SecondPassProgramIdId);
+
 
             glPolygonMode(GL_FRONT, GL_FILL);
 
@@ -390,18 +360,6 @@ void Renderer::render(){
                         Model * mdl =  l_model_mesh_list[index].at(mdl_index);
                         vm_m = v_m * m_m;
                         pvm_m = p_m * v_m * m_m;
-
-                        //debug meshs
-
-                        m_ntl->set_position(frustum.get_ntl());
-                        m_ntr->set_position(frustum.get_ntr());
-                        m_nbl->set_position(frustum.get_nbl());
-                        m_nbr->set_position(frustum.get_nbr());
-
-                        m_ftl->set_position(frustum.get_ftl());
-                        m_ftr->set_position(frustum.get_ftr());
-                        m_fbl->set_position(frustum.get_fbl());
-                        m_fbr->set_position(frustum.get_fbr());
 
 
                         if(meshInFrustum(frustum, mdl, mesh, pvm_m)){
@@ -468,9 +426,11 @@ void Renderer::render(){
                             rendered += 1;
                         }
                     }
+                    /*
                     debugMessage("Rendered: " +
                                  QString::number(rendered) + " / " +
                                  QString::number(l_model_mesh_list[index].size()) + " lights.");
+                    */
                 }
             }
 

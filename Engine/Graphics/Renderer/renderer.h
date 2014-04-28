@@ -197,22 +197,6 @@ private:
     } Vertex;
 
 
-
-
-    bool loaded_debug;
-
-
-    //DEBUG STUFF
-    Model * m_ntl;
-    Model * m_ntr;
-    Model * m_nbl;
-    Model * m_nbr;
-
-    Model * m_ftl;
-    Model * m_ftr;
-    Model * m_fbl;
-    Model * m_fbr;
-
 };
 
 #endif // RENDERER_H

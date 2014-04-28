@@ -49,7 +49,8 @@ SOURCES += main.cpp\
     Graphics/Model/light.cpp \
     Graphics/Model/lightlibrary.cpp \
     Event/Events/eventwindow.cpp \
-    Graphics/Camera/frustum.cpp
+    Graphics/Camera/frustum.cpp \
+    test.cpp
 
 
 HEADERS  += \
@@ -90,7 +91,8 @@ HEADERS  += \
     Graphics/Model/light.h \
     Graphics/Model/lightlibrary.h \
     Event/Events/eventwindow.h \
-    Graphics/Camera/frustum.h
+    Graphics/Camera/frustum.h \
+    test.h
 
 
 FORMS    += \
@@ -99,22 +101,32 @@ FORMS    += \
 
 windows: {
     message(Windows desktop build mingw 32 bit)
+
+
+
+    #GLFW
+    INCLUDEPATH += Graphics/glfw/include
+    DEPENDPATH += Graphics/glfw/include
+    LIBS += -L$$_PRO_FILE_PWD_/Graphics/glfw/lib-mingw
+    CONFIG(release, debug|release): LIBS += -lglfw3dll
+    CONFIG(debug, debug|release): LIBS += -lglfw3dll
+
+
     #OPEN GL
 
     #not shure if needed but might come in handy
     QT += opengl
 
 
-
     LIBS += -lopengl32
 
     #freeGLUT
-    INCLUDEPATH += Graphics/freeglut/include
-    DEPENDPATH += Graphics/freeglut/include
+    #INCLUDEPATH += Graphics/freeglut/include
+    #DEPENDPATH += Graphics/freeglut/include
+    #LIBS += -L$$_PRO_FILE_PWD_/Graphics/freeglut/lib
+    #CONFIG(release, debug|release): LIBS += -lfreeglut
+    #CONFIG(debug, debug|release): LIBS += -lfreeglut
 
-    LIBS += -L$$_PRO_FILE_PWD_/Graphics/freeglut/lib
-    CONFIG(release, debug|release): LIBS += -lfreeglut
-    CONFIG(debug, debug|release): LIBS += -lfreeglut
 
 
     #GLEW

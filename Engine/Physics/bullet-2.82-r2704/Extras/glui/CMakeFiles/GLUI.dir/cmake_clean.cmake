@@ -1,0 +1,43 @@
+FILE(REMOVE_RECURSE
+  "CMakeFiles/GLUI.dir/glui_checkbox.obj"
+  "CMakeFiles/GLUI.dir/glui_panel.obj"
+  "CMakeFiles/GLUI.dir/glui_spinner.obj"
+  "CMakeFiles/GLUI.dir/glui_treepanel.obj"
+  "CMakeFiles/GLUI.dir/glui.obj"
+  "CMakeFiles/GLUI.dir/glui_column.obj"
+  "CMakeFiles/GLUI.dir/glui_radio.obj"
+  "CMakeFiles/GLUI.dir/glui_statictext.obj"
+  "CMakeFiles/GLUI.dir/glui_window.obj"
+  "CMakeFiles/GLUI.dir/glui_add_controls.obj"
+  "CMakeFiles/GLUI.dir/glui_commandline.obj"
+  "CMakeFiles/GLUI.dir/glui_list.obj"
+  "CMakeFiles/GLUI.dir/glui_rollout.obj"
+  "CMakeFiles/GLUI.dir/glui_string.obj"
+  "CMakeFiles/GLUI.dir/quaternion.obj"
+  "CMakeFiles/GLUI.dir/algebra3.obj"
+  "CMakeFiles/GLUI.dir/glui_bitmap_img_data.obj"
+  "CMakeFiles/GLUI.dir/glui_control.obj"
+  "CMakeFiles/GLUI.dir/glui_listbox.obj"
+  "CMakeFiles/GLUI.dir/glui_rotation.obj"
+  "CMakeFiles/GLUI.dir/glui_textbox.obj"
+  "CMakeFiles/GLUI.dir/glui_bitmaps.obj"
+  "CMakeFiles/GLUI.dir/glui_edittext.obj"
+  "CMakeFiles/GLUI.dir/glui_mouse_iaction.obj"
+  "CMakeFiles/GLUI.dir/glui_scrollbar.obj"
+  "CMakeFiles/GLUI.dir/glui_translation.obj"
+  "CMakeFiles/GLUI.dir/arcball.obj"
+  "CMakeFiles/GLUI.dir/glui_button.obj"
+  "CMakeFiles/GLUI.dir/glui_filebrowser.obj"
+  "CMakeFiles/GLUI.dir/glui_node.obj"
+  "CMakeFiles/GLUI.dir/glui_separator.obj"
+  "CMakeFiles/GLUI.dir/glui_tree.obj"
+  "libGLUI_Debug.pdb"
+  "libGLUI_Debug.dll"
+  "libGLUI_Debug.dll.a"
+  "libGLUI_Debug.dll.manifest"
+)
+
+# Per-language clean rules from dependency scanning.
+FOREACH(lang CXX)
+  INCLUDE(CMakeFiles/GLUI.dir/cmake_clean_${lang}.cmake OPTIONAL)
+ENDFOREACH(lang)

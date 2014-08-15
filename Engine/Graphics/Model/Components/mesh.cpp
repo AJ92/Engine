@@ -77,6 +77,9 @@ GLuint Mesh::get_vertex_array_object(){
 }
 
 void Mesh::loadGLdata(){
+
+    qDebug("loading mesh");
+
     glGenVertexArrays(1, &vertex_array_object);
 
     glBindVertexArray(vertex_array_object);
@@ -100,6 +103,8 @@ void Mesh::loadGLdata(){
     glBufferData(GL_ARRAY_BUFFER, triangle_count * 3 * 3 * sizeof(GLfloat), normals, GL_STATIC_DRAW);
     //glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, 0, 0);
     //glEnableVertexAttribArray(2);
+
+    qDebug("loaded mesh!");
 
     loaded = true;
 }

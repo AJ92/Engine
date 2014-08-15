@@ -15,6 +15,9 @@ DebugWindow::~DebugWindow()
 
 
 void DebugWindow::add_log(QString log_message){
+
+    qDebug(log_message.toUtf8());
+
     ui->textEdit->append(log_message);
 
     // create / set text cursor
@@ -22,5 +25,4 @@ void DebugWindow::add_log(QString log_message){
     cursor.movePosition(QTextCursor::End);
     ui->textEdit->setTextCursor(cursor);
     ui->textEdit->ensureCursorVisible();
-
 }

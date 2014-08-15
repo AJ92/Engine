@@ -14,6 +14,12 @@ void resize_callback(GLFWwindow* win, int width, int height)
     ptr_global_window_instance->resize(width, height);
 }
 
+void focus_callback(GLFWwindow* win, int focused)
+{
+    ptr_global_window_instance->focus(focused);
+}
+
+
 void windowClose_callback(void){
     ptr_global_window_instance->close();
 }
@@ -56,15 +62,34 @@ void Window::initialize(){
 
 
     //use 4.0 context
+
+    //Anti Aliasing (useless... deferred renderer)
+    //glfwWindowHint (GLFW_SAMPLES, 16);
+
     glfwWindowHint (GLFW_CONTEXT_VERSION_MAJOR, 4);
     glfwWindowHint (GLFW_CONTEXT_VERSION_MINOR, 0);
     glfwWindowHint (GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
     glfwWindowHint (GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
 
+
+    //use 3.3 context
+    /*
+    glfwWindowHint (GLFW_CONTEXT_VERSION_MAJOR, 3);
+    glfwWindowHint (GLFW_CONTEXT_VERSION_MINOR, 3);
+    glfwWindowHint (GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
+    glfwWindowHint (GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+    */
+
+
+    keyboard = 0;
+    mouse = 0;
+
     window = glfwCreateWindow(window_width, window_height, window_title.toUtf8().constData(), NULL, NULL);
     glfwSetWindowSizeCallback(window,&resize_callback);
+    glfwSetWindowFocusCallback(window,&focus_callback);
     glfwMakeContextCurrent (window);
+
 
     created = true;
     debugMessage("window initialized.");
@@ -116,8 +141,33 @@ void Window::close(){
     created = false;
 }
 
+void Window::focus(int focused){
+    debugMessage("Focus change:");
+    if(focused == GL_FALSE){
+        debugMessage("Focus lost");
+        if(keyboard != 0){
+            keyboard->focusLostReset();
+        }
+        if(mouse != 0){
+            mouse->focusLostReset();
+        }
+    }
+    else{
+        debugMessage("Focus gained");
+       //to be added
+    }
+}
+
 bool Window::isOpen(){
     return created;
+}
+
+void Window::registerKeyboard(KeyBoard *k){
+    keyboard = k;
+}
+
+void Window::registerMouse(Mouse *m){
+    mouse = m;
 }
 
 void Window::debugMessage(QString message){

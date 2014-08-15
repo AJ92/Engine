@@ -48,6 +48,17 @@ bool KeyBoard::isPressed(int key){
     return keyStates[key];
 }
 
+void KeyBoard::focusLostReset(){
+    debugMessage("Resetting keyboard");
+
+    modifier = 0;
+
+    for(int i = 0; i < 256; i++){
+        keyStates[i] = false;
+        keyModifiers[i] = 0;
+    }
+}
+
 void KeyBoard::debugMessage(QString message){
     Event e;
     e.type = Event::EventDebuggerMessage;

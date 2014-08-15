@@ -5,6 +5,7 @@
 #include "Graphics/OpenGL/OpenGL.h"
 #include "Graphics/Window/window.h"
 
+class Window;
 
 class Mouse : public EventTransmitter
 {
@@ -13,20 +14,19 @@ public:
     void initialize();
 
     bool isPressed(int button);
-    bool isSpun(int wheel);
-    int spinDirection();
-    int posX();
-    int posY();
+    double scrollX();
+    double scrollY();
+    double posX();
+    double posY();
 
-    void relativeCoordinates(bool move);
-    void setTrapBorder(int value);
-    void trapMouse(bool trap);
     void hideCursor();
     void showCursor();
 
+    void focusLostReset();
+
     //callbacks
     void mousePressed (int button, int action, int mods);
-    void wheelSpun(int wheel, int direction, int x, int y);
+    void mouseScrolled(double x, double y);
     void mouseMoved(double x, double y);
 
 private:
@@ -34,21 +34,11 @@ private:
 
     int modifiers;
 
-    int wheelspin;
-    int wheelspindir;
+    double xscroll;
+    double yscroll;
 
     double xpos;
     double ypos;
-
-    //movement == true; posX and posY will give you relative coordinates
-    //movement == false; posX and posY will give you global coordinates
-    bool movement;
-    bool warped;
-    int trapBorder;
-    bool trapMouseInFrame;
-
-    int old_x_pos;
-    int old_y_pos;
 
     Window * w;
 

@@ -4,7 +4,7 @@
 Mouse * ptr_global_mouse_instance = NULL;
 
 void mousePressed_callback(GLFWwindow* win, int button, int action, int mods);
-void wheelSpun_callback(int wheel, int direction, int x, int y);
+void mousescroll_callback(GLFWwindow* win,  double x, double y);
 void mouseMoved_callback(GLFWwindow* win, double x, double y);
 
 
@@ -13,8 +13,8 @@ void mousePressed_callback(GLFWwindow* win, int button, int action, int mods){
     ptr_global_mouse_instance->mousePressed(button, action, mods);
 }
 
-void wheelSpun_callback(int wheel, int direction, int x, int y){
-    ptr_global_mouse_instance->wheelSpun(wheel, direction, x, y);
+void mousescroll_callback(GLFWwindow* win,  double x, double y){
+    ptr_global_mouse_instance->mouseScrolled(x, y);
 }
 
 void mouseMoved_callback(GLFWwindow* win, double x, double y){
@@ -33,19 +33,11 @@ Mouse::Mouse(Window * win) :
 
     xpos = -1;
     ypos = -1;
-    wheelspin = -1;
-    wheelspindir = -1;
+
+    xscroll = 0;
+    yscroll = 0;
 
     w = win;
-
-    movement = false;
-    warped = false;
-
-    trapBorder = 40;
-    trapMouseInFrame = false;
-
-    old_x_pos = 0;
-    old_y_pos = 0;
 
     for(int i = 0; i < 10; i++){
         mouseButtons[i] = false;
@@ -57,21 +49,12 @@ void Mouse::initialize(){
 
     glfwSetMouseButtonCallback(w->getGLFWwindow(),&mousePressed_callback);
     glfwSetCursorPosCallback(w->getGLFWwindow(),&mouseMoved_callback);
+    glfwSetScrollCallback(w->getGLFWwindow(), &mousescroll_callback);
 
     debugMessage("mouse initialized.");
 }
 
-void Mouse::relativeCoordinates(bool move){
-    this->movement = move;
-}
 
-void Mouse::setTrapBorder(int value){
-    trapBorder = value;
-}
-
-void Mouse::trapMouse(bool trap){
-    trapMouseInFrame = trap;
-}
 
 void Mouse::hideCursor(){
     //glutSetCursor(GLUT_CURSOR_NONE);
@@ -81,42 +64,44 @@ void Mouse::showCursor(){
     //glutSetCursor(GLUT_CURSOR_LEFT_ARROW);
 }
 
+void Mouse::focusLostReset(){
+    debugMessage("Resetting mouse");
+
+    modifiers = 0;
+
+    xpos = -1;
+    ypos = -1;
+
+    xscroll = 0;
+    yscroll = 0;
+
+    for(int i = 0; i < 10; i++){
+        mouseButtons[i] = false;
+    }
+}
+
 bool Mouse::isPressed(int button){
     return mouseButtons[button];
 }
 
-int Mouse::posX(){
-    if(movement){
-        int moved_x = old_x_pos - xpos;
-        old_x_pos = xpos;
-        return moved_x;
-    }
-    else{
-        return xpos;
-    }
+double Mouse::posX(){
+    return xpos;
 }
 
-int Mouse::posY(){
-    if(movement){
-        int moved_y = old_y_pos - ypos;
-        old_y_pos = ypos;
-        return moved_y;
-    }
-    else{
-        return ypos;
-    }
+double Mouse::posY(){
+    return ypos;
 }
 
-bool Mouse::isSpun(int wheel){
-    if(wheelspin == wheel){
-        wheelspin = -1;
-        return true;
-    }
-    return false;
+double  Mouse::scrollX(){
+    double x = xscroll;
+    xscroll = 0;
+    return x;
 }
 
-int Mouse::spinDirection(){
-    return wheelspindir;
+double  Mouse::scrollY(){
+    double y = yscroll;
+    yscroll = 0;
+    return y;
 }
 
 void Mouse::mousePressed (int button, int action, int mods) {
@@ -131,12 +116,10 @@ void Mouse::mousePressed (int button, int action, int mods) {
     modifiers = mods;
 }
 
-void Mouse::wheelSpun (int wheel, int direction, int x, int y) {
-    //debugMessage("mouseWheel: " + QString::number(wheel) + "  " + QString::number(direction));
-    wheelspin = wheel;
-    wheelspindir = direction;
-    xpos = x;
-    ypos = y;
+void Mouse::mouseScrolled (double x, double y) {
+    debugMessage("mouseScroll: " + QString::number(x) + "  " + QString::number(y));
+    xscroll = x;
+    yscroll = y;
 }
 
 void Mouse::mouseMoved (double x, double y) {

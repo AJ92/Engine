@@ -5,6 +5,8 @@
 #include "Graphics/OpenGL/OpenGL.h"
 #include "Graphics/Window/window.h"
 
+class Window;
+
 class KeyBoard : public EventTransmitter
 {
 public:
@@ -13,6 +15,8 @@ public:
 
     void key(int key, int scancode, int action, int mods);
     bool isPressed(int key);
+
+    void focusLostReset();
 
 private:
     //ASCII KEYS

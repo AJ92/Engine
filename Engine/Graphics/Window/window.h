@@ -5,6 +5,11 @@
 #include "Event/eventtransmitter.h"
 
 #include "Graphics/OpenGL/OpenGL.h"
+#include "Input/keyboard.h"
+#include "Input/mouse.h"
+
+class KeyBoard;
+class Mouse;
 
 class Window : public EventTransmitter
 {
@@ -20,8 +25,12 @@ public:
 
     void resize(int width, int height);
     void close();
+    void focus(int focused);
 
     bool isOpen();
+
+    void registerKeyboard(KeyBoard *k);
+    void registerMouse(Mouse *m);
 
     GLFWwindow* getGLFWwindow();
 
@@ -29,6 +38,10 @@ public:
 private:
     //window settings
     GLFWwindow* window;
+
+    //used for focus callback...
+    KeyBoard *keyboard;
+    Mouse *mouse;
 
     QString window_title;
     int window_width;

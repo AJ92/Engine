@@ -294,6 +294,7 @@ bool Loader_obj::load_model_data(Model& mdl, QString path){
         double bounding_sphere_radius = 0.0;
 
 
+
         for(int j = 0; j < mesh_faces[mesh_names.value(i)].size(); j+=3){
             Vector3 vert1(vertices[j],vertices[j+1],vertices[j+2]);
             for(int k = 0; k < mesh_faces[mesh_names.value(i)].size(); k+=3){
@@ -311,6 +312,7 @@ bool Loader_obj::load_model_data(Model& mdl, QString path){
         bounding_sphere_radius = bounding_sphere_radius / 2.0;
 
 
+        //bounding_sphere_radius = 10.0;
 
         //Create Mesh and add it to the Mesh-list of the model.
         Mesh* mesh = new Mesh(mesh_names.value(i), triangle_count, vertices, texcoords, normals,

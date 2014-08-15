@@ -23,6 +23,8 @@ private:
     void keyFunction();
 
     void eventCall();
+
+    bool level_loaded;
 };
 
 #endif // TEST_H

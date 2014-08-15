@@ -1,0 +1,41 @@
+FILE(REMOVE_RECURSE
+  "CMakeFiles/BulletDynamics.dir/Character/btKinematicCharacterController.obj"
+  "CMakeFiles/BulletDynamics.dir/ConstraintSolver/btConeTwistConstraint.obj"
+  "CMakeFiles/BulletDynamics.dir/ConstraintSolver/btContactConstraint.obj"
+  "CMakeFiles/BulletDynamics.dir/ConstraintSolver/btFixedConstraint.obj"
+  "CMakeFiles/BulletDynamics.dir/ConstraintSolver/btGearConstraint.obj"
+  "CMakeFiles/BulletDynamics.dir/ConstraintSolver/btGeneric6DofConstraint.obj"
+  "CMakeFiles/BulletDynamics.dir/ConstraintSolver/btGeneric6DofSpringConstraint.obj"
+  "CMakeFiles/BulletDynamics.dir/ConstraintSolver/btHinge2Constraint.obj"
+  "CMakeFiles/BulletDynamics.dir/ConstraintSolver/btHingeConstraint.obj"
+  "CMakeFiles/BulletDynamics.dir/ConstraintSolver/btPoint2PointConstraint.obj"
+  "CMakeFiles/BulletDynamics.dir/ConstraintSolver/btSequentialImpulseConstraintSolver.obj"
+  "CMakeFiles/BulletDynamics.dir/ConstraintSolver/btSliderConstraint.obj"
+  "CMakeFiles/BulletDynamics.dir/ConstraintSolver/btSolve2LinearConstraint.obj"
+  "CMakeFiles/BulletDynamics.dir/ConstraintSolver/btTypedConstraint.obj"
+  "CMakeFiles/BulletDynamics.dir/ConstraintSolver/btUniversalConstraint.obj"
+  "CMakeFiles/BulletDynamics.dir/Dynamics/btDiscreteDynamicsWorld.obj"
+  "CMakeFiles/BulletDynamics.dir/Dynamics/btRigidBody.obj"
+  "CMakeFiles/BulletDynamics.dir/Dynamics/btSimpleDynamicsWorld.obj"
+  "CMakeFiles/BulletDynamics.dir/Dynamics/Bullet-C-API.obj"
+  "CMakeFiles/BulletDynamics.dir/Vehicle/btRaycastVehicle.obj"
+  "CMakeFiles/BulletDynamics.dir/Vehicle/btWheelInfo.obj"
+  "CMakeFiles/BulletDynamics.dir/Featherstone/btMultiBody.obj"
+  "CMakeFiles/BulletDynamics.dir/Featherstone/btMultiBodyConstraintSolver.obj"
+  "CMakeFiles/BulletDynamics.dir/Featherstone/btMultiBodyDynamicsWorld.obj"
+  "CMakeFiles/BulletDynamics.dir/Featherstone/btMultiBodyJointLimitConstraint.obj"
+  "CMakeFiles/BulletDynamics.dir/Featherstone/btMultiBodyConstraint.obj"
+  "CMakeFiles/BulletDynamics.dir/Featherstone/btMultiBodyPoint2Point.obj"
+  "CMakeFiles/BulletDynamics.dir/Featherstone/btMultiBodyJointMotor.obj"
+  "CMakeFiles/BulletDynamics.dir/MLCPSolvers/btDantzigLCP.obj"
+  "CMakeFiles/BulletDynamics.dir/MLCPSolvers/btMLCPSolver.obj"
+  "libBulletDynamics_Debug.pdb"
+  "libBulletDynamics_Debug.dll"
+  "libBulletDynamics_Debug.dll.a"
+  "libBulletDynamics_Debug.dll.manifest"
+)
+
+# Per-language clean rules from dependency scanning.
+FOREACH(lang CXX)
+  INCLUDE(CMakeFiles/BulletDynamics.dir/cmake_clean_${lang}.cmake OPTIONAL)
+ENDFOREACH(lang)

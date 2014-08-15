@@ -45,6 +45,8 @@ void Material::loadGLdata(){
     gl_mtls = new GLuint[tex_slots];
     glGenTextures(tex_slots, gl_mtls);
 
+    qDebug("loading material");
+
     if(mtl_ambient_loaded){
         load_gl_map(0, mtl_ambient_img);
     }
@@ -57,6 +59,7 @@ void Material::loadGLdata(){
     if(mtl_bump_loaded){
         load_gl_map(3, mtl_bump_img);
     }
+    qDebug("loaded material!");
     loaded = true;
 }
 
@@ -77,6 +80,8 @@ bool Material::load_gl_map(int slot, QImage &image){
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, width, height, 0,
                  GL_BGRA, GL_UNSIGNED_BYTE, (GLuint*)image.bits());
 
+    qDebug("tex loaded...");
+
 
     //gen mipmaps
     GLint num_mipmaps = 16;
@@ -88,12 +93,12 @@ bool Material::load_gl_map(int slot, QImage &image){
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
 
     //for mipmaps smooth
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+    //glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    //glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
 
     //mipmaps pixelated
-    //glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-    //glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST_MIPMAP_NEAREST);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST_MIPMAP_NEAREST);
 
 
     //smooth
@@ -103,6 +108,9 @@ bool Material::load_gl_map(int slot, QImage &image){
     //pixelated
     //glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
     //glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+
+    qDebug("mipmap generated...");
+
 
     image.~QImage();
     return true;

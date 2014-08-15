@@ -3,6 +3,9 @@
 Test::Test() :
     Engine()
 {
+
+    qDebug("1");
+
     x_angle = 0.0;
     y_angle = 0.0;
 
@@ -12,35 +15,38 @@ Test::Test() :
     showDebugWindow();
     initialize(0, 0);
 
+    qDebug("2");
+
     setClearColor(0.03f,0.02f,0.05f,0.0f);
     //setClearColor(0.3f,0.3f,0.4f,0.0f);
 
     setWindowTitle("Engine v0.001a");
     setWindowSize(800,600);
 
+    qDebug("3");
+
     Camera * cam = new Camera();
     cam->setZFAR(5000.0);
-    cam->set_position(0.0,350.0,0.0);
-    //cam->rotate_global_post_x(15.0);
+    cam->set_position(0.0,-1200.0,650.0);
+    cam->set_rotation_local(-50.0,1.0,0.0,0.0);
     setCamera(cam);
 
-    m->trapMouse(true);
-    m->setTrapBorder(140);
-    m->hideCursor();
+    qDebug("4");
+
+    //physics test
+    btDefaultCollisionConfiguration * collisionConfiguration = new btDefaultCollisionConfiguration();
+
     qDebug("Test constructed...");
 
+    level_loaded = false;
 
-
-    model_library->setModelsPerThread(1);
-    int count = 200;
-    for(int i = 0; i < count; i++){
-        Model * m = loadModel("E://Code//QTProjects//Engine//Engine//misc//models//box.obj");
-        m->set_scale(0.22f,0.22f,0.22f);
-        m->set_position((double)((rand() & 2000)-1000) + (double)((rand() & 1000)-500) * 0.05,
-                        (double)((rand() & 2000)-1000) + (double)((rand() & 1000)-500) * 0.05,
-                        (double)((rand() & 2000)-1000) + (double)((rand() & 1000)-500) * 0.05);
-        m->set_rotation(rand() & 361,0.0,1.0,0.0);
-    }
+    /*
+    GameObject * go = new GameObject("Hey");
+    Model3D * m3d = new Model3D();
+    go->addGraphicsComponent(m3d);
+    go->update();
+    qDebug("GameObject: %s",go->getName().toUtf8().constData());
+    */
 }
 
 void Test::keyFunction(){
@@ -54,6 +60,7 @@ void Test::keyFunction(){
         Event e1;
         e1.type = Event::EventDebuggerShow;
         this->transmit(e1);
+        qDebug("show debugger");
     }
 
     //2
@@ -61,6 +68,7 @@ void Test::keyFunction(){
         Event e2;
         e2.type = Event::EventDebuggerHide;
         this->transmit(e2);
+        qDebug("hide debugger");
     }
 
     //3
@@ -85,12 +93,12 @@ void Test::keyFunction(){
         model_library->setModelsPerThread(1);
         int count = 10;
         for(int i = 0; i < count; i++){
-            Model * m = loadModel("E://Code//QTProjects//Engine//Engine//misc//models//box.obj");
-            m->set_scale(0.22f,0.22f,0.22f);
+            Model * m = loadModel(getApplicationDir() + "//tree.obj");
+            m->set_scale(5.92f,5.92f,5.92f);
             m->set_position((double)((rand() & 2000)-1000) + (double)((rand() & 1000)-500) * 0.05,
-                            (double)((rand() & 5)-20),
-                            (double)((rand() & 2000)-1000) + (double)((rand() & 1000)-500) * 0.05);
-            m->set_rotation(rand() & 361,0.0,1.0,0.0);
+                            (double)((rand() & 2000)-1000) + (double)((rand() & 1000)-500) * 0.05,
+                            10.0);
+            m->set_rotation(rand() & 361,0.0,0.0,1.0);
         }
     }
 
@@ -98,7 +106,7 @@ void Test::keyFunction(){
     if(k->isPressed(37))
     {
         model_library->setModelsPerThread(1);
-        Model * m = loadModel("E://Code//QTProjects//Engine//Engine//misc//models//betty.obj");
+        Model * m = loadModel("C://Code//QtProjects//Engine//Engine//misc//models//betty.obj");
         m->set_scale(0.92f,0.92f,0.92f);
         m->set_position((double)((rand() & 2000)-1000) + (double)((rand() & 1000)-500) * 0.05,
                         (double)((rand() & 20)-10) * 0.05,
@@ -113,11 +121,17 @@ void Test::keyFunction(){
 
         int count = 5;
         for(int i = 0; i < count; i++){
-            Light * l = loadLight("E://Code//QTProjects//Engine//Engine//misc//models//light_sphere.obj");
+            Light * l = loadLight("C://Code//QtProjects//Engine//Engine//misc//models//light_sphere.obj");
 
+            /*
             double red = ((double)(rand() & 800)+200)* 0.001;
             double green = ((double)(rand() & 800)+200)* 0.001;
             double blue = ((double)(rand() & 800)+200)* 0.001;
+            */
+
+            double red = 1.0;
+            double green = 1.0;
+            double blue = 1.0;
 
             l->setDiffuseColor(red,
                                green,
@@ -126,10 +140,11 @@ void Test::keyFunction(){
                                 green,
                                 blue);
 
-            l->getModel()->set_scale(11.12f,11.12f,11.12f);
+            //l->getModel()->set_scale(11.12f,11.12f,11.12f);
+            l->getModel()->set_scale(51.12f,51.12f,51.12f);
             l->getModel()->set_position((double)((rand() & 2000)-1000) + (double)((rand() & 1000)-500) * 0.05,
-                                        (double)((rand() & 590)-20) + (double)((rand() & 60)-30) * 0.05,
-                                        (double)((rand() & 2000)-1000) + (double)((rand() & 1000)-500) * 0.05);
+                                        (double)((rand() & 2000)-1000) + (double)((rand() & 1000)-500) * 0.05,
+                                        100.0 + (double)((rand() & 100)-50));
             lights.append(l);
         }
     }
@@ -137,16 +152,14 @@ void Test::keyFunction(){
     //J
     if(k->isPressed(36))
     {
-        model_library->setModelsPerThread(1);
-        Model * m = loadModel("E://Code//QTProjects//Engine//Engine//misc//models//box.obj");
-        m->set_scale(20.92f,0.22f,20.92f);
-        m->set_position((double)((rand() & 2000)-1000) + (double)((rand() & 1000)-500) * 0.05,
-                        -(double)((rand() & 60)-120)*0.1,
-                        (double)((rand() & 2000)-1000) + (double)((rand() & 1000)-500) * 0.05);
-
-        m->set_position(0.0,-40.0,0.0);
-        //m->set_rotation(rand() & 361,rand() & 361,rand() & 361);
-        //Sleep(1000);
+        if(!level_loaded){
+            model_library->setModelsPerThread(1);
+            Model * m = loadModel(getApplicationDir() + "//terrain.obj");
+            m->set_scale(35.0f,35.0f,35.0f);
+            m->set_position(0.0,0.0,0.0);
+            //m->set_rotation(180,0.0,1.0,0.0);
+            level_loaded = true;
+        }
     }
 
     //0
@@ -162,6 +175,7 @@ void Test::keyFunction(){
         light_library->debugLightModelData();
     }
 
+    /*
     x_angle += getTimeStep() * 0.2 * double(m->posX());
     y_angle += getTimeStep() * 0.2 * double(m->posY());
 
@@ -170,6 +184,7 @@ void Test::keyFunction(){
     getCamera()->add_rotation_local(x_angle,Vector3(0.0,1.0,0.0));
     //around x axis
     getCamera()->add_rotation_local(y_angle,Vector3(1.0,0.0,0.0));
+    */
 
     double speed_up = 1.0;
     if(k->isPressed(42)){
@@ -211,8 +226,8 @@ void Test::eventCall(){
     for(int i = 0; i < lights.size(); i++){
         Model *m = lights[i]->getModel();
         m->set_position(m->getPosition().x()+sin(lighttime)*5.0,
-                        m->getPosition().y(),
-                        m->getPosition().z()+cos(lighttime)*5.0);
+                        m->getPosition().y()+cos(lighttime)*5.0,
+                        m->getPosition().z());
     }
 
     lighttime += 0.022 * getTimeStep();

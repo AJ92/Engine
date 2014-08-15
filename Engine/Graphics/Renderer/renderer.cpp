@@ -5,6 +5,10 @@ Renderer::Renderer() :
     EventTransmitter()
 {
     shadersAndBuffersCreated = false;
+    firstTextureIndex = 2;
+    secondTextureIndex = 4;
+    thirdTextureIndex = 8;
+    fourthTextureIndex = 16;
 }
 
 void Renderer::initialize(){
@@ -13,6 +17,118 @@ void Renderer::initialize(){
 
     //default render mode
     renderMode = PolygonModeStandard;
+
+    //init fsq
+    triangle_count = 2;
+
+    fsq_vertices = new GLfloat[18];
+    fsq_texcoords = new GLfloat[18];
+    fsq_normals = new GLfloat[18];
+
+    //vertices
+    fsq_vertices[0] = -1.0f;
+    fsq_vertices[1] = -1.0f;
+    fsq_vertices[2] = 0.5f;
+
+    fsq_vertices[3] = 1.0f;
+    fsq_vertices[4] = -1.0f;
+    fsq_vertices[5] = 0.5f;
+
+    fsq_vertices[6] = -1.0f;
+    fsq_vertices[7] = 1.0f;
+    fsq_vertices[8] = 0.5f;
+
+    fsq_vertices[9] = -1.0f;
+    fsq_vertices[10] = 1.0f;
+    fsq_vertices[11] = 0.5f;
+
+    fsq_vertices[12] = 1.0f;
+    fsq_vertices[13] = -1.0f;
+    fsq_vertices[14] = 0.5f;
+
+    fsq_vertices[15] = 1.0f;
+    fsq_vertices[16] = 1.0f;
+    fsq_vertices[17] = 0.5f;
+
+    //texcoords
+    fsq_texcoords[0] = 0.0f;
+    fsq_texcoords[1] = 0.0f;
+    fsq_texcoords[2] = 1.0f;
+
+    fsq_texcoords[3] = 1.0f;
+    fsq_texcoords[4] = 0.0f;
+    fsq_texcoords[5] = 1.0f;
+
+    fsq_texcoords[6] = 0.0f;
+    fsq_texcoords[7] = 1.0f;
+    fsq_texcoords[8] = 1.0f;
+
+    fsq_texcoords[9] = 0.0f;
+    fsq_texcoords[10] = 1.0f;
+    fsq_texcoords[11] = 1.0f;
+
+    fsq_texcoords[12] = 1.0f;
+    fsq_texcoords[13] = 0.0f;
+    fsq_texcoords[14] = 1.0f;
+
+    fsq_texcoords[15] = 1.0f;
+    fsq_texcoords[16] = 1.0f;
+    fsq_texcoords[17] = 1.0f;
+
+    //normals
+    fsq_normals[0] = 0.0f;
+    fsq_normals[1] = 0.0f;
+    fsq_normals[2] = 1.0f;
+
+    fsq_normals[3] = 0.0f;
+    fsq_normals[4] = 0.0f;
+    fsq_normals[5] = 1.0f;
+
+    fsq_normals[6] = 0.0f;
+    fsq_normals[7] = 0.0f;
+    fsq_normals[8] = 1.0f;
+
+    fsq_normals[9] = 0.0f;
+    fsq_normals[10] = 0.0f;
+    fsq_normals[11] = 1.0f;
+
+    fsq_normals[12] = 0.0f;
+    fsq_normals[13] = 0.0f;
+    fsq_normals[14] = 1.0f;
+
+    fsq_normals[15] = 0.0f;
+    fsq_normals[16] = 0.0f;
+    fsq_normals[17] = 1.0f;
+
+    //////////////////////////////
+    // FULLSCREEN QUAD VAO and VBOs
+    debugMessage("creating fullscreenquad");
+
+    glGenVertexArrays(1, &fsq_vertex_array_object);
+
+    glBindVertexArray(fsq_vertex_array_object);
+
+    glGenBuffers(1, &fsq_vertex_vbo);
+    glBindBuffer(GL_ARRAY_BUFFER, fsq_vertex_vbo);
+    glBufferData(GL_ARRAY_BUFFER, triangle_count * 3* 3 * sizeof(GLfloat), fsq_vertices, GL_STATIC_DRAW);
+
+
+
+    glGenBuffers(1, &fsq_texcoord_vbo);
+    glBindBuffer(GL_ARRAY_BUFFER, fsq_texcoord_vbo);
+    glBufferData(GL_ARRAY_BUFFER, triangle_count * 3 * 3 * sizeof(GLfloat), fsq_texcoords, GL_STATIC_DRAW);
+
+
+
+    glGenBuffers(1, &fsq_normal_vbo);
+    glBindBuffer(GL_ARRAY_BUFFER, fsq_normal_vbo);
+    glBufferData(GL_ARRAY_BUFFER, triangle_count * 3 * 3 * sizeof(GLfloat), fsq_normals, GL_STATIC_DRAW);
+
+
+    debugMessage("created fullscreenquad!");
+    //
+    //////////////////////////////
+
 
     if(createShaders() && createBuffers()){
         shadersAndBuffersCreated = true;
@@ -79,6 +195,7 @@ bool Renderer::meshInFrustum(Frustum f, Model * mdl, Mesh * mesh, Matrix4x4 &pvm
 
 void Renderer::render(){
 
+    int step = 1;
 
     //check if the mdllib is ready
     if(mdllib!=0 && lightlib!=0){
@@ -114,6 +231,7 @@ void Renderer::render(){
 
 
 
+
         if((renderMode & PolygonModeStandard) == PolygonModeStandard){
 
             //set up framebuffer
@@ -142,9 +260,9 @@ void Renderer::render(){
                 //now set up the material and mesh
 
                 //tex
-                glActiveTexture (GL_TEXTURE0);
+                glActiveTexture (GL_TEXTURE0+firstTextureIndex);
                 glBindTexture(GL_TEXTURE_2D, material_mesh_list[index]->get_diffuse_map_texture());
-
+                glUniform1i(glGetUniformLocation(DR_FirstPassProgramIdId, "sampler1"), firstTextureIndex);
 
                 ///////////////////////////////////////////////////////////////////////////////////
                 ///
@@ -271,13 +389,14 @@ void Renderer::render(){
             glBindTexture(GL_TEXTURE_2D, 0);
 
 
+
             ////////////////////////////////////////////////////////////////////////
             //  second pass
             //
 
             glBindFramebuffer (GL_FRAMEBUFFER, 0);
             //glDrawBuffer(GL_BACK);
-            //glClearColor (0.012, 0.012, 0.012, 1.0f); // added ambient light here
+            glClearColor (0.012, 0.012, 0.012, 1.0f); // added ambient light here
             glClear (GL_COLOR_BUFFER_BIT);
 
             glEnable (GL_BLEND); // --- could reject background frags!
@@ -436,13 +555,50 @@ void Renderer::render(){
 
 
 
+
+            //disable stuff so the gl_VertexID var works in GLSL
+            /*
+            glBindVertexArray(0);
+
+            //VBOs
+            glBindBuffer(GL_ARRAY_BUFFER, 0);
+            glDisableVertexAttribArray(0);
+
+            glBindBuffer(GL_ARRAY_BUFFER, 0);
+            glDisableVertexAttribArray(1);
+
+            glBindBuffer(GL_ARRAY_BUFFER, 0);
+            glDisableVertexAttribArray(2);
+            */
+
+
+            //glBindFramebuffer (GL_FRAMEBUFFER, 0);
+
+
+
+
+
             /////////////////////////////////////////////////////////////////////////////////
             ///
             /// AMBIENT LIGHT PASS
             ///
             ///
 
+            glBindVertexArray(fsq_vertex_array_object);
 
+            //VBOs
+            glBindBuffer(GL_ARRAY_BUFFER, fsq_vertex_vbo);
+            glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, 0);
+            glEnableVertexAttribArray(0);
+
+            //tex coords actually not needed!!!
+            glBindBuffer(GL_ARRAY_BUFFER, fsq_texcoord_vbo);
+            glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 0, 0);
+            glEnableVertexAttribArray(1);
+
+            glBindBuffer(GL_ARRAY_BUFFER, fsq_normal_vbo);
+            glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, 0, 0);
+            glEnableVertexAttribArray(2);
 
             glUseProgram (DR_AmbientPassProgramIdId);
 
@@ -450,13 +606,16 @@ void Renderer::render(){
 
             glUniform2f (win_size_loc_ambientpass, win->getWindowWidth(), win->getWindowHeight());
 
-
-
             glUniform3f (color_loc_ambientpass, 0.010,
                                                 0.010,
                                                 0.008); // ambient color
 
-            glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
+            //glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
+            glDrawArrays(GL_TRIANGLES, 0, triangle_count*3);
+
+
+
+
 
 
 
@@ -465,7 +624,21 @@ void Renderer::render(){
             /// DIRECTIONAL AMBIENT LIGHT PASS
             ///
 
+            glBindVertexArray(fsq_vertex_array_object);
 
+            //VBOs
+            glBindBuffer(GL_ARRAY_BUFFER, fsq_vertex_vbo);
+            glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, 0);
+            glEnableVertexAttribArray(0);
+
+            //tex coords actually not needed!!!
+            glBindBuffer(GL_ARRAY_BUFFER, fsq_texcoord_vbo);
+            glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 0, 0);
+            glEnableVertexAttribArray(1);
+
+            glBindBuffer(GL_ARRAY_BUFFER, fsq_normal_vbo);
+            glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, 0, 0);
+            glEnableVertexAttribArray(2);
 
             glUseProgram (DR_DirectionalAmbientPassProgramIdId);
 
@@ -473,15 +646,13 @@ void Renderer::render(){
 
             glUniform2f (win_size_loc_directionalambientpass, win->getWindowWidth(), win->getWindowHeight());
 
-
             glUniform3f (dir_loc_directionalambientpass,    0.0,
-                                                            1.0,
+                                                            -1.0,
                                                             1.0); // ambient light direction
 
-
-            glUniform3f (color_loc_directionalambientpass,  0.5,
-                                                            0.5,
-                                                            0.4); // ambient color
+            glUniform3f (color_loc_directionalambientpass,  0.005,
+                                                            0.005,
+                                                            0.004); // ambient color
 
 
             for (int f = 0; f < 4; f++) {
@@ -493,12 +664,14 @@ void Renderer::render(){
 
             glUniformMatrix4fv(v_mat_loc_directionalambientpass, 1, GL_FALSE, v_mat);
 
-            glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
+            //glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
+            glDrawArrays(GL_TRIANGLES, 0, triangle_count*3);
 
 
             //
             // DRAWING FINISHED
             //////////////////////////////////////////////////////////////////////////////////////////
+
 
             glActiveTexture(GL_TEXTURE0);
             glBindTexture(GL_TEXTURE_2D, 0);
@@ -981,6 +1154,7 @@ bool Renderer::createShaders(){
 
     glUniform1i(glGetUniformLocation(DR_FirstPassProgramIdId, "sampler1"), 0);
 
+
     ErrorCheckValue = glGetError();
     if (ErrorCheckValue != GL_NO_ERROR)
     {
@@ -1084,7 +1258,6 @@ bool Renderer::createShaders(){
     glUniform1i(glGetUniformLocation(DR_SecondPassProgramIdId, "c_tex"), 2);
     //second pass end
     /////////////////////////////////////////////////////////////////////////////////////
-
 
 
 

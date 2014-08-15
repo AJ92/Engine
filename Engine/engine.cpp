@@ -30,6 +30,7 @@ void error_callback(int error, const char* description){
     ptr_global_engine_instance->error(error,description);
 }
 
+
 /*
 void keyboard_callback(unsigned char key, int x, int y){
     ptr_global_engine_instance->keyboard(key, x, y);
@@ -162,13 +163,13 @@ void Engine::initialize(int argc, char *argv[]){
     k = new KeyBoard(window);
     k->addListener(debuggerListener);
     k->initialize();
+    window->registerKeyboard(k);
 
     //init mouse
     m = new Mouse(window);
     m->addListener(debuggerListener);
     m->initialize();
-
-    m->relativeCoordinates(true);
+    window->registerMouse(m);
 
     /*
     x_angle = 0.0;
@@ -239,12 +240,14 @@ void Engine::setWindowTitle(QString title){
 }
 
 void Engine::showDebugWindow(){
+    qDebug("...");
     if(!debug_visible){
         Event e;
         e.type = Event::EventDebuggerShow;
         this->transmit(e);
         debug_visible = true;
     }
+    qDebug("... ...");
 }
 
 void Engine::hideDebugWindow(){

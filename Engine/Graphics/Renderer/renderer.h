@@ -63,6 +63,30 @@ private:
     GLuint ProgramId;
 
 
+    //fsq = full screen quad (actually 2 triangles)
+    //pointer to float arrays
+    GLuint triangle_count;
+
+    GLfloat* fsq_vertices;
+    GLfloat* fsq_texcoords;
+    GLfloat* fsq_normals;
+
+    //vertex buffer objects (vertices, texcoords and normals)
+    GLuint fsq_vertex_vbo;
+    GLuint fsq_texcoord_vbo;
+    GLuint fsq_normal_vbo;
+
+    GLuint fsq_vertex_array_object;
+
+
+
+
+    //TEXTURE INDICES FOR glActiveTexture
+    GLuint firstTextureIndex;
+    GLuint secondTextureIndex;
+    GLuint thirdTextureIndex;
+    GLuint fourthTextureIndex;
+
     //temporal
     GLuint mvp_mat_loc;
     GLuint norm_mat_loc;

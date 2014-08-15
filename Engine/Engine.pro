@@ -92,7 +92,8 @@ HEADERS  += \
     Graphics/Model/lightlibrary.h \
     Event/Events/eventwindow.h \
     Graphics/Camera/frustum.h \
-    test.h
+    test.h \
+    Physics/Physics.h
 
 
 FORMS    += \
@@ -136,6 +137,18 @@ windows: {
     LIBS += -L$$_PRO_FILE_PWD_/Graphics/glew/lib
     CONFIG(release, debug|release): LIBS += -lglew32
     CONFIG(debug, debug|release): LIBS += -lglew32
+
+
+
+
+
+    #BULLET PHYSICs
+    INCLUDEPATH += Physics/bullet-2.82-r2704/src
+    DEPENDPATH += Physics/bullet-2.82-r2704/src
+
+    LIBS += -L$$_PRO_FILE_PWD_/Physics/bullet-2.82-r2704/lib
+    CONFIG(release, debug|release): LIBS += -lBulletCollision_Debug -lBulletDynamics_Debug -lBulletSoftBody_Debug -lLinearMath_Debug
+    CONFIG(debug, debug|release): LIBS += -lBulletCollision_Debug -lBulletDynamics_Debug -lBulletSoftBody_Debug -lLinearMath_Debug
 
 
     message($$INCLUDEPATH)

@@ -5,6 +5,20 @@ Loader_obj::Loader_obj()
 
 }
 
+GLfloat Loader_obj::min_value(GLfloat x, GLfloat y){
+    if(x > y){
+        return y;
+    }
+    return x;
+}
+
+GLfloat Loader_obj::max_value(GLfloat x, GLfloat y){
+    if(x < y){
+        return y;
+    }
+    return x;
+}
+
 bool Loader_obj::load_model_data(Model& mdl, QString path){
     QStringList pathlist = path.split("/",QString::KeepEmptyParts); //KeepEmptyParts
     QString model_name = pathlist.last();
@@ -234,6 +248,16 @@ bool Loader_obj::load_model_data(Model& mdl, QString path){
     QList<QString> mesh_names = mesh_mtl.keys();
     for(int i = 0; i < mesh_names.length(); i++){
 
+        //min/max vertex pos on all 3 axis
+        GLfloat v_min_x = 0.0f;
+        GLfloat v_max_x = 0.0f;
+
+        GLfloat v_min_y = 0.0f;
+        GLfloat v_max_y = 0.0f;
+
+        GLfloat v_min_z = 0.0f;
+        GLfloat v_max_z = 0.0f;
+
 
         int triangle_count = mesh_faces[mesh_names.value(i)].size() / 3 / 3;
         //qDebug("        Triangles: %i",triangle_count);
@@ -247,69 +271,106 @@ bool Loader_obj::load_model_data(Model& mdl, QString path){
             //  1 v/vt/vn   2 v/vt/vn   3 v/vt/vn
 
             //  v
-            vertices[j]     = (GLfloat) model_vertices.value(mesh_faces[mesh_names.value(i)].value(j)  -1).x();
-            vertices[j+1]   = (GLfloat) model_vertices.value(mesh_faces[mesh_names.value(i)].value(j)  -1).y();
-            vertices[j+2]   = (GLfloat) model_vertices.value(mesh_faces[mesh_names.value(i)].value(j)  -1).z();
+            Vector3 vertex1 =  model_vertices.value(mesh_faces[mesh_names.value(i)].value(j)  -1);
+            vertices[j]     = (GLfloat) vertex1.x();
+            vertices[j+1]   = (GLfloat) vertex1.y();
+            vertices[j+2]   = (GLfloat) vertex1.z();
 
-            vertices[3+j]   = (GLfloat) model_vertices.value(mesh_faces[mesh_names.value(i)].value(j+3)-1).x();
-            vertices[3+j+1] = (GLfloat) model_vertices.value(mesh_faces[mesh_names.value(i)].value(j+3)-1).y();
-            vertices[3+j+2] = (GLfloat) model_vertices.value(mesh_faces[mesh_names.value(i)].value(j+3)-1).z();
+            Vector3 vertex2 =  model_vertices.value(mesh_faces[mesh_names.value(i)].value(j+3)-1);
+            vertices[3+j]   = (GLfloat) vertex2.x();
+            vertices[3+j+1] = (GLfloat) vertex2.y();
+            vertices[3+j+2] = (GLfloat) vertex2.z();
 
-            vertices[6+j]   = (GLfloat) model_vertices.value(mesh_faces[mesh_names.value(i)].value(j+6)-1).x();
-            vertices[6+j+1] = (GLfloat) model_vertices.value(mesh_faces[mesh_names.value(i)].value(j+6)-1).y();
-            vertices[6+j+2] = (GLfloat) model_vertices.value(mesh_faces[mesh_names.value(i)].value(j+6)-1).z();
+            Vector3 vertex3 =  model_vertices.value(mesh_faces[mesh_names.value(i)].value(j+6)-1);
+            vertices[6+j]   = (GLfloat) vertex3.x();
+            vertices[6+j+1] = (GLfloat) vertex3.y();
+            vertices[6+j+2] = (GLfloat) vertex3.z();
+
+            //get the min/max vertex pos on all 3 axis
+            //x axis
+            v_min_x = min_value(v_min_x,vertex1.x());
+            v_min_x = min_value(v_min_x,vertex2.x());
+            v_min_x = min_value(v_min_x,vertex3.x());
+
+            v_max_x = max_value(v_max_x,vertex1.x());
+            v_max_x = max_value(v_max_x,vertex2.x());
+            v_max_x = max_value(v_max_x,vertex3.x());
+
+            //y axis
+            v_min_y = min_value(v_min_y,vertex1.y());
+            v_min_y = min_value(v_min_y,vertex2.y());
+            v_min_y = min_value(v_min_y,vertex3.y());
+
+            v_max_y = max_value(v_max_y,vertex1.y());
+            v_max_y = max_value(v_max_y,vertex2.y());
+            v_max_y = max_value(v_max_y,vertex3.y());
+
+            //z axis
+            v_min_z = min_value(v_min_z,vertex1.z());
+            v_min_z = min_value(v_min_z,vertex2.z());
+            v_min_z = min_value(v_min_z,vertex3.z());
+
+            v_max_z = max_value(v_max_z,vertex1.z());
+            v_max_z = max_value(v_max_z,vertex2.z());
+            v_max_z = max_value(v_max_z,vertex3.z());
 
 
-            //  vt
-            texcoords[j]     = (GLfloat) model_vertex_texture_coordinates.value(mesh_faces[mesh_names.value(i)].value(j+1)-1).x();
-            texcoords[j+1]   = (GLfloat) -model_vertex_texture_coordinates.value(mesh_faces[mesh_names.value(i)].value(j+1)-1).y();
-            texcoords[j+2]   = (GLfloat) model_vertex_texture_coordinates.value(mesh_faces[mesh_names.value(i)].value(j+1)-1).z();
 
-            texcoords[3+j]   = (GLfloat) model_vertex_texture_coordinates.value(mesh_faces[mesh_names.value(i)].value(j+4)-1).x();
-            texcoords[3+j+1] = (GLfloat) -model_vertex_texture_coordinates.value(mesh_faces[mesh_names.value(i)].value(j+4)-1).y();
-            texcoords[3+j+2] = (GLfloat) model_vertex_texture_coordinates.value(mesh_faces[mesh_names.value(i)].value(j+4)-1).z();
 
-            texcoords[6+j]   = (GLfloat) model_vertex_texture_coordinates.value(mesh_faces[mesh_names.value(i)].value(j+7)-1).x();
-            texcoords[6+j+1] = (GLfloat) -model_vertex_texture_coordinates.value(mesh_faces[mesh_names.value(i)].value(j+7)-1).y();
-            texcoords[6+j+2] = (GLfloat) model_vertex_texture_coordinates.value(mesh_faces[mesh_names.value(i)].value(j+7)-1).z();
+            //  vt  (t value inverted)
+            Vector3 texcoord1 = model_vertex_texture_coordinates.value(mesh_faces[mesh_names.value(i)].value(j+1)-1);
+            texcoords[j]     = (GLfloat) texcoord1.x();
+            texcoords[j+1]   = (GLfloat) -texcoord1.y();
+            texcoords[j+2]   = (GLfloat) texcoord1.z();
+
+            Vector3 texcoord2 = model_vertex_texture_coordinates.value(mesh_faces[mesh_names.value(i)].value(j+4)-1);
+            texcoords[3+j]   = (GLfloat) texcoord2.x();
+            texcoords[3+j+1] = (GLfloat) -texcoord2.y();
+            texcoords[3+j+2] = (GLfloat) texcoord2.z();
+
+            Vector3 texcoord3 = model_vertex_texture_coordinates.value(mesh_faces[mesh_names.value(i)].value(j+7)-1);
+            texcoords[6+j]   = (GLfloat) texcoord3.x();
+            texcoords[6+j+1] = (GLfloat) -texcoord3.y();
+            texcoords[6+j+2] = (GLfloat) texcoord3.z();
 
 
             //  vn
-            normals[j]     = (GLfloat) model_vertex_normals.value(mesh_faces[mesh_names.value(i)].value(j+2)-1).x();
-            normals[j+1]   = (GLfloat) model_vertex_normals.value(mesh_faces[mesh_names.value(i)].value(j+2)-1).y();
-            normals[j+2]   = (GLfloat) model_vertex_normals.value(mesh_faces[mesh_names.value(i)].value(j+2)-1).z();
+            Vector3 normal1 = model_vertex_normals.value(mesh_faces[mesh_names.value(i)].value(j+2)-1);
+            normal1.normalize();
 
-            normals[3+j]   = (GLfloat) model_vertex_normals.value(mesh_faces[mesh_names.value(i)].value(j+5)-1).x();
-            normals[3+j+1] = (GLfloat) model_vertex_normals.value(mesh_faces[mesh_names.value(i)].value(j+5)-1).y();
-            normals[3+j+2] = (GLfloat) model_vertex_normals.value(mesh_faces[mesh_names.value(i)].value(j+5)-1).z();
+            //normalize
+            normals[j]     = (GLfloat) normal1.x();
+            normals[j+1]   = (GLfloat) normal1.y();
+            normals[j+2]   = (GLfloat) normal1.z();
 
-            normals[6+j]   = (GLfloat) model_vertex_normals.value(mesh_faces[mesh_names.value(i)].value(j+8)-1).x();
-            normals[6+j+1] = (GLfloat) model_vertex_normals.value(mesh_faces[mesh_names.value(i)].value(j+8)-1).y();
-            normals[6+j+2] = (GLfloat) model_vertex_normals.value(mesh_faces[mesh_names.value(i)].value(j+8)-1).z();
+
+            Vector3 normal2 = model_vertex_normals.value(mesh_faces[mesh_names.value(i)].value(j+5)-1);
+            normal2.normalize();
+
+            //normalize
+            normals[3+j]   = (GLfloat) normal2.x();
+            normals[3+j+1] = (GLfloat) normal2.y();
+            normals[3+j+2] = (GLfloat) normal2.z();
+
+
+            Vector3 normal3 = model_vertex_normals.value(mesh_faces[mesh_names.value(i)].value(j+8)-1);
+            normal3.normalize();
+
+            //normalize
+            normals[6+j]   = (GLfloat) normal3.x();
+            normals[6+j+1] = (GLfloat) normal3.y();
+            normals[6+j+2] = (GLfloat) normal3.z();
+
 
         }
 
-        //calculate the bounding sphere (pos and radius)
-        Vector3 bounding_sphere_pos;
-        double bounding_sphere_radius = 0.0;
 
 
+        Vector3 vert1(v_min_x, v_min_y, v_min_z);
+        Vector3 vert2(v_max_x, v_max_y, v_max_z);
 
-        for(int j = 0; j < mesh_faces[mesh_names.value(i)].size(); j+=3){
-            Vector3 vert1(vertices[j],vertices[j+1],vertices[j+2]);
-            for(int k = 0; k < mesh_faces[mesh_names.value(i)].size(); k+=3){
-                Vector3 vert2(vertices[k],vertices[k+1],vertices[k+2]);
-                double dist = vert1.distance(vert2);
-                if(dist > bounding_sphere_radius){
-                    bounding_sphere_radius = dist;
-                    bounding_sphere_pos = Vector3(  (vert1[0] + vert2[0])/2.0,
-                                                    (vert1[1] + vert2[1])/2.0,
-                                                    (vert1[2] + vert2[2])/2.0   );
-                }
-            }
-        }
-
-        bounding_sphere_radius = bounding_sphere_radius / 2.0;
+        Vector3 bounding_sphere_pos((v_min_x + v_max_x)/2.0f, (v_min_y + v_max_y)/2.0f, (v_min_z + v_max_z)/2.0f);
+        double bounding_sphere_radius = vert1.distance(vert2) / 2.0f;
 
 
         //bounding_sphere_radius = 10.0;

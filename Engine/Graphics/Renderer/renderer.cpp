@@ -396,7 +396,7 @@ void Renderer::render(){
 
             glBindFramebuffer (GL_FRAMEBUFFER, 0);
             //glDrawBuffer(GL_BACK);
-            glClearColor (0.012, 0.012, 0.012, 1.0f); // added ambient light here
+            glClearColor (0.0, 0.0, 0.0, 1.0f); // added ambient light here
             glClear (GL_COLOR_BUFFER_BIT);
 
             glEnable (GL_BLEND); // --- could reject background frags!
@@ -606,9 +606,9 @@ void Renderer::render(){
 
             glUniform2f (win_size_loc_ambientpass, win->getWindowWidth(), win->getWindowHeight());
 
-            glUniform3f (color_loc_ambientpass, 0.010,
-                                                0.010,
-                                                0.008); // ambient color
+            glUniform3f (color_loc_ambientpass, 0.110,
+                                                0.110,
+                                                0.108); // ambient color
 
             //glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
             glDrawArrays(GL_TRIANGLES, 0, triangle_count*3);
@@ -623,6 +623,7 @@ void Renderer::render(){
             ///
             /// DIRECTIONAL AMBIENT LIGHT PASS
             ///
+
 
             glBindVertexArray(fsq_vertex_array_object);
 
@@ -646,13 +647,13 @@ void Renderer::render(){
 
             glUniform2f (win_size_loc_directionalambientpass, win->getWindowWidth(), win->getWindowHeight());
 
-            glUniform3f (dir_loc_directionalambientpass,    0.0,
+            glUniform3f (dir_loc_directionalambientpass,    0.5,
                                                             -1.0,
-                                                            1.0); // ambient light direction
+                                                            0.5); // ambient light direction
 
-            glUniform3f (color_loc_directionalambientpass,  0.005,
-                                                            0.005,
-                                                            0.004); // ambient color
+            glUniform3f (color_loc_directionalambientpass,  0.110,
+                                                            0.110,
+                                                            0.108); // ambient color
 
 
             for (int f = 0; f < 4; f++) {

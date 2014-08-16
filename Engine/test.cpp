@@ -109,9 +109,9 @@ void Test::keyFunction(){
         Model * m = loadModel("C://Code//QtProjects//Engine//Engine//misc//models//betty.obj");
         m->set_scale(0.92f,0.92f,0.92f);
         m->set_position((double)((rand() & 2000)-1000) + (double)((rand() & 1000)-500) * 0.05,
-                        (double)((rand() & 20)-10) * 0.05,
-                        (double)((rand() & 2000)-1000) + (double)((rand() & 1000)-500) * 0.05);
-        m->set_rotation(rand() & 361,0.0,1.0,0.0);
+                        (double)((rand() & 2000)-1000) + (double)((rand() & 1000)-500) * 0.05,
+                        35.0);
+        m->set_rotation(90.0,1.0,0.0,0.0);
     }
 
     //M

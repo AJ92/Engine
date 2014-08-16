@@ -16,7 +16,7 @@ DebugWindow::~DebugWindow()
 
 void DebugWindow::add_log(QString log_message){
 
-    qDebug(log_message.toUtf8());
+    //qDebug(log_message.toUtf8());
 
     ui->textEdit->append(log_message);
 

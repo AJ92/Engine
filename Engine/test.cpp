@@ -106,7 +106,7 @@ void Test::keyFunction(){
     if(k->isPressed(37))
     {
         model_library->setModelsPerThread(1);
-        Model * m = loadModel("C://Code//QtProjects//Engine//Engine//misc//models//betty.obj");
+        Model * m = loadModel(getApplicationDir() + "//betty.obj");
         m->set_scale(0.92f,0.92f,0.92f);
         m->set_position((double)((rand() & 2000)-1000) + (double)((rand() & 1000)-500) * 0.05,
                         (double)((rand() & 2000)-1000) + (double)((rand() & 1000)-500) * 0.05,
@@ -121,7 +121,7 @@ void Test::keyFunction(){
 
         int count = 5;
         for(int i = 0; i < count; i++){
-            Light * l = loadLight("C://Code//QtProjects//Engine//Engine//misc//models//light_sphere.obj");
+            Light * l = loadLight(getApplicationDir() + "//light_sphere.obj");
 
             /*
             double red = ((double)(rand() & 800)+200)* 0.001;

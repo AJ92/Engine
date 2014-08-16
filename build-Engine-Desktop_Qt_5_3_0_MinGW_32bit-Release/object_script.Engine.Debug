@@ -37,6 +37,7 @@ INPUT(
 ./debug\eventwindow.o
 ./debug\frustum.o
 ./debug\test.o
+./debug\octtree.o
 ./debug\moc_debugwindow.o
 ./debug\moc_engine.o
 ./debug\moc_streamToDisk.o

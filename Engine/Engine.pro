@@ -50,7 +50,9 @@ SOURCES += main.cpp\
     Graphics/Model/lightlibrary.cpp \
     Event/Events/eventwindow.cpp \
     Graphics/Camera/frustum.cpp \
-    test.cpp
+    test.cpp \
+    Graphics/Model/DataStructure/octtree.cpp
+
 
 
 HEADERS  += \
@@ -93,7 +95,9 @@ HEADERS  += \
     Event/Events/eventwindow.h \
     Graphics/Camera/frustum.h \
     test.h \
-    Physics/Physics.h
+    Physics/Physics.h \
+    Graphics/Model/DataStructure/octtree.h
+
 
 
 FORMS    += \

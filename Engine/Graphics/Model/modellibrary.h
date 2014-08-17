@@ -77,6 +77,9 @@ public:
     void initialize();
 
     void addModel(Model * mdl);
+    bool removeModel(Model * mdl);
+
+    QList<Model*> getModels() const;
 
     // should be unsigned long long or so
     int modelCount();
@@ -110,7 +113,7 @@ private:
 
     Model * containsModelData(Model * mdl);
     Model * containsModel(Model * mdl);
-    bool removeModel(Model * mdl);
+
 };
 
 

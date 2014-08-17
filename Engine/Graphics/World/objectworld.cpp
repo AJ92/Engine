@@ -24,6 +24,8 @@ void ObjectWorld::setModelsPerThread(int model_count){
 void ObjectWorld::initialize(){
     ml->addListener(this);
     ml->initialize();
+
+    ot = new OctTree(100);
 }
 
 Model* ObjectWorld::loadModel(QString path){

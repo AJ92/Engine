@@ -269,11 +269,14 @@ ModelLibrary_v2::ModelLibrary_v2() :
 }
 
 void ModelLibrary_v2::initialize(){
-    debugMessage("modellibrary initializing...");
+    debugMessage("modellibrary v2 initializing...");
 
-    debugMessage("modellibrary initialized.");
+    debugMessage("modellibrary v2 initialized.");
 }
 
+QList<Model *> ModelLibrary_v2::getModels() const{
+    return model_list;
+}
 
 int ModelLibrary_v2::modelCount(){
     return model_list.size();

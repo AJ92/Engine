@@ -15,6 +15,11 @@ public:
     OctTree(int subdiv_lvl,Vector3 pos, double node_size, int max_amount_objects);
     ~OctTree();
 
+    void subdivide();
+
+    bool addModel(Model * mdl);
+    void addModels(ModelLibrary_v2 * lib);
+
 private:
     //the subdivided "sub-cubes"
     OctTree* tree_northwest_high;
@@ -42,7 +47,7 @@ private:
 
 
     //internal data
-    ModelLibrary * mdllib;
+    ModelLibrary_v2 * mdllib;
 
 };
 

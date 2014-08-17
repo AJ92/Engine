@@ -9,6 +9,8 @@
 
 #include "Graphics/Model/modelloader.h"
 
+#include "Graphics/World/DataStructure/octtree.h"
+
 #include <QList>
 
 class ObjectWorld : virtual public EventListener, virtual public EventTransmitter
@@ -27,6 +29,8 @@ public:
 private:
     ThreadAccountant * ta;
     ModelLoader * ml;
+
+    OctTree * ot;
 
     //EventListener and EventTransmitter...
     void eventRecieved(Event e);

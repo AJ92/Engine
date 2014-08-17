@@ -7,6 +7,8 @@
 
 #include "Threading/threadaccountant.h"
 
+#include "Graphics/Model/modelloader.h"
+
 #include <QList>
 
 class ObjectWorld : virtual public EventListener, virtual public EventTransmitter
@@ -15,13 +17,16 @@ public:
     ObjectWorld(ThreadAccountant * ta);
     ~ObjectWorld();
 
-    void setModelLoader();
+    void setModelLoader(ModelLoader * ml);
+    void setModelsPerThread(int model_count);
 
     void initialize();
 
+    Model* loadModel(QString path);
 
 private:
     ThreadAccountant * ta;
+    ModelLoader * ml;
 
     //EventListener and EventTransmitter...
     void eventRecieved(Event e);

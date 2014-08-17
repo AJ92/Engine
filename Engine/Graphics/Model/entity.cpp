@@ -9,7 +9,6 @@ Entity::Entity() :
     scl = Vector3(1,1,1);
     size = 0.0;
     matrix_changed = true;
-    isReady = false;
 }
 
 void Entity::set_data(const Entity &entity){
@@ -21,7 +20,6 @@ void Entity::set_data(const Entity &entity){
     this->mat_scl = entity.mat_scl;
     this->mat_m = entity.mat_m;
     this->matrix_changed = entity.matrix_changed;
-    this->isReady = entity.isReady;
 }
 
 Vector3 Entity::getPosition(){

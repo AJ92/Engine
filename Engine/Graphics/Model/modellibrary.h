@@ -67,4 +67,51 @@ private:
     bool removeModel(Model * mdl);
 };
 
+
+
+class ModelLibrary_v2 : virtual public EventListener, virtual public EventTransmitter
+{
+public:
+    ModelLibrary_v2();
+
+    void initialize();
+
+    void addModel(Model * mdl);
+
+    // should be unsigned long long or so
+    int modelCount();
+
+
+    //getter for the renderer... shouldn't be manipulated
+    QList<QList<Mesh*> > getMeshModelList();
+    QList<QList<Model*> > getModelMeshList();
+    QList<Material*> getMaterialMeshList();
+
+    void debugModelData();
+
+
+private:
+
+    QList<Model*> model_list;               //all models (includes instances)
+    QList<Model*> unique_model_list;        //unique by data!!!
+    QList<QString> unique_model_path_list;  //unique paths of models
+
+    //model data sorted by material / single mesh
+    QList<QList<Mesh*> > mesh_model_list;
+    QList<QList<Model*> > model_mesh_list;
+    QList<Material*> material_mesh_list;
+
+    void eventRecieved(Event e);
+    void debugMessage(QString message);
+
+    void addModelUnique(Model * mdl);
+
+    void addModelData(Model * mdl);
+
+    Model * containsModelData(Model * mdl);
+    Model * containsModel(Model * mdl);
+    bool removeModel(Model * mdl);
+};
+
+
 #endif // MODELLIBRAY_H

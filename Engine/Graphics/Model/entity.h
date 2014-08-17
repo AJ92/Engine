@@ -33,8 +33,7 @@ public:
 
     Matrix4x4 get_model_matrix();
 
-private:
-    bool isReady;
+protected:
 
     bool matrix_changed;
 

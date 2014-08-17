@@ -123,16 +123,16 @@ void Test::keyFunction(){
         for(int i = 0; i < count; i++){
             Light * l = loadLight(getApplicationDir() + "//light_sphere.obj");
 
-            /*
+
             double red = ((double)(rand() & 800)+200)* 0.001;
             double green = ((double)(rand() & 800)+200)* 0.001;
             double blue = ((double)(rand() & 800)+200)* 0.001;
-            */
 
+            /*
             double red = 1.0;
             double green = 1.0;
             double blue = 1.0;
-
+            */
             l->setDiffuseColor(red,
                                green,
                                blue);

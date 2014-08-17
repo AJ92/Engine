@@ -37,7 +37,10 @@ INPUT(
 ./release\eventwindow.o
 ./release\frustum.o
 ./release\test.o
+./release\objectworld.o
 ./release\octtree.o
+./release\modelloader.o
+./release\entity.o
 ./release\moc_debugwindow.o
 ./release\moc_engine.o
 ./release\moc_streamToDisk.o

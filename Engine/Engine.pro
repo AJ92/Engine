@@ -51,7 +51,10 @@ SOURCES += main.cpp\
     Event/Events/eventwindow.cpp \
     Graphics/Camera/frustum.cpp \
     test.cpp \
-    Graphics/Model/DataStructure/octtree.cpp
+    Graphics/World/objectworld.cpp \
+    Graphics/World/DataStructure/octtree.cpp \
+    Graphics/Model/modelloader.cpp \
+    Graphics/Model/entity.cpp
 
 
 
@@ -96,7 +99,10 @@ HEADERS  += \
     Graphics/Camera/frustum.h \
     test.h \
     Physics/Physics.h \
-    Graphics/Model/DataStructure/octtree.h
+    Graphics/World/objectworld.h \
+    Graphics/World/DataStructure/octtree.h \
+    Graphics/Model/modelloader.h \
+    Graphics/Model/entity.h
 
 
 

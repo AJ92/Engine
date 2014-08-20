@@ -3,12 +3,11 @@
 
 #include "Graphics/Model/entity.h"
 
-#include "Graphics/Model/Components/material.h"
-#include "Graphics/Model/Components/mesh.h"
-
 #include <QList>
 
+
 class Mesh;
+class Material;
 
 class Model : public Entity
 {

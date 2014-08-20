@@ -230,7 +230,6 @@ void Engine::initialize(int argc, char *argv[]){
     QObject::connect(fps_timer,SIGNAL(timeout()),this,SLOT(timer()));
     fps_timer->setInterval(1000);
     fps_timer->start();
-
 }
 
 void Engine::setWindowTitle(QString title){

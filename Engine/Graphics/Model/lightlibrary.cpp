@@ -1,5 +1,11 @@
 #include "lightlibrary.h"
 
+#include "Graphics/Model/model.h"
+#include "Graphics/Model/Components/material.h"
+#include "Graphics/Model/Components/mesh.h"
+#include "Graphics/Model/light.h"
+
+
 LightLibrary::LightLibrary(ThreadAccountant * ta) :
     EventListener(),
     EventTransmitter(),

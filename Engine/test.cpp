@@ -40,13 +40,8 @@ Test::Test() :
 
     level_loaded = false;
 
-    /*
-    GameObject * go = new GameObject("Hey");
-    Model3D * m3d = new Model3D();
-    go->addGraphicsComponent(m3d);
-    go->update();
-    qDebug("GameObject: %s",go->getName().toUtf8().constData());
-    */
+    ot = new OctTree(1000);
+    ot->setDebugMdl(model_library,getApplicationDir() + "//cube.obj");
 }
 
 void Test::keyFunction(){
@@ -94,12 +89,30 @@ void Test::keyFunction(){
         int count = 10;
         for(int i = 0; i < count; i++){
             Model * m = loadModel(getApplicationDir() + "//tree.obj");
+
+
+
             m->set_scale(5.92f,5.92f,5.92f);
-            m->set_position((double)((rand() & 2000)-1000) + (double)((rand() & 1000)-500) * 0.05,
-                            (double)((rand() & 2000)-1000) + (double)((rand() & 1000)-500) * 0.05,
+
+            m->set_position((double)((rand() & 2000)-1000),
+                            (double)((rand() & 2000)-1000),
                             10.0);
+
             m->set_rotation(rand() & 361,0.0,0.0,1.0);
+
+            ot->addModel(m);
         }
+
+        debugMessage(ot->debug_string());
+    }
+
+    //c
+    if(k->isPressed(46))
+    {
+        model_library->setModelsPerThread(1);
+
+        Model * m = loadModel(getApplicationDir() + "//cube.obj");
+
     }
 
     //K

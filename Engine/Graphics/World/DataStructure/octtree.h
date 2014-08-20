@@ -1,24 +1,48 @@
 #ifndef OCTTREE_H
 #define OCTTREE_H
 
-#include "Object/object.h"
+#include "Event/eventtransmitter.h"
 #include "Math/mathematics.h"
 
 #include "Graphics/Model/modellibrary.h"
+#include "Graphics/Camera/frustum.h"
 
 #include <QList>
 
-class OctTree : public Object
+class OctTree : virtual public EventListener, virtual public EventTransmitter
 {
 public:
+    //for root node
     OctTree(int max_amount_objects);
+
+    //for inner/leaf nodes
     OctTree(int subdiv_lvl,Vector3 pos, double node_size, int max_amount_objects);
     ~OctTree();
 
+    void constructNodePoints();
+
+    //might need to provide an entity method aswell...
+    int fits(Model * mdl);
     void subdivide();
 
-    bool addModel(Model * mdl);
-    void addModels(ModelLibrary_v2 * lib);
+    int addModel(Model * mdl);
+    int addModels(ModelLibrary_v2 * lib);
+
+    QList<OctTree* > getNodesInFrustum(Frustum * f);
+
+    QString debug_string();
+
+    void setDebugMdl(ModelLibrary * real_lib, QString path);
+    Model * getDebugMdl();
+
+    enum NodeType {
+        NodeRoot                    = 0x0000,
+        NodeInner                   = 0x0001,
+        NodeLeaf                    = 0x0002
+    };
+
+    //The event type.
+    NodeType type;
 
 private:
     //the subdivided "sub-cubes"
@@ -44,10 +68,20 @@ private:
     int max_amount_objects;
     int amount_objects;
 
-
-
     //internal data
     ModelLibrary_v2 * mdllib;
+
+    Model * dbg_mdl;
+    ModelLibrary * real_lib;
+    QString path;
+
+    QList<Vector3> node_bounds;
+
+
+
+    //event stuff
+    void debugMessage(QString message);
+    void eventRecieved(Event e);
 
 };
 

@@ -6,9 +6,12 @@
 #include <QList>
 
 #include "Graphics/Model/Streamer/streamer.h"
-#include "Graphics/Model/model.h"
 
 #include "Threading/threadaccountant.h"
+
+class Model;
+class Mesh;
+class Material;
 
 class ModelLibrary : virtual public EventListener, virtual public EventTransmitter
 {
@@ -78,6 +81,8 @@ public:
 
     void addModel(Model * mdl);
     bool removeModel(Model * mdl);
+
+    void clearLib();
 
     QList<Model*> getModels() const;
 

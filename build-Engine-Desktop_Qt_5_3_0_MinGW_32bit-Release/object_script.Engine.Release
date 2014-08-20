@@ -41,6 +41,7 @@ INPUT(
 ./release\octtree.o
 ./release\modelloader.o
 ./release\entity.o
+./release\eventmodel.o
 ./release\moc_debugwindow.o
 ./release\moc_engine.o
 ./release\moc_streamToDisk.o

@@ -1,5 +1,9 @@
 #include "modellibrary.h"
 
+#include "Graphics/Model/model.h"
+#include "Graphics/Model/Components/material.h"
+#include "Graphics/Model/Components/mesh.h"
+
 ModelLibrary::ModelLibrary(ThreadAccountant * ta) :
     EventListener(),
     EventTransmitter(),
@@ -310,7 +314,16 @@ void ModelLibrary_v2::debugModelData(){
     }
 }
 
+void ModelLibrary_v2::clearLib(){
+    model_list.clear();               //all models (includes instances)
+    unique_model_list.clear();        //unique by data!!!
+    unique_model_path_list.clear();  //unique paths of models
 
+    //model data sorted by material / single mesh
+    mesh_model_list.clear();
+    model_mesh_list.clear();
+    material_mesh_list.clear();
+}
 
 //private
 //add the model to the model list (contains also instances)

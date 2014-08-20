@@ -4,7 +4,7 @@
 
 #include "Graphics/OpenGL/OpenGL.h"
 
-#include "Graphics/Model/model.h"
+//#include "Graphics/Model/model.h"
 
 
 #include "Math/Vector/vector3.h"
@@ -21,6 +21,8 @@
 #include <QTextStream>
 
 class Model;
+class Mesh;
+class Material;
 
 class Loader_obj
 {

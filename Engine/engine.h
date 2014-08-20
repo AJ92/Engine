@@ -33,6 +33,7 @@
 
 #include "Threading/threadaccountant.h"
 
+#include "Graphics/World/DataStructure/octtree.h"
 
 
 #include "Physics/Physics.h"

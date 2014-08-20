@@ -25,6 +25,9 @@ private:
     void eventCall();
 
     bool level_loaded;
+
+    //Test octtree
+    OctTree * ot;
 };
 
 #endif // TEST_H

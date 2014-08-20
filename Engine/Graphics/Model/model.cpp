@@ -1,5 +1,8 @@
 #include "model.h"
 
+#include "Graphics/Model/Components/material.h"
+#include "Graphics/Model/Components/mesh.h"
+
 
 Model::Model(const Model &mdl) :
     Entity()
@@ -16,6 +19,7 @@ Model::Model(const Model &mdl) :
     this->matrix_changed = mdl.matrix_changed;
     this->path = mdl.path;
     this->meshs = mdl.meshs;
+    this->size = 0.0;
     this->isReady = mdl.isReady;
 }
 

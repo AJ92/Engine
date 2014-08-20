@@ -7,7 +7,6 @@
 #include <QString>
 
 #include "Math/mathematics.h"
-#include "Graphics/Model/model.h"
 #include "Graphics/Camera/camera.h"
 #include "Graphics/Window/window.h"
 #include "Graphics/Model/modellibrary.h"
@@ -20,6 +19,11 @@
 
 //for appdir
 #include <QApplication>
+
+class Light;
+class Model;
+class Material;
+class Mesh;
 
 class Renderer :  virtual public EventListener, virtual public EventTransmitter
 {

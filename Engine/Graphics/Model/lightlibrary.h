@@ -6,10 +6,13 @@
 #include <QList>
 
 #include "Graphics/Model/Streamer/streamer.h"
-#include "Graphics/Model/model.h"
-#include "Graphics/Model/light.h"
 
 #include "Threading/threadaccountant.h"
+
+class Model;
+class Mesh;
+class Material;
+class Light;
 
 class LightLibrary : virtual public EventListener, virtual public EventTransmitter
 {

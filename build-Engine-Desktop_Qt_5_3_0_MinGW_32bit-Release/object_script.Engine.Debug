@@ -41,6 +41,7 @@ INPUT(
 ./debug\octtree.o
 ./debug\modelloader.o
 ./debug\entity.o
+./debug\eventmodel.o
 ./debug\moc_debugwindow.o
 ./debug\moc_engine.o
 ./debug\moc_streamToDisk.o

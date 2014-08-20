@@ -1,5 +1,9 @@
 #include "loader_obj.h"
 
+#include "Graphics/Model/model.h"
+#include "Graphics/Model/Components/material.h"
+#include "Graphics/Model/Components/mesh.h"
+
 Loader_obj::Loader_obj()
 {
 

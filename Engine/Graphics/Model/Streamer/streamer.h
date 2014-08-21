@@ -3,10 +3,11 @@
 
 #include <QObject>
 #include <QThread>
+#include "Event/eventlistener.h"
 #include "Event/eventtransmitter.h"
 
 #include "Graphics/Model/Streamer/streamToDisk.h"
-#include "Graphics/Model/model.h"
+//#include "Graphics/Model/model.h"
 
 #include <QList>
 #include <map>
@@ -14,6 +15,9 @@
 #include <QTimer>
 
 #include "Threading/threadaccountant.h"
+
+class Event;
+class Model;
 
 class Streamer : public QObject, virtual public EventListener, virtual public EventTransmitter
 {

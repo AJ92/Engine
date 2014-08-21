@@ -4,6 +4,8 @@
 #include "Graphics/Model/Components/mesh.h"
 #include "Graphics/Model/light.h"
 
+#include "Event/event.h"
+
 Renderer::Renderer() :
     EventTransmitter()
 {

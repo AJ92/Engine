@@ -1,5 +1,7 @@
 #include "eventmodel.h"
 
+#include "Graphics/Model/model.h"
+
 EventModel::EventModel(Model * mdl)
 {
     this->mdl = mdl;

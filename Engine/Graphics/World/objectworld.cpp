@@ -1,4 +1,5 @@
 #include "objectworld.h"
+#include "Event/event.h"
 
 ObjectWorld::ObjectWorld(ThreadAccountant * ta) :
     EventListener(),

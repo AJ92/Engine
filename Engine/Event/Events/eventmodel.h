@@ -1,7 +1,8 @@
 #ifndef EVENTMODEL_H
 #define EVENTMODEL_H
 
-#include "Graphics/Model/model.h"
+
+class Model;
 
 class EventModel
 {

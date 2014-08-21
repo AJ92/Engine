@@ -4,8 +4,8 @@
 
 #include "Object/object.h"
 
-#include "Event/event.h"
-#include "Event/eventlistener.h"
+//#include "Event/event.h"
+//#include "Event/eventlistener.h"
 
 
 #include <vector>
@@ -13,6 +13,9 @@
 
 
 #include <QDebug>
+
+class EventListener;
+class Event;
 
 class EventTransmitter : public Object
 {

@@ -1,5 +1,7 @@
 #include "mouse.h"
 
+#include "Event/event.h"
+
 //C
 Mouse * ptr_global_mouse_instance = NULL;
 

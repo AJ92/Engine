@@ -1,5 +1,7 @@
 #include "keyboard.h"
 
+#include "Event/event.h"
+
 //C
 KeyBoard * ptr_global_keyboard_instance = NULL;
 

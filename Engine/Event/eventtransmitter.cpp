@@ -1,5 +1,8 @@
 #include "eventtransmitter.h"
 
+#include "Event/event.h"
+#include "Event/eventlistener.h"
+
 EventTransmitter::EventTransmitter() :
     Object()
 {

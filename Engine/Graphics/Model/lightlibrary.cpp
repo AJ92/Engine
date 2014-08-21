@@ -5,6 +5,8 @@
 #include "Graphics/Model/Components/mesh.h"
 #include "Graphics/Model/light.h"
 
+#include "Event/event.h"
+
 
 LightLibrary::LightLibrary(ThreadAccountant * ta) :
     EventListener(),
@@ -109,7 +111,7 @@ void LightLibrary::debugLightModelData(){
             debugMessage(" - Mesh: " + mesh_model_list[i].at(j)->get_name() +
                          QString::number(mesh_model_list[i].at(j)->id()) +
                          "   " + model_mesh_list[i].at(j)->get_path() +
-                         QString::number(model_mesh_list[i].at(j)->id()) +
+                         QString::number(model_mesh_list[i].at(j)->Entity::id()) +
                          "   " +
                          QString::number(light_mesh_list[i].at(j)->id()));
         }

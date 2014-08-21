@@ -10,6 +10,7 @@
 
 class KeyBoard;
 class Mouse;
+class Event;
 
 class Window : public EventTransmitter
 {

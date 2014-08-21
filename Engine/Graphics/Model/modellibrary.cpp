@@ -4,6 +4,8 @@
 #include "Graphics/Model/Components/material.h"
 #include "Graphics/Model/Components/mesh.h"
 
+#include "Event/event.h"
+
 ModelLibrary::ModelLibrary(ThreadAccountant * ta) :
     EventListener(),
     EventTransmitter(),
@@ -87,7 +89,7 @@ void ModelLibrary::debugModelData(){
             debugMessage(" - Mesh: " + mesh_model_list[i].at(j)->get_name() +
                          QString::number(mesh_model_list[i].at(j)->id()) +
                          "   " + model_mesh_list[i].at(j)->get_path() +
-                         QString::number(model_mesh_list[i].at(j)->id()));
+                         QString::number(model_mesh_list[i].at(j)->Entity::id()));
         }
     }
 }
@@ -309,7 +311,7 @@ void ModelLibrary_v2::debugModelData(){
             debugMessage(" - Mesh: " + mesh_model_list[i].at(j)->get_name() +
                          QString::number(mesh_model_list[i].at(j)->id()) +
                          "   " + model_mesh_list[i].at(j)->get_path() +
-                         QString::number(model_mesh_list[i].at(j)->id()));
+                         QString::number(model_mesh_list[i].at(j)->Entity::id()));
         }
     }
 }

@@ -1,5 +1,7 @@
 #include "octtree.h"
 
+#include "Event/event.h"
+
 OctTree::OctTree(int max_amount_objects)
 {
     this->subdivision_level = 0;

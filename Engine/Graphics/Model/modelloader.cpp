@@ -1,5 +1,7 @@
 #include "modelloader.h"
 
+#include "Event/event.h"
+
 ModelLoader::ModelLoader(ThreadAccountant * ta) :
     EventListener(),
     EventTransmitter(),

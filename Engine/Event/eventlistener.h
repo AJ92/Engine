@@ -2,9 +2,12 @@
 #define EVENTLISTENER_H
 
 #include "Object/object.h"
+//std needs the include...
 #include "Event/event.h"
 
 #include <queue>
+
+class Event;
 
 class EventListener : public Object
 {

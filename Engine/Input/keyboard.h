@@ -6,6 +6,7 @@
 #include "Graphics/Window/window.h"
 
 class Window;
+class Event;
 
 class KeyBoard : public EventTransmitter
 {

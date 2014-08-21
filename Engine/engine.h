@@ -38,7 +38,7 @@
 
 #include "Physics/Physics.h"
 
-
+class Event;
 
 class Engine : public QObject, virtual public EventListener, virtual public EventTransmitter
 {

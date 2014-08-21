@@ -13,6 +13,7 @@ class Model;
 class Mesh;
 class Material;
 class Light;
+class Event;
 
 class LightLibrary : virtual public EventListener, virtual public EventTransmitter
 {

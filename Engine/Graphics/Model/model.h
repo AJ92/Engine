@@ -1,6 +1,10 @@
 #ifndef MODEL_H
 #define MODEL_H
 
+#include "Object/object.h"
+
+#include "Event/eventtransmitter.h"
+
 #include "Graphics/Model/entity.h"
 
 #include <QList>
@@ -8,8 +12,9 @@
 
 class Mesh;
 class Material;
+class Event;
 
-class Model : public Entity
+class Model : public Entity, virtual public EventTransmitter
 {
 public:
     //create a copy from mdl...

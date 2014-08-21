@@ -2,10 +2,12 @@
 
 #include "Graphics/Model/Components/material.h"
 #include "Graphics/Model/Components/mesh.h"
+#include "Event/event.h"
 
 
 Model::Model(const Model &mdl) :
-    Entity()
+    Entity(),
+    EventTransmitter()
 {
     //copy all the stuff to this new object
     //lets hope const keyword won't make trouble
@@ -24,7 +26,8 @@ Model::Model(const Model &mdl) :
 }
 
 Model::Model() :
-    Entity()
+    Entity(),
+    EventTransmitter()
 {
     isReady = false;
 }
@@ -90,7 +93,7 @@ bool Model::equalData(const Model &mdl) const{
 }
 
 bool Model::equal(const Model &mdl) const{
-    if(this->path.compare(mdl.get_path())==0 && this->id() == mdl.id()){
+    if(this->path.compare(mdl.get_path())==0 && this->Entity::id() == mdl.Entity::id()){
         return true;
     }
     return false;

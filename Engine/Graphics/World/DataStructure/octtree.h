@@ -9,6 +9,8 @@
 
 #include <QList>
 
+class Event;
+
 class OctTree : virtual public EventListener, virtual public EventTransmitter
 {
 public:

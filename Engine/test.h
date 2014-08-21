@@ -3,6 +3,8 @@
 
 #include "engine.h"
 
+class Event;
+
 class Test : public Engine
 {
 public:

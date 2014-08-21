@@ -13,6 +13,8 @@
 
 #include <QList>
 
+class Event;
+
 class ObjectWorld : virtual public EventListener, virtual public EventTransmitter
 {
 public:

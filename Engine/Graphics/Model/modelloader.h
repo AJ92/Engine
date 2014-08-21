@@ -5,6 +5,8 @@
 #include "Graphics/Model/model.h"
 #include "Threading/threadaccountant.h"
 
+class Event;
+
 class ModelLoader : virtual public EventListener, virtual public EventTransmitter
 {
 public:

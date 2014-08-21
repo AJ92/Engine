@@ -1,6 +1,6 @@
 #include "window.h"
 
-
+#include "Event/event.h"
 //C
 
 Window * ptr_global_window_instance = NULL;

@@ -77,6 +77,7 @@ class ModelLibrary_v2 : virtual public EventListener, virtual public EventTransm
 {
 public:
     ModelLibrary_v2();
+    ModelLibrary_v2(int reserve_unique, int reserve_all);
 
     void initialize();
 
@@ -119,6 +120,9 @@ private:
 
     Model * containsModelData(Model * mdl);
     Model * containsModel(Model * mdl);
+
+    int reserve_unique;
+    int reserve_all;
 
 };
 

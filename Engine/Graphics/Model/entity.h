@@ -3,8 +3,11 @@
 
 #include "Object/object.h"
 #include "Math/mathematics.h"
+#include "Event/eventtransmitter.h"
 
-class Entity : public Object
+class Event;
+
+class Entity : virtual public EventTransmitter
 {
 public:
     Entity();
@@ -57,6 +60,10 @@ protected:
     void set_matrix_scl();
 
     void build_model_matrix();
+
+    void sendMovedEvent();
+
+    void debugMessage(QString message);
 };
 
 #endif // ENTITY_H

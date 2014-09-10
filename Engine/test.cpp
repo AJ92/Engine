@@ -174,6 +174,13 @@ void Test::keyFunction(){
             m->set_position(0.0,0.0,0.0);
             //m->set_rotation(180,0.0,1.0,0.0);
             level_loaded = true;
+
+            //test to cast model to entity and back...
+
+            /*
+            Entity * e = m;
+            Model * m2 = e;
+            */
         }
     }
 

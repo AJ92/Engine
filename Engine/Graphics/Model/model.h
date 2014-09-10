@@ -3,8 +3,6 @@
 
 #include "Object/object.h"
 
-#include "Event/eventtransmitter.h"
-
 #include "Graphics/Model/entity.h"
 
 #include <QList>
@@ -14,7 +12,7 @@ class Mesh;
 class Material;
 class Event;
 
-class Model : public Entity, virtual public EventTransmitter
+class Model : public Entity
 {
 public:
     //create a copy from mdl...

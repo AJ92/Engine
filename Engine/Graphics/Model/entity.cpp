@@ -1,7 +1,9 @@
 #include "entity.h"
 
+#include "Event/event.h"
+
 Entity::Entity() :
-    Object()
+    EventTransmitter()
 {
     pos = Vector3(0,0,0);
     angle = 0.0;
@@ -132,4 +134,13 @@ void Entity::build_model_matrix(){
     }
 }
 
+void Entity::sendMovedEvent(){
 
+}
+
+void Entity::debugMessage(QString message){
+    Event e;
+    e.type = Event::EventDebuggerMessage;
+    e.debugger = new EventDebugger(message);
+    this->transmit(e);
+}

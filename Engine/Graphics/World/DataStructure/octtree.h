@@ -8,6 +8,7 @@
 #include "Graphics/Camera/frustum.h"
 
 #include <QList>
+#include <QHash>
 
 class Event;
 
@@ -72,6 +73,7 @@ private:
 
     //internal data
     ModelLibrary_v2 * mdllib;
+    QHash<unsigned long long, Model* > id_model_hash;
 
     Model * dbg_mdl;
     ModelLibrary * real_lib;

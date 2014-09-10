@@ -32,9 +32,11 @@ public:
         EventWindowResize           = 0x0005,
 
         EventModelMoved             = 0x0006,
-        EventModelLoaded            = 0x0007,
-        EventModelRemoved           = 0x0008,
-        EventModelDeleted           = 0x0009
+        EventModelRotated           = 0x0007,
+        EventModelScaled            = 0x0008,
+        EventModelLoaded            = 0x0009,
+        EventModelRemoved           = 0x0010,
+        EventModelDeleted           = 0x0011
 
         //more to follow...
     };

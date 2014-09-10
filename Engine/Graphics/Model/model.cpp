@@ -6,8 +6,7 @@
 
 
 Model::Model(const Model &mdl) :
-    Entity(),
-    EventTransmitter()
+    Entity()
 {
     //copy all the stuff to this new object
     //lets hope const keyword won't make trouble
@@ -26,8 +25,7 @@ Model::Model(const Model &mdl) :
 }
 
 Model::Model() :
-    Entity(),
-    EventTransmitter()
+    Entity()
 {
     isReady = false;
 }
@@ -103,7 +101,5 @@ bool Model::equal(const Model &mdl) const{
 bool operator==(const Model &mdl1, const Model &mdl2){
     return mdl1.equal(mdl2);
 }
-
-
 
 

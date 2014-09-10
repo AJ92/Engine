@@ -271,11 +271,25 @@ ModelLibrary_v2::ModelLibrary_v2() :
     EventListener(),
     EventTransmitter()
 {
+    reserve_unique = 50;
+    reserve_all = 200;
+}
 
+ModelLibrary_v2::ModelLibrary_v2(int reserve_unique, int reserve_all) :
+    EventListener(),
+    EventTransmitter()
+{
+    this->reserve_unique = reserve_unique;
+    this->reserve_all = reserve_all;
 }
 
 void ModelLibrary_v2::initialize(){
     debugMessage("modellibrary v2 initializing...");
+
+    //preallocate some memory
+    model_list.reserve(reserve_all);
+    unique_model_list.reserve(reserve_unique);
+    unique_model_path_list.reserve(reserve_unique);
 
     debugMessage("modellibrary v2 initialized.");
 }

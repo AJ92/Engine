@@ -10,7 +10,9 @@ OctTree::OctTree(int max_amount_objects)
     this->pos = Vector3(0.0,0.0,0.0);
     //temporary limit...
     this->node_size = 1000.0;
-    mdllib = new ModelLibrary_v2();
+    mdllib = new ModelLibrary_v2(max_amount_objects,max_amount_objects);
+    mdllib->initialize();
+    id_model_hash.reserve(max_amount_objects);
     amount_objects = 0;
     dbg_mdl = 0;
     type = NodeRoot;
@@ -24,7 +26,9 @@ OctTree::OctTree(int subdiv_lvl,Vector3 pos, double node_size, int max_amount_ob
     this->pos = pos;
     this->node_size = node_size;
     this->max_amount_objects = max_amount_objects;
-    mdllib = new ModelLibrary_v2();
+    mdllib = new ModelLibrary_v2(max_amount_objects,max_amount_objects);
+    mdllib->initialize();
+    id_model_hash.reserve(max_amount_objects);
     amount_objects = 0;
     dbg_mdl = 0;
     type = NodeLeaf;
@@ -208,6 +212,11 @@ int OctTree::addModel(Model * mdl){
             mdllib->addModel(mdl);
         }
 
+        //add model to hash if it fitted this node or its child
+        if(result_added > 0){
+            id_model_hash.insert(mdl->id(),mdl);
+        }
+
         amount_objects += result_added;
         return result_added;
 
@@ -217,6 +226,8 @@ int OctTree::addModel(Model * mdl){
     // if the model fits inside me...
 
     mdllib->addModel(mdl);
+    id_model_hash.insert(mdl->id(),mdl);
+
     amount_objects += 1;
     if(amount_objects > max_amount_objects){
         subdivide();
@@ -244,7 +255,8 @@ int OctTree::addModels(ModelLibrary_v2 * lib){
 void OctTree::subdivide(){
 
     ModelLibrary_v2 * old_lib = mdllib;
-    mdllib = new ModelLibrary_v2();
+    mdllib = new ModelLibrary_v2(max_amount_objects,max_amount_objects);
+    mdllib->initialize();
 
     amount_objects = 0;
 
@@ -336,7 +348,7 @@ void OctTree::subdivide(){
     amount_objects += addModels(old_lib);
 
 
-    //////////////////////////////////
+    ////////////////////////////////////////////////////////////////////////////////////////////
     ///
     /// NEED TO DESTROY OLD MODELLIBRARY_V2
     ///

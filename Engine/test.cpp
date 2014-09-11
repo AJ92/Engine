@@ -40,10 +40,23 @@ Test::Test() :
 
     qDebug("Test constructed...");
 
+    //key J, is the plane created yet ?
     level_loaded = false;
 
+
+    //Octree test
+
+    /*
     ot = new OctTree(1000);
     ot->setDebugMdl(model_library,getApplicationDir() + "//cube.obj");
+    */
+
+
+
+    //Component test
+    GameObject * obj = new GameObject("my crazy object");
+
+
 }
 
 void Test::keyFunction(){
@@ -102,10 +115,10 @@ void Test::keyFunction(){
 
             m->set_rotation(rand() & 361,0.0,0.0,1.0);
 
-            ot->addModel(m);
+            //ot->addModel(m);
         }
 
-        debugMessage(ot->debug_string());
+        //debugMessage(ot->debug_string());
     }
 
     //c

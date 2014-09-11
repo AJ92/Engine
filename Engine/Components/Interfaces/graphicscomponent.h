@@ -2,6 +2,7 @@
 #define GRAPHICSCOMPONENT_H
 
 #include "Components/gameobject.h"
+#include "Graphics/Renderer/renderer.h"
 
 class GameObject;
 
@@ -9,7 +10,7 @@ class GraphicsComponent
 {
 public:
     virtual ~GraphicsComponent() {}
-    virtual void update(GameObject &gameobject) = 0;
+    virtual void update(GameObject &gameobject , Renderer &renderer) = 0;
 };
 
 #endif // GRAPHICSCOMPONENT_H

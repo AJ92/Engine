@@ -38,6 +38,8 @@
 
 #include "Physics/Physics.h"
 
+#include "Components/gameobject.h"
+
 class Event;
 
 class Engine : public QObject, virtual public EventListener, virtual public EventTransmitter

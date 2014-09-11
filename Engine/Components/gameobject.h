@@ -1,40 +1,50 @@
 #ifndef GAMEOBJECT_H
 #define GAMEOBJECT_H
 
+#include "Object/object.h"
 #include <QString>
-#include "Components/Interfaces/graphicscomponent.h"
+#include "Graphics/Renderer/renderer.h"
 
 class GraphicsComponent;
+class LocationComponent;
 
-class GameObject
+class GameObject : public Object
 {
 public:
 
+    //extend to 32 bit if needed... ( 0xFFFFFFFF)
     enum GameObjectType {
-        //single object types (Elementary Types)
+  
         ObjectEmpty             = 0x0000,
 
-        ObjectCamera            = 0x0001,
+        ObjectLocationComponent = 0x0001,
 
-        //multiple object types (Composite Types)
         ObjectGraphicsComponent = 0x0002,
         ObjectPhysicsComponent  = 0x0004,
         ObjectInputComponent    = 0x0008,
 
-        ObjectError             = 0x0100
+        ObjectCamera            = 0x0010,
+
+        ObjectError             = 0xFFFF
         //more to follow...
     };
 
     GameObject();
     GameObject(QString name);
 
-
-    //multiple object components
-    void addGraphicsComponent(GraphicsComponent * graphicscomponent);
+    void addGraphicsComponent(GraphicsComponent * component);
+    bool hasGraphicsComponent();
     GraphicsComponent* getGraphicsComponent();
 
+    void addLocationComponent(LocationComponent * component);
+    bool hasLocationComponent();
+    LocationComponent* getLocationComponent();
 
-    void update();
+    //will receive some more stuuf like
+    // - world for physics
+    // - renderer for graphics
+    // ...
+    void update(Renderer &renderer);
 
 
     QString getName();
@@ -50,6 +60,7 @@ private:
 
     //all the Objects this component can have...
     GraphicsComponent * graphicscomponent_;
+    LocationComponent * locationcomponent_;
 };
 
 #endif // GAMEOBJECT_H

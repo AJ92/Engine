@@ -20,6 +20,9 @@
 
 #include "Graphics/Model/Streamer/streamer.h"
 
+#include "Graphics/Model/modelloader.h"
+#include "Graphics/World/objectworld.h"
+
 #include "Graphics/Model/modellibrary.h"
 #include "Graphics/Model/model.h"
 
@@ -38,7 +41,7 @@
 
 #include "Physics/Physics.h"
 
-#include "Components/gameobject.h"
+#include "Object/compositeobject.h"
 
 class Event;
 
@@ -128,6 +131,13 @@ protected:
     LightLibrary * light_library;
 
 
+
+
+    ModelLoader * model_loader;
+    //holds all objects ... soooooon...
+    ObjectWorld * object_world;
+
+
 private:
 
 
@@ -162,13 +172,7 @@ private:
     ThreadAccountant * threadAccountant;
 
 
-    ///////
-    // DEBUG STUFF
-    // TESTING MATRICES
-
-    //Model * cam_test;
-
-
+    //called during the main loop
     virtual void eventCall();
 
 

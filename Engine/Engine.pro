@@ -54,9 +54,9 @@ SOURCES += main.cpp\
     Graphics/World/objectworld.cpp \
     Graphics/World/DataStructure/octtree.cpp \
     Graphics/Model/modelloader.cpp \
-    Graphics/Model/entity.cpp \
     Event/Events/eventmodel.cpp \
-    Components/gameobject.cpp
+    Object/compositeobject.cpp \
+    Object/positation.cpp
 
 
 
@@ -104,12 +104,9 @@ HEADERS  += \
     Graphics/World/objectworld.h \
     Graphics/World/DataStructure/octtree.h \
     Graphics/Model/modelloader.h \
-    Graphics/Model/entity.h \
     Event/Events/eventmodel.h \
-    Components/Components.h \
-    Components/gameobject.h \
-    Components/Interfaces/graphicscomponent.h \
-    Components/Interfaces/locationcomponent.h
+    Object/compositeobject.h \
+    Object/positation.h
 
 
 

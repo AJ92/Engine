@@ -1,6 +1,8 @@
 #include "octtree.h"
 
 #include "Event/event.h"
+#include "Object/compositeobject.h"
+#include "Object/positation.h"
 
 OctTree::OctTree(int max_amount_objects)
 {
@@ -12,9 +14,8 @@ OctTree::OctTree(int max_amount_objects)
     this->node_size = 1000.0;
     mdllib = new ModelLibrary_v2(max_amount_objects,max_amount_objects);
     mdllib->initialize();
-    id_model_hash.reserve(max_amount_objects);
+    id_compositeobject_hash.reserve(max_amount_objects);
     amount_objects = 0;
-    dbg_mdl = 0;
     type = NodeRoot;
     constructNodePoints();
 }
@@ -28,9 +29,8 @@ OctTree::OctTree(int subdiv_lvl,Vector3 pos, double node_size, int max_amount_ob
     this->max_amount_objects = max_amount_objects;
     mdllib = new ModelLibrary_v2(max_amount_objects,max_amount_objects);
     mdllib->initialize();
-    id_model_hash.reserve(max_amount_objects);
+    id_compositeobject_hash.reserve(max_amount_objects);
     amount_objects = 0;
-    dbg_mdl = 0;
     type = NodeLeaf;
     constructNodePoints();
 }
@@ -100,16 +100,17 @@ QList<OctTree* > OctTree::getNodesInFrustum(Frustum * f){
     return treeList;
 }
 
-int OctTree::fits(Model * mdl){
-    Vector3 mdl_pos = mdl->getPosition();
-    if((mdl_pos.x()+mdl->get_size()) <= (pos.x()+node_size) &&
-       (mdl_pos.x()-mdl->get_size()) >= (pos.x()-node_size)){
+int OctTree::fits(CompositeObject * obj){
+    Positation * posi = obj->getPositation();
+    Vector3 mdl_pos = posi->getPosition();
+    if((mdl_pos.x()+posi->get_size()) <= (pos.x()+node_size) &&
+       (mdl_pos.x()-posi->get_size()) >= (pos.x()-node_size)){
         //inside of the X axis
-        if((mdl_pos.y()+mdl->get_size()) <= (pos.y()+node_size) &&
-           (mdl_pos.y()-mdl->get_size()) >= (pos.y()-node_size)){
+        if((mdl_pos.y()+posi->get_size()) <= (pos.y()+node_size) &&
+           (mdl_pos.y()-posi->get_size()) >= (pos.y()-node_size)){
             //inside of the Y axis
-            if((mdl_pos.z()+mdl->get_size()) <= (pos.z()+node_size) &&
-               (mdl_pos.z()-mdl->get_size()) >= (pos.z()-node_size)){
+            if((mdl_pos.z()+posi->get_size()) <= (pos.z()+node_size) &&
+               (mdl_pos.z()-posi->get_size()) >= (pos.z()-node_size)){
                 //model fits in this node
                 return true;
             }
@@ -144,19 +145,8 @@ QString OctTree::debug_string(){
     return debug_str;
 }
 
-void OctTree::setDebugMdl(ModelLibrary * real_lib, QString path){
-    this->path = path;
-    this->real_lib = real_lib;
-    dbg_mdl = real_lib->loadModel(path);
-    dbg_mdl->set_scale(node_size,node_size,node_size);
-    dbg_mdl->set_position(pos);
-}
 
-Model * OctTree::getDebugMdl(){
-    return dbg_mdl;
-}
-
-int OctTree::addModel(Model * mdl){
+int OctTree::addModel(CompositeObject * mdl){
 
     //lets check if we need to add it or to send to our leaf nodes
     if(is_subdivided){
@@ -209,12 +199,12 @@ int OctTree::addModel(Model * mdl){
         //ok the model obviously fits into more than one node... lets add it to the parent node...
         else{
             result_added += 1;
-            mdllib->addModel(mdl);
+            mdllib->addModel(mdl->getModel());
         }
 
         //add model to hash if it fitted this node or its child
         if(result_added > 0){
-            id_model_hash.insert(mdl->id(),mdl);
+            id_compositeobject_hash.insert(mdl->id(),mdl);
         }
 
         amount_objects += result_added;
@@ -225,8 +215,8 @@ int OctTree::addModel(Model * mdl){
     // just add the model, my parent node has checked for me,
     // if the model fits inside me...
 
-    mdllib->addModel(mdl);
-    id_model_hash.insert(mdl->id(),mdl);
+    mdllib->addModel(mdl->getModel());
+    id_compositeobject_hash.insert(mdl->id(),mdl);
 
     amount_objects += 1;
     if(amount_objects > max_amount_objects){
@@ -243,8 +233,8 @@ int OctTree::addModels(ModelLibrary_v2 * lib){
     QList<Model*> mdls = lib->getModels();
 
     for(int i = 0; i < mdls.size(); i++){
-        if(fits(mdls.at(i))){
-            int added = addModel(mdls.at(i));
+        if(fits(mdls.at(i)->getParentCompositeObject())){
+            int added = addModel(mdls.at(i)->getParentCompositeObject());
             amount_objects += added;
             added_count += added;
         }
@@ -271,7 +261,6 @@ void OctTree::subdivide(){
                                               this->pos.z()+new_node_pos),
                                       new_node_size,
                                       this->max_amount_objects);
-    tree_northwest_high->setDebugMdl(real_lib,path);
     //amount_objects += tree_northwest_high->addModels(old_lib);
 
     tree_northeast_high = new OctTree(this->subdivision_level+1,
@@ -280,7 +269,6 @@ void OctTree::subdivide(){
                                               this->pos.z()+new_node_pos),
                                       new_node_size,
                                       this->max_amount_objects);
-    tree_northeast_high->setDebugMdl(real_lib,path);
     //amount_objects += tree_northeast_high->addModels(old_lib);
 
     tree_southwest_high = new OctTree(this->subdivision_level+1,
@@ -289,7 +277,6 @@ void OctTree::subdivide(){
                                               this->pos.z()+new_node_pos),
                                       new_node_size,
                                       this->max_amount_objects);
-    tree_southwest_high->setDebugMdl(real_lib,path);
     //amount_objects += tree_southwest_high->addModels(old_lib);
 
     tree_southeast_high = new OctTree(this->subdivision_level+1,
@@ -298,7 +285,6 @@ void OctTree::subdivide(){
                                               this->pos.z()+new_node_pos),
                                       new_node_size,
                                       this->max_amount_objects);
-    tree_southeast_high->setDebugMdl(real_lib,path);
     //amount_objects += tree_southeast_high->addModels(old_lib);
 
 
@@ -309,7 +295,6 @@ void OctTree::subdivide(){
                                              this->pos.z()-new_node_pos),
                                      new_node_size,
                                      this->max_amount_objects);
-    tree_northwest_low->setDebugMdl(real_lib,path);
     //amount_objects += tree_northwest_low->addModels(old_lib);
 
     tree_northeast_low = new OctTree(this->subdivision_level+1,
@@ -318,7 +303,6 @@ void OctTree::subdivide(){
                                              this->pos.z()-new_node_pos),
                                      new_node_size,
                                      this->max_amount_objects);
-    tree_northeast_low->setDebugMdl(real_lib,path);
     //amount_objects += tree_northeast_low->addModels(old_lib);
 
     tree_southwest_low = new OctTree(this->subdivision_level+1,
@@ -327,7 +311,6 @@ void OctTree::subdivide(){
                                              this->pos.z()-new_node_pos),
                                      new_node_size,
                                      this->max_amount_objects);
-    tree_southwest_low->setDebugMdl(real_lib,path);
     //amount_objects += tree_southwest_low->addModels(old_lib);
 
     tree_southeast_low = new OctTree(this->subdivision_level+1,
@@ -336,7 +319,6 @@ void OctTree::subdivide(){
                                              this->pos.z()-new_node_pos),
                                      new_node_size,
                                      this->max_amount_objects);
-    tree_southeast_low->setDebugMdl(real_lib,path);
     //amount_objects += tree_southeast_low->addModels(old_lib);
 
     this->is_subdivided = true;

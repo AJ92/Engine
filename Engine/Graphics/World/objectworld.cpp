@@ -1,5 +1,7 @@
 #include "objectworld.h"
 #include "Event/event.h"
+#include "Object/compositeobject.h"
+#include "Object/positation.h"
 
 ObjectWorld::ObjectWorld(ThreadAccountant * ta) :
     EventListener(),
@@ -29,6 +31,17 @@ void ObjectWorld::initialize(){
     ot = new OctTree(100);
 }
 
+
+CompositeObject * ObjectWorld::loadModelobject(QString name, QString path){
+    CompositeObject * co = new CompositeObject(name);
+    co->setModel(this->loadModel(path));
+    co->setPositation(new Positation());
+}
+
+
+
+
+//private stuff...
 Model* ObjectWorld::loadModel(QString path){
     if(ml){
         return ml->loadModel(path);

@@ -2,6 +2,7 @@
 
 #include "Event/event.h"
 
+
 Test::Test() :
     Engine()
 {
@@ -36,7 +37,7 @@ Test::Test() :
     qDebug("4");
 
     //physics test
-    btDefaultCollisionConfiguration * collisionConfiguration = new btDefaultCollisionConfiguration();
+    //btDefaultCollisionConfiguration * collisionConfiguration = new btDefaultCollisionConfiguration();
 
     qDebug("Test constructed...");
 
@@ -53,8 +54,11 @@ Test::Test() :
 
 
 
-    //Component test
-    GameObject * obj = new GameObject("my crazy object");
+    //CompositObject test
+
+    CompositeObject * co = new CompositeObject("CO");
+
+
 
 
 }
@@ -100,6 +104,7 @@ void Test::keyFunction(){
     //L
     if(k->isPressed(38))
     {
+        /*
         model_library->setModelsPerThread(1);
         int count = 10;
         for(int i = 0; i < count; i++){
@@ -117,6 +122,7 @@ void Test::keyFunction(){
 
             //ot->addModel(m);
         }
+        */
 
         //debugMessage(ot->debug_string());
     }
@@ -133,6 +139,7 @@ void Test::keyFunction(){
     //K
     if(k->isPressed(37))
     {
+        /*
         model_library->setModelsPerThread(1);
         Model * m = loadModel(getApplicationDir() + "//betty.obj");
         m->set_scale(0.92f,0.92f,0.92f);
@@ -140,11 +147,13 @@ void Test::keyFunction(){
                         (double)((rand() & 2000)-1000) + (double)((rand() & 1000)-500) * 0.05,
                         35.0);
         m->set_rotation(90.0,1.0,0.0,0.0);
+        */
     }
 
     //M
     if(k->isPressed(50))
     {
+        /*
         light_library->setLightsPerThread(1);
 
         int count = 5;
@@ -156,11 +165,6 @@ void Test::keyFunction(){
             double green = ((double)(rand() & 800)+200)* 0.001;
             double blue = ((double)(rand() & 800)+200)* 0.001;
 
-            /*
-            double red = 1.0;
-            double green = 1.0;
-            double blue = 1.0;
-            */
             l->setDiffuseColor(red,
                                green,
                                blue);
@@ -175,11 +179,13 @@ void Test::keyFunction(){
                                         100.0 + (double)((rand() & 100)-50));
             lights.append(l);
         }
+        */
     }
 
     //J
     if(k->isPressed(36))
     {
+        /*
         if(!level_loaded){
             model_library->setModelsPerThread(1);
             Model * m = loadModel(getApplicationDir() + "//terrain.obj");
@@ -187,14 +193,8 @@ void Test::keyFunction(){
             m->set_position(0.0,0.0,0.0);
             //m->set_rotation(180,0.0,1.0,0.0);
             level_loaded = true;
-
-            //test to cast model to entity and back...
-
-            /*
-            Entity * e = m;
-            Model * m2 = e;
-            */
         }
+        */
     }
 
     //0
@@ -258,6 +258,7 @@ void Test::keyFunction(){
 void Test::eventCall(){
     keyFunction();
 
+    /*
     for(int i = 0; i < lights.size(); i++){
         Model *m = lights[i]->getModel();
         m->set_position(m->getPosition().x()+sin(lighttime)*5.0,
@@ -266,5 +267,6 @@ void Test::eventCall(){
     }
 
     lighttime += 0.022 * getTimeStep();
+    */
 
 }

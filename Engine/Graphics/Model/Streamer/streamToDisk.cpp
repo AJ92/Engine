@@ -7,7 +7,7 @@ StreamToDisk::StreamToDisk(QList<Model *> model_list_for_thread)
     for (i = model_list_for_thread.begin(); i != model_list_for_thread.end(); ++i){
         Model *m = *i;
         model_list.append(new Model(*m));
-        model_id_list.append(m->Entity::id());
+        model_id_list.append(m->id());
     }
 }
 

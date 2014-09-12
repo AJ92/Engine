@@ -4,12 +4,15 @@
 #include "Graphics/Model/Components/mesh.h"
 #include "Event/event.h"
 
+#include "Object/compositeobject.h"
+
 
 Model::Model(const Model &mdl) :
-    Entity()
+    EventTransmitter()
 {
     //copy all the stuff to this new object
     //lets hope const keyword won't make trouble
+    /*
     this->pos = mdl.pos;
     this->rot = mdl.rot;
     this->scl = mdl.scl;
@@ -21,13 +24,16 @@ Model::Model(const Model &mdl) :
     this->path = mdl.path;
     this->meshs = mdl.meshs;
     this->size = 0.0;
+    */
     this->isReady = mdl.isReady;
+    this->parent_co = mdl.parent_co;
 }
 
 Model::Model() :
-    Entity()
+    EventTransmitter()
 {
     isReady = false;
+    parent_co = 0;
 }
 
 void Model::instance_from(const Model &mdl){
@@ -37,6 +43,7 @@ void Model::instance_from(const Model &mdl){
 
 
 void Model::set_data(const Model &mdl){
+    /*
     this->pos = mdl.pos;
     this->rot = mdl.rot;
     this->scl = mdl.scl;
@@ -45,6 +52,7 @@ void Model::set_data(const Model &mdl){
     this->mat_scl = mdl.mat_scl;
     this->mat_m = mdl.mat_m;
     this->matrix_changed = mdl.matrix_changed;
+    */
     this->isReady = mdl.isReady;
 }
 
@@ -90,8 +98,18 @@ bool Model::equalData(const Model &mdl) const{
     return false;
 }
 
+
+void Model::setParentCompositeObject(CompositeObject * co){
+    this->parent_co = co;
+}
+
+CompositeObject * Model::getParentCompositeObject(){
+    return parent_co;
+}
+
+
 bool Model::equal(const Model &mdl) const{
-    if(this->path.compare(mdl.get_path())==0 && this->Entity::id() == mdl.Entity::id()){
+    if(this->path.compare(mdl.get_path())==0 && this->id() == mdl.id()){
         return true;
     }
     return false;

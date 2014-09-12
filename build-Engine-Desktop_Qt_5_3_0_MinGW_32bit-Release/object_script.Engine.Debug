@@ -40,9 +40,9 @@ INPUT(
 ./debug\objectworld.o
 ./debug\octtree.o
 ./debug\modelloader.o
-./debug\entity.o
 ./debug\eventmodel.o
-./debug\gameobject.o
+./debug\compositeobject.o
+./debug\positation.o
 ./debug\moc_debugwindow.o
 ./debug\moc_engine.o
 ./debug\moc_streamToDisk.o

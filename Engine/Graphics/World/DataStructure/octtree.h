@@ -11,6 +11,8 @@
 #include <QHash>
 
 class Event;
+class CompositeObject;
+class Positation;
 
 class OctTree : virtual public EventListener, virtual public EventTransmitter
 {
@@ -24,19 +26,15 @@ public:
 
     void constructNodePoints();
 
-    //might need to provide an entity method aswell...
-    int fits(Model * mdl);
+    int fits(CompositeObject * obj);
     void subdivide();
 
-    int addModel(Model * mdl);
+    int addModel(CompositeObject * mdl);
     int addModels(ModelLibrary_v2 * lib);
 
     QList<OctTree* > getNodesInFrustum(Frustum * f);
 
     QString debug_string();
-
-    void setDebugMdl(ModelLibrary * real_lib, QString path);
-    Model * getDebugMdl();
 
     enum NodeType {
         NodeRoot                    = 0x0000,
@@ -73,9 +71,9 @@ private:
 
     //internal data
     ModelLibrary_v2 * mdllib;
-    QHash<unsigned long long, Model* > id_model_hash;
+    QHash<unsigned long long, CompositeObject* > id_compositeobject_hash;
 
-    Model * dbg_mdl;
+
     ModelLibrary * real_lib;
     QString path;
 

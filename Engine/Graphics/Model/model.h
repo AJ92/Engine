@@ -3,7 +3,7 @@
 
 #include "Object/object.h"
 
-#include "Graphics/Model/entity.h"
+#include "Event/eventtransmitter.h"
 
 #include <QList>
 
@@ -12,7 +12,9 @@ class Mesh;
 class Material;
 class Event;
 
-class Model : public Entity
+class CompositeObject;
+
+class Model : virtual public EventTransmitter
 {
 public:
     //create a copy from mdl...
@@ -36,6 +38,9 @@ public:
 
     bool equalData(const Model &mdl) const;
 
+    void setParentCompositeObject(CompositeObject * co);
+    CompositeObject * getParentCompositeObject();
+
     //override + overload bam
     bool equal(const Model &mdl) const;
 
@@ -47,6 +52,10 @@ private:
     QString path;
 
     QList<Mesh*> meshs;
+
+    //a pointer to its compositeObject if it has one..
+    //used by the renderer to get to the location data...
+    CompositeObject * parent_co;
 };
 
 #endif // MODEL_H

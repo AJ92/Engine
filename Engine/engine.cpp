@@ -84,7 +84,6 @@ Engine::~Engine(){
 void Engine::initialize(int argc, char *argv[]){
     debugMessage("engine initializing...");
 
-
     app_dir = QApplication::applicationDirPath();
     debugMessage("Application Dir: " + app_dir);
 
@@ -95,18 +94,6 @@ void Engine::initialize(int argc, char *argv[]){
     //GLEW
     GLenum GlewInitResult;
 
-    //init openGL 4.0
-    /*
-    glutInit(&argc, argv);
-    glutInitContextVersion(4, 0);
-    glutInitContextFlags(GLUT_FORWARD_COMPATIBLE);
-    glutInitContextProfile(GLUT_CORE_PROFILE);
-
-    glutSetOption(
-        GLUT_ACTION_ON_WINDOW_CLOSE,
-        GLUT_ACTION_CONTINUE_EXECUTION
-    );
-    */
     if (!glfwInit())
         exit(EXIT_FAILURE);
 
@@ -147,16 +134,28 @@ void Engine::initialize(int argc, char *argv[]){
     threadAccountant = new ThreadAccountant(idealThreadCount);
 
 
+    //soon to disapear from here
     //init Streamer
     model_library = new ModelLibrary(threadAccountant);
     model_library->addListener(debuggerListener);
     model_library->initialize();
 
-
+    //soon to disapear from here
     //init Streamer
     light_library = new LightLibrary(threadAccountant);
     light_library->addListener(debuggerListener);
     light_library->initialize();
+
+    //loads models
+    //we do not init it cause ObjectWorld does this for us...
+    model_loader = new ModelLoader(threadAccountant);
+    model_loader->addListener(debuggerListener);
+
+    //our world with all the fancy objects...
+    object_world = new ObjectWorld(threadAccountant);
+    object_world->addListener(debuggerListener);
+    object_world->setModelLoader(model_loader);
+    object_world->initialize();
 
 
     //init keyboard
@@ -189,13 +188,6 @@ void Engine::initialize(int argc, char *argv[]){
     r->setCamera(cam);
     r->setWindow(window);
 
-
-    //register c function callbacks
-    //glutDisplayFunc(&render_callback);
-    //glutCloseFunc(&close_callback);
-    //glutIdleFunc(&idle_callback);
-    //glutTimerFunc(0, &timer_callback, 0);
-    //glutKeyboardFunc(&keyboard_callback);
 
     //set default gl stuff
     glClearColor(0.5f,0.5f,0.5f,1.0f); //grey

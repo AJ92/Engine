@@ -70,7 +70,7 @@ void Streamer::assignModeltoThread(){
                 QList<Model*> model_list_for_thread;
                 for(int i = 0; i < models_per_thread; i++){
                     Model *m = model_list.first();
-                    id_model_map[m->Entity::id()] = m; //map id and model
+                    id_model_map[m->id()] = m; //map id and model
                     model_list_for_thread.append(m);
                     model_list.pop_front();
                 }

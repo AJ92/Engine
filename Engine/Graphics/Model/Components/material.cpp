@@ -1,7 +1,6 @@
 #include "material.h"
 
 Material::Material(QString name,QString path) :
-    Object(),
     mtl_name(name),
     mtl_path(path),
     mtl_ambient_loaded(false),

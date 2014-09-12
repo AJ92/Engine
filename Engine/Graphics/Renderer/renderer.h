@@ -25,6 +25,8 @@ class Model;
 class Material;
 class Mesh;
 class Event;
+class Positation;
+class CompositeObject;
 
 class Renderer :  virtual public EventListener, virtual public EventTransmitter
 {

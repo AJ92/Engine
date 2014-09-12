@@ -6,7 +6,7 @@
 
 class GameObject;
 
-class GraphicsComponent
+class GraphicsComponent : public Object
 {
 public:
     virtual ~GraphicsComponent() {}

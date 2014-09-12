@@ -89,7 +89,7 @@ void ModelLibrary::debugModelData(){
             debugMessage(" - Mesh: " + mesh_model_list[i].at(j)->get_name() +
                          QString::number(mesh_model_list[i].at(j)->id()) +
                          "   " + model_mesh_list[i].at(j)->get_path() +
-                         QString::number(model_mesh_list[i].at(j)->Entity::id()));
+                         QString::number(model_mesh_list[i].at(j)->id()));
         }
     }
 }
@@ -325,7 +325,7 @@ void ModelLibrary_v2::debugModelData(){
             debugMessage(" - Mesh: " + mesh_model_list[i].at(j)->get_name() +
                          QString::number(mesh_model_list[i].at(j)->id()) +
                          "   " + model_mesh_list[i].at(j)->get_path() +
-                         QString::number(model_mesh_list[i].at(j)->Entity::id()));
+                         QString::number(model_mesh_list[i].at(j)->id()));
         }
     }
 }

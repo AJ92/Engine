@@ -6,6 +6,9 @@
 
 #include "Event/event.h"
 
+#include "Object/positation.h"
+#include "Object/compositeobject.h"
+
 Renderer::Renderer() :
     EventTransmitter()
 {
@@ -171,21 +174,23 @@ void Renderer::setWindow(Window * win){
 bool Renderer::meshInFrustum(Frustum f, Model * mdl, Mesh * mesh, Matrix4x4 &pvm_mat){
     //get the spherical bounds
 
-    Vector3 mdl_pos = mdl->getPosition();
+    Positation * posi = mdl->getParentCompositeObject()->getPositation();
+
+    Vector3 mdl_pos = posi->getPosition();
 
     //Vector3 mdl_pos = pvm_mat * mesh->getBoundingSpherePos();
 
 
     double rad = mesh->getBoundingSphereRadius();
     double max_rad = 0.0;
-    if(mdl->get_scale()[0]*rad > max_rad){
-        max_rad = mdl->get_scale()[0]*rad;
+    if(posi->get_scale()[0]*rad > max_rad){
+        max_rad = posi->get_scale()[0]*rad;
     }
-    if(mdl->get_scale()[1]*rad > max_rad){
-        max_rad = mdl->get_scale()[1]*rad;
+    if(posi->get_scale()[1]*rad > max_rad){
+        max_rad = posi->get_scale()[1]*rad;
     }
-    if(mdl->get_scale()[2]*rad > max_rad){
-        max_rad = mdl->get_scale()[2]*rad;
+    if(posi->get_scale()[2]*rad > max_rad){
+        max_rad = posi->get_scale()[2]*rad;
     }
 
     int type = f.sphereInFrustum(mdl_pos,max_rad);
@@ -344,7 +349,10 @@ void Renderer::render(){
 
                         //calculate if we need to draw the model
                         Model * mdl =  model_mesh_list[index].at(mdl_index);
-                        m_m = mdl->get_model_matrix();
+
+                        Positation * posi = mdl->getParentCompositeObject()->getPositation();
+
+                        m_m = posi->get_model_matrix();
                         vm_m = v_m * m_m;
                         pvm_m = p_m * v_m * m_m;
 
@@ -482,6 +490,9 @@ void Renderer::render(){
                     int rendered = 0;
                     for(int mdl_index = 0; mdl_index < l_model_mesh_list[index].size(); mdl_index++){
                         Model * mdl =  l_model_mesh_list[index].at(mdl_index);
+
+                        Positation * posi = mdl->getParentCompositeObject()->getPositation();
+
                         vm_m = v_m * m_m;
                         pvm_m = p_m * v_m * m_m;
 
@@ -502,7 +513,7 @@ void Renderer::render(){
                         */
 
                             //set the mesh to a billboard like position (give it the cam's rotation)
-                            m_m = mdl->get_model_matrix();
+                            m_m = posi->get_model_matrix();
                             /*
                             Vector3 scale_vec = m_m.get_vector_scale();
                             m_m[0] = v_m[0];
@@ -535,9 +546,9 @@ void Renderer::render(){
                             glUniformMatrix4fv(m_mat_loc_secondpass, 1, GL_FALSE, m_mat);
                             glUniformMatrix4fv(pvm_mat_loc_secondpass, 1, GL_FALSE, pvm_mat);
 
-                            glUniform3f (lp_loc_secondpass, mdl->getPosition().x(),
-                                                            mdl->getPosition().y(),
-                                                            mdl->getPosition().z()); // world position
+                            glUniform3f (lp_loc_secondpass, posi->getPosition().x(),
+                                                            posi->getPosition().y(),
+                                                            posi->getPosition().z()); // world position
                             glUniform3f (ld_loc_secondpass, light->getDiffuseColor().x(),
                                                             light->getDiffuseColor().y(),
                                                             light->getDiffuseColor().z()); // diffuse colour
@@ -751,9 +762,10 @@ void Renderer::render(){
                     for(int mdl_index = 0; mdl_index < model_mesh_list[index].size(); mdl_index++){
                         Model * mdl =  model_mesh_list[index].at(mdl_index);
 
+                        Positation * posi = mdl->getParentCompositeObject()->getPositation();
 
                         if(true){
-                            m_m = mdl->get_model_matrix();
+                            m_m = posi->get_model_matrix();
 
                             pvm_m = p_m * v_m * m_m;
 
@@ -836,10 +848,11 @@ void Renderer::render(){
                     for(int mdl_index = 0; mdl_index < model_mesh_list[index].size(); mdl_index++){
                         Model * mdl =  model_mesh_list[index].at(mdl_index);
 
+                        Positation * posi = mdl->getParentCompositeObject()->getPositation();
 
                         if(true){
 
-                            m_m = mdl->get_model_matrix();
+                            m_m = posi->get_model_matrix();
 
                             pvm_m = p_m * v_m * m_m;
 
@@ -870,6 +883,7 @@ void Renderer::render(){
 
 void Renderer::render(Model * m){
 
+    /*
     if(m->isReadyToRender()){
         GLenum ErrorCheckValue = glGetError();
         if (ErrorCheckValue != GL_NO_ERROR)
@@ -939,6 +953,7 @@ void Renderer::render(Model * m){
             debugMessage("ERROR after rendering: " + QString::fromLatin1((char*) gluErrorString(ErrorCheckValue)));
         }
     }
+    */
 }
 
 

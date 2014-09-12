@@ -106,6 +106,11 @@ void ModelLoader::updateInstances(Model * mdl){
             for(int j = 0; j < instances_to_load_list.at(i).size(); j++){
                 Model * m = instances_to_load_list.at(i).at(j);
                 m->instance_from(*mdl);
+
+                if(m->getParentCompositeObject() == 0){
+                    qDebug("[WARNING] ModelLoader::updateInstances(Model * mdl) : no CompositeObject parent reference in model...");
+                }
+
                 addModel(m);
             }
             instances_to_load_list[i].clear();

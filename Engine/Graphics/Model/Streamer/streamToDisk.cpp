@@ -20,6 +20,7 @@ StreamToDisk::~StreamToDisk(){
 void StreamToDisk::stream(){
     for (int i = 0; i < model_list.size(); ++i){
         Model * m = model_list.at(i);
+        error("StreamToDisk::stream() : " + m->get_path());
         m = model_loader.import_model(m->get_path());
         emit loaded(m,model_id_list.at(i));
     }

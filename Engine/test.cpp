@@ -104,6 +104,8 @@ void Test::keyFunction(){
     //L
     if(k->isPressed(38))
     {
+
+        CompositeObject * coTest = loadModelObject("tree", getApplicationDir() + "//tree.obj");
         /*
         model_library->setModelsPerThread(1);
         int count = 10;
@@ -134,20 +136,6 @@ void Test::keyFunction(){
 
         Model * m = loadModel(getApplicationDir() + "//cube.obj");
 
-    }
-
-    //K
-    if(k->isPressed(37))
-    {
-        /*
-        model_library->setModelsPerThread(1);
-        Model * m = loadModel(getApplicationDir() + "//betty.obj");
-        m->set_scale(0.92f,0.92f,0.92f);
-        m->set_position((double)((rand() & 2000)-1000) + (double)((rand() & 1000)-500) * 0.05,
-                        (double)((rand() & 2000)-1000) + (double)((rand() & 1000)-500) * 0.05,
-                        35.0);
-        m->set_rotation(90.0,1.0,0.0,0.0);
-        */
     }
 
     //M
@@ -185,6 +173,10 @@ void Test::keyFunction(){
     //J
     if(k->isPressed(36))
     {
+        if(!level_loaded){
+            compositeobjecttest = loadModelObject("terrain", getApplicationDir() + "//terrain.obj");
+            level_loaded = true;
+        }
         /*
         if(!level_loaded){
             model_library->setModelsPerThread(1);
@@ -194,6 +186,32 @@ void Test::keyFunction(){
             //m->set_rotation(180,0.0,1.0,0.0);
             level_loaded = true;
         }
+        */
+    }
+
+    //K
+    if(k->isPressed(37))
+    {
+        if(level_loaded){
+            debugMessage("terrain loaded...");
+            if(compositeobjecttest->hasModel()){
+                debugMessage("terrain has model...");
+
+                Model * mdl = compositeobjecttest->getModel();
+                debugMessage(mdl->get_path() + " " + QString::number(mdl->id()));
+            }
+            else{
+                debugMessage("terrain has no model yet...");
+            }
+        }
+        /*
+        model_library->setModelsPerThread(1);
+        Model * m = loadModel(getApplicationDir() + "//betty.obj");
+        m->set_scale(0.92f,0.92f,0.92f);
+        m->set_position((double)((rand() & 2000)-1000) + (double)((rand() & 1000)-500) * 0.05,
+                        (double)((rand() & 2000)-1000) + (double)((rand() & 1000)-500) * 0.05,
+                        35.0);
+        m->set_rotation(90.0,1.0,0.0,0.0);
         */
     }
 

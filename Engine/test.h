@@ -30,6 +30,8 @@ private:
 
     //Test octtree
     OctTree * ot;
+
+    CompositeObject * compositeobjecttest;
 };
 
 #endif // TEST_H

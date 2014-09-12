@@ -21,6 +21,7 @@ CompositeObject::CompositeObject(QString name) :
 
 void CompositeObject::setModel(Model * model){
     model_ = model;
+    model_->setParentCompositeObject(this);
     type_ = type_ | ObjectModel; //binary or
 }
 

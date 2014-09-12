@@ -25,6 +25,8 @@ Model::Model(const Model &mdl) :
     this->meshs = mdl.meshs;
     this->size = 0.0;
     */
+    this->parent_co = mdl.parent_co;
+    this->path = mdl.path;
     this->isReady = mdl.isReady;
     this->parent_co = mdl.parent_co;
 }
@@ -53,6 +55,7 @@ void Model::set_data(const Model &mdl){
     this->mat_m = mdl.mat_m;
     this->matrix_changed = mdl.matrix_changed;
     */
+    this->parent_co = parent_co;
     this->isReady = mdl.isReady;
 }
 

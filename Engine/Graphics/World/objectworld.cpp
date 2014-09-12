@@ -36,6 +36,9 @@ CompositeObject * ObjectWorld::loadModelobject(QString name, QString path){
     CompositeObject * co = new CompositeObject(name);
     co->setModel(this->loadModel(path));
     co->setPositation(new Positation());
+    ot->addModel(co);
+    debugMessage(ot->debug_string());
+    return co;
 }
 
 
@@ -44,6 +47,7 @@ CompositeObject * ObjectWorld::loadModelobject(QString name, QString path){
 //private stuff...
 Model* ObjectWorld::loadModel(QString path){
     if(ml){
+        debugMessage("ObjectWorld::loadModel(path) : " + path);
         return ml->loadModel(path);
     }
     debugMessage("ModelLoader wasn't set up... it's useless to load Models yet!");

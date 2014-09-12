@@ -91,6 +91,9 @@ public:
 
     Model * loadModel(QString path);
     Light * loadLight(QString path);
+
+    CompositeObject * loadModelObject(QString name, QString path);
+
     void setCamera(Camera * cam);
 
     QString getApplicationDir();

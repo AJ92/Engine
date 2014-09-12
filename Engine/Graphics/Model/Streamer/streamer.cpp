@@ -114,6 +114,7 @@ void Streamer::assignModelListToThread(QList<Model *> model_list){
 
     qDebug() << "   Worker thread: " << worker->thread();
 
+
     worker->moveToThread(thread);
     QObject::connect(worker, SIGNAL(error(QString)), this, SLOT(debugMessage(QString)), Qt::QueuedConnection);
     QObject::connect(thread, SIGNAL(started()), worker, SLOT(stream()), Qt::QueuedConnection);

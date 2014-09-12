@@ -101,6 +101,12 @@ QList<OctTree* > OctTree::getNodesInFrustum(Frustum * f){
 }
 
 int OctTree::fits(CompositeObject * obj){
+
+    if(obj == 0){
+        qDebug("[WARNING] OctTree::fits(CompositeObject * obj) : no CompositeObject ...");
+        return false;
+    }
+
     Positation * posi = obj->getPositation();
     Vector3 mdl_pos = posi->getPosition();
     if((mdl_pos.x()+posi->get_size()) <= (pos.x()+node_size) &&
@@ -214,6 +220,10 @@ int OctTree::addModel(CompositeObject * mdl){
 
     // just add the model, my parent node has checked for me,
     // if the model fits inside me...
+
+    if(mdl->getModel()->getParentCompositeObject() == 0){
+        qDebug("[WARNING] OctTree::addModel(CompositeObject * mdl) : no CompositeObject ...");
+    }
 
     mdllib->addModel(mdl->getModel());
     id_compositeobject_hash.insert(mdl->id(),mdl);

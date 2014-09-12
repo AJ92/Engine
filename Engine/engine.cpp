@@ -394,6 +394,11 @@ Light * Engine::loadLight(QString path){
     return light_library->loadLight(path);
 }
 
+
+CompositeObject * Engine::loadModelObject(QString name, QString path){
+    return object_world->loadModelobject(name, path);
+}
+
 void Engine::setCamera(Camera * cam){
     this->cam = cam;
     r->setCamera(this->cam);

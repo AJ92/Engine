@@ -37,6 +37,12 @@ INPUT(
 ./debug\eventwindow.o
 ./debug\frustum.o
 ./debug\test.o
+./debug\objectworld.o
+./debug\octtree.o
+./debug\modelloader.o
+./debug\eventmodel.o
+./debug\compositeobject.o
+./debug\positation.o
 ./debug\moc_debugwindow.o
 ./debug\moc_engine.o
 ./debug\moc_streamToDisk.o

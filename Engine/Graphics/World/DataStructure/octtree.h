@@ -29,7 +29,7 @@ public:
     int fits(CompositeObject * obj);
     void subdivide();
 
-    int addModel(CompositeObject * mdl);
+    int addModel(CompositeObject * obj);
     int addModels(ModelLibrary_v2 * lib);
 
     QList<OctTree* > getNodesInFrustum(Frustum * f);

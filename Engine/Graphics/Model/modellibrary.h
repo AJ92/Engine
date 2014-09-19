@@ -13,6 +13,7 @@ class Model;
 class Mesh;
 class Material;
 class Event;
+class CompositeObject;
 
 class ModelLibrary : virtual public EventListener, virtual public EventTransmitter
 {
@@ -81,18 +82,24 @@ public:
 
     void initialize();
 
-    void addModel(Model * mdl);
-    bool removeModel(Model * mdl);
+    void addModel(CompositeObject * co);
+    bool removeModel(CompositeObject * co);
 
     void clearLib();
 
     QList<Model*> getModels() const;
+
+    QList<CompositeObject*> getCompositeObjects() const;
+
 
     // should be unsigned long long or so
     int modelCount();
 
 
     //getter for the renderer... shouldn't be manipulated
+
+    QList<QList<CompositeObject*> > getCompositeobjectMeshList();
+
     QList<QList<Mesh*> > getMeshModelList();
     QList<QList<Model*> > getModelMeshList();
     QList<Material*> getMaterialMeshList();
@@ -103,10 +110,12 @@ public:
 private:
 
     QList<Model*> model_list;               //all models (includes instances)
-    QList<Model*> unique_model_list;        //unique by data!!!
-    QList<QString> unique_model_path_list;  //unique paths of models
+    QList<CompositeObject*> compositeobject_list;        //all compositeobjects
+
 
     //model data sorted by material / single mesh
+
+    QList<QList<CompositeObject*> > compositeobject_mesh_list;
     QList<QList<Mesh*> > mesh_model_list;
     QList<QList<Model*> > model_mesh_list;
     QList<Material*> material_mesh_list;
@@ -114,12 +123,14 @@ private:
     void eventRecieved(Event e);
     void debugMessage(QString message);
 
-    void addModelUnique(Model * mdl);
 
-    void addModelData(Model * mdl);
+    void addModelData(CompositeObject * co);
 
+    //next 2 not needed ?
     Model * containsModelData(Model * mdl);
     Model * containsModel(Model * mdl);
+
+    CompositeObject * containsCompositeObject(CompositeObject * co);
 
     int reserve_unique;
     int reserve_all;

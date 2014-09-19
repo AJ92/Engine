@@ -77,7 +77,7 @@ QString Object::to_string(){
 //friend
 
 bool operator==(const Object &o1, const Object &o2){
-    qDebug("equal check...");
+    //qDebug("equal check...");
     //return o1.my_id == o2.my_id;
     return o1.equal(o2);
 }

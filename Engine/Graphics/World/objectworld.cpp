@@ -35,7 +35,13 @@ void ObjectWorld::initialize(){
 CompositeObject * ObjectWorld::loadModelobject(QString name, QString path){
     CompositeObject * co = new CompositeObject(name);
     co->setModel(this->loadModel(path));
-    co->setPositation(new Positation());
+    //randomized pos, for octtree test
+    Positation * posi = new Positation();
+    posi->set_position((double)((rand() & 2000)-1000),
+                      (double)((rand() & 2000)-1000),
+                      10.0);
+
+    co->setPositation(posi);
     ot->addModel(co);
     debugMessage(ot->debug_string());
     return co;

@@ -9,7 +9,7 @@ OctTree::OctTree(int max_amount_objects)
     this->subdivision_level = 0;
     this->max_amount_objects = max_amount_objects;
     this->is_subdivided = false;
-    this->pos = Vector3(0.0,0.0,0.0);
+    this->pos = Vector3(2.0,2.0,2.0);
     //temporary limit...
     this->node_size = 1000.0;
     mdllib = new ModelLibrary_v2(max_amount_objects,max_amount_objects);
@@ -152,7 +152,7 @@ QString OctTree::debug_string(){
 }
 
 
-int OctTree::addModel(CompositeObject * mdl){
+int OctTree::addModel(CompositeObject * obj){
 
     //lets check if we need to add it or to send to our leaf nodes
     if(is_subdivided){
@@ -160,15 +160,15 @@ int OctTree::addModel(CompositeObject * mdl){
 
         //we are now a parent node and we check ...
 
-        int f1 = tree_northwest_high->fits(mdl);
-        int f2 = tree_northeast_high->fits(mdl);
-        int f3 = tree_southwest_high->fits(mdl);
-        int f4 = tree_southeast_high->fits(mdl);
+        int f1 = tree_northwest_high->fits(obj);
+        int f2 = tree_northeast_high->fits(obj);
+        int f3 = tree_southwest_high->fits(obj);
+        int f4 = tree_southeast_high->fits(obj);
 
-        int f5 = tree_northwest_low->fits(mdl);
-        int f6 = tree_northeast_low->fits(mdl);
-        int f7 = tree_southwest_low->fits(mdl);
-        int f8 = tree_southeast_low->fits(mdl);
+        int f5 = tree_northwest_low->fits(obj);
+        int f6 = tree_northeast_low->fits(obj);
+        int f7 = tree_southwest_low->fits(obj);
+        int f8 = tree_southeast_low->fits(obj);
 
         int fit_count = f1 + f2 + f3 + f4 + f5 + f6 + f7 + f8;
 
@@ -178,39 +178,39 @@ int OctTree::addModel(CompositeObject * mdl){
         if(fit_count < 2){
             //lets check where it fitted and add it there
             if(f1 == 1){
-                result_added += tree_northwest_high->addModel(mdl);
+                result_added += tree_northwest_high->addModel(obj);
             }
             else if(f2 == 1){
-                result_added += tree_northeast_high->addModel(mdl);
+                result_added += tree_northeast_high->addModel(obj);
             }
             else if(f3 == 1){
-                result_added += tree_southwest_high->addModel(mdl);
+                result_added += tree_southwest_high->addModel(obj);
             }
             else if(f4 == 1){
-                result_added += tree_southeast_high->addModel(mdl);
+                result_added += tree_southeast_high->addModel(obj);
             }
             else if(f5 == 1){
-                result_added += tree_northwest_low->addModel(mdl);
+                result_added += tree_northwest_low->addModel(obj);
             }
             else if(f6 == 1){
-                result_added += tree_northeast_low->addModel(mdl);
+                result_added += tree_northeast_low->addModel(obj);
             }
             else if(f7 == 1){
-                result_added += tree_southwest_low->addModel(mdl);
+                result_added += tree_southwest_low->addModel(obj);
             }
             else if(f8 == 1){
-                result_added += tree_southeast_low->addModel(mdl);
+                result_added += tree_southeast_low->addModel(obj);
             }
         }
-        //ok the model obviously fits into more than one node... lets add it to the parent node...
+        //ok the obj obviously fits into more than one node... lets add it to the parent node...
         else{
             result_added += 1;
-            mdllib->addModel(mdl->getModel());
+            mdllib->addModel(obj);
         }
 
         //add model to hash if it fitted this node or its child
         if(result_added > 0){
-            id_compositeobject_hash.insert(mdl->id(),mdl);
+            id_compositeobject_hash.insert(obj->id(),obj);
         }
 
         amount_objects += result_added;
@@ -221,12 +221,9 @@ int OctTree::addModel(CompositeObject * mdl){
     // just add the model, my parent node has checked for me,
     // if the model fits inside me...
 
-    if(mdl->getModel()->getParentCompositeObject() == 0){
-        qDebug("[WARNING] OctTree::addModel(CompositeObject * mdl) : no CompositeObject ...");
-    }
 
-    mdllib->addModel(mdl->getModel());
-    id_compositeobject_hash.insert(mdl->id(),mdl);
+    mdllib->addModel(obj);
+    id_compositeobject_hash.insert(obj->id(),obj);
 
     amount_objects += 1;
     if(amount_objects > max_amount_objects){
@@ -240,11 +237,11 @@ int OctTree::addModels(ModelLibrary_v2 * lib){
 
     int added_count = 0;
 
-    QList<Model*> mdls = lib->getModels();
+    QList<CompositeObject*> objs = lib->getCompositeObjects();
 
-    for(int i = 0; i < mdls.size(); i++){
-        if(fits(mdls.at(i)->getParentCompositeObject())){
-            int added = addModel(mdls.at(i)->getParentCompositeObject());
+    for(int i = 0; i < objs.size(); i++){
+        if(fits(objs.at(i))){
+            int added = addModel(objs.at(i));
             amount_objects += added;
             added_count += added;
         }

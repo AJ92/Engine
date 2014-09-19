@@ -5,6 +5,7 @@
 #include "Graphics/Model/Components/mesh.h"
 
 #include "Event/event.h"
+#include "Object/compositeobject.h"
 
 ModelLibrary::ModelLibrary(ThreadAccountant * ta) :
     EventListener(),
@@ -286,10 +287,9 @@ ModelLibrary_v2::ModelLibrary_v2(int reserve_unique, int reserve_all) :
 void ModelLibrary_v2::initialize(){
     debugMessage("modellibrary v2 initializing...");
 
-    //preallocate some memory
+    //preallocate some memory  
+    compositeobject_list.reserve(reserve_all);
     model_list.reserve(reserve_all);
-    unique_model_list.reserve(reserve_unique);
-    unique_model_path_list.reserve(reserve_unique);
 
     debugMessage("modellibrary v2 initialized.");
 }
@@ -298,10 +298,20 @@ QList<Model *> ModelLibrary_v2::getModels() const{
     return model_list;
 }
 
+QList<CompositeObject*> ModelLibrary_v2::getCompositeObjects() const{
+    return compositeobject_list;
+}
+
+
 int ModelLibrary_v2::modelCount(){
     return model_list.size();
 }
 
+
+
+QList<QList<CompositeObject*> > ModelLibrary_v2::getCompositeobjectMeshList(){
+    return compositeobject_mesh_list;
+}
 
 QList<QList<Mesh*> > ModelLibrary_v2::getMeshModelList(){
     return mesh_model_list;
@@ -331,11 +341,12 @@ void ModelLibrary_v2::debugModelData(){
 }
 
 void ModelLibrary_v2::clearLib(){
+    compositeobject_list.clear();       //all compositeobjects (includes model instances)
     model_list.clear();               //all models (includes instances)
-    unique_model_list.clear();        //unique by data!!!
-    unique_model_path_list.clear();  //unique paths of models
+
 
     //model data sorted by material / single mesh
+    compositeobject_mesh_list.clear();
     mesh_model_list.clear();
     model_mesh_list.clear();
     material_mesh_list.clear();
@@ -343,24 +354,36 @@ void ModelLibrary_v2::clearLib(){
 
 //private
 //add the model to the model list (contains also instances)
-void ModelLibrary_v2::addModel(Model * mdl){
-    if(!containsModel(mdl)){
-        model_list.push_back(mdl);
-        addModelData(mdl);
+void ModelLibrary_v2::addModel(CompositeObject * co){
+    //check if CompositeObject was build properly...
+    if(co->hasModel()){
+        //check if it was added already...
+        if(!containsCompositeObject(co)){
+            addModelData(co);
+        }
+    }
+    else{
+        debugMessage("ModelLibrary_v2::addModel(CompositeObject * mdl): mdl has no Model* !!!");
     }
 }
 
-//add the model to the unique model list (does not contain instances)
-void ModelLibrary_v2::addModelUnique(Model * mdl){
-    //do not check if there are instances, cause we know there is a base we instanced from!
-    unique_model_list.push_back(mdl);
-    unique_model_path_list.push_back(mdl->get_path());
-}
+
 
 
 
 //sort in the model data so we can skip several render setup calls...
-void ModelLibrary_v2::addModelData(Model * mdl){
+void ModelLibrary_v2::addModelData(CompositeObject * co){
+
+    Model* mdl = co->getModel();
+
+    //add it to the lists...
+
+    model_list.push_back(mdl);
+    compositeobject_list.push_back(co);
+
+
+
+
     QList<Mesh*> mdl_meshs = mdl->get_meshs();
 
     QList<Mesh *>::iterator i;
@@ -382,15 +405,18 @@ void ModelLibrary_v2::addModelData(Model * mdl){
         if(sort_in){
             mesh_model_list[sort_in_index].append(mesh);
             model_mesh_list[sort_in_index].append(mdl);
+            compositeobject_mesh_list[sort_in_index].append(co);
         }
         else{
             //model is not found in the lists, create a new entry
             material_mesh_list.append(mesh_mtl);
             mesh_model_list.append(QList<Mesh*>());
             model_mesh_list.append(QList<Model*>());
+            compositeobject_mesh_list.append(QList<CompositeObject*>());
             int size_index = mesh_model_list.size()-1;
             mesh_model_list[size_index].append(mesh);
             model_mesh_list[size_index].append(mdl);
+            compositeobject_mesh_list[size_index].append(co);
         }
     }
 }
@@ -399,7 +425,7 @@ void ModelLibrary_v2::addModelData(Model * mdl){
 
 Model * ModelLibrary_v2::containsModelData(Model * mdl){
     QList<Model *>::iterator i;
-    for (i = unique_model_list.begin(); i != unique_model_list.end(); ++i){
+    for (i = model_list.begin(); i != model_list.end(); ++i){
         Model * m = *i;
         if((*m).equalData(*mdl)){
             return m;
@@ -419,20 +445,61 @@ Model * ModelLibrary_v2::containsModel(Model * mdl){
     return 0;
 }
 
-bool ModelLibrary_v2::removeModel(Model * mdl){
-    QList<Model *>::iterator i;
+CompositeObject * ModelLibrary_v2::containsCompositeObject(CompositeObject * co){
+    QList<CompositeObject *>::iterator i;
+    for (i = compositeobject_list.begin(); i != compositeobject_list.end(); ++i){
+        CompositeObject * c = *i;
+        if(*c == *co){
+            return c;
+        }
+    }
+    return 0;
+}
+
+//untested crappy delete function ...
+//guessed O(over 9000)
+bool ModelLibrary_v2::removeModel(CompositeObject * co){
+
+    //delete from the simple list...
+    QList<CompositeObject *>::iterator i;
     int j = 0;
-    for (i = model_list.begin(); i != model_list.end(); ++i){
-        Model * m = *i;
-        if(*m == *mdl){
+    for (i = compositeobject_list.begin(); i != compositeobject_list.end(); ++i){
+        CompositeObject * c = *i;
+        if(*c == *co){
             model_list.removeAt(j);
-            return true;
+            compositeobject_list.removeAt(j);
+            break;
         }
         j++;
     }
 
-    //model not even loaded yet!
-    return false;
+    QList<int>          index_i;
+    QList<QList<int> >  index_i_k;
+
+
+    //delete the model from the data lists...
+    for(int i = 0; i < compositeobject_mesh_list.size(); i++){
+        bool created = false;
+        for(int k = 0; k < compositeobject_mesh_list.at(i).size(); k++){
+            if(*compositeobject_mesh_list.at(i).at(k) == *co){
+                if(!created){
+                    index_i.append(i);
+                    index_i_k.append(QList<int>());
+                    created = true;
+                }
+                index_i_k[index_i_k.size()-1].append(k);
+            }
+        }
+    }
+
+    for(int i = 0; i < index_i.size(); i++){
+        for(int k = 0; k < index_i_k.size(); k++){
+            compositeobject_mesh_list[index_i.at(i)].removeAt(index_i_k.at(i).at(k));
+            mesh_model_list[index_i.at(i)].removeAt(index_i_k.at(i).at(k));
+            model_mesh_list[index_i.at(i)].removeAt(index_i_k.at(i).at(k));
+        }
+    }
+    return true;
 }
 
 

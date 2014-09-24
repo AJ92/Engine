@@ -28,7 +28,12 @@ void ObjectWorld::initialize(){
     ml->addListener(this);
     ml->initialize();
 
-    ot = new OctTree(100);
+    ot = new OctTree(500);
+}
+
+
+OctTree * ObjectWorld::getOctTree(){
+    return ot;
 }
 
 
@@ -39,7 +44,9 @@ CompositeObject * ObjectWorld::loadModelobject(QString name, QString path){
     Positation * posi = new Positation();
     posi->set_position((double)((rand() & 2000)-1000),
                       (double)((rand() & 2000)-1000),
-                      10.0);
+                      (double)((rand() & 2000)-1000));
+
+    posi->set_scale(3.0,3.0,3.0);
 
     co->setPositation(posi);
     ot->addModel(co);

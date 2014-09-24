@@ -29,6 +29,8 @@ public:
 
     void initialize();
 
+    OctTree * getOctTree();
+
     //creates an empty CompositeObject with Positation so the user can already interact
     //even if the model isn't loaded yet... model is bound later to this object...
     CompositeObject * loadModelobject(QString name, QString path);

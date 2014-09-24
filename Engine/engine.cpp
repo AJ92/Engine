@@ -346,9 +346,13 @@ void Engine::render()
     {
 
         //render the mdllib
+        //forget about the next 2...
         r->setModelLibrary(model_library);
         r->setLightLibrary(light_library);
-        r->render();
+
+        //set the objectworld
+        r->setObjectWorld(object_world);
+        r->render_v2();
 
         //glutSwapBuffers();
         //glutPostRedisplay();

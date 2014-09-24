@@ -62,6 +62,7 @@ private:
     };
 
     Plane planes[6];
+    Vector3 points[8];
 };
 
 #endif // FRUSTUM_H

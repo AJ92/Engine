@@ -105,7 +105,10 @@ void Test::keyFunction(){
     if(k->isPressed(38))
     {
 
-        CompositeObject * coTest = loadModelObject("tree", getApplicationDir() + "//tree.obj");
+        int count = 100;
+        for(int i = 0; i < count; i++){
+            CompositeObject * coTest = loadModelObject("tree", getApplicationDir() + "//tree.obj");
+        }
         /*
         model_library->setModelsPerThread(1);
         int count = 10;
@@ -192,17 +195,9 @@ void Test::keyFunction(){
     //K
     if(k->isPressed(37))
     {
-        if(level_loaded){
-            debugMessage("terrain loaded...");
-            if(compositeobjecttest->hasModel()){
-                debugMessage("terrain has model...");
-
-                Model * mdl = compositeobjecttest->getModel();
-                debugMessage(mdl->get_path() + " " + QString::number(mdl->id()));
-            }
-            else{
-                debugMessage("terrain has no model yet...");
-            }
+        int count = 100;
+        for(int i = 0; i < count; i++){
+            CompositeObject * coTest = loadModelObject("box", getApplicationDir() + "//box.obj");
         }
         /*
         model_library->setModelsPerThread(1);
@@ -241,7 +236,7 @@ void Test::keyFunction(){
 
     double speed_up = 1.0;
     if(k->isPressed(42)){
-        speed_up = 3.0;
+        speed_up = 10.0;
     }
 
     //Q W E A S D

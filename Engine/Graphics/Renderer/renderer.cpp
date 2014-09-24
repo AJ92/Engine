@@ -8,6 +8,7 @@
 
 #include "Object/positation.h"
 #include "Object/compositeobject.h"
+#include "Graphics/World/objectworld.h"
 
 Renderer::Renderer() :
     EventTransmitter()
@@ -17,6 +18,10 @@ Renderer::Renderer() :
     secondTextureIndex = 4;
     thirdTextureIndex = 8;
     fourthTextureIndex = 16;
+
+    mdllib = 0;
+    lightlib = 0;
+    objectworld = 0;
 }
 
 void Renderer::initialize(){
@@ -162,6 +167,10 @@ void Renderer::setLightLibrary(LightLibrary * lightlib){
     this->lightlib = lightlib;
 }
 
+void Renderer::setObjectWorld(ObjectWorld * objectworld){
+    this->objectworld = objectworld;
+}
+
 void Renderer::setCamera(Camera * cam){
     this->cam = cam;
 }
@@ -202,6 +211,632 @@ bool Renderer::meshInFrustum(Frustum f, Model * mdl, Mesh * mesh, Matrix4x4 &pvm
     }
     return false;
 }
+
+
+//NEW RENDERING CRAP
+
+void Renderer::render_v2(){
+
+    //check if the mdllib is ready
+    if(objectworld!=0){
+
+        //camera matrix
+        p_m.set_to_identity();
+        p_m.perspective(cam->getFOV(), float(win->getWindowWidth()) / float(win->getWindowHeight()),
+                        cam->getZNEAR(), cam->getZFAR());
+
+        v_m = cam->get_view_matrix();//.inverted();
+
+
+
+        double near_ = cam->getZNEAR();
+        double far_ = cam->getZFAR();
+
+        Frustum frustum;
+        //setting up the clipping points/planes...
+        frustum.setPoints(cam->getPosition() - touch_to_space(0,0)*near_,
+                          cam->getPosition() - touch_to_space(win->getWindowWidth(),0)*near_,
+                          cam->getPosition() - touch_to_space(0,win->getWindowHeight())*near_,
+                          cam->getPosition() - touch_to_space(win->getWindowWidth(),win->getWindowHeight())*near_,
+                          cam->getPosition() - touch_to_space(0,0)*far_,
+                          cam->getPosition() - touch_to_space(win->getWindowWidth(),0)*far_,
+                          cam->getPosition() - touch_to_space(0,win->getWindowHeight())*far_,
+                          cam->getPosition() - touch_to_space(win->getWindowWidth(),win->getWindowHeight())*far_);
+
+
+        //setup the octtree stuff so we cen loop trough the octtree nodes...
+        OctTree * ot = objectworld->getOctTree();
+        QList<OctTree*> ot_nodes = ot->getNodesInFrustum(&frustum);
+
+        //debugMessage("Nodes: " + QString::number(ot_nodes.size()));
+
+        //we have the octTree nodes which are in the frustum...
+        //lets loop trough them and render the models inside of each node...
+
+        ////////////////////////////////////////////////////////////////////////////////////
+        // visual render mode (solid objects)
+
+
+        if((renderMode & PolygonModeStandard) == PolygonModeStandard){
+
+
+            ////////////////////////////////////////////////////////////////////////////////////
+            // FIRST PASS of DEFERED RENDERER... fill the buffers
+
+            //set up framebuffer
+
+            // bind framebuffer
+            glBindFramebuffer(GL_FRAMEBUFFER, fb);
+            //glClearColor (0.0f, 0.0f, 0.0f, 0.0f);
+            glClear (GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+
+            glUseProgram(DR_FirstPassProgramIdId);
+
+            glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+
+            for(int i = 0; i < ot_nodes.size(); i++){
+                //render one node...
+
+                //copy the lists so we can itterate through them
+                QList<QList<CompositeObject*> > compositeobject_mesh_list = ot_nodes.at(i)->getModelLibrary()->getCompositeobjectMeshList();
+                QList<QList<Mesh*> > mesh_model_list = ot_nodes.at(i)->getModelLibrary()->getMeshModelList();
+                QList<QList<Model*> > model_mesh_list = ot_nodes.at(i)->getModelLibrary()->getModelMeshList();
+                QList<Material*> material_mesh_list = ot_nodes.at(i)->getModelLibrary()->getMaterialMeshList();
+
+                //loop trough the material_mesh_list
+                for(int index = 0; index < material_mesh_list.size(); index++){
+                    //now set up the material and mesh
+
+                    //tex
+                    glActiveTexture (GL_TEXTURE0+firstTextureIndex);
+                    glBindTexture(GL_TEXTURE_2D, material_mesh_list[index]->get_diffuse_map_texture());
+                    glUniform1i(glGetUniformLocation(DR_FirstPassProgramIdId, "sampler1"), firstTextureIndex);
+
+                    ///////////////////////////////////////////////////////////////////////////////////
+                    ///
+                    /// TODO:
+                    ///
+                    /// WE NEED TO CHECK IF THE MESH DATA IS UNIQUE..
+                    /// BUT AT THIS POINt WE ASUME IT's ALLWAYS THE SAME
+                    ///
+                    ///////
+
+                    if(mesh_model_list[index].size()>0){
+                        Mesh * mesh = mesh_model_list[index].at(0);
+
+                        //VAO
+
+                        glBindVertexArray(mesh->get_vertex_array_object());
+
+                        //VBOs
+                        glBindBuffer(GL_ARRAY_BUFFER, mesh->get_vertex_vbo());
+                        glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, 0);
+                        glEnableVertexAttribArray(0);
+
+                        glBindBuffer(GL_ARRAY_BUFFER, mesh->get_texcoord_vbo());
+                        glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 0, 0);
+                        glEnableVertexAttribArray(1);
+
+                        glBindBuffer(GL_ARRAY_BUFFER, mesh->get_normal_vbo());
+                        glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, 0, 0);
+                        glEnableVertexAttribArray(2);
+
+                        //now lets draw for every model it's meshs
+
+                        //draw
+                        int rendered = 0;
+                        for(int mdl_index = 0; mdl_index < model_mesh_list[index].size(); mdl_index++){
+
+                            //calculate if we need to draw the model
+                            Model * mdl =  model_mesh_list[index].at(mdl_index);
+
+                            Positation * posi = compositeobject_mesh_list[index].at(mdl_index)->getPositation();
+
+                            m_m = posi->get_model_matrix();
+                            vm_m = v_m * m_m;
+                            pvm_m = p_m * v_m * m_m;
+
+
+                            // don't need to check every mesh now if it is in the frustum yay....
+
+                            //TRANSPOSE
+                            for (int f = 0; f < 4; f++) {
+                                for (int g = 0; g < 4; g++) {
+                                    p_mat[f * 4 + g] = (GLfloat) (p_m[f*4+g]);
+                                    v_mat[f * 4 + g] = (GLfloat) (v_m[f*4+g]);
+                                    m_mat[f * 4 + g] = (GLfloat) (m_m[f*4+g]);
+                                    vm_mat[f * 4 + g] = (GLfloat) (vm_m[f*4+g]);
+                                }
+                            }
+
+
+
+
+                            glUniformMatrix4fv(p_mat_loc_firtpass, 1, GL_FALSE, p_mat);
+                            glUniformMatrix4fv(v_mat_loc_firtpass, 1, GL_FALSE, v_mat);
+                            glUniformMatrix4fv(m_mat_loc_firtpass, 1, GL_FALSE, m_mat);
+                            glUniformMatrix4fv(vm_mat_loc_firtpass, 1, GL_FALSE, vm_mat);
+
+
+
+                            //draw
+                            glDrawArrays(GL_TRIANGLES, 0, mesh->get_triangle_count()*3);
+                            rendered += 1;
+                        }
+
+                        //debugMessage("Rendered: " + QString::number(rendered));
+                    }
+
+                }
+            }
+
+
+            glActiveTexture(GL_TEXTURE0);
+            glBindTexture(GL_TEXTURE_2D, 0);
+
+
+            ////////////////////////////////////////////////////////////////////////////////////
+            // SECOND PASS of DEFERED RENDERER... take the filled buffers and ...
+            // add some sexyness to them :P
+
+
+            glBindFramebuffer (GL_FRAMEBUFFER, 0);
+            //glDrawBuffer(GL_BACK);
+            glClearColor (0.0, 0.0, 0.0, 1.0f); // no ambient... we add it later...
+            glClear (GL_COLOR_BUFFER_BIT);
+
+            glEnable (GL_BLEND); // --- could reject background frags!
+            glBlendEquation (GL_FUNC_ADD);
+            glBlendFunc (GL_ONE, GL_ONE); // addition each time
+
+            glDisable (GL_DEPTH_TEST);
+            glDepthMask (GL_FALSE);
+
+            glActiveTexture (GL_TEXTURE0);
+            glBindTexture (GL_TEXTURE_2D, fb_tex_p);
+
+            glActiveTexture (GL_TEXTURE1);
+            glBindTexture (GL_TEXTURE_2D, fb_tex_n);
+
+            glActiveTexture (GL_TEXTURE2);
+            glBindTexture (GL_TEXTURE_2D, fb_tex_c);
+
+            glUseProgram (DR_SecondPassProgramIdId);
+
+            glPolygonMode(GL_FRONT, GL_FILL);
+
+            glUniform2f (win_size_loc_secondpass, win->getWindowWidth(), win->getWindowHeight());
+
+            for(int i = 0; i < ot_nodes.size(); i++){
+                //render one node...
+
+
+                //copy the lists so we can itterate through them
+                QList<QList<Mesh*> > l_mesh_model_list = lightlib->getMeshModelList();
+                QList<QList<Model*> > l_model_mesh_list = lightlib->getModelMeshList();
+                QList<QList<Light*> > l_light_mesh_list = lightlib->getLightMeshList();
+                QList<Material*> l_material_mesh_list = lightlib->getMaterialMeshList();
+
+
+                //loop trough the material_mesh_list
+                for(int index = 0; index < l_material_mesh_list.size(); index++){
+                    ///////////////////////////////////////////////////////////////////////////////////
+                    ///
+                    /// TODO:
+                    ///
+                    /// WE NEED TO CHECK IF THE MESH DATA IS UNIQUE..
+                    /// BUT AT THIS POINt WE ASUME IT's ALLWAYS THE SAME
+                    ///
+                    ///////
+
+                    if(l_mesh_model_list[index].size()>0){
+
+
+                        Mesh * mesh = l_mesh_model_list[index].at(0);
+
+                        //VAO
+
+                        glBindVertexArray(mesh->get_vertex_array_object());
+
+                        //VBOs
+                        glBindBuffer(GL_ARRAY_BUFFER, mesh->get_vertex_vbo());
+                        glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, 0);
+                        glEnableVertexAttribArray(0);
+
+                        //tex coords actually not needed!!!
+                        glBindBuffer(GL_ARRAY_BUFFER, mesh->get_texcoord_vbo());
+                        glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 0, 0);
+                        glEnableVertexAttribArray(1);
+
+                        glBindBuffer(GL_ARRAY_BUFFER, mesh->get_normal_vbo());
+                        glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, 0, 0);
+                        glEnableVertexAttribArray(2);
+
+
+
+                        //draw
+                        int rendered = 0;
+                        for(int mdl_index = 0; mdl_index < l_model_mesh_list[index].size(); mdl_index++){
+                            Model * mdl =  l_model_mesh_list[index].at(mdl_index);
+
+                            Positation * posi = mdl->getParentCompositeObject()->getPositation();
+
+                            vm_m = v_m * m_m;
+                            pvm_m = p_m * v_m * m_m;
+
+
+                            if(meshInFrustum(frustum, mdl, mesh, pvm_m)){
+
+                                Light * light =  l_light_mesh_list[index].at(mdl_index);
+
+                                /*
+                                Indizes
+                                |    0        4        8        12   |
+                                |                                    |
+                                |    1        5        9        13   |
+                                |                                    |
+                                |    2        6        10       14   |
+                                |                                    |
+                                |    3        7        11       15   |
+                                */
+
+                                //set the mesh to a billboard like position (give it the cam's rotation)
+                                m_m = posi->get_model_matrix();
+
+
+                                pvm_m = p_m * v_m * m_m;
+
+                                for (int f = 0; f < 4; f++) {
+                                    for (int g = 0; g < 4; g++) {
+                                        p_mat[f * 4 + g] = (GLfloat) (p_m[f*4+g]);
+                                        v_mat[f * 4 + g] = (GLfloat) (v_m[f*4+g]);
+                                        m_mat[f * 4 + g] = (GLfloat) (m_m[f*4+g]);
+                                        pvm_mat[f * 4 + g] = (GLfloat) (pvm_m[f*4+g]);
+                                    }
+                                }
+
+
+                                glUniformMatrix4fv(p_mat_loc_secondpass, 1, GL_FALSE, p_mat);
+                                glUniformMatrix4fv(v_mat_loc_secondpass, 1, GL_FALSE, v_mat);
+                                glUniformMatrix4fv(m_mat_loc_secondpass, 1, GL_FALSE, m_mat);
+                                glUniformMatrix4fv(pvm_mat_loc_secondpass, 1, GL_FALSE, pvm_mat);
+
+                                glUniform3f (lp_loc_secondpass, posi->getPosition().x(),
+                                                                posi->getPosition().y(),
+                                                                posi->getPosition().z()); // world position
+                                glUniform3f (ld_loc_secondpass, light->getDiffuseColor().x(),
+                                                                light->getDiffuseColor().y(),
+                                                                light->getDiffuseColor().z()); // diffuse colour
+                                glUniform3f (ls_loc_secondpass, light->getSpecularColor().x(),
+                                                                light->getSpecularColor().y(),
+                                                                light->getSpecularColor().z()); // specular colour
+
+                                //draw
+                                glDrawArrays(GL_TRIANGLES, 0, mesh->get_triangle_count()*3);
+                                rendered += 1;
+                            }
+                        }
+                    }
+                }
+            }
+
+
+        }
+
+
+
+
+
+
+
+
+
+
+        //disable stuff so the gl_VertexID var works in GLSL
+        /*
+            glBindVertexArray(0);
+
+            //VBOs
+            glBindBuffer(GL_ARRAY_BUFFER, 0);
+            glDisableVertexAttribArray(0);
+
+            glBindBuffer(GL_ARRAY_BUFFER, 0);
+            glDisableVertexAttribArray(1);
+
+            glBindBuffer(GL_ARRAY_BUFFER, 0);
+            glDisableVertexAttribArray(2);
+            */
+
+
+        //glBindFramebuffer (GL_FRAMEBUFFER, 0);
+
+
+
+
+
+        /////////////////////////////////////////////////////////////////////////////////
+        ///
+        /// AMBIENT LIGHT PASS
+        ///
+        ///
+
+        glBindVertexArray(fsq_vertex_array_object);
+
+        //VBOs
+        glBindBuffer(GL_ARRAY_BUFFER, fsq_vertex_vbo);
+        glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, 0);
+        glEnableVertexAttribArray(0);
+
+        //tex coords actually not needed!!!
+        glBindBuffer(GL_ARRAY_BUFFER, fsq_texcoord_vbo);
+        glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 0, 0);
+        glEnableVertexAttribArray(1);
+
+        glBindBuffer(GL_ARRAY_BUFFER, fsq_normal_vbo);
+        glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, 0, 0);
+        glEnableVertexAttribArray(2);
+
+        glUseProgram (DR_AmbientPassProgramIdId);
+
+        glPolygonMode(GL_FRONT_AND_BACK, GL_POLYGON);
+
+        glUniform2f (win_size_loc_ambientpass, win->getWindowWidth(), win->getWindowHeight());
+
+        glUniform3f (color_loc_ambientpass,
+                     0.210,
+                     0.210,
+                     0.208); // ambient color
+
+        //glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
+        glDrawArrays(GL_TRIANGLES, 0, triangle_count*3);
+
+
+
+
+
+
+
+        /////////////////////////////////////////////////////////////////////////////////
+        ///
+        /// DIRECTIONAL AMBIENT LIGHT PASS
+        ///
+
+
+        glBindVertexArray(fsq_vertex_array_object);
+
+        //VBOs
+        glBindBuffer(GL_ARRAY_BUFFER, fsq_vertex_vbo);
+        glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, 0);
+        glEnableVertexAttribArray(0);
+
+        //tex coords actually not needed!!!
+        glBindBuffer(GL_ARRAY_BUFFER, fsq_texcoord_vbo);
+        glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 0, 0);
+        glEnableVertexAttribArray(1);
+
+        glBindBuffer(GL_ARRAY_BUFFER, fsq_normal_vbo);
+        glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, 0, 0);
+        glEnableVertexAttribArray(2);
+
+        glUseProgram (DR_DirectionalAmbientPassProgramIdId);
+
+        glPolygonMode(GL_FRONT_AND_BACK, GL_POLYGON);
+
+        glUniform2f (win_size_loc_directionalambientpass, win->getWindowWidth(), win->getWindowHeight());
+
+        glUniform3f (dir_loc_directionalambientpass,    0.5,
+                     -1.0,
+                     0.5); // ambient light direction
+
+        glUniform3f (color_loc_directionalambientpass,  0.050,
+                     0.050,
+                     0.048); // ambient color
+
+
+        for (int f = 0; f < 4; f++) {
+            for (int g = 0; g < 4; g++) {
+                v_mat[f * 4 + g] = (GLfloat) (v_m[f*4+g]);
+            }
+        }
+
+
+        glUniformMatrix4fv(v_mat_loc_directionalambientpass, 1, GL_FALSE, v_mat);
+
+        //glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
+        glDrawArrays(GL_TRIANGLES, 0, triangle_count*3);
+
+
+        //
+        // DRAWING FINISHED
+        //////////////////////////////////////////////////////////////////////////////////////////
+
+
+        glActiveTexture(GL_TEXTURE0);
+        glBindTexture(GL_TEXTURE_2D, 0);
+        glActiveTexture(GL_TEXTURE1);
+        glBindTexture(GL_TEXTURE_2D, 0);
+        glActiveTexture(GL_TEXTURE2);
+        glBindTexture(GL_TEXTURE_2D, 0);
+
+        glEnable (GL_DEPTH_TEST);
+        glDepthMask (GL_TRUE);
+        glDisable (GL_BLEND);
+
+    }//end of PolygonModeStandard
+
+
+
+    /*
+
+
+        if((renderMode & PolygonModeWireframe) == PolygonModeWireframe){
+
+            glUseProgram (DR_DebugPassProgramIdId);
+
+            glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+
+            glClear(GL_DEPTH_BUFFER_BIT);
+
+
+            //the color we want to render in...
+            glUniform3f (color_loc_debugpass, 1.0, 1.0, 1.0);
+
+
+            //copy the lists so we can itterate through them
+            QList<QList<Mesh*> > mesh_model_list = mdllib->getMeshModelList();
+            QList<QList<Model*> > model_mesh_list = mdllib->getModelMeshList();
+            //QList<QList<Light*> > light_mesh_list = mdllib->getLightMeshList();
+            QList<Material*> material_mesh_list = mdllib->getMaterialMeshList();
+
+
+
+            //loop trough the material_mesh_list
+            for(int index = 0; index < material_mesh_list.size(); index++){
+
+                if(mesh_model_list[index].size()>0){
+
+
+                    Mesh * mesh = mesh_model_list[index].at(0);
+
+                    //VAO
+
+                    glBindVertexArray(mesh->get_vertex_array_object());
+
+                    //VBOs
+                    glBindBuffer(GL_ARRAY_BUFFER, mesh->get_vertex_vbo());
+                    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, 0);
+                    glEnableVertexAttribArray(0);
+
+
+                    //draw
+
+                    for(int mdl_index = 0; mdl_index < model_mesh_list[index].size(); mdl_index++){
+                        Model * mdl =  model_mesh_list[index].at(mdl_index);
+
+                        Positation * posi = mdl->getParentCompositeObject()->getPositation();
+
+                        if(true){
+                            m_m = posi->get_model_matrix();
+
+                            pvm_m = p_m * v_m * m_m;
+
+                            for (int f = 0; f < 4; f++) {
+                                for (int g = 0; g < 4; g++) {
+                                    pvm_mat[f * 4 + g] = (GLfloat) (pvm_m[f*4+g]);
+                                }
+                            }
+
+
+                            glUniformMatrix4fv(pvm_mat_loc_debugpass, 1, GL_FALSE, pvm_mat);
+
+                            //draw
+                            glDrawArrays(GL_TRIANGLES, 0, mesh->get_triangle_count()*3);
+                        }
+                    }
+                }
+            }
+        }//end of PolygonModeWirframe
+
+
+
+
+
+
+
+
+        if((renderMode & PolygonModeVertex) == PolygonModeVertex){
+
+            glUseProgram (DR_DebugPassProgramIdId);
+
+            glPolygonMode(GL_FRONT_AND_BACK, GL_POINT);
+
+            glClear(GL_DEPTH_BUFFER_BIT);
+
+
+            //the color we want to render in...
+            glUniform3f (color_loc_debugpass, 1.0, 0.0, 0.0);
+
+
+            //copy the lists so we can itterate through them
+            QList<QList<Mesh*> > mesh_model_list = mdllib->getMeshModelList();
+            QList<QList<Model*> > model_mesh_list = mdllib->getModelMeshList();
+            //QList<QList<Light*> > light_mesh_list = mdllib->getLightMeshList();
+            QList<Material*> material_mesh_list = mdllib->getMaterialMeshList();
+
+
+
+            //loop trough the material_mesh_list
+            for(int index = 0; index < material_mesh_list.size(); index++){
+
+                if(mesh_model_list[index].size()>0){
+
+
+                    Mesh * mesh = mesh_model_list[index].at(0);
+
+                    //VAO
+
+                    glBindVertexArray(mesh->get_vertex_array_object());
+
+                    //VBOs
+                    glBindBuffer(GL_ARRAY_BUFFER, mesh->get_vertex_vbo());
+                    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, 0);
+                    glEnableVertexAttribArray(0);
+
+                    //draw
+
+                    for(int mdl_index = 0; mdl_index < model_mesh_list[index].size(); mdl_index++){
+                        Model * mdl =  model_mesh_list[index].at(mdl_index);
+
+                        Positation * posi = mdl->getParentCompositeObject()->getPositation();
+
+                        if(true){
+
+                            m_m = posi->get_model_matrix();
+
+                            pvm_m = p_m * v_m * m_m;
+
+                            for (int f = 0; f < 4; f++) {
+                                for (int g = 0; g < 4; g++) {
+                                    pvm_mat[f * 4 + g] = (GLfloat) (pvm_m[f*4+g]);
+                                }
+                            }
+
+
+                            glUniformMatrix4fv(pvm_mat_loc_debugpass, 1, GL_FALSE, pvm_mat);
+
+                            //draw
+                            glDrawArrays(GL_TRIANGLES, 0, mesh->get_triangle_count()*3);
+                        }
+                    }
+                }
+            }
+        }//end of PolygonModeVertex
+
+        */
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+//OLD RENDERING CRAP
+
+
+
+
+
+
 
 void Renderer::render(){
 

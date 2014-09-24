@@ -32,6 +32,8 @@ public:
     int addModel(CompositeObject * obj);
     int addModels(ModelLibrary_v2 * lib);
 
+    ModelLibrary_v2 * getModelLibrary();
+
     QList<OctTree* > getNodesInFrustum(Frustum * f);
 
     QString debug_string();
@@ -64,6 +66,7 @@ private:
     //node size and location in 3D space
     Vector3 pos;
     double node_size;
+    double spherical_node_size;
 
     //treshold for subdivision
     int max_amount_objects;

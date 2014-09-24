@@ -60,6 +60,8 @@ void OctTree::constructNodePoints(){
     Vector3 p8(pos.x()+node_size,pos.y()-node_size,pos.z()-node_size);
     node_bounds.append(p8);
 
+    spherical_node_size = pos.distance(p1);
+
 }
 
 OctTree::~OctTree(){
@@ -69,34 +71,32 @@ OctTree::~OctTree(){
 QList<OctTree* > OctTree::getNodesInFrustum(Frustum * f){
     QList<OctTree *> treeList;
 
-    for(int i = 0; i < node_bounds.size(); i++){
-        if(f->pointInFrustum(node_bounds.at(i)) == Frustum::Inside){
-            //lets add this leaf node, might be root aswell...
-            if(is_subdivided == false){
-                treeList.append(this);
-            }
-            //lets get subnodes...
-            else{
-                //unfortunatly inner nodes can have models as well...
-                //add all the OctTree nodes to the list..
 
-                treeList.append(this);
+    //check if points of the node are inside of the frustum...
+    int check = f->sphereInFrustum(pos, spherical_node_size);
+    if(check == Frustum::Inside || check == Frustum::Intersect){
+        //lets add this leaf node, might be root aswell...
+        if(is_subdivided == false){
+            treeList.append(this);
+        }
+        //lets get subnodes...
+        else{
+            //unfortunatly inner nodes can have models as well...
+            //add all the OctTree nodes to the list..
 
-                treeList.append(tree_northwest_high->getNodesInFrustum(f));
-                treeList.append(tree_northeast_high->getNodesInFrustum(f));
-                treeList.append(tree_southwest_high->getNodesInFrustum(f));
-                treeList.append(tree_southeast_high->getNodesInFrustum(f));
+            treeList.append(this);
 
-                treeList.append(tree_northwest_low->getNodesInFrustum(f));
-                treeList.append(tree_northeast_low->getNodesInFrustum(f));
-                treeList.append(tree_southwest_low->getNodesInFrustum(f));
-                treeList.append(tree_southeast_low->getNodesInFrustum(f));
-            }
-            //enough if one point is inside of the frustum
-            break;
+            treeList.append(tree_northwest_high->getNodesInFrustum(f));
+            treeList.append(tree_northeast_high->getNodesInFrustum(f));
+            treeList.append(tree_southwest_high->getNodesInFrustum(f));
+            treeList.append(tree_southeast_high->getNodesInFrustum(f));
+
+            treeList.append(tree_northwest_low->getNodesInFrustum(f));
+            treeList.append(tree_northeast_low->getNodesInFrustum(f));
+            treeList.append(tree_southwest_low->getNodesInFrustum(f));
+            treeList.append(tree_southeast_low->getNodesInFrustum(f));
         }
     }
-
     return treeList;
 }
 
@@ -248,6 +248,11 @@ int OctTree::addModels(ModelLibrary_v2 * lib){
     }
     return added_count;
 }
+
+ModelLibrary_v2 * OctTree::getModelLibrary(){
+    return mdllib;
+}
+
 
 void OctTree::subdivide(){
 

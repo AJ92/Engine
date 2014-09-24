@@ -27,6 +27,7 @@ class Mesh;
 class Event;
 class Positation;
 class CompositeObject;
+class ObjectWorld;
 
 class Renderer :  virtual public EventListener, virtual public EventTransmitter
 {
@@ -43,10 +44,17 @@ public:
 
     void initialize();
 
+    //next 2 will be removed ...
     void setModelLibrary(ModelLibrary * mdllib);
     void setLightLibrary(LightLibrary * lightlib);
 
+    void setObjectWorld(ObjectWorld * objectworld);
+
     bool meshInFrustum(Frustum f, Model * mdl, Mesh * mesh, Matrix4x4 &pvm_mat);
+
+    //render the objectWorld
+    void render_v2();
+
 
     //renders the set ModelLibrary and LightLibrary
     void render();
@@ -197,6 +205,12 @@ private:
 
     //LightLibrary
     LightLibrary * lightlib;
+
+
+
+    //the world all object live in...
+    ObjectWorld * objectworld;
+
 
     //camera and window
     Camera * cam;

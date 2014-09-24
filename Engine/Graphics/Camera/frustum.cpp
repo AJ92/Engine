@@ -54,6 +54,16 @@ void Frustum::setCamDef(Vector3 pos, Vector3 lookat, Vector3 up){
     fbl = fc - Y * fh - X * fw;
     fbr = fc - Y * fh + X * fw;
 
+    points[0] = ntl;
+    points[1] = ntr;
+    points[2] = nbl;
+    points[3] = nbr;
+
+    points[4] = ftl;
+    points[5] = ftr;
+    points[6] = fbl;
+    points[7] = fbr;
+
     /*
     //debug
     qDebug() << "nearplane";
@@ -134,7 +144,6 @@ int Frustum::pointInFrustum(Vector3 pos){
             return Outside;
     }
     return(result);
-
 }
 
 int Frustum::sphereInFrustum(Vector3 pos, double radius){

@@ -41,6 +41,12 @@ Model::Model() :
 void Model::instance_from(const Model &mdl){
     this->meshs = mdl.meshs;
     this->isReady = mdl.isReady;
+
+    Event e;
+    e.type = Event::EventModelLoaded;
+    e.streamer = new EventStreamer(this);
+    this->transmit(e);
+    //qDebug("model instance transmitted...");
 }
 
 
@@ -55,6 +61,9 @@ void Model::set_data(const Model &mdl){
     this->mat_m = mdl.mat_m;
     this->matrix_changed = mdl.matrix_changed;
     */
+
+    this->setListeners(mdl.getAllListeners());
+
     this->parent_co = parent_co;
     this->isReady = mdl.isReady;
 }
@@ -88,6 +97,11 @@ void Model::loadGLdata(){
         }
     }
     isReady = true;
+    Event e;
+    e.type = Event::EventModelLoaded;
+    e.streamer = new EventStreamer(this);
+    this->transmit(e);
+    //qDebug("model loading transmitted...");
 }
 
 bool Model::isReadyToRender(){

@@ -25,12 +25,14 @@ public:
 
 private:
     ThreadAccountant * ta;
-    Streamer * streamer;
+    Streamer * streamer;    
 
     //model lists
-    QList<Model*> model_list;               //all models (includes instances)
-    QList<Model*> unique_model_list;        //unique by data!!!
-    QList<QString> unique_model_path_list;  //unique paths of models
+    QList<Model*> all_models_list;                  //all models (includes instances)
+    QList<Model*> unique_models_list;               //unique by data!!!
+    QList<QString> unique_model_paths_list;         //unique paths of models
+
+
     QList<QList<Model*> > instances_to_load_list;   //instances which need to be loaded,
                                                     //because the base model wans't loaded
                                                     //during the instance process...

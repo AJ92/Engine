@@ -22,6 +22,9 @@ Renderer::Renderer() :
     mdllib = 0;
     lightlib = 0;
     objectworld = 0;
+
+    meshPerFrameCount = 0;
+    trianglesPerFrameCount = 0;
 }
 
 void Renderer::initialize(){
@@ -217,6 +220,9 @@ bool Renderer::meshInFrustum(Frustum f, Model * mdl, Mesh * mesh, Matrix4x4 &pvm
 
 void Renderer::render_v2(){
 
+    meshPerFrameCount = 0;
+    trianglesPerFrameCount = 0;
+
     //check if the mdllib is ready
     if(objectworld!=0){
 
@@ -286,88 +292,93 @@ void Renderer::render_v2(){
 
                 //loop trough the material_mesh_list
                 for(int index = 0; index < material_mesh_list.size(); index++){
-                    //now set up the material and mesh
 
-                    //tex
-                    glActiveTexture (GL_TEXTURE0+firstTextureIndex);
-                    glBindTexture(GL_TEXTURE_2D, material_mesh_list[index]->get_diffuse_map_texture());
-                    glUniform1i(glGetUniformLocation(DR_FirstPassProgramIdId, "sampler1"), firstTextureIndex);
+                    //check if material was loaded...
+                    if(material_mesh_list[index]->isLoaded()){
+                        //now set up the material and mesh
 
-                    ///////////////////////////////////////////////////////////////////////////////////
-                    ///
-                    /// TODO:
-                    ///
-                    /// WE NEED TO CHECK IF THE MESH DATA IS UNIQUE..
-                    /// BUT AT THIS POINt WE ASUME IT's ALLWAYS THE SAME
-                    ///
-                    ///////
+                        //tex
+                        glActiveTexture (GL_TEXTURE0+firstTextureIndex);
+                        glBindTexture(GL_TEXTURE_2D, material_mesh_list[index]->get_diffuse_map_texture());
+                        glUniform1i(glGetUniformLocation(DR_FirstPassProgramIdId, "sampler1"), firstTextureIndex);
 
-                    if(mesh_model_list[index].size()>0){
-                        Mesh * mesh = mesh_model_list[index].at(0);
+                        ///////////////////////////////////////////////////////////////////////////////////
+                        ///
+                        /// TODO:
+                        ///
+                        /// WE NEED TO CHECK IF THE MESH DATA IS UNIQUE..
+                        /// BUT AT THIS POINt WE ASUME IT's ALLWAYS THE SAME
+                        ///
+                        ///////
 
-                        //VAO
+                        if(mesh_model_list[index].size()>0){
+                            Mesh * mesh = mesh_model_list[index].at(0);
 
-                        glBindVertexArray(mesh->get_vertex_array_object());
+                            //VAO
 
-                        //VBOs
-                        glBindBuffer(GL_ARRAY_BUFFER, mesh->get_vertex_vbo());
-                        glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, 0);
-                        glEnableVertexAttribArray(0);
+                            glBindVertexArray(mesh->get_vertex_array_object());
 
-                        glBindBuffer(GL_ARRAY_BUFFER, mesh->get_texcoord_vbo());
-                        glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 0, 0);
-                        glEnableVertexAttribArray(1);
+                            //VBOs
+                            glBindBuffer(GL_ARRAY_BUFFER, mesh->get_vertex_vbo());
+                            glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, 0);
+                            glEnableVertexAttribArray(0);
 
-                        glBindBuffer(GL_ARRAY_BUFFER, mesh->get_normal_vbo());
-                        glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, 0, 0);
-                        glEnableVertexAttribArray(2);
+                            glBindBuffer(GL_ARRAY_BUFFER, mesh->get_texcoord_vbo());
+                            glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 0, 0);
+                            glEnableVertexAttribArray(1);
 
-                        //now lets draw for every model it's meshs
+                            glBindBuffer(GL_ARRAY_BUFFER, mesh->get_normal_vbo());
+                            glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, 0, 0);
+                            glEnableVertexAttribArray(2);
 
-                        //draw
-                        int rendered = 0;
-                        for(int mdl_index = 0; mdl_index < model_mesh_list[index].size(); mdl_index++){
-
-                            //calculate if we need to draw the model
-                            Model * mdl =  model_mesh_list[index].at(mdl_index);
-
-                            Positation * posi = compositeobject_mesh_list[index].at(mdl_index)->getPositation();
-
-                            m_m = posi->get_model_matrix();
-                            vm_m = v_m * m_m;
-                            pvm_m = p_m * v_m * m_m;
-
-
-                            // don't need to check every mesh now if it is in the frustum yay....
-
-                            //TRANSPOSE
-                            for (int f = 0; f < 4; f++) {
-                                for (int g = 0; g < 4; g++) {
-                                    p_mat[f * 4 + g] = (GLfloat) (p_m[f*4+g]);
-                                    v_mat[f * 4 + g] = (GLfloat) (v_m[f*4+g]);
-                                    m_mat[f * 4 + g] = (GLfloat) (m_m[f*4+g]);
-                                    vm_mat[f * 4 + g] = (GLfloat) (vm_m[f*4+g]);
-                                }
-                            }
-
-
-
-
-                            glUniformMatrix4fv(p_mat_loc_firtpass, 1, GL_FALSE, p_mat);
-                            glUniformMatrix4fv(v_mat_loc_firtpass, 1, GL_FALSE, v_mat);
-                            glUniformMatrix4fv(m_mat_loc_firtpass, 1, GL_FALSE, m_mat);
-                            glUniformMatrix4fv(vm_mat_loc_firtpass, 1, GL_FALSE, vm_mat);
-
-
+                            //now lets draw for every model it's meshs
 
                             //draw
-                            glDrawArrays(GL_TRIANGLES, 0, mesh->get_triangle_count()*3);
-                            rendered += 1;
+                            int rendered = 0;
+                            for(int mdl_index = 0; mdl_index < model_mesh_list[index].size(); mdl_index++){
+
+                                //calculate if we need to draw the model
+                                Model * mdl =  model_mesh_list[index].at(mdl_index);
+
+                                Positation * posi = compositeobject_mesh_list[index].at(mdl_index)->getPositation();
+
+                                m_m = posi->get_model_matrix();
+                                vm_m = v_m * m_m;
+                                pvm_m = p_m * v_m * m_m;
+
+
+                                // don't need to check every mesh now if it is in the frustum yay....
+
+                                //TRANSPOSE
+                                for (int f = 0; f < 4; f++) {
+                                    for (int g = 0; g < 4; g++) {
+                                        p_mat[f * 4 + g] = (GLfloat) (p_m[f*4+g]);
+                                        v_mat[f * 4 + g] = (GLfloat) (v_m[f*4+g]);
+                                        m_mat[f * 4 + g] = (GLfloat) (m_m[f*4+g]);
+                                        vm_mat[f * 4 + g] = (GLfloat) (vm_m[f*4+g]);
+                                    }
+                                }
+
+
+
+
+                                glUniformMatrix4fv(p_mat_loc_firtpass, 1, GL_FALSE, p_mat);
+                                glUniformMatrix4fv(v_mat_loc_firtpass, 1, GL_FALSE, v_mat);
+                                glUniformMatrix4fv(m_mat_loc_firtpass, 1, GL_FALSE, m_mat);
+                                glUniformMatrix4fv(vm_mat_loc_firtpass, 1, GL_FALSE, vm_mat);
+
+
+
+                                //draw
+                                glDrawArrays(GL_TRIANGLES, 0, mesh->get_triangle_count()*3);
+                                rendered += 1;
+                                meshPerFrameCount +=1;
+                                trianglesPerFrameCount += mesh->get_triangle_count();
+                            }
+
+                            //debugMessage("Rendered: " + QString::number(rendered));
                         }
-
-                        //debugMessage("Rendered: " + QString::number(rendered));
                     }
-
                 }
             }
 
@@ -584,9 +595,9 @@ void Renderer::render_v2(){
         glUniform2f (win_size_loc_ambientpass, win->getWindowWidth(), win->getWindowHeight());
 
         glUniform3f (color_loc_ambientpass,
-                     0.210,
-                     0.210,
-                     0.208); // ambient color
+                     0.110,
+                     0.110,
+                     0.108); // ambient color
 
         //glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
         glDrawArrays(GL_TRIANGLES, 0, triangle_count*3);
@@ -629,9 +640,9 @@ void Renderer::render_v2(){
                      -1.0,
                      0.5); // ambient light direction
 
-        glUniform3f (color_loc_directionalambientpass,  0.050,
-                     0.050,
-                     0.048); // ambient color
+        glUniform3f (color_loc_directionalambientpass,  0.150,
+                     0.150,
+                     0.148); // ambient color
 
 
         for (int f = 0; f < 4; f++) {
@@ -1609,6 +1620,14 @@ Vector3 Renderer::touch_to_space(int x,int y){
     Vector3 projected_pos_far  = inv_cam_view_projection * Vector3( cam->getZFAR() * touch_x, cam->getZFAR() * touch_y, cam->getZFAR() );
     Vector3 projected_pos = (projected_pos_far-projected_pos_near);
     return projected_pos.normalized();
+}
+
+int Renderer::getMeshPerFrameCount(){
+    return meshPerFrameCount;
+}
+
+int Renderer::getTrianglesPerFrameCount(){
+    return trianglesPerFrameCount;
 }
 
 

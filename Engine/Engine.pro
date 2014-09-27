@@ -56,7 +56,9 @@ SOURCES += main.cpp\
     Graphics/Model/modelloader.cpp \
     Event/Events/eventmodel.cpp \
     Object/compositeobject.cpp \
-    Object/positation.cpp
+    Object/positation.cpp \
+    Event/Events/eventcompositeobject.cpp \
+    Debug/Ui/customgraph.cpp
 
 
 
@@ -106,7 +108,9 @@ HEADERS  += \
     Graphics/Model/modelloader.h \
     Event/Events/eventmodel.h \
     Object/compositeobject.h \
-    Object/positation.h
+    Object/positation.h \
+    Event/Events/eventcompositeobject.h \
+    Debug/Ui/customgraph.h
 
 
 

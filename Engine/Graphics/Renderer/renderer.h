@@ -68,6 +68,10 @@ public:
 
     Vector3 touch_to_space(int x,int y);
 
+
+    int getMeshPerFrameCount();
+    int getTrianglesPerFrameCount();
+
 private:
     //old simple shaders
     const GLchar* VertexShader;
@@ -242,6 +246,10 @@ private:
     } Vertex;
 
 
+
+    //debug
+    int meshPerFrameCount;
+    int trianglesPerFrameCount;
 };
 
 #endif // RENDERER_H

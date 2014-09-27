@@ -3,12 +3,15 @@
 
 #include "Object/object.h"
 #include <QString>
+#include "Event/eventtransmitter.h"
+#include "Event/eventlistener.h"
 
 class Model;
 class Light;
 class Positation;
+class Event;
 
-class CompositeObject : public Object
+class CompositeObject : virtual public EventListener, virtual public EventTransmitter
 {
 public:
 
@@ -54,6 +57,10 @@ private:
     Model * model_;
     Light * light_;
     Positation * positation_;
+
+
+    void debugMessage(QString message);
+    void eventRecieved(Event e);
 };
 
 #endif // COMPOSITEOBJECT_H

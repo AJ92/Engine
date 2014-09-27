@@ -28,7 +28,7 @@ void ObjectWorld::initialize(){
     ml->addListener(this);
     ml->initialize();
 
-    ot = new OctTree(500);
+    ot = new OctTree(200);
 }
 
 
@@ -39,7 +39,6 @@ OctTree * ObjectWorld::getOctTree(){
 
 CompositeObject * ObjectWorld::loadModelobject(QString name, QString path){
     CompositeObject * co = new CompositeObject(name);
-    co->setModel(this->loadModel(path));
     //randomized pos, for octtree test
     Positation * posi = new Positation();
     posi->set_position((double)((rand() & 2000)-1000),
@@ -47,12 +46,32 @@ CompositeObject * ObjectWorld::loadModelobject(QString name, QString path){
                       (double)((rand() & 2000)-1000));
 
     posi->set_scale(3.0,3.0,3.0);
-
     co->setPositation(posi);
-    ot->addModel(co);
-    debugMessage(ot->debug_string());
+
+
+
+    co->addListener(this);
+    co->setModel(this->loadModel(path));
+
+
+    //is handled now by events....
+    //ot->addModel(co);
+
+
+    //debugMessage(ot->debug_string());
     return co;
 }
+
+CompositeObject * ObjectWorld::loadModelobject(QString name, QString path, Positation * posi){
+    CompositeObject * co = new CompositeObject(name);
+    co->setPositation(posi);
+
+    co->addListener(this);
+    co->setModel(this->loadModel(path));
+
+    return co;
+}
+
 
 
 
@@ -60,7 +79,7 @@ CompositeObject * ObjectWorld::loadModelobject(QString name, QString path){
 //private stuff...
 Model* ObjectWorld::loadModel(QString path){
     if(ml){
-        debugMessage("ObjectWorld::loadModel(path) : " + path);
+        //debugMessage("ObjectWorld::loadModel(path) : " + path);
         return ml->loadModel(path);
     }
     debugMessage("ModelLoader wasn't set up... it's useless to load Models yet!");
@@ -68,14 +87,17 @@ Model* ObjectWorld::loadModel(QString path){
 }
 
 
+void ObjectWorld::addModelToOctTree(CompositeObject * co){
+    ot->addModel(co);
+}
+
+
 //EVENT LISTENER
 //do not invoke the parents method...
 void ObjectWorld::eventRecieved(Event e){
-    /*
-    if(e.type == Event::EventModelStreamedFromDisk){
-
+    if(e.type == Event::EventCompositeObjectModelLoaded){
+        ot->addModel(e.compositeObject->getCompositeObject());
     }
-    */
 }
 
 //EVENT TRANSMITTER

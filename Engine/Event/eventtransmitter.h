@@ -31,6 +31,9 @@ public:
     virtual void transmit(Event e);
     virtual void debugMessage(QString message);
 
+    virtual std::vector<EventListener*> getAllListeners() const;
+    virtual void setListeners(std::vector<EventListener*> listeners);
+
 private:
 
     std::vector<EventListener*> listeners;

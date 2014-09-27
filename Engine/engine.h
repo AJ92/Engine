@@ -43,7 +43,9 @@
 
 #include "Object/compositeobject.h"
 
+
 class Event;
+class Positation;
 
 class Engine : public QObject, virtual public EventListener, virtual public EventTransmitter
 {
@@ -93,6 +95,7 @@ public:
     Light * loadLight(QString path);
 
     CompositeObject * loadModelObject(QString name, QString path);
+    CompositeObject * loadModelObject(QString name, QString path, Positation * posi);
 
     void setCamera(Camera * cam);
 

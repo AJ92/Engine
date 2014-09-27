@@ -153,6 +153,11 @@ QString OctTree::debug_string(){
 
 
 int OctTree::addModel(CompositeObject * obj){
+    if(obj->hasModel()){
+        if(!obj->getModel()->isReadyToRender()){
+            debugMessage("OctTree::addModel(CompositeObject * obj) : model of compositeObject not ready...");
+        }
+    }
 
     //lets check if we need to add it or to send to our leaf nodes
     if(is_subdivided){
@@ -210,7 +215,7 @@ int OctTree::addModel(CompositeObject * obj){
 
         //add model to hash if it fitted this node or its child
         if(result_added > 0){
-            id_compositeobject_hash.insert(obj->id(),obj);
+            id_compositeobject_hash.insert(obj->EventTransmitter::id(),obj);
         }
 
         amount_objects += result_added;
@@ -223,7 +228,7 @@ int OctTree::addModel(CompositeObject * obj){
 
 
     mdllib->addModel(obj);
-    id_compositeobject_hash.insert(obj->id(),obj);
+    id_compositeobject_hash.insert(obj->EventTransmitter::id(),obj);
 
     amount_objects += 1;
     if(amount_objects > max_amount_objects){

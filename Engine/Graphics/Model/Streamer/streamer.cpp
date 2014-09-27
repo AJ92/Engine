@@ -136,6 +136,7 @@ void Streamer::streamModelToDiskFinished(Model* m, unsigned long long id){
 void Streamer::streamModelFromDiskFinished(Model* m, unsigned long long id){
 
     Model * stored_m = id_model_map[id];
+    //set the data of old model to the new loaded model...
     m->set_data(*stored_m);
     *stored_m = *m;
 

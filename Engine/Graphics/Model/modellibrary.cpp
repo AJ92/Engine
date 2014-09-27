@@ -449,7 +449,8 @@ CompositeObject * ModelLibrary_v2::containsCompositeObject(CompositeObject * co)
     QList<CompositeObject *>::iterator i;
     for (i = compositeobject_list.begin(); i != compositeobject_list.end(); ++i){
         CompositeObject * c = *i;
-        if(*c == *co){
+        //if(*c == *co){
+        if(c->EventListener::id() == co->EventListener::id() ){
             return c;
         }
     }
@@ -465,7 +466,8 @@ bool ModelLibrary_v2::removeModel(CompositeObject * co){
     int j = 0;
     for (i = compositeobject_list.begin(); i != compositeobject_list.end(); ++i){
         CompositeObject * c = *i;
-        if(*c == *co){
+        //if(*c == *co){
+        if(c->EventListener::id() == co->EventListener::id() ){
             model_list.removeAt(j);
             compositeobject_list.removeAt(j);
             break;
@@ -481,7 +483,8 @@ bool ModelLibrary_v2::removeModel(CompositeObject * co){
     for(int i = 0; i < compositeobject_mesh_list.size(); i++){
         bool created = false;
         for(int k = 0; k < compositeobject_mesh_list.at(i).size(); k++){
-            if(*compositeobject_mesh_list.at(i).at(k) == *co){
+            //if(*compositeobject_mesh_list.at(i).at(k) == *co){
+            if(compositeobject_mesh_list.at(i).at(k)->EventListener::id() == co->EventListener::id()){
                 if(!created){
                     index_i.append(i);
                     index_i_k.append(QList<int>());

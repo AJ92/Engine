@@ -9,6 +9,7 @@
 #include "Event/Events/eventstreamer.h"
 #include "Event/Events/eventwindow.h"
 #include "Event/Events/eventmodel.h"
+#include "Event/Events/eventcompositeobject.h"
 
 class Event : public Object
 {
@@ -36,7 +37,17 @@ public:
         EventModelScaled            = 0x0008,
         EventModelLoaded            = 0x0009,
         EventModelRemoved           = 0x0010,
-        EventModelDeleted           = 0x0011
+        EventModelDeleted           = 0x0011,
+
+        EventCompositeObjectModelLoaded           = 0x0012,
+
+
+
+        EventDebuggerFPS                =0x1000,
+        EventDebuggerNSPerFrame         =0x1001,
+        EventDebuggerMeshsPerFrame      =0x1002,
+        EventDebuggerTrianglesPerFrame  =0x1003,
+        EventDebuggerTimeStep           =0x1004
 
         //more to follow...
     };
@@ -52,6 +63,7 @@ public:
         EventStreamer   *streamer;  //streamer is same as model and will be removed one day...
         EventWindow     *window;
         EventModel      *model;
+        EventCompositeObject * compositeObject;
         //more to follow...
     };
 

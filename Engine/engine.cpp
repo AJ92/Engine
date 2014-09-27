@@ -1,5 +1,6 @@
 #include "engine.h"
 #include "Event/event.h"
+#include "Object/positation.h"
 
 /*!
   Main class.
@@ -294,12 +295,33 @@ int Engine::getFps(){
 void Engine::timer(){
     fps = frame_count;
 
-    setWindowTitle("fps: " + QString::number(fps) +
-                   "   @ " + QString::number(frameTime) + "ns/frame    timestep: " +
-                   QString::number(timestep) + "   models: " +
-                   QString::number(model_library->modelCount()));
-
     frame_count = 0;
+
+    Event e;
+    e.type = Event::EventDebuggerFPS;
+    e.debugger = new EventDebugger(fps);
+    this->transmit(e);
+
+    Event e2;
+    e2.type = Event::EventDebuggerNSPerFrame;
+    e2.debugger = new EventDebugger(frameTime);
+    this->transmit(e2);
+
+    Event e3;
+    e3.type = Event::EventDebuggerMeshsPerFrame;
+    e3.debugger = new EventDebugger(r->getMeshPerFrameCount());
+    this->transmit(e3);
+
+    Event e4;
+    e4.type = Event::EventDebuggerTrianglesPerFrame;
+    e4.debugger = new EventDebugger(r->getTrianglesPerFrameCount());
+    this->transmit(e4);
+
+    Event e5;
+    e5.type = Event::EventDebuggerTimeStep;
+    e5.debugger = new EventDebugger(timestep);
+    this->transmit(e5);
+
 }
 
 
@@ -312,8 +334,8 @@ void Engine::render()
     elapseTimer.restart();
     //max frame time to avoid spiral of death
     //all values in nanosecs (1 ms = 1 000 000 ns)
-    if(frameTime > 450000000){
-        frameTime = 450000000;
+    if(frameTime > 100000000){
+        frameTime = 100000000;
     }
     if(frameTime < 10000000){
         frameTime = 10000000;
@@ -401,6 +423,10 @@ Light * Engine::loadLight(QString path){
 
 CompositeObject * Engine::loadModelObject(QString name, QString path){
     return object_world->loadModelobject(name, path);
+}
+
+CompositeObject * Engine::loadModelObject(QString name, QString path, Positation * posi){
+    return object_world->loadModelobject(name, path, posi);
 }
 
 void Engine::setCamera(Camera * cam){

@@ -57,6 +57,16 @@ void EventTransmitter::removeListener(EventListener * el){
     }
 }
 
+
+std::vector<EventListener*> EventTransmitter::getAllListeners() const{
+    return listeners;
+}
+
+void EventTransmitter::setListeners(std::vector<EventListener*> listeners){
+    this->listeners = listeners;
+}
+
+
 void EventTransmitter::transmit(Event e){
     unsigned int i;
     for(i=0; i< listeners.size(); i++){

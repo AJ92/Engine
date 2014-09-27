@@ -34,6 +34,7 @@ public:
     //creates an empty CompositeObject with Positation so the user can already interact
     //even if the model isn't loaded yet... model is bound later to this object...
     CompositeObject * loadModelobject(QString name, QString path);
+    CompositeObject * loadModelobject(QString name, QString path, Positation * posi);
 
 private:
     ThreadAccountant * ta;
@@ -43,6 +44,8 @@ private:
 
     //private functions...
     Model* loadModel(QString path);
+
+    void addModelToOctTree(CompositeObject * co);
 
 
     //EventListener and EventTransmitter...

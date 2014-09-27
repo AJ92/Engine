@@ -1,6 +1,7 @@
 #include "test.h"
 
 #include "Event/event.h"
+#include "Object/positation.h"
 
 
 Test::Test() :
@@ -105,9 +106,15 @@ void Test::keyFunction(){
     if(k->isPressed(38))
     {
 
-        int count = 100;
+        int count = 1000;
         for(int i = 0; i < count; i++){
-            CompositeObject * coTest = loadModelObject("tree", getApplicationDir() + "//tree.obj");
+            Positation * posi = new Positation();
+            posi->set_position((double)((rand() & 2000)-1000),
+                              (double)((rand() & 2000)-1000),
+                              (double)((rand() & 2000)-1000));
+
+            posi->set_scale(3.0,3.0,3.0);
+            CompositeObject * coTest = loadModelObject("tree", getApplicationDir() + "//tree.obj", posi);
         }
         /*
         model_library->setModelsPerThread(1);
@@ -176,20 +183,16 @@ void Test::keyFunction(){
     //J
     if(k->isPressed(36))
     {
-        if(!level_loaded){
-            compositeobjecttest = loadModelObject("terrain", getApplicationDir() + "//terrain.obj");
-            level_loaded = true;
+        int count = 1000;
+        for(int i = 0; i < count; i++){
+            Positation * posi = new Positation();
+            posi->set_position((double)((rand() & 2000)-1000),
+                              (double)((rand() & 2000)-1000),
+                              (double)((rand() & 2000)-1000));
+
+            posi->set_scale(0.1,0.1,0.1);
+            CompositeObject * coTest = loadModelObject("betty", getApplicationDir() + "//betty.obj", posi);
         }
-        /*
-        if(!level_loaded){
-            model_library->setModelsPerThread(1);
-            Model * m = loadModel(getApplicationDir() + "//terrain.obj");
-            m->set_scale(35.0f,35.0f,35.0f);
-            m->set_position(0.0,0.0,0.0);
-            //m->set_rotation(180,0.0,1.0,0.0);
-            level_loaded = true;
-        }
-        */
     }
 
     //K
@@ -197,7 +200,13 @@ void Test::keyFunction(){
     {
         int count = 100;
         for(int i = 0; i < count; i++){
-            CompositeObject * coTest = loadModelObject("box", getApplicationDir() + "//box.obj");
+            Positation * posi = new Positation();
+            posi->set_position((double)((rand() & 2000)-1000),
+                              (double)((rand() & 2000)-1000),
+                              (double)((rand() & 2000)-1000));
+
+            posi->set_scale(3.0,3.0,3.0);
+            CompositeObject * coTest = loadModelObject("box", getApplicationDir() + "//box.obj", posi);
         }
         /*
         model_library->setModelsPerThread(1);

@@ -43,8 +43,11 @@ INPUT(
 ./debug\eventmodel.o
 ./debug\compositeobject.o
 ./debug\positation.o
+./debug\eventcompositeobject.o
+./debug\customgraph.o
 ./debug\moc_debugwindow.o
 ./debug\moc_engine.o
 ./debug\moc_streamToDisk.o
 ./debug\moc_streamer.o
+./debug\moc_customgraph.o
 );

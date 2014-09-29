@@ -45,14 +45,14 @@ void CompositeObject::setModel(Model * model){
     //model should send if it is loaded... but it probably won't so...
     model_->addListener(this);
 
-    /*
+    //in case our model is already loaded... for example lights...
     if(model_->isReadyToRender()){
         Event e;
         e.type = Event::EventCompositeObjectModelLoaded;
         e.compositeObject = new EventCompositeObject(this);
         this->transmit(e);
     }
-    */
+
 }
 
 void CompositeObject::setLight(Light * light){

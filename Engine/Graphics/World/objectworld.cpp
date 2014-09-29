@@ -2,6 +2,7 @@
 #include "Event/event.h"
 #include "Object/compositeobject.h"
 #include "Object/positation.h"
+#include "Graphics/Model/light.h"
 
 ObjectWorld::ObjectWorld(ThreadAccountant * ta) :
     EventListener(),
@@ -27,6 +28,10 @@ void ObjectWorld::setModelsPerThread(int model_count){
     }
 }
 
+void ObjectWorld::setLightModelPath(QString path){
+    light_model_path = path;
+}
+
 void ObjectWorld::initialize(){
     ml->addListener(this);
     ml->initialize();
@@ -36,6 +41,12 @@ void ObjectWorld::initialize(){
     ot_dynamic_model = new OctTreeFast(200);
     ot_dynamic_lights = new OctTreeFast(200);
 
+
+    //preload the light model...
+    // maybe in a later version of the engine generate the light mesh....
+    light_model = new Model();
+    light_model->set_path(light_model_path);
+    loadModel(light_model);
 }
 
 
@@ -49,6 +60,31 @@ OctTreeFast * ObjectWorld::getOctTreeFastDynamicModels(){
 
 OctTreeFast * ObjectWorld::getOctTreeFastDynamicLights(){
     return ot_dynamic_lights;
+}
+
+
+//dynamic light
+CompositeObject * ObjectWorld::loadLightobject(QString name){
+    CompositeObject * co = new CompositeObject(name, CompositeObject::MovementDynamic);
+    //randomized pos, for octtree test
+    //they won't land by default in the same node and the octtree won't
+    //grow in depth that fast ...
+    Positation * posi = new Positation();
+    posi->set_position((double)((rand() & 1000)-500),
+                      (double)((rand() & 1000)-500),
+                      (double)((rand() & 1000)-500));
+
+    co->setPositation(posi);
+
+    Light * light = new Light();
+    co->setLight(light);
+
+    co->addListener(this);
+    co->setModel(light_model);
+
+    count_models_in += 1;
+
+    return co;
 }
 
 

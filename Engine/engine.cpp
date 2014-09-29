@@ -137,15 +137,19 @@ void Engine::initialize(int argc, char *argv[]){
 
     //soon to disapear from here
     //init Streamer
+    /*
     model_library = new ModelLibrary(threadAccountant);
     model_library->addListener(debuggerListener);
     model_library->initialize();
+    */
 
     //soon to disapear from here
     //init Streamer
+    /*
     light_library = new LightLibrary(threadAccountant);
     light_library->addListener(debuggerListener);
     light_library->initialize();
+    */
 
     //loads models
     //we do not init it cause ObjectWorld does this for us...
@@ -156,6 +160,7 @@ void Engine::initialize(int argc, char *argv[]){
     object_world = new ObjectWorld(threadAccountant);
     object_world->addListener(debuggerListener);
     object_world->setModelLoader(model_loader);
+    object_world->setLightModelPath(getApplicationDir() + "//light_sphere.obj");
     object_world->initialize();
 
 
@@ -378,8 +383,8 @@ void Engine::render()
 
         //render the mdllib
         //forget about the next 2...
-        r->setModelLibrary(model_library);
-        r->setLightLibrary(light_library);
+        //r->setModelLibrary(model_library);
+        //r->setLightLibrary(light_library);
 
         //set the objectworld
         r->setObjectWorld(object_world);
@@ -419,14 +424,9 @@ void Engine::eventLoop(){
     render();
 }
 
-
-//temprary...
-Model * Engine::loadModel(QString path){
-    return model_library->loadModel(path);
-}
-
-Light * Engine::loadLight(QString path){
-    return light_library->loadLight(path);
+//dynamic light
+CompositeObject * Engine::loadLightObject(QString name){
+    return object_world->loadLightobject(name);
 }
 
 //dynamic

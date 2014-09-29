@@ -33,7 +33,6 @@ INPUT(
 ./release\keyboard.o
 ./release\mouse.o
 ./release\light.o
-./release\lightlibrary.o
 ./release\eventwindow.o
 ./release\frustum.o
 ./release\test.o

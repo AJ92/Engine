@@ -47,7 +47,6 @@ SOURCES += main.cpp\
     Input/keyboard.cpp \
     Input/mouse.cpp \
     Graphics/Model/light.cpp \
-    Graphics/Model/lightlibrary.cpp \
     Event/Events/eventwindow.cpp \
     Graphics/Camera/frustum.cpp \
     test.cpp \
@@ -99,7 +98,6 @@ HEADERS  += \
     Input/keyboard.h \
     Input/mouse.h \
     Graphics/Model/light.h \
-    Graphics/Model/lightlibrary.h \
     Event/Events/eventwindow.h \
     Graphics/Camera/frustum.h \
     test.h \

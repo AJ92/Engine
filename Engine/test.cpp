@@ -133,23 +133,30 @@ void Test::keyFunction(){
     //c
     if(k->isPressed(46))
     {
+        /*
         model_library->setModelsPerThread(1);
 
         Model * m = loadModel(getApplicationDir() + "//cube.obj");
-
+        */
     }
 
     //M
     if(k->isPressed(50))
     {
-        /*
-        light_library->setLightsPerThread(1);
 
-        int count = 5;
+        int count = 10;
         for(int i = 0; i < count; i++){
-            Light * l = loadLight(getApplicationDir() + "//light_sphere.obj");
+            Positation * posi = new Positation();
+            posi->set_position((double)((rand() & 1000)-500),
+                              (double)((rand() & 1000)-500),
+                              (double)((rand() & 1000)-500));
+
+            posi->set_scale(51.12f,51.12f,51.12f);
+            CompositeObject * coTest = loadLightObject("light");
+            coTest->setPositation(posi);
 
 
+            Light * l= coTest->getLight();
             double red = ((double)(rand() & 800)+200)* 0.001;
             double green = ((double)(rand() & 800)+200)* 0.001;
             double blue = ((double)(rand() & 800)+200)* 0.001;
@@ -160,15 +167,7 @@ void Test::keyFunction(){
             l->setSpecularColor(red,
                                 green,
                                 blue);
-
-            //l->getModel()->set_scale(11.12f,11.12f,11.12f);
-            l->getModel()->set_scale(51.12f,51.12f,51.12f);
-            l->getModel()->set_position((double)((rand() & 2000)-1000) + (double)((rand() & 1000)-500) * 0.05,
-                                        (double)((rand() & 2000)-1000) + (double)((rand() & 1000)-500) * 0.05,
-                                        100.0 + (double)((rand() & 100)-50));
-            lights.append(l);
         }
-        */
     }
 
     //J
@@ -221,11 +220,11 @@ void Test::keyFunction(){
     }
     //Scharfes S
     if(k->isPressed(10)){
-        model_library->debugModelData();
+        //model_library->debugModelData();
     }
 
     if(k->isPressed(24)){
-        light_library->debugLightModelData();
+        //light_library->debugLightModelData();
     }
 
     /*

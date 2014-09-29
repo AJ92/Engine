@@ -504,6 +504,7 @@ void Renderer::render_v2(){
             // add some sexyness to them :P
 
 
+
             glBindFramebuffer (GL_FRAMEBUFFER, 0);
             //glDrawBuffer(GL_BACK);
             glClearColor (0.0, 0.0, 0.0, 1.0f); // no ambient... we add it later...
@@ -531,6 +532,120 @@ void Renderer::render_v2(){
 
             glUniform2f (win_size_loc_secondpass, win->getWindowWidth(), win->getWindowHeight());
 
+
+
+            //DYNAMIC MODELS
+            for(int i = 0; i < ot_dynamic_lights_nodes.size(); i++){
+                //render one node...
+
+                //copy the lists so we can itterate through them
+                QList<CompositeObject*> compositeobject_list = ot_dynamic_lights_nodes.at(i)->getCompositeObjects();
+
+                //loop trough the material_mesh_list
+                for(int index = 0; index < compositeobject_list.size(); index++){
+
+                    CompositeObject * compobj = compositeobject_list.at(index);
+                    Positation * posi = compobj->getPositation();
+                    QList<Mesh*> mesh_list = compobj->getModel()->get_meshs();
+                    Light * light = compobj->getLight();
+
+                    //loop trough mesh...
+                    for(int meshs = 0; meshs < mesh_list.size(); meshs++){
+
+                        Mesh * mesh = mesh_list[meshs];
+
+                        //now set up the material and mesh
+
+                        // LIGHT HAS NO TEXTURE
+                        //tex
+                        /*
+                        glActiveTexture (GL_TEXTURE0+firstTextureIndex);
+                        glBindTexture(GL_TEXTURE_2D, mesh->get_material()->get_diffuse_map_texture());
+                        glUniform1i(glGetUniformLocation(DR_FirstPassProgramIdId, "sampler1"), firstTextureIndex);
+
+                        texBindsPerFrameCount += 1;
+                        */
+
+
+                        //VAO
+
+                        glBindVertexArray(mesh->get_vertex_array_object());
+
+                        //VBOs
+                        glBindBuffer(GL_ARRAY_BUFFER, mesh->get_vertex_vbo());
+                        glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, 0);
+                        glEnableVertexAttribArray(0);
+
+                        glBindBuffer(GL_ARRAY_BUFFER, mesh->get_texcoord_vbo());
+                        glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 0, 0);
+                        glEnableVertexAttribArray(1);
+
+                        glBindBuffer(GL_ARRAY_BUFFER, mesh->get_normal_vbo());
+                        glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, 0, 0);
+                        glEnableVertexAttribArray(2);
+
+                        //now lets draw for every model it's meshs
+
+                        //draw
+
+
+
+                        //Indizes
+                        //|    0        4        8        12   |
+                        //|                                    |
+                        //|    1        5        9        13   |
+                        //|                                    |
+                        //|    2        6        10       14   |
+                        //|                                    |
+                        //|    3        7        11       15   |
+
+
+                        //set the mesh to a billboard like position (give it the cam's rotation)
+                        m_m = posi->get_model_matrix();
+
+
+                        pvm_m = p_m * v_m * m_m;
+
+                        for (int f = 0; f < 4; f++) {
+                            for (int g = 0; g < 4; g++) {
+                                p_mat[f * 4 + g] = (GLfloat) (p_m[f*4+g]);
+                                v_mat[f * 4 + g] = (GLfloat) (v_m[f*4+g]);
+                                m_mat[f * 4 + g] = (GLfloat) (m_m[f*4+g]);
+                                pvm_mat[f * 4 + g] = (GLfloat) (pvm_m[f*4+g]);
+                            }
+                        }
+
+
+                        glUniformMatrix4fv(p_mat_loc_secondpass, 1, GL_FALSE, p_mat);
+                        glUniformMatrix4fv(v_mat_loc_secondpass, 1, GL_FALSE, v_mat);
+                        glUniformMatrix4fv(m_mat_loc_secondpass, 1, GL_FALSE, m_mat);
+                        glUniformMatrix4fv(pvm_mat_loc_secondpass, 1, GL_FALSE, pvm_mat);
+
+                        glUniform3f (lp_loc_secondpass, posi->getPosition().x(),
+                                                        posi->getPosition().y(),
+                                                        posi->getPosition().z()); // world position
+                        glUniform3f (ld_loc_secondpass, light->getDiffuseColor().x(),
+                                                        light->getDiffuseColor().y(),
+                                                        light->getDiffuseColor().z()); // diffuse colour
+                        glUniform3f (ls_loc_secondpass, light->getSpecularColor().x(),
+                                                        light->getSpecularColor().y(),
+                                                        light->getSpecularColor().z()); // specular colour
+
+
+
+                        //draw
+                        glDrawArrays(GL_TRIANGLES, 0, mesh->get_triangle_count()*3);
+                        meshPerFrameCount +=1;
+                        trianglesPerFrameCount += mesh->get_triangle_count();
+                    }
+                }
+            }
+
+
+            /*
+            //////////////////////////////////////////////////////
+            // OLD
+            //////////////////////////////////////////////////////
             for(int i = 0; i < ot_nodes.size(); i++){
                 //render one node...
 
@@ -593,16 +708,16 @@ void Renderer::render_v2(){
 
                                 Light * light =  l_light_mesh_list[index].at(mdl_index);
 
-                                /*
-                                Indizes
-                                |    0        4        8        12   |
-                                |                                    |
-                                |    1        5        9        13   |
-                                |                                    |
-                                |    2        6        10       14   |
-                                |                                    |
-                                |    3        7        11       15   |
-                                */
+
+                                //Indizes
+                                //|    0        4        8        12   |
+                                //|                                    |
+                                //|    1        5        9        13   |
+                                //|                                    |
+                                //|    2        6        10       14   |
+                                //|                                    |
+                                //|    3        7        11       15   |
+
 
                                 //set the mesh to a billboard like position (give it the cam's rotation)
                                 m_m = posi->get_model_matrix();
@@ -642,7 +757,7 @@ void Renderer::render_v2(){
                         }
                     }
                 }
-            }
+            }*/
 
 
         }
@@ -960,7 +1075,7 @@ void Renderer::render_v2(){
 
 
 
-
+/*
 void Renderer::render(){
 
     int step = 1;
@@ -1064,43 +1179,6 @@ void Renderer::render(){
                     //now lets draw for every model it's meshs
 
 
-                    //old stuff
-                    /*
-                    m_p.set_to_identity();
-                    m_p.perspective(cam->FOV, float(win->getWindowWidth()) / float(win->getWindowHeight()),
-                                    cam->Z_NEAR, cam->Z_FAR);
-
-                    for(int mdl_index = 0; mdl_index < model_mesh_list[index].size(); mdl_index++){
-                        Model * mdl =  model_mesh_list[index].at(mdl_index);
-
-                        m_mvp =cam->M_camera_view.inverted() * mdl->get_model_matrix();
-                        m_norm = m_mvp.inverted();
-                        m_mvp = m_p * m_mvp;
-
-                        for (int f = 0; f < 4; f++) {
-                            for (int g = 0; g < 4; g++) {
-                                mvp_mat[f * 4 + g] = (GLfloat) (m_mvp[f*4+g]);
-                                norm_mat[f * 4 + g] = (GLfloat) (m_norm[f*4+g]);
-                            }
-                        }
-
-
-                        glUniformMatrix4fv(mvp_mat_loc, 1, GL_FALSE, mvp_mat);
-                        glUniformMatrix4fv(norm_mat_loc, 1, GL_FALSE, norm_mat);
-
-
-                        glUniformMatrix4fv(mvp_mat_loc, 1, GL_FALSE, mvp_mat);
-                        glUniformMatrix4fv(norm_mat_loc, 1, GL_FALSE, norm_mat);
-
-
-                        //draw
-                        glDrawArrays(GL_TRIANGLES, 0, mesh->get_triangle_count()*3);
-                    }
-                    */
-
-                    //new stuff
-
-
                     //draw
                     int rendered = 0;
                     for(int mdl_index = 0; mdl_index < model_mesh_list[index].size(); mdl_index++){
@@ -1146,11 +1224,11 @@ void Renderer::render(){
                         }
                     }
 
-                    /*
-                    debugMessage("Rendered: " +
-                                 QString::number(rendered) + " / " +
-                                 QString::number(model_mesh_list[index].size()) + " models.");
-                    */
+
+                    //debugMessage("Rendered: " +
+                    //             QString::number(rendered) + " / " +
+                    //             QString::number(model_mesh_list[index].size()) + " models.");
+
                 }
             }
 
@@ -1259,33 +1337,20 @@ void Renderer::render(){
 
                             Light * light =  l_light_mesh_list[index].at(mdl_index);
 
-                      /*
-                            Indizes
-                            |    0        4        8        12   |
-                            |                                    |
-                            |    1        5        9        13   |
-                            |                                    |
-                            |    2        6        10       14   |
-                            |                                    |
-                            |    3        7        11       15   |
-                        */
+
+                        //    Indizes
+                        //    |    0        4        8        12   |
+                        //    |                                    |
+                        //    |    1        5        9        13   |
+                        //    |                                    |
+                        //    |    2        6        10       14   |
+                        //    |                                    |
+                        //    |    3        7        11       15   |
+
 
                             //set the mesh to a billboard like position (give it the cam's rotation)
                             m_m = posi->get_model_matrix();
-                            /*
-                            Vector3 scale_vec = m_m.get_vector_scale();
-                            m_m[0] = v_m[0];
-                            m_m[1] = v_m[1];
-                            m_m[2] = v_m[2];
-                            m_m[4] = v_m[4];
-                            m_m[5] = v_m[5];
-                            m_m[6] = v_m[6];
-                            m_m[8] = v_m[8];
-                            m_m[9] = v_m[9];
-                            m_m[10] = v_m[10];
 
-                            m_m.scale(scale_vec);
-                            */
 
                             pvm_m = p_m * v_m * m_m;
 
@@ -1319,31 +1384,16 @@ void Renderer::render(){
                             rendered += 1;
                         }
                     }
-                    /*
-                    debugMessage("Rendered: " +
-                                 QString::number(rendered) + " / " +
-                                 QString::number(l_model_mesh_list[index].size()) + " lights.");
-                    */
+
+                    //debugMessage("Rendered: " +
+                    //             QString::number(rendered) + " / " +
+                    //             QString::number(l_model_mesh_list[index].size()) + " lights.");
+
                 }
             }
 
 
 
-
-            //disable stuff so the gl_VertexID var works in GLSL
-            /*
-            glBindVertexArray(0);
-
-            //VBOs
-            glBindBuffer(GL_ARRAY_BUFFER, 0);
-            glDisableVertexAttribArray(0);
-
-            glBindBuffer(GL_ARRAY_BUFFER, 0);
-            glDisableVertexAttribArray(1);
-
-            glBindBuffer(GL_ARRAY_BUFFER, 0);
-            glDisableVertexAttribArray(2);
-            */
 
 
             //glBindFramebuffer (GL_FRAMEBUFFER, 0);
@@ -1503,16 +1553,7 @@ void Renderer::render(){
                     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, 0);
                     glEnableVertexAttribArray(0);
 
-                    /*
-                    //tex coords actually not needed!!!
-                    glBindBuffer(GL_ARRAY_BUFFER, mesh->get_texcoord_vbo());
-                    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 0, 0);
-                    glEnableVertexAttribArray(1);
 
-                    glBindBuffer(GL_ARRAY_BUFFER, mesh->get_normal_vbo());
-                    glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, 0, 0);
-                    glEnableVertexAttribArray(2);
-                    */
 
 
                     //draw
@@ -1589,16 +1630,7 @@ void Renderer::render(){
                     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, 0);
                     glEnableVertexAttribArray(0);
 
-                    /*
-                    //tex coords actually not needed!!!
-                    glBindBuffer(GL_ARRAY_BUFFER, mesh->get_texcoord_vbo());
-                    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 0, 0);
-                    glEnableVertexAttribArray(1);
 
-                    glBindBuffer(GL_ARRAY_BUFFER, mesh->get_normal_vbo());
-                    glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, 0, 0);
-                    glEnableVertexAttribArray(2);
-                    */
 
 
                     //draw
@@ -1638,6 +1670,8 @@ void Renderer::render(){
         debugMessage("ERROR during rendering: The ModelLibrary isn't set yet!");
     }
 }
+
+*/
 
 void Renderer::render(Model * m){
 

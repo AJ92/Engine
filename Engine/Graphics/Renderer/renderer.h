@@ -57,7 +57,7 @@ public:
 
 
     //renders the set ModelLibrary and LightLibrary
-    void render();
+    //void render();
     //render a model (inefficient compaired to a modellib rendering)
     void render(Model * m);
 

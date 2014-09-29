@@ -21,15 +21,8 @@ public:
     Vector3 getDiffuseColor();
     Vector3 getSpecularColor();
 
-    void set_model_data(Model *mdl);
-
     void set_data(const Light &light);
     void instance_from(Light &light);
-
-    Model* getModel();
-    Model* getModel() const;
-
-    bool isReadyToRender();
 
     bool equalData(const Light &light) const;
 
@@ -42,8 +35,6 @@ private:
     //some lightvars which we gonna use later
 
     bool isReady;
-
-    Model * lightmodel;
 
     Vector3 diffuse_c;
     Vector3 specular_c;

@@ -26,7 +26,7 @@
 #include "Graphics/Model/modellibrary.h"
 #include "Graphics/Model/model.h"
 
-#include "Graphics/Model/lightlibrary.h"
+//#include "Graphics/Model/lightlibrary.h"
 #include "Graphics/Model/light.h"
 
 #include <QApplication>
@@ -87,13 +87,7 @@ public:
     //KEYBOARD (override if needed)
     //void keyFunction();
 
-
-    //temporary model loader test
-    //needs to be redirected and synced over threads...
-
-    Model * loadModel(QString path);
-    Light * loadLight(QString path);
-
+    CompositeObject * loadLightObject(QString name);
     CompositeObject * loadModelObject(QString name, QString path);
     CompositeObject * loadModelObject(QString name, QString path, Positation * posi);
 
@@ -131,10 +125,10 @@ protected:
     Mouse *m;
 
     //model loader and threads.
-    ModelLibrary * model_library;
+    //ModelLibrary * model_library;
 
     //light loader and threads.
-    LightLibrary * light_library;
+    //LightLibrary * light_library;
 
 
 

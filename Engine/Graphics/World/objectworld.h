@@ -27,6 +27,7 @@ public:
 
     void setModelLoader(ModelLoader * ml);
     void setModelsPerThread(int model_count);
+    void setLightModelPath(QString path);
 
     void initialize();
 
@@ -36,12 +37,16 @@ public:
 
     //creates an empty CompositeObject with Positation so the user can already interact
     //even if the model isn't loaded yet... model is bound later to this object...
+    CompositeObject * loadLightobject(QString name);
     CompositeObject * loadModelobject(QString name, QString path);
     CompositeObject * loadModelobject(QString name, QString path, Positation * posi);
 
 private:
     ThreadAccountant * ta;
     ModelLoader * ml;
+
+    QString light_model_path;
+    Model * light_model;
 
     OctTree * ot;
 

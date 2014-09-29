@@ -26,12 +26,7 @@ QList<Model *> ModelLoader::getModels() const{
     return all_models_list;
 }
 
-Model* ModelLoader::loadModel(QString path){
-    Model * m = new Model();
-    m->set_path(path);
-
-
-
+void ModelLoader::loadModel(Model * m){
     //compair the paths (has this the same model data? instance it!)
     Model * instance_from = containsModelData(m);
     if(instance_from != 0){
@@ -53,7 +48,7 @@ Model* ModelLoader::loadModel(QString path){
         streamer->streamModelFromDisk(m);
         addModelUnique(m);
     }
-    return m;
+    return;
 }
 
 int ModelLoader::modelCount(){

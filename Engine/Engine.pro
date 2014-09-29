@@ -58,7 +58,8 @@ SOURCES += main.cpp\
     Object/compositeobject.cpp \
     Object/positation.cpp \
     Event/Events/eventcompositeobject.cpp \
-    Debug/Ui/customgraph.cpp
+    Debug/Ui/customgraph.cpp \
+    Graphics/World/DataStructure/octtreefast.cpp
 
 
 
@@ -110,7 +111,8 @@ HEADERS  += \
     Object/compositeobject.h \
     Object/positation.h \
     Event/Events/eventcompositeobject.h \
-    Debug/Ui/customgraph.h
+    Debug/Ui/customgraph.h \
+    Graphics/World/DataStructure/octtreefast.h
 
 
 

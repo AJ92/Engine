@@ -2,6 +2,7 @@
 #define TEST_H
 
 #include "engine.h"
+#include <QList>
 
 class Event;
 
@@ -26,12 +27,13 @@ private:
 
     void eventCall();
 
-    bool level_loaded;
-
     //Test octtree
     OctTree * ot;
 
-    CompositeObject * compositeobjecttest;
+
+    bool level_loaded;
+    int test_amount;
+    QList<CompositeObject *> compositeobjecttest;
 };
 
 #endif // TEST_H

@@ -25,6 +25,7 @@ public:
     void add_ts_data(double ts);
     void add_mpf_data(double mpf);
     void add_tpf_data(double tpf);
+    void add_tb_data(double tb);
 
     
 private:

@@ -1,3 +1,16 @@
+/*
+ *  An OctTree for storing more or less static objects...
+ *  Pre-sorts the meshs by materials so that the renderer
+ *  only needs to render them....
+ *
+ *  Moving and scaling the objects shouldn't be done.. (atm can't be done...)
+ *
+ *  rotation is supported...
+ *
+ *    CompositeObjects with MODELS as DATA only (Positation should be provided!!!)
+ *
+ */
+
 #ifndef OCTTREE_H
 #define OCTTREE_H
 

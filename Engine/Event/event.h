@@ -39,7 +39,13 @@ public:
         EventModelRemoved           = 0x0010,
         EventModelDeleted           = 0x0011,
 
-        EventCompositeObjectModelLoaded           = 0x0012,
+        EventCompositeObjectModelLoaded       = 0x0012,
+        EventCompositeObjectMoved             = 0x0013,
+        EventCompositeObjectRotated           = 0x0014,
+        EventCompositeObjectScaled            = 0x0015,
+        EventCompositeObjectLoaded            = 0x0016,
+        EventCompositeObjectRemoved           = 0x0017,
+        EventCompositeObjectDeleted           = 0x0018,
 
 
 
@@ -47,7 +53,8 @@ public:
         EventDebuggerNSPerFrame         =0x1001,
         EventDebuggerMeshsPerFrame      =0x1002,
         EventDebuggerTrianglesPerFrame  =0x1003,
-        EventDebuggerTimeStep           =0x1004
+        EventDebuggerTimeStep           =0x1004,
+        EventDebuggerTexBindsPerFrame   =0x1005
 
         //more to follow...
     };

@@ -293,7 +293,7 @@ int Engine::getFps(){
 
 //simple fps calc
 void Engine::timer(){
-    fps = frame_count;
+    //fps = frame_count;
 
     frame_count = 0;
 
@@ -322,6 +322,12 @@ void Engine::timer(){
     e5.debugger = new EventDebugger(timestep);
     this->transmit(e5);
 
+    Event e6;
+    e6.type = Event::EventDebuggerTexBindsPerFrame;
+    e6.debugger = new EventDebugger(r->getTexBindsPerFrameCount());
+    this->transmit(e6);
+
+
 }
 
 
@@ -332,6 +338,9 @@ void Engine::render()
     //timer timestep and so on...
     frameTime = elapseTimer.nsecsElapsed();
     elapseTimer.restart();
+
+    fps = int(1000000000 / frameTime);
+
     //max frame time to avoid spiral of death
     //all values in nanosecs (1 ms = 1 000 000 ns)
     if(frameTime > 100000000){
@@ -420,11 +429,12 @@ Light * Engine::loadLight(QString path){
     return light_library->loadLight(path);
 }
 
-
+//dynamic
 CompositeObject * Engine::loadModelObject(QString name, QString path){
     return object_world->loadModelobject(name, path);
 }
 
+//static
 CompositeObject * Engine::loadModelObject(QString name, QString path, Positation * posi){
     return object_world->loadModelobject(name, path, posi);
 }

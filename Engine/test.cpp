@@ -45,6 +45,7 @@ Test::Test() :
     //key J, is the plane created yet ?
     level_loaded = false;
 
+    test_amount = 1000;
 
     //Octree test
 
@@ -52,16 +53,6 @@ Test::Test() :
     ot = new OctTree(1000);
     ot->setDebugMdl(model_library,getApplicationDir() + "//cube.obj");
     */
-
-
-
-    //CompositObject test
-
-    CompositeObject * co = new CompositeObject("CO");
-
-
-
-
 }
 
 void Test::keyFunction(){
@@ -109,9 +100,9 @@ void Test::keyFunction(){
         int count = 1000;
         for(int i = 0; i < count; i++){
             Positation * posi = new Positation();
-            posi->set_position((double)((rand() & 2000)-1000),
-                              (double)((rand() & 2000)-1000),
-                              (double)((rand() & 2000)-1000));
+            posi->set_position((double)((rand() & 1000)-500),
+                              (double)((rand() & 1000)-500),
+                              (double)((rand() & 1000)-500));
 
             posi->set_scale(3.0,3.0,3.0);
             CompositeObject * coTest = loadModelObject("tree", getApplicationDir() + "//tree.obj", posi);
@@ -183,15 +174,20 @@ void Test::keyFunction(){
     //J
     if(k->isPressed(36))
     {
-        int count = 1000;
-        for(int i = 0; i < count; i++){
-            Positation * posi = new Positation();
-            posi->set_position((double)((rand() & 2000)-1000),
-                              (double)((rand() & 2000)-1000),
-                              (double)((rand() & 2000)-1000));
-
-            posi->set_scale(0.1,0.1,0.1);
-            CompositeObject * coTest = loadModelObject("betty", getApplicationDir() + "//betty.obj", posi);
+        if(!level_loaded){
+            for(int i = 0; i < test_amount; i++){
+                compositeobjecttest.append(loadModelObject("betty",
+                                                           getApplicationDir() +
+                                                           "//betty.obj"));
+            }
+            level_loaded = true;
+        }
+        else{
+            for(int i = 0; i < test_amount; i++){
+                compositeobjecttest.at(i)->getPositation()->set_position((double)((rand() & 1000)-500),
+                                                                         (double)((rand() & 1000)-500),
+                                                                         (double)((rand() & 1000)-500));
+            }
         }
     }
 
@@ -201,9 +197,9 @@ void Test::keyFunction(){
         int count = 100;
         for(int i = 0; i < count; i++){
             Positation * posi = new Positation();
-            posi->set_position((double)((rand() & 2000)-1000),
-                              (double)((rand() & 2000)-1000),
-                              (double)((rand() & 2000)-1000));
+            posi->set_position((double)((rand() & 1000)-500),
+                              (double)((rand() & 1000)-500),
+                              (double)((rand() & 1000)-500));
 
             posi->set_scale(3.0,3.0,3.0);
             CompositeObject * coTest = loadModelObject("box", getApplicationDir() + "//box.obj", posi);

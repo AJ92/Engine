@@ -15,9 +15,11 @@ CompositeObject::CompositeObject() :
     model_ = 0;
     light_ = 0;
     positation_ = 0;
+    type_ = ObjectEmpty;
+    movementType_ = MovementStatic;
 }
 
-CompositeObject::CompositeObject(QString name) :
+CompositeObject::CompositeObject(QString name, ObjectMovementType movementType) :
     EventListener(),
     EventTransmitter(),
     name_(name)
@@ -25,29 +27,32 @@ CompositeObject::CompositeObject(QString name) :
     model_ = 0;
     light_ = 0;
     positation_ = 0;
+    type_ = ObjectEmpty;
+    movementType_ = movementType;
 }
 
 
 
 void CompositeObject::setModel(Model * model){
     if(model_ != 0){
-        model->removeListener(this);
+        model_->removeListener(this);
     }
     model_ = model;
+
     //model_->setParentCompositeObject(this);
     type_ = type_ | ObjectModel; //binary or
 
+    //model should send if it is loaded... but it probably won't so...
+    model_->addListener(this);
 
+    /*
     if(model_->isReadyToRender()){
         Event e;
         e.type = Event::EventCompositeObjectModelLoaded;
         e.compositeObject = new EventCompositeObject(this);
         this->transmit(e);
     }
-
-
-    //model should send if it is loaded... but it probably won't so...
-    model_->addListener(this);
+    */
 }
 
 void CompositeObject::setLight(Light * light){
@@ -102,17 +107,35 @@ Positation * CompositeObject::getPositation(){
 }
 
 
+CompositeObject::ObjectMovementType CompositeObject::getObjectMovementType(){
+    return movementType_;
+}
 
 
 //EVENT LISTENER
 //do not invoke the parents method...
 void CompositeObject::eventRecieved(Event e){
     if(e.type == Event::EventModelLoaded){
-        Event e;
-        e.type = Event::EventCompositeObjectModelLoaded;
+        Event e2;
+        e2.type = Event::EventCompositeObjectModelLoaded;
+        e2.compositeObject = new EventCompositeObject(this);
+        this->transmit(e2);
+    }
+
+    //forward the message...
+    if((e.type == Event::EventCompositeObjectMoved) ||
+       (e.type == Event::EventCompositeObjectRotated) ||
+       (e.type == Event::EventCompositeObjectScaled)){
         e.compositeObject = new EventCompositeObject(this);
         this->transmit(e);
     }
+
+    /*
+    QString debug_output =  "Co  ID: " + QString::number(this->EventTransmitter::id()) +
+                            "   Event: " + QString::number(e.type) +
+                            "   Listeners: "  + QString::number(this->getAllListeners().size());
+    qDebug(debug_output.toUtf8());
+    */
 }
 
 void CompositeObject::debugMessage(QString message){

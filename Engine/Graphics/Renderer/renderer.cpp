@@ -25,6 +25,7 @@ Renderer::Renderer() :
 
     meshPerFrameCount = 0;
     trianglesPerFrameCount = 0;
+    texBindsPerFrameCount = 0;
 }
 
 void Renderer::initialize(){
@@ -222,6 +223,7 @@ void Renderer::render_v2(){
 
     meshPerFrameCount = 0;
     trianglesPerFrameCount = 0;
+    texBindsPerFrameCount = 0;
 
     //check if the mdllib is ready
     if(objectworld!=0){
@@ -252,7 +254,13 @@ void Renderer::render_v2(){
 
         //setup the octtree stuff so we cen loop trough the octtree nodes...
         OctTree * ot = objectworld->getOctTree();
+        OctTreeFast * ot_dynamic_models = objectworld->getOctTreeFastDynamicModels();
+        OctTreeFast * ot_dynamic_lights = objectworld->getOctTreeFastDynamicLights();
+
+
         QList<OctTree*> ot_nodes = ot->getNodesInFrustum(&frustum);
+        QList<OctTreeFast*> ot_dynamic_models_nodes = ot_dynamic_models->getNodesInFrustum(&frustum);
+        QList<OctTreeFast*> ot_dynamic_lights_nodes = ot_dynamic_lights->getNodesInFrustum(&frustum);
 
         //debugMessage("Nodes: " + QString::number(ot_nodes.size()));
 
@@ -281,6 +289,8 @@ void Renderer::render_v2(){
 
             glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 
+
+            //STATIC MODELS
             for(int i = 0; i < ot_nodes.size(); i++){
                 //render one node...
 
@@ -301,6 +311,9 @@ void Renderer::render_v2(){
                         glActiveTexture (GL_TEXTURE0+firstTextureIndex);
                         glBindTexture(GL_TEXTURE_2D, material_mesh_list[index]->get_diffuse_map_texture());
                         glUniform1i(glGetUniformLocation(DR_FirstPassProgramIdId, "sampler1"), firstTextureIndex);
+
+                        texBindsPerFrameCount += 1;
+
 
                         ///////////////////////////////////////////////////////////////////////////////////
                         ///
@@ -379,6 +392,105 @@ void Renderer::render_v2(){
                             //debugMessage("Rendered: " + QString::number(rendered));
                         }
                     }
+                }
+            }
+
+            //DYNAMIC MODELS
+            for(int i = 0; i < ot_dynamic_models_nodes.size(); i++){
+                //render one node...
+
+                //copy the lists so we can itterate through them
+                QList<CompositeObject*> compositeobject_list = ot_dynamic_models_nodes.at(i)->getCompositeObjects();
+
+                //loop trough the material_mesh_list
+                for(int index = 0; index < compositeobject_list.size(); index++){
+
+                    CompositeObject * compobj = compositeobject_list.at(index);
+                    Positation * posi = compobj->getPositation();
+                    QList<Mesh*> mesh_list = compobj->getModel()->get_meshs();
+
+                    //loop trough mesh...
+                    for(int meshs = 0; meshs < mesh_list.size(); meshs++){
+
+                        Mesh * mesh = mesh_list[meshs];
+
+                        //now set up the material and mesh
+
+                        //tex
+                        glActiveTexture (GL_TEXTURE0+firstTextureIndex);
+                        glBindTexture(GL_TEXTURE_2D, mesh->get_material()->get_diffuse_map_texture());
+                        glUniform1i(glGetUniformLocation(DR_FirstPassProgramIdId, "sampler1"), firstTextureIndex);
+
+                        texBindsPerFrameCount += 1;
+
+
+                        ///////////////////////////////////////////////////////////////////////////////////
+                        ///
+                        /// TODO:
+                        ///
+                        /// WE NEED TO CHECK IF THE MESH DATA IS UNIQUE..
+                        /// BUT AT THIS POINt WE ASUME IT's ALLWAYS THE SAME
+                        ///
+                        ///////
+
+
+                        //VAO
+
+                        glBindVertexArray(mesh->get_vertex_array_object());
+
+                        //VBOs
+                        glBindBuffer(GL_ARRAY_BUFFER, mesh->get_vertex_vbo());
+                        glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, 0);
+                        glEnableVertexAttribArray(0);
+
+                        glBindBuffer(GL_ARRAY_BUFFER, mesh->get_texcoord_vbo());
+                        glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 0, 0);
+                        glEnableVertexAttribArray(1);
+
+                        glBindBuffer(GL_ARRAY_BUFFER, mesh->get_normal_vbo());
+                        glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, 0, 0);
+                        glEnableVertexAttribArray(2);
+
+                        //now lets draw for every model it's meshs
+
+                        //draw
+
+
+                        m_m = posi->get_model_matrix();
+                        vm_m = v_m * m_m;
+                        pvm_m = p_m * v_m * m_m;
+
+
+                        // don't need to check every mesh now if it is in the frustum yay....
+
+                        //TRANSPOSE
+                        for (int f = 0; f < 4; f++) {
+                            for (int g = 0; g < 4; g++) {
+                                p_mat[f * 4 + g] = (GLfloat) (p_m[f*4+g]);
+                                v_mat[f * 4 + g] = (GLfloat) (v_m[f*4+g]);
+                                m_mat[f * 4 + g] = (GLfloat) (m_m[f*4+g]);
+                                vm_mat[f * 4 + g] = (GLfloat) (vm_m[f*4+g]);
+                            }
+                        }
+
+
+
+
+                        glUniformMatrix4fv(p_mat_loc_firtpass, 1, GL_FALSE, p_mat);
+                        glUniformMatrix4fv(v_mat_loc_firtpass, 1, GL_FALSE, v_mat);
+                        glUniformMatrix4fv(m_mat_loc_firtpass, 1, GL_FALSE, m_mat);
+                        glUniformMatrix4fv(vm_mat_loc_firtpass, 1, GL_FALSE, vm_mat);
+
+
+
+                        //draw
+                        glDrawArrays(GL_TRIANGLES, 0, mesh->get_triangle_count()*3);
+                        meshPerFrameCount +=1;
+                        trianglesPerFrameCount += mesh->get_triangle_count();
+                    }
+
+                    //debugMessage("Rendered: " + QString::number(rendered));
+
                 }
             }
 
@@ -1628,6 +1740,10 @@ int Renderer::getMeshPerFrameCount(){
 
 int Renderer::getTrianglesPerFrameCount(){
     return trianglesPerFrameCount;
+}
+
+int Renderer::getTexBindsPerFrameCount(){
+    return texBindsPerFrameCount;
 }
 
 

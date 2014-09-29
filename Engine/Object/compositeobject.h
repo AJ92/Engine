@@ -34,9 +34,14 @@ public:
         //more to follow...
     };
 
+    enum ObjectMovementType {
+        MovementStatic  = 0x0000,
+        MovementDynamic = 0x0001
+    };
+
 
     CompositeObject();
-    CompositeObject(QString name);
+    CompositeObject(QString name, ObjectMovementType movementType);
 
     void setModel(Model * model);
     void setLight(Light * light);
@@ -50,9 +55,12 @@ public:
     Light * getLight();
     Positation * getPositation();
 
+    ObjectMovementType getObjectMovementType();
+
 private:
     QString name_;
     int type_;
+    ObjectMovementType movementType_;
 
     Model * model_;
     Light * light_;

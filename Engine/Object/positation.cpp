@@ -104,6 +104,10 @@ Matrix4x4 Positation::get_model_matrix(){
 void Positation::set_matrix_pos(){
     mat_pos.translate(pos);
     matrix_changed = true;
+
+    Event e;
+    e.type = Event::EventCompositeObjectMoved;
+    this->transmit(e);
 }
 
 void Positation::set_matrix_rot(){
@@ -120,11 +124,19 @@ void Positation::set_matrix_rot(){
     rotation.rotate(angle,rot);
     mat_rot = rotation;
     matrix_changed = true;
+
+    Event e;
+    e.type = Event::EventCompositeObjectRotated;
+    this->transmit(e);
 }
 
 void Positation::set_matrix_scl(){
     mat_scl.scale(scl);
     matrix_changed = true;
+
+    Event e;
+    e.type = Event::EventCompositeObjectScaled;
+    this->transmit(e);
 }
 
 void Positation::build_model_matrix(){

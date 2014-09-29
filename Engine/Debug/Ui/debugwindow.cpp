@@ -22,7 +22,8 @@ DebugWindow::DebugWindow(QWidget *parent) :
     ui->tpfGraph->show();
     ui->tpfGraph->setTitle("Tris/Frame");
 
-
+    ui->tbGraph->show();
+    ui->tbGraph->setTitle("TexBinds/Frame");
 
 }
 
@@ -63,4 +64,8 @@ void DebugWindow::add_mpf_data(double mpf){
 
 void DebugWindow::add_tpf_data(double tpf){
     ui->tpfGraph->addData(tpf);
+}
+
+void DebugWindow::add_tb_data(double tb){
+    ui->tbGraph->addData(tb);
 }

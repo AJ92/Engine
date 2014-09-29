@@ -13,7 +13,7 @@ public:
     ModelLoader(ThreadAccountant * ta);
     void initialize();
 
-    Model* loadModel(QString path);
+    void loadModel(Model *m);
     QList<Model*> getModels() const;
 
     // should be unsigned long long or so

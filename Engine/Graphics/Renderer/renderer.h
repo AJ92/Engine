@@ -71,6 +71,7 @@ public:
 
     int getMeshPerFrameCount();
     int getTrianglesPerFrameCount();
+    int getTexBindsPerFrameCount();
 
 private:
     //old simple shaders
@@ -250,6 +251,7 @@ private:
     //debug
     int meshPerFrameCount;
     int trianglesPerFrameCount;
+    int texBindsPerFrameCount;
 };
 
 #endif // RENDERER_H

@@ -18,7 +18,39 @@
   </property>
   <widget class="QWidget" name="centralwidget">
    <layout class="QGridLayout" name="gridLayout">
-    <item row="0" column="0" rowspan="5">
+    <item row="0" column="1">
+     <widget class="CustomGraph" name="fpsGraph" native="true">
+      <property name="minimumSize">
+       <size>
+        <width>250</width>
+        <height>0</height>
+       </size>
+      </property>
+     </widget>
+    </item>
+    <item row="3" column="1">
+     <widget class="CustomGraph" name="mpfGraph" native="true"/>
+    </item>
+    <item row="2" column="1">
+     <widget class="CustomGraph" name="tsGraph" native="true"/>
+    </item>
+    <item row="1" column="1">
+     <widget class="CustomGraph" name="nsGraph" native="true">
+      <property name="minimumSize">
+       <size>
+        <width>250</width>
+        <height>0</height>
+       </size>
+      </property>
+     </widget>
+    </item>
+    <item row="4" column="1">
+     <widget class="CustomGraph" name="tpfGraph" native="true"/>
+    </item>
+    <item row="5" column="1">
+     <widget class="CustomGraph" name="tbGraph" native="true"/>
+    </item>
+    <item row="0" column="0" rowspan="6">
      <widget class="QTextEdit" name="textEdit">
       <property name="styleSheet">
        <string notr="true">font: 8pt &quot;Courier&quot;;
@@ -39,35 +71,6 @@ p, li { white-space: pre-wrap; }
        <set>Qt::TextEditorInteraction</set>
       </property>
      </widget>
-    </item>
-    <item row="0" column="1">
-     <widget class="CustomGraph" name="fpsGraph" native="true">
-      <property name="minimumSize">
-       <size>
-        <width>250</width>
-        <height>0</height>
-       </size>
-      </property>
-     </widget>
-    </item>
-    <item row="2" column="1">
-     <widget class="CustomGraph" name="tsGraph" native="true"/>
-    </item>
-    <item row="1" column="1">
-     <widget class="CustomGraph" name="nsGraph" native="true">
-      <property name="minimumSize">
-       <size>
-        <width>250</width>
-        <height>0</height>
-       </size>
-      </property>
-     </widget>
-    </item>
-    <item row="3" column="1">
-     <widget class="CustomGraph" name="mpfGraph" native="true"/>
-    </item>
-    <item row="4" column="1">
-     <widget class="CustomGraph" name="tpfGraph" native="true"/>
     </item>
    </layout>
   </widget>

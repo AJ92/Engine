@@ -58,7 +58,9 @@ SOURCES += main.cpp\
     Object/positation.cpp \
     Event/Events/eventcompositeobject.cpp \
     Debug/Ui/customgraph.cpp \
-    Graphics/World/DataStructure/octtreefast.cpp
+    Graphics/World/DataStructure/octtreefast.cpp \
+    Object/SmartPointer/sp.cpp \
+    Object/SmartPointer/referencecounter.cpp
 
 
 
@@ -110,7 +112,10 @@ HEADERS  += \
     Object/positation.h \
     Event/Events/eventcompositeobject.h \
     Debug/Ui/customgraph.h \
-    Graphics/World/DataStructure/octtreefast.h
+    Graphics/World/DataStructure/octtreefast.h \
+    Object/SmartPointer/sp.h \
+    Object/SmartPointer/referencecounter.h \
+    Object/SmartPointer/smartpointer.h
 
 
 

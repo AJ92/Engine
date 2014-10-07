@@ -2,7 +2,7 @@
 
 #include "Graphics/Model/model.h"
 
-EventModel::EventModel(Model * mdl)
+EventModel::EventModel(SP<Model> mdl)
 {
     this->mdl = mdl;
 }
@@ -11,10 +11,10 @@ EventModel::~EventModel(){
 
 }
 
-Model * EventModel::getModel(){
+SP<Model> EventModel::getModel(){
     return mdl;
 }
 
-void EventModel::setModel(Model * mdl){
+void EventModel::setModel(SP<Model> mdl){
     this->mdl = mdl;
 }

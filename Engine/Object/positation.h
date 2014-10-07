@@ -5,6 +5,8 @@
 #include "Math/mathematics.h"
 #include "Event/eventtransmitter.h"
 
+#include "Object/SmartPointer/smartpointer.h"
+
 class Event;
 
 
@@ -33,7 +35,11 @@ public:
 
     Vector3 get_scale();
 
+    void set_size(double size);
     double get_size();
+
+    void set_size_scaled(double size_scaled);
+    double get_size_scaled();
 
     Matrix4x4 get_model_matrix();
 
@@ -41,8 +47,11 @@ protected:
 
     bool matrix_changed;
 
-    //spherical bound...
+    //spherical bound... by vertices
     double size;
+
+    //spherical bound by vertices and scale...
+    double size_scaled;
 
     //translation, scale, rotation...
     Vector3 pos;

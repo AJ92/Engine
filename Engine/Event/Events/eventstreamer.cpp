@@ -1,6 +1,6 @@
 #include "eventstreamer.h"
 
-EventStreamer::EventStreamer(Model * mdl):
+EventStreamer::EventStreamer(SP<Model> mdl):
     mdl(mdl)
 {
 }
@@ -9,10 +9,10 @@ EventStreamer::~EventStreamer(){
 
 }
 
-Model * EventStreamer::getModel(){
+SP<Model> EventStreamer::getModel(){
     return mdl;
 }
 
-void EventStreamer::setModel(Model* mdl){
+void EventStreamer::setModel(SP<Model> mdl){
     this->mdl = mdl;
 }

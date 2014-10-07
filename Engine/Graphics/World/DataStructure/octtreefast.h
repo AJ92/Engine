@@ -19,6 +19,8 @@
 #include <QList>
 #include <QHash>
 
+#include "Object/SmartPointer/smartpointer.h"
+
 class Event;
 class CompositeObject;
 class Positation;
@@ -32,22 +34,22 @@ public:
     //for inner/leaf nodes
     OctTreeFast(int subdiv_lvl, Vector3 pos,
                 double node_size, int max_amount_objects,
-                OctTreeFast * tree_root);
-    ~OctTreeFast();
+                SP<OctTreeFast> tree_root);
+    virtual ~OctTreeFast();
 
     void constructNodePoints();
 
-    int fits(CompositeObject * obj);
+    int fits(SP<CompositeObject> obj);
     void subdivide();
 
-    int addCompositeObject(CompositeObject * obj);
-    int addCompositeObjects(QList<CompositeObject* > lib);
+    int addCompositeObject(SP<CompositeObject> obj);
+    int addCompositeObjects(QList<SP<CompositeObject> > lib);
 
-    int removeCompositeObject(CompositeObject * obj);
+    int removeCompositeObject(SP<CompositeObject> obj);
 
-    QList<CompositeObject* > getCompositeObjects();
+    QList<SP<CompositeObject> > getCompositeObjects();
 
-    QList<OctTreeFast* > getNodesInFrustum(Frustum * f);
+    QList<SP<OctTreeFast> > getNodesInFrustum(SP<Frustum> f);
 
     QString debug_string();
 
@@ -62,18 +64,21 @@ public:
 
 private:
     //store the tree root for fast access from inner nodes or leafs...
-    OctTreeFast * tree_root;
+    SP<OctTreeFast> tree_root;
+
+    SP<OctTreeFast> me;
+    SP<EventListener> me_eventListener;
 
     //the subdivided "sub-cubes"
-    OctTreeFast* tree_northwest_high;
-    OctTreeFast* tree_northeast_high;
-    OctTreeFast* tree_southwest_high;
-    OctTreeFast* tree_southeast_high;
+    SP<OctTreeFast> tree_northwest_high;
+    SP<OctTreeFast> tree_northeast_high;
+    SP<OctTreeFast> tree_southwest_high;
+    SP<OctTreeFast> tree_southeast_high;
 
-    OctTreeFast* tree_northwest_low;
-    OctTreeFast* tree_northeast_low;
-    OctTreeFast* tree_southwest_low;
-    OctTreeFast* tree_southeast_low;
+    SP<OctTreeFast> tree_northwest_low;
+    SP<OctTreeFast> tree_northeast_low;
+    SP<OctTreeFast> tree_southwest_low;
+    SP<OctTreeFast> tree_southeast_low;
 
     //info about the current node
     int subdivision_level;
@@ -89,8 +94,8 @@ private:
     int amount_objects;
 
     //internal data
-    QList<CompositeObject* > objectLib;
-    QHash<unsigned long long, CompositeObject* > id_compositeobject_hash;
+    QList<SP<CompositeObject> > objectLib;
+    QHash<unsigned long long, SP<CompositeObject> > id_compositeobject_hash;
 
     QString path;
 

@@ -10,19 +10,21 @@
 #include <QString>
 #include <QStringList>
 
+#include "Object/SmartPointer/smartpointer.h"
+
 class Material;
 
 class Mesh : public Object
 {
 public:
     Mesh(QString name,int triangle_count,GLfloat vertices[],GLfloat texcoords[],GLfloat normals[],
-         Material *material);
+         SP<Material> material);
     ~Mesh();
 
     QString get_name();
 
-    Material* get_material();
-    void set_material(Material *mtl);
+    SP<Material> get_material();
+    void set_material(SP<Material> mtl);
 
     int get_triangle_count();
 
@@ -55,7 +57,7 @@ public:
 private:
 
     QString mesh_name;
-    Material* material;
+    SP<Material> material;
 
     int triangle_count;
 

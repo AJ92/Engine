@@ -28,7 +28,7 @@ void mouseMoved_callback(GLFWwindow* win, double x, double y){
 Mouse::Mouse(Window * win) :
     EventTransmitter()
 {
-    debugMessage("keyboard created.");
+    debugMessage("mouse created.");
     ptr_global_mouse_instance = this;
     mouseButtons = new bool[10];
     modifiers = 0;
@@ -125,7 +125,7 @@ void Mouse::mouseScrolled (double x, double y) {
 }
 
 void Mouse::mouseMoved (double x, double y) {
-    debugMessage("mouseMove: " + QString::number(x) + "  "  + QString::number(y));
+    //debugMessage("mouseMove: " + QString::number(x) + "  "  + QString::number(y));
     xpos = x;
     ypos = y;
 }

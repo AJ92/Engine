@@ -88,7 +88,8 @@ SOURCES       = ..\Engine\main.cpp \
 		..\Engine\Object\positation.cpp \
 		..\Engine\Event\Events\eventcompositeobject.cpp \
 		..\Engine\Debug\Ui\customgraph.cpp \
-		..\Engine\Graphics\World\DataStructure\octtreefast.cpp debug\moc_debugwindow.cpp \
+		..\Engine\Graphics\World\DataStructure\octtreefast.cpp \
+		..\Engine\Object\SmartPointer\referencecounter.cpp debug\moc_debugwindow.cpp \
 		debug\moc_engine.cpp \
 		debug\moc_streamToDisk.cpp \
 		debug\moc_streamer.cpp \
@@ -139,6 +140,7 @@ OBJECTS       = debug/main.o \
 		debug/eventcompositeobject.o \
 		debug/customgraph.o \
 		debug/octtreefast.o \
+		debug/referencecounter.o \
 		debug/moc_debugwindow.o \
 		debug/moc_engine.o \
 		debug/moc_streamToDisk.o \
@@ -184,7 +186,7 @@ dist:
 	$(ZIP) Engine.zip $(SOURCES) $(DIST) ..\Engine\Engine.pro ..\..\..\..\Qt\Qt5.3.0\5.3\mingw482_32\mkspecs\features\spec_pre.prf ..\..\..\..\Qt\Qt5.3.0\5.3\mingw482_32\mkspecs\qdevice.pri ..\..\..\..\Qt\Qt5.3.0\5.3\mingw482_32\mkspecs\features\device_config.prf ..\..\..\..\Qt\Qt5.3.0\5.3\mingw482_32\mkspecs\common\shell-win32.conf ..\..\..\..\Qt\Qt5.3.0\5.3\mingw482_32\mkspecs\qconfig.pri ..\..\..\..\Qt\Qt5.3.0\5.3\mingw482_32\mkspecs\modules\qt_lib_axbase.pri ..\..\..\..\Qt\Qt5.3.0\5.3\mingw482_32\mkspecs\modules\qt_lib_axbase_private.pri ..\..\..\..\Qt\Qt5.3.0\5.3\mingw482_32\mkspecs\modules\qt_lib_axcontainer.pri ..\..\..\..\Qt\Qt5.3.0\5.3\mingw482_32\mkspecs\modules\qt_lib_axcontainer_private.pri ..\..\..\..\Qt\Qt5.3.0\5.3\mingw482_32\mkspecs\modules\qt_lib_axserver.pri ..\..\..\..\Qt\Qt5.3.0\5.3\mingw482_32\mkspecs\modules\qt_lib_axserver_private.pri ..\..\..\..\Qt\Qt5.3.0\5.3\mingw482_32\mkspecs\modules\qt_lib_bluetooth.pri ..\..\..\..\Qt\Qt5.3.0\5.3\mingw482_32\mkspecs\modules\qt_lib_bluetooth_private.pri ..\..\..\..\Qt\Qt5.3.0\5.3\mingw482_32\mkspecs\modules\qt_lib_bootstrap_private.pri ..\..\..\..\Qt\Qt5.3.0\5.3\mingw482_32\mkspecs\modules\qt_lib_clucene_private.pri ..\..\..\..\Qt\Qt5.3.0\5.3\mingw482_32\mkspecs\modules\qt_lib_concurrent.pri ..\..\..\..\Qt\Qt5.3.0\5.3\mingw482_32\mkspecs\modules\qt_lib_concurrent_private.pri ..\..\..\..\Qt\Qt5.3.0\5.3\mingw482_32\mkspecs\modules\qt_lib_core.pri ..\..\..\..\Qt\Qt5.3.0\5.3\mingw482_32\mkspecs\modules\qt_lib_core_private.pri ..\..\..\..\Qt\Qt5.3.0\5.3\mingw482_32\mkspecs\modules\qt_lib_declarative.pri ..\..\..\..\Qt\Qt5.3.0\5.3\mingw482_32\mkspecs\modules\qt_lib_declarative_private.pri ..\..\..\..\Qt\Qt5.3.0\5.3\mingw482_32\mkspecs\modules\qt_lib_designer.pri ..\..\..\..\Qt\Qt5.3.0\5.3\mingw482_32\mkspecs\modules\qt_lib_designer_private.pri ..\..\..\..\Qt\Qt5.3.0\5.3\mingw482_32\mkspecs\modules\qt_lib_designercomponents_private.pri ..\..\..\..\Qt\Qt5.3.0\5.3\mingw482_32\mkspecs\modules\qt_lib_enginio.pri ..\..\..\..\Qt\Qt5.3.0\5.3\mingw482_32\mkspecs\modules\qt_lib_enginio_private.pri ..\..\..\..\Qt\Qt5.3.0\5.3\mingw482_32\mkspecs\modules\qt_lib_gui.pri ..\..\..\..\Qt\Qt5.3.0\5.3\mingw482_32\mkspecs\modules\qt_lib_gui_private.pri ..\..\..\..\Qt\Qt5.3.0\5.3\mingw482_32\mkspecs\modules\qt_lib_help.pri ..\..\..\..\Qt\Qt5.3.0\5.3\mingw482_32\mkspecs\modules\qt_lib_help_private.pri ..\..\..\..\Qt\Qt5.3.0\5.3\mingw482_32\mkspecs\modules\qt_lib_multimedia.pri ..\..\..\..\Qt\Qt5.3.0\5.3\mingw482_32\mkspecs\modules\qt_lib_multimedia_private.pri ..\..\..\..\Qt\Qt5.3.0\5.3\mingw482_32\mkspecs\modules\qt_lib_multimediawidgets.pri ..\..\..\..\Qt\Qt5.3.0\5.3\mingw482_32\mkspecs\modules\qt_lib_multimediawidgets_private.pri ..\..\..\..\Qt\Qt5.3.0\5.3\mingw482_32\mkspecs\modules\qt_lib_network.pri ..\..\..\..\Qt\Qt5.3.0\5.3\mingw482_32\mkspecs\modules\qt_lib_network_private.pri ..\..\..\..\Qt\Qt5.3.0\5.3\mingw482_32\mkspecs\modules\qt_lib_nfc.pri ..\..\..\..\Qt\Qt5.3.0\5.3\mingw482_32\mkspecs\modules\qt_lib_nfc_private.pri ..\..\..\..\Qt\Qt5.3.0\5.3\mingw482_32\mkspecs\modules\qt_lib_opengl.pri ..\..\..\..\Qt\Qt5.3.0\5.3\mingw482_32\mkspecs\modules\qt_lib_opengl_private.pri ..\..\..\..\Qt\Qt5.3.0\5.3\mingw482_32\mkspecs\modules\qt_lib_openglextensions.pri ..\..\..\..\Qt\Qt5.3.0\5.3\mingw482_32\mkspecs\modules\qt_lib_openglextensions_private.pri ..\..\..\..\Qt\Qt5.3.0\5.3\mingw482_32\mkspecs\modules\qt_lib_platformsupport_private.pri ..\..\..\..\Qt\Qt5.3.0\5.3\mingw482_32\mkspecs\modules\qt_lib_positioning.pri ..\..\..\..\Qt\Qt5.3.0\5.3\mingw482_32\mkspecs\modules\qt_lib_positioning_private.pri ..\..\..\..\Qt\Qt5.3.0\5.3\mingw482_32\mkspecs\modules\qt_lib_printsupport.pri ..\..\..\..\Qt\Qt5.3.0\5.3\mingw482_32\mkspecs\modules\qt_lib_printsupport_private.pri ..\..\..\..\Qt\Qt5.3.0\5.3\mingw482_32\mkspecs\modules\qt_lib_qml.pri ..\..\..\..\Qt\Qt5.3.0\5.3\mingw482_32\mkspecs\modules\qt_lib_qml_private.pri ..\..\..\..\Qt\Qt5.3.0\5.3\mingw482_32\mkspecs\modules\qt_lib_qmldevtools_private.pri ..\..\..\..\Qt\Qt5.3.0\5.3\mingw482_32\mkspecs\modules\qt_lib_qmltest.pri ..\..\..\..\Qt\Qt5.3.0\5.3\mingw482_32\mkspecs\modules\qt_lib_qmltest_private.pri ..\..\..\..\Qt\Qt5.3.0\5.3\mingw482_32\mkspecs\modules\qt_lib_qtmultimediaquicktools_private.pri ..\..\..\..\Qt\Qt5.3.0\5.3\mingw482_32\mkspecs\modules\qt_lib_quick.pri ..\..\..\..\Qt\Qt5.3.0\5.3\mingw482_32\mkspecs\modules\qt_lib_quick_private.pri ..\..\..\..\Qt\Qt5.3.0\5.3\mingw482_32\mkspecs\modules\qt_lib_quickparticles_private.pri ..\..\..\..\Qt\Qt5.3.0\5.3\mingw482_32\mkspecs\modules\qt_lib_quickwidgets.pri ..\..\..\..\Qt\Qt5.3.0\5.3\mingw482_32\mkspecs\modules\qt_lib_quickwidgets_private.pri ..\..\..\..\Qt\Qt5.3.0\5.3\mingw482_32\mkspecs\modules\qt_lib_script.pri ..\..\..\..\Qt\Qt5.3.0\5.3\mingw482_32\mkspecs\modules\qt_lib_script_private.pri ..\..\..\..\Qt\Qt5.3.0\5.3\mingw482_32\mkspecs\modules\qt_lib_scripttools.pri ..\..\..\..\Qt\Qt5.3.0\5.3\mingw482_32\mkspecs\modules\qt_lib_scripttools_private.pri ..\..\..\..\Qt\Qt5.3.0\5.3\mingw482_32\mkspecs\modules\qt_lib_sensors.pri ..\..\..\..\Qt\Qt5.3.0\5.3\mingw482_32\mkspecs\modules\qt_lib_sensors_private.pri ..\..\..\..\Qt\Qt5.3.0\5.3\mingw482_32\mkspecs\modules\qt_lib_serialport.pri ..\..\..\..\Qt\Qt5.3.0\5.3\mingw482_32\mkspecs\modules\qt_lib_serialport_private.pri ..\..\..\..\Qt\Qt5.3.0\5.3\mingw482_32\mkspecs\modules\qt_lib_sql.pri ..\..\..\..\Qt\Qt5.3.0\5.3\mingw482_32\mkspecs\modules\qt_lib_sql_private.pri ..\..\..\..\Qt\Qt5.3.0\5.3\mingw482_32\mkspecs\modules\qt_lib_svg.pri ..\..\..\..\Qt\Qt5.3.0\5.3\mingw482_32\mkspecs\modules\qt_lib_svg_private.pri ..\..\..\..\Qt\Qt5.3.0\5.3\mingw482_32\mkspecs\modules\qt_lib_testlib.pri ..\..\..\..\Qt\Qt5.3.0\5.3\mingw482_32\mkspecs\modules\qt_lib_testlib_private.pri ..\..\..\..\Qt\Qt5.3.0\5.3\mingw482_32\mkspecs\modules\qt_lib_uitools.pri ..\..\..\..\Qt\Qt5.3.0\5.3\mingw482_32\mkspecs\modules\qt_lib_uitools_private.pri ..\..\..\..\Qt\Qt5.3.0\5.3\mingw482_32\mkspecs\modules\qt_lib_webkit.pri ..\..\..\..\Qt\Qt5.3.0\5.3\mingw482_32\mkspecs\modules\qt_lib_webkit_private.pri ..\..\..\..\Qt\Qt5.3.0\5.3\mingw482_32\mkspecs\modules\qt_lib_webkitwidgets.pri ..\..\..\..\Qt\Qt5.3.0\5.3\mingw482_32\mkspecs\modules\qt_lib_webkitwidgets_private.pri ..\..\..\..\Qt\Qt5.3.0\5.3\mingw482_32\mkspecs\modules\qt_lib_websockets.pri ..\..\..\..\Qt\Qt5.3.0\5.3\mingw482_32\mkspecs\modules\qt_lib_websockets_private.pri ..\..\..\..\Qt\Qt5.3.0\5.3\mingw482_32\mkspecs\modules\qt_lib_widgets.pri ..\..\..\..\Qt\Qt5.3.0\5.3\mingw482_32\mkspecs\modules\qt_lib_widgets_private.pri ..\..\..\..\Qt\Qt5.3.0\5.3\mingw482_32\mkspecs\modules\qt_lib_winextras.pri ..\..\..\..\Qt\Qt5.3.0\5.3\mingw482_32\mkspecs\modules\qt_lib_winextras_private.pri ..\..\..\..\Qt\Qt5.3.0\5.3\mingw482_32\mkspecs\modules\qt_lib_xml.pri ..\..\..\..\Qt\Qt5.3.0\5.3\mingw482_32\mkspecs\modules\qt_lib_xml_private.pri ..\..\..\..\Qt\Qt5.3.0\5.3\mingw482_32\mkspecs\modules\qt_lib_xmlpatterns.pri ..\..\..\..\Qt\Qt5.3.0\5.3\mingw482_32\mkspecs\modules\qt_lib_xmlpatterns_private.pri ..\..\..\..\Qt\Qt5.3.0\5.3\mingw482_32\mkspecs\features\qt_functions.prf ..\..\..\..\Qt\Qt5.3.0\5.3\mingw482_32\mkspecs\features\qt_config.prf ..\..\..\..\Qt\Qt5.3.0\5.3\mingw482_32\mkspecs\features\win32\qt_config.prf ..\..\..\..\Qt\Qt5.3.0\5.3\mingw482_32\mkspecs\win32-g++\qmake.conf ..\..\..\..\Qt\Qt5.3.0\5.3\mingw482_32\mkspecs\features\spec_post.prf ..\..\..\..\Qt\Qt5.3.0\5.3\mingw482_32\mkspecs\features\exclusive_builds.prf ..\..\..\..\Qt\Qt5.3.0\5.3\mingw482_32\mkspecs\features\default_pre.prf ..\..\..\..\Qt\Qt5.3.0\5.3\mingw482_32\mkspecs\features\win32\default_pre.prf ..\..\..\..\Qt\Qt5.3.0\5.3\mingw482_32\mkspecs\features\resolve_config.prf ..\..\..\..\Qt\Qt5.3.0\5.3\mingw482_32\mkspecs\features\exclusive_builds_post.prf ..\..\..\..\Qt\Qt5.3.0\5.3\mingw482_32\mkspecs\features\default_post.prf ..\..\..\..\Qt\Qt5.3.0\5.3\mingw482_32\mkspecs\features\build_pass.prf ..\..\..\..\Qt\Qt5.3.0\5.3\mingw482_32\mkspecs\features\win32\rtti.prf ..\..\..\..\Qt\Qt5.3.0\5.3\mingw482_32\mkspecs\features\precompile_header.prf ..\..\..\..\Qt\Qt5.3.0\5.3\mingw482_32\mkspecs\features\warn_on.prf ..\..\..\..\Qt\Qt5.3.0\5.3\mingw482_32\mkspecs\features\qt.prf ..\..\..\..\Qt\Qt5.3.0\5.3\mingw482_32\mkspecs\features\resources.prf ..\..\..\..\Qt\Qt5.3.0\5.3\mingw482_32\mkspecs\features\moc.prf ..\..\..\..\Qt\Qt5.3.0\5.3\mingw482_32\mkspecs\features\win32\opengl.prf ..\..\..\..\Qt\Qt5.3.0\5.3\mingw482_32\mkspecs\features\uic.prf ..\..\..\..\Qt\Qt5.3.0\5.3\mingw482_32\mkspecs\features\win32\windows.prf ..\..\..\..\Qt\Qt5.3.0\5.3\mingw482_32\mkspecs\features\testcase_targets.prf ..\..\..\..\Qt\Qt5.3.0\5.3\mingw482_32\mkspecs\features\exceptions.prf ..\..\..\..\Qt\Qt5.3.0\5.3\mingw482_32\mkspecs\features\yacc.prf ..\..\..\..\Qt\Qt5.3.0\5.3\mingw482_32\mkspecs\features\lex.prf ..\Engine\Engine.pro C:/Qt/Qt5.3.0/5.3/mingw482_32/lib/Qt5OpenGLd.prl C:/Qt/Qt5.3.0/5.3/mingw482_32/lib/Qt5Widgetsd.prl C:/Qt/Qt5.3.0/5.3/mingw482_32/lib/Qt5Guid.prl C:/Qt/Qt5.3.0/5.3/mingw482_32/lib/Qt5Cored.prl  NO_PCH_SOURCES RESOURCES HEADERS SOURCES OBJECTIVE_SOURCES FORMS YACCSOURCES YACCSOURCES LEXSOURCES 
 
 clean: compiler_clean 
-	-$(DEL_FILE) debug\main.o debug\object.o debug\debugwindow.o debug\engine.o debug\event.o debug\eventlistener.o debug\eventtransmitter.o debug\debugger.o debug\window.o debug\renderer.o debug\model.o debug\mesh.o debug\material.o debug\loader.o debug\loader_obj.o debug\vector4.o debug\vector3.o debug\matrix4x4.o debug\matrix3x3.o debug\plane.o debug\shader.o debug\camera.o debug\modellibrary.o debug\eventdebugger.o debug\streamToDisk.o debug\streamer.o debug\threadaccountant.o debug\planet.o debug\planetlod.o debug\planetgenerator.o debug\eventstreamer.o debug\keyboard.o debug\mouse.o debug\light.o debug\eventwindow.o debug\frustum.o debug\test.o debug\objectworld.o debug\octtree.o debug\modelloader.o debug\eventmodel.o debug\compositeobject.o debug\positation.o debug\eventcompositeobject.o debug\customgraph.o debug\octtreefast.o debug\moc_debugwindow.o debug\moc_engine.o debug\moc_streamToDisk.o debug\moc_streamer.o debug\moc_customgraph.o
+	-$(DEL_FILE) debug\main.o debug\object.o debug\debugwindow.o debug\engine.o debug\event.o debug\eventlistener.o debug\eventtransmitter.o debug\debugger.o debug\window.o debug\renderer.o debug\model.o debug\mesh.o debug\material.o debug\loader.o debug\loader_obj.o debug\vector4.o debug\vector3.o debug\matrix4x4.o debug\matrix3x3.o debug\plane.o debug\shader.o debug\camera.o debug\modellibrary.o debug\eventdebugger.o debug\streamToDisk.o debug\streamer.o debug\threadaccountant.o debug\planet.o debug\planetlod.o debug\planetgenerator.o debug\eventstreamer.o debug\keyboard.o debug\mouse.o debug\light.o debug\eventwindow.o debug\frustum.o debug\test.o debug\objectworld.o debug\octtree.o debug\modelloader.o debug\eventmodel.o debug\compositeobject.o debug\positation.o debug\eventcompositeobject.o debug\customgraph.o debug\octtreefast.o debug\referencecounter.o debug\moc_debugwindow.o debug\moc_engine.o debug\moc_streamToDisk.o debug\moc_streamer.o debug\moc_customgraph.o
 
 distclean: clean 
 	-$(DEL_FILE) $(DESTDIR_TARGET)
@@ -492,6 +494,7 @@ debug/moc_engine.cpp: ../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/QtCore/QObj
 		../Engine/Graphics/World/DataStructure/octtree.h \
 		../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/QtCore/QHash \
 		../Engine/Graphics/World/DataStructure/octtreefast.h \
+		../Engine/Object/SmartPointer/sp.h \
 		../Engine/Graphics/Model/light.h \
 		../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/QtCore/QElapsedTimer \
 		../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/QtCore/qelapsedtimer.h \
@@ -1215,6 +1218,7 @@ debug/main.o: ../Engine/main.cpp ../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/
 		../Engine/Graphics/World/DataStructure/octtree.h \
 		../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/QtCore/QHash \
 		../Engine/Graphics/World/DataStructure/octtreefast.h \
+		../Engine/Object/SmartPointer/sp.h \
 		../Engine/Graphics/Model/light.h \
 		../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/QtCore/QElapsedTimer \
 		../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/QtCore/qelapsedtimer.h \
@@ -1317,7 +1321,10 @@ debug/main.o: ../Engine/main.cpp ../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/
 		../Engine/Physics/bullet-2.82-r2704/src/BulletDynamics/Vehicle/btWheelInfo.h \
 		../Engine/Physics/bullet-2.82-r2704/src/BulletDynamics/Dynamics/btActionInterface.h \
 		../Engine/Object/compositeobject.h \
-		../Engine/test.h
+		../Engine/test.h \
+		../Engine/Object/SmartPointer/smartpointer.h \
+		../Engine/Object/SmartPointer/sp.cpp \
+		../Engine/Object/SmartPointer/referencecounter.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o debug\main.o ..\Engine\main.cpp
 
 debug/object.o: ../Engine/Object/object.cpp ../Engine/Object/object.h \
@@ -1697,6 +1704,7 @@ debug/engine.o: ../Engine/engine.cpp ../Engine/engine.h \
 		../Engine/Graphics/World/DataStructure/octtree.h \
 		../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/QtCore/QHash \
 		../Engine/Graphics/World/DataStructure/octtreefast.h \
+		../Engine/Object/SmartPointer/sp.h \
 		../Engine/Graphics/Model/light.h \
 		../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/QtCore/QElapsedTimer \
 		../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/QtCore/qelapsedtimer.h \
@@ -2426,7 +2434,8 @@ debug/renderer.o: ../Engine/Graphics/Renderer/renderer.cpp ../Engine/Graphics/Re
 		../Engine/Graphics/Model/modelloader.h \
 		../Engine/Graphics/World/DataStructure/octtree.h \
 		../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/QtCore/QHash \
-		../Engine/Graphics/World/DataStructure/octtreefast.h
+		../Engine/Graphics/World/DataStructure/octtreefast.h \
+		../Engine/Object/SmartPointer/sp.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o debug\renderer.o ..\Engine\Graphics\Renderer\renderer.cpp
 
 debug/model.o: ../Engine/Graphics/Model/model.cpp ../Engine/Graphics/Model/model.h \
@@ -4715,6 +4724,7 @@ debug/test.o: ../Engine/test.cpp ../Engine/test.h \
 		../Engine/Graphics/World/DataStructure/octtree.h \
 		../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/QtCore/QHash \
 		../Engine/Graphics/World/DataStructure/octtreefast.h \
+		../Engine/Object/SmartPointer/sp.h \
 		../Engine/Graphics/Model/light.h \
 		../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/QtCore/QElapsedTimer \
 		../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/QtCore/qelapsedtimer.h \
@@ -4817,6 +4827,9 @@ debug/test.o: ../Engine/test.cpp ../Engine/test.h \
 		../Engine/Physics/bullet-2.82-r2704/src/BulletDynamics/Vehicle/btWheelInfo.h \
 		../Engine/Physics/bullet-2.82-r2704/src/BulletDynamics/Dynamics/btActionInterface.h \
 		../Engine/Object/compositeobject.h \
+		../Engine/Object/SmartPointer/smartpointer.h \
+		../Engine/Object/SmartPointer/sp.cpp \
+		../Engine/Object/SmartPointer/referencecounter.h \
 		../Engine/Object/positation.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o debug\test.o ..\Engine\test.cpp
 
@@ -4938,8 +4951,10 @@ debug/objectworld.o: ../Engine/Graphics/World/objectworld.cpp ../Engine/Graphics
 		../Engine/Math/Geometry/plane.h \
 		../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/QtCore/QHash \
 		../Engine/Graphics/World/DataStructure/octtreefast.h \
+		../Engine/Object/SmartPointer/sp.h \
 		../Engine/Object/compositeobject.h \
-		../Engine/Object/positation.h
+		../Engine/Object/positation.h \
+		../Engine/Graphics/Model/light.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o debug\objectworld.o ..\Engine\Graphics\World\objectworld.cpp
 
 debug/octtree.o: ../Engine/Graphics/World/DataStructure/octtree.cpp ../Engine/Graphics/World/DataStructure/octtree.h \
@@ -5716,6 +5731,9 @@ debug/octtreefast.o: ../Engine/Graphics/World/DataStructure/octtreefast.cpp ../E
 		../Engine/Object/compositeobject.h \
 		../Engine/Object/positation.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o debug\octtreefast.o ..\Engine\Graphics\World\DataStructure\octtreefast.cpp
+
+debug/referencecounter.o: ../Engine/Object/SmartPointer/referencecounter.cpp ../Engine/Object/SmartPointer/referencecounter.h
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o debug\referencecounter.o ..\Engine\Object\SmartPointer\referencecounter.cpp
 
 debug/moc_debugwindow.o: debug/moc_debugwindow.cpp 
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o debug\moc_debugwindow.o debug\moc_debugwindow.cpp

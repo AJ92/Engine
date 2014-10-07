@@ -8,6 +8,7 @@
 #include "Graphics/Model/Streamer/streamer.h"
 
 #include "Threading/threadaccountant.h"
+#include "Object/SmartPointer/smartpointer.h"
 
 class Model;
 class Mesh;
@@ -18,58 +19,58 @@ class CompositeObject;
 class ModelLibrary : virtual public EventListener, virtual public EventTransmitter
 {
 public:
-    ModelLibrary(ThreadAccountant * ta);
+    ModelLibrary(SP<ThreadAccountant> ta);
 
     void initialize();
 
-    Model* loadModel(QString path);
-    QList<Model*> getModels() const;
+    SP<Model> loadModel(QString path);
+    QList<SP<Model> > getModels() const;
 
     // should be unsigned long long or so
     int modelCount();
     void setModelsPerThread(int model_count);
 
     //getter for the renderer... should be manipulated
-    QList<QList<Mesh*> > getMeshModelList();
-    QList<QList<Model*> > getModelMeshList();
-    QList<Material*> getMaterialMeshList();
+    QList<QList<SP<Mesh> > > getMeshModelList();
+    QList<QList<SP<Model> > > getModelMeshList();
+    QList<SP<Material> > getMaterialMeshList();
 
     void debugModelData();
 
 
 private:
-    ThreadAccountant * ta;
-    Streamer * streamer;
+    SP<ThreadAccountant> ta;
+    SP<Streamer> streamer;
     //models
 
 
     //model lists
-    QList<Model*> model_list;               //all models (includes instances)
-    QList<Model*> unique_model_list;        //unique by data!!!
+    QList<SP<Model> > model_list;               //all models (includes instances)
+    QList<SP<Model> > unique_model_list;        //unique by data!!!
     QList<QString> unique_model_path_list;  //unique paths of models
-    QList<QList<Model*> > instances_to_load_list;   //instances which need to be loaded,
+    QList<QList<SP<Model> > > instances_to_load_list;   //instances which need to be loaded,
                                                     //because the base model wans't loaded
                                                     //during the instance process...
 
     //model data sorted by material / single mesh
-    QList<QList<Mesh*> > mesh_model_list;
-    QList<QList<Model*> > model_mesh_list;
-    QList<Material*> material_mesh_list;
+    QList<QList<SP<Mesh> > > mesh_model_list;
+    QList<QList<SP<Model> > > model_mesh_list;
+    QList<SP<Material> > material_mesh_list;
 
     void eventRecieved(Event e);
     void debugMessage(QString message);
 
-    void addModel(Model * mdl);
-    void addModelUnique(Model * mdl);
-    void addModelInstanceToLoad(Model * mdl);
+    void addModel(SP<Model> mdl);
+    void addModelUnique(SP<Model> mdl);
+    void addModelInstanceToLoad(SP<Model> mdl);
 
-    void addModelData(Model * mdl);
+    void addModelData(SP<Model> mdl);
 
-    void updateInstances(Model * mdl);
+    void updateInstances(SP<Model> mdl);
 
-    Model * containsModelData(Model * mdl);
-    Model * containsModel(Model * mdl);
-    bool removeModel(Model * mdl);
+    SP<Model> containsModelData(SP<Model> mdl);
+    SP<Model> containsModel(SP<Model> mdl);
+    bool removeModel(SP<Model> mdl);
 };
 
 
@@ -82,14 +83,14 @@ public:
 
     void initialize();
 
-    void addModel(CompositeObject * co);
-    bool removeModel(CompositeObject * co);
+    void addModel(SP<CompositeObject> co);
+    bool removeModel(SP<CompositeObject> co);
 
     void clearLib();
 
-    QList<Model*> getModels() const;
+    QList<SP<Model> > getModels() const;
 
-    QList<CompositeObject*> getCompositeObjects() const;
+    QList<SP<CompositeObject> > getCompositeObjects() const;
 
 
     // should be unsigned long long or so
@@ -98,39 +99,39 @@ public:
 
     //getter for the renderer... shouldn't be manipulated
 
-    QList<QList<CompositeObject*> > getCompositeobjectMeshList();
+    QList<QList<SP<CompositeObject> > > getCompositeobjectMeshList();
 
-    QList<QList<Mesh*> > getMeshModelList();
-    QList<QList<Model*> > getModelMeshList();
-    QList<Material*> getMaterialMeshList();
+    QList<QList<SP<Mesh> > > getMeshModelList();
+    QList<QList<SP<Model> > > getModelMeshList();
+    QList<SP<Material> > getMaterialMeshList();
 
     void debugModelData();
 
 
 private:
 
-    QList<Model*> model_list;               //all models (includes instances)
-    QList<CompositeObject*> compositeobject_list;        //all compositeobjects
+    QList<SP<Model> > model_list;               //all models (includes instances)
+    QList<SP<CompositeObject> > compositeobject_list;        //all compositeobjects
 
 
     //model data sorted by material / single mesh
 
-    QList<QList<CompositeObject*> > compositeobject_mesh_list;
-    QList<QList<Mesh*> > mesh_model_list;
-    QList<QList<Model*> > model_mesh_list;
-    QList<Material*> material_mesh_list;
+    QList<QList<SP<CompositeObject> > > compositeobject_mesh_list;
+    QList<QList<SP<Mesh> > > mesh_model_list;
+    QList<QList<SP<Model> > > model_mesh_list;
+    QList<SP<Material> > material_mesh_list;
 
     void eventRecieved(Event e);
     void debugMessage(QString message);
 
 
-    void addModelData(CompositeObject * co);
+    void addModelData(SP<CompositeObject> co);
 
     //next 2 not needed ?
-    Model * containsModelData(Model * mdl);
-    Model * containsModel(Model * mdl);
+    SP<Model> containsModelData(SP<Model> mdl);
+    SP<Model> containsModel(SP<Model> mdl);
 
-    CompositeObject * containsCompositeObject(CompositeObject * co);
+    SP<CompositeObject> containsCompositeObject(SP<CompositeObject> co);
 
     int reserve_unique;
     int reserve_all;

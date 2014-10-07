@@ -15,6 +15,8 @@
 
 #include <QList>
 
+#include "Object/SmartPointer/smartpointer.h"
+
 class Event;
 class CompositeObject;
 class Positation;
@@ -22,41 +24,42 @@ class Positation;
 class ObjectWorld : virtual public EventListener, virtual public EventTransmitter
 {
 public:
-    ObjectWorld(ThreadAccountant * ta);
+    ObjectWorld(SP<ThreadAccountant> ta);
     ~ObjectWorld();
 
-    void setModelLoader(ModelLoader * ml);
+    void setModelLoader(SP<ModelLoader> ml);
     void setModelsPerThread(int model_count);
     void setLightModelPath(QString path);
 
     void initialize();
 
-    OctTree * getOctTree();
-    OctTreeFast * getOctTreeFastDynamicModels();
-    OctTreeFast * getOctTreeFastDynamicLights();
+    SP<OctTree> getOctTree();
+    SP<OctTreeFast> getOctTreeFastDynamicModels();
+    SP<OctTreeFast> getOctTreeFastDynamicLights();
 
     //creates an empty CompositeObject with Positation so the user can already interact
     //even if the model isn't loaded yet... model is bound later to this object...
-    CompositeObject * loadLightobject(QString name);
-    CompositeObject * loadModelobject(QString name, QString path);
-    CompositeObject * loadModelobject(QString name, QString path, Positation * posi);
+    SP<CompositeObject> loadLightobject(QString name);
+    SP<CompositeObject> loadModelobject(QString name, QString path);
+    SP<CompositeObject> loadModelobject(QString name, QString path, SP<Positation> posi);
 
 private:
-    ThreadAccountant * ta;
-    ModelLoader * ml;
+
+    SP<EventListener> me_eventListener;
+
+    SP<ThreadAccountant> ta;
+    SP<ModelLoader> ml;
 
     QString light_model_path;
-    Model * light_model;
+    SP<Model> light_model;
 
-    OctTree * ot;
+    SP<OctTree> ot;
 
-    OctTreeFast * ot_dynamic_model;
-    OctTreeFast * ot_dynamic_lights;
+    SP<OctTreeFast> ot_dynamic_model;
+    SP<OctTreeFast> ot_dynamic_lights;
 
     //private functions...
-    void loadModel(Model *m);
-
-    void addModelToOctTree(CompositeObject * co);
+    void loadModel(SP<Model> m);
 
 
     //EventListener and EventTransmitter...
@@ -65,6 +68,12 @@ private:
 
     int count_models_in;
     int count_models_out;
+
+
+
+
+    //temporary store all Composite objects so we dont delete them accidently...
+    QList<SP<CompositeObject> > all_comp_objs;
 };
 
 #endif // OBJECTWORLD_H

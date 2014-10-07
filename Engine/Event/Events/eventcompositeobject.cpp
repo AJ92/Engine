@@ -2,7 +2,7 @@
 
 #include "Object/compositeobject.h"
 
-EventCompositeObject::EventCompositeObject(CompositeObject * co)
+EventCompositeObject::EventCompositeObject(SP<CompositeObject> co)
 {
     this->co = co;
 }
@@ -11,10 +11,10 @@ EventCompositeObject::~EventCompositeObject(){
 
 }
 
-CompositeObject * EventCompositeObject::getCompositeObject(){
+SP<CompositeObject> EventCompositeObject::getCompositeObject(){
     return co;
 }
 
-void EventCompositeObject::setCompositeObject(CompositeObject * co){
+void EventCompositeObject::setCompositeObject(SP<CompositeObject> co){
     this->co = co;
 }

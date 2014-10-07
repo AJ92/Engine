@@ -17,12 +17,15 @@ OctTreeFast::OctTreeFast(int max_amount_objects)
     amount_objects = 0;
     type = NodeRoot;
     constructNodePoints();
-    tree_root = this;
+    tree_root = SP<OctTreeFast>(this);
+
+    me = tree_root;
+    me_eventListener = SP<EventListener> (this);
 }
 
 OctTreeFast::OctTreeFast(int subdiv_lvl, Vector3 pos,
                          double node_size, int max_amount_objects,
-                         OctTreeFast * tree_root)
+                         SP<OctTreeFast> tree_root)
 {
     this->subdivision_level = subdiv_lvl;
     this->is_subdivided = false;
@@ -35,6 +38,9 @@ OctTreeFast::OctTreeFast(int subdiv_lvl, Vector3 pos,
     type = NodeLeaf;
     constructNodePoints();
     this->tree_root = tree_root;
+
+    me = SP<OctTreeFast>(this);
+    me_eventListener = SP<EventListener> (this);
 }
 
 void OctTreeFast::constructNodePoints(){
@@ -68,24 +74,25 @@ void OctTreeFast::constructNodePoints(){
 
 OctTreeFast::~OctTreeFast(){
     //DESTRUCTOR... soon
+    qDebug("OctTreeFast::~OctTreeFast");
 }
 
-QList<OctTreeFast* > OctTreeFast::getNodesInFrustum(Frustum * f){
-    QList<OctTreeFast *> treeList;
+QList<SP<OctTreeFast> > OctTreeFast::getNodesInFrustum(SP<Frustum> f){
+    QList<SP<OctTreeFast> > treeList;
 
     //check if points of the node are inside of the frustum...
     int check = f->sphereInFrustum(pos, spherical_node_size);
     if(check == Frustum::Inside || check == Frustum::Intersect){
         //lets add this leaf node, might be root aswell...
         if(is_subdivided == false){
-            treeList.append(this);
+            treeList.append(me);
         }
         //lets get subnodes...
         else{
             //unfortunatly inner nodes can have models as well...
             //add all the OctTree nodes to the list..
 
-            treeList.append(this);
+            treeList.append(me);
 
             treeList.append(tree_northwest_high->getNodesInFrustum(f));
             treeList.append(tree_northeast_high->getNodesInFrustum(f));
@@ -103,23 +110,23 @@ QList<OctTreeFast* > OctTreeFast::getNodesInFrustum(Frustum * f){
 
 
 //might need to check if it intersect the bounds ... for refitting...
-int OctTreeFast::fits(CompositeObject * obj){
+int OctTreeFast::fits(SP<CompositeObject> obj){
 
     if(obj == 0){
         qDebug("[WARNING] OctTree::fits(CompositeObject * obj) : no CompositeObject ...");
         return false;
     }
 
-    Positation * posi = obj->getPositation();
+    SP<Positation> posi = obj->getPositation();
     Vector3 obj_pos = posi->getPosition();
-    if((obj_pos.x()+posi->get_size()) <= (pos.x()+node_size) &&
-       (obj_pos.x()-posi->get_size()) >= (pos.x()-node_size)){
+    if((obj_pos.x()+posi->get_size_scaled()) <= (pos.x()+node_size) &&
+       (obj_pos.x()-posi->get_size_scaled()) >= (pos.x()-node_size)){
         //inside of the X axis
-        if((obj_pos.y()+posi->get_size()) <= (pos.y()+node_size) &&
-           (obj_pos.y()-posi->get_size()) >= (pos.y()-node_size)){
+        if((obj_pos.y()+posi->get_size_scaled()) <= (pos.y()+node_size) &&
+           (obj_pos.y()-posi->get_size_scaled()) >= (pos.y()-node_size)){
             //inside of the Y axis
-            if((obj_pos.z()+posi->get_size()) <= (pos.z()+node_size) &&
-               (obj_pos.z()-posi->get_size()) >= (pos.z()-node_size)){
+            if((obj_pos.z()+posi->get_size_scaled()) <= (pos.z()+node_size) &&
+               (obj_pos.z()-posi->get_size_scaled()) >= (pos.z()-node_size)){
                 //model fits in this node
                 return true;
             }
@@ -155,7 +162,7 @@ QString OctTreeFast::debug_string(){
 }
 
 
-int OctTreeFast::addCompositeObject(CompositeObject * obj){
+int OctTreeFast::addCompositeObject(SP<CompositeObject> obj){
     if(obj == 0){
         debugMessage("OctTreeFast::addCompositeObject(CompositeObject * obj) : obj is null...");
     }
@@ -213,7 +220,7 @@ int OctTreeFast::addCompositeObject(CompositeObject * obj){
             result_added += 1;
             objectLib.append(obj);
             //register the object... this node becomes a listener for its events...
-            obj->addListener(this);
+            obj->addListener(me_eventListener);
         }
 
         //add model to hash if it fitted this node or its child
@@ -232,7 +239,7 @@ int OctTreeFast::addCompositeObject(CompositeObject * obj){
 
     objectLib.append(obj);
     //register the object... this node becomes a listener for its events...
-    obj->addListener(this);
+    obj->addListener(me_eventListener);
 
     id_compositeobject_hash.insert(obj->EventTransmitter::id(),obj);
 
@@ -244,11 +251,11 @@ int OctTreeFast::addCompositeObject(CompositeObject * obj){
 
 }
 
-int OctTreeFast::addCompositeObjects(QList<CompositeObject* > lib){
+int OctTreeFast::addCompositeObjects(QList<SP<CompositeObject> > lib){
 
     int added_count = 0;
 
-    QList<CompositeObject*> objs = lib;
+    QList<SP<CompositeObject> > objs = lib;
 
     for(int i = 0; i < objs.size(); i++){
         if(fits(objs.at(i))){
@@ -260,32 +267,32 @@ int OctTreeFast::addCompositeObjects(QList<CompositeObject* > lib){
     return added_count;
 }
 
-int OctTreeFast::removeCompositeObject(CompositeObject * obj){
+int OctTreeFast::removeCompositeObject(SP<CompositeObject> obj){
     //should work, that we only save unique objects here...
     bool removed = false;
     if(objectLib.contains(obj)){
         objectLib.removeOne(obj);
         removed = true;
-        obj->addListener(this);
+        obj->addListener(me_eventListener);
         amount_objects -= 1;
     }
     id_compositeobject_hash.remove(obj->EventTransmitter::id());
     return removed;
 }
 
-QList<CompositeObject* > OctTreeFast::getCompositeObjects(){
+QList<SP<CompositeObject> > OctTreeFast::getCompositeObjects(){
     return objectLib;
 }
 
 
 void OctTreeFast::subdivide(){
 
-    QList<CompositeObject* > objectLib_old = objectLib;
+    QList<SP<CompositeObject> > objectLib_old = objectLib;
     objectLib.clear();
 
     //clear the listeners...
     for(int i = 0; i < objectLib_old.size(); i++){
-        objectLib_old.at(i)->removeListener(this);
+        objectLib_old[i]->removeListener(me_eventListener);
     }
 
     amount_objects = 0;
@@ -295,78 +302,78 @@ void OctTreeFast::subdivide(){
 
 
 
-    tree_northwest_high = new OctTreeFast(this->subdivision_level+1,
+    tree_northwest_high = SP<OctTreeFast>(new OctTreeFast(this->subdivision_level+1,
                                           Vector3(this->pos.x()-new_node_pos,
                                                   this->pos.y()+new_node_pos,
                                                   this->pos.z()+new_node_pos),
                                           new_node_size,
                                           this->max_amount_objects,
-                                          this->tree_root);
+                                          this->tree_root));
     //amount_objects += tree_northwest_high->addModels(old_lib);
 
-    tree_northeast_high = new OctTreeFast(this->subdivision_level+1,
+    tree_northeast_high = SP<OctTreeFast>(new OctTreeFast(this->subdivision_level+1,
                                           Vector3(this->pos.x()+new_node_pos,
                                                   this->pos.y()+new_node_pos,
                                                   this->pos.z()+new_node_pos),
                                           new_node_size,
                                           this->max_amount_objects,
-                                          this->tree_root);
+                                          this->tree_root));
     //amount_objects += tree_northeast_high->addModels(old_lib);
 
-    tree_southwest_high = new OctTreeFast(this->subdivision_level+1,
+    tree_southwest_high = SP<OctTreeFast>(new OctTreeFast(this->subdivision_level+1,
                                           Vector3(this->pos.x()-new_node_pos,
                                                   this->pos.y()-new_node_pos,
                                                   this->pos.z()+new_node_pos),
                                           new_node_size,
                                           this->max_amount_objects,
-                                          this->tree_root);
+                                          this->tree_root));
     //amount_objects += tree_southwest_high->addModels(old_lib);
 
-    tree_southeast_high = new OctTreeFast(this->subdivision_level+1,
+    tree_southeast_high = SP<OctTreeFast>(new OctTreeFast(this->subdivision_level+1,
                                           Vector3(this->pos.x()+new_node_pos,
                                                   this->pos.y()-new_node_pos,
                                                   this->pos.z()+new_node_pos),
                                           new_node_size,
                                           this->max_amount_objects,
-                                          this->tree_root);
+                                          this->tree_root));
     //amount_objects += tree_southeast_high->addModels(old_lib);
 
 
 
-    tree_northwest_low = new OctTreeFast(this->subdivision_level+1,
+    tree_northwest_low = SP<OctTreeFast>(new OctTreeFast(this->subdivision_level+1,
                                          Vector3(this->pos.x()-new_node_pos,
                                                  this->pos.y()+new_node_pos,
                                                  this->pos.z()-new_node_pos),
                                          new_node_size,
                                          this->max_amount_objects,
-                                         this->tree_root);
+                                         this->tree_root));
     //amount_objects += tree_northwest_low->addModels(old_lib);
 
-    tree_northeast_low = new OctTreeFast(this->subdivision_level+1,
+    tree_northeast_low = SP<OctTreeFast>(new OctTreeFast(this->subdivision_level+1,
                                          Vector3(this->pos.x()+new_node_pos,
                                                  this->pos.y()+new_node_pos,
                                                  this->pos.z()-new_node_pos),
                                          new_node_size,
                                          this->max_amount_objects,
-                                         this->tree_root);
+                                         this->tree_root));
     //amount_objects += tree_northeast_low->addModels(old_lib);
 
-    tree_southwest_low = new OctTreeFast(this->subdivision_level+1,
+    tree_southwest_low = SP<OctTreeFast>(new OctTreeFast(this->subdivision_level+1,
                                          Vector3(this->pos.x()-new_node_pos,
                                                  this->pos.y()-new_node_pos,
                                                  this->pos.z()-new_node_pos),
                                          new_node_size,
                                          this->max_amount_objects,
-                                         this->tree_root);
+                                         this->tree_root));
     //amount_objects += tree_southwest_low->addModels(old_lib);
 
-    tree_southeast_low = new OctTreeFast(this->subdivision_level+1,
+    tree_southeast_low = SP<OctTreeFast>(new OctTreeFast(this->subdivision_level+1,
                                          Vector3(this->pos.x()+new_node_pos,
                                                  this->pos.y()-new_node_pos,
                                                  this->pos.z()-new_node_pos),
                                          new_node_size,
                                          this->max_amount_objects,
-                                         this->tree_root);
+                                         this->tree_root));
     //amount_objects += tree_southeast_low->addModels(old_lib);
 
     this->is_subdivided = true;
@@ -391,16 +398,16 @@ void OctTreeFast::eventRecieved(Event e){
 
         debugMessage("OctTreeFast: removing object and inserting it into root node...");
 
-        CompositeObject * obj = e.compositeObject->getCompositeObject();
+        SP<CompositeObject> obj = e.compositeObject->getCompositeObject();
         if(fits(obj) == false){
             removeCompositeObject(obj);
-            obj->removeListener(this);
+            obj->removeListener(me_eventListener);
             tree_root->addCompositeObject(obj);
         }
         return;
     }
     if(e.type == Event::EventCompositeObjectRemoved || e.type == Event::EventCompositeObjectDeleted){
-        CompositeObject * obj = e.compositeObject->getCompositeObject();
+        SP<CompositeObject> obj = e.compositeObject->getCompositeObject();
         removeCompositeObject(obj);
         return;
     }

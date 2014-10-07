@@ -11,6 +11,8 @@
 #include "Event/Events/eventmodel.h"
 #include "Event/Events/eventcompositeobject.h"
 
+#include "Object/SmartPointer/smartpointer.h"
+
 class Event : public Object
 {
 public:
@@ -63,16 +65,14 @@ public:
     //The event type.
     EventType type;
 
-    //TODO:
-    //this will be replaced by smart pointers soon...
-    union {
-        EventDebugger   *debugger;
-        EventStreamer   *streamer;  //streamer is same as model and will be removed one day...
-        EventWindow     *window;
-        EventModel      *model;
-        EventCompositeObject * compositeObject;
-        //more to follow...
-    };
+
+    SP<EventDebugger>           debugger;
+    SP<EventStreamer>           streamer;  //streamer is same as model and will be removed one day...
+    SP<EventWindow>             window;
+    SP<EventModel>              model;
+    SP<EventCompositeObject>    compositeObject;
+    //more to follow...
+
 
 
 };

@@ -19,9 +19,7 @@ Renderer::Renderer() :
     thirdTextureIndex = 8;
     fourthTextureIndex = 16;
 
-    mdllib = 0;
-    lightlib = 0;
-    objectworld = 0;
+    objectworld = SP<ObjectWorld>();
 
     meshPerFrameCount = 0;
     trianglesPerFrameCount = 0;
@@ -30,7 +28,7 @@ Renderer::Renderer() :
 
 void Renderer::initialize(){
     debugMessage("initialising renderer ...");
-    mdllib = 0;
+
 
     //default render mode
     renderMode = PolygonModeStandard;
@@ -163,31 +161,24 @@ Renderer::~Renderer(){
     //destroyVBO();
 }
 
-void Renderer::setModelLibrary(ModelLibrary * mdllib){
-    this->mdllib = mdllib;
-}
 
-void Renderer::setLightLibrary(LightLibrary * lightlib){
-    this->lightlib = lightlib;
-}
-
-void Renderer::setObjectWorld(ObjectWorld * objectworld){
+void Renderer::setObjectWorld(SP<ObjectWorld> objectworld){
     this->objectworld = objectworld;
 }
 
-void Renderer::setCamera(Camera * cam){
+void Renderer::setCamera(SP<Camera> cam){
     this->cam = cam;
 }
 
-void Renderer::setWindow(Window * win){
+void Renderer::setWindow(SP<Window> win){
     this->win = win;
     this->win->addListener(this);
 }
 
-bool Renderer::meshInFrustum(Frustum f, Model * mdl, Mesh * mesh, Matrix4x4 &pvm_mat){
+bool Renderer::meshInFrustum(SP<Frustum> f, SP<Model> mdl, SP<Mesh> mesh, Matrix4x4 &pvm_mat){
     //get the spherical bounds
 
-    Positation * posi = mdl->getParentCompositeObject()->getPositation();
+    SP<Positation> posi = mdl->getParentCompositeObject()->getPositation();
 
     Vector3 mdl_pos = posi->getPosition();
 
@@ -206,7 +197,7 @@ bool Renderer::meshInFrustum(Frustum f, Model * mdl, Mesh * mesh, Matrix4x4 &pvm
         max_rad = posi->get_scale()[2]*rad;
     }
 
-    int type = f.sphereInFrustum(mdl_pos,max_rad);
+    int type = f->sphereInFrustum(mdl_pos,max_rad);
 
     //int type = f.pointInFrustum(spherical_bound_pos_model_view_space);
 
@@ -240,9 +231,9 @@ void Renderer::render_v2(){
         double near_ = cam->getZNEAR();
         double far_ = cam->getZFAR();
 
-        Frustum frustum;
+        SP<Frustum> frustum(new Frustum());
         //setting up the clipping points/planes...
-        frustum.setPoints(cam->getPosition() - touch_to_space(0,0)*near_,
+        frustum->setPoints(cam->getPosition() - touch_to_space(0,0)*near_,
                           cam->getPosition() - touch_to_space(win->getWindowWidth(),0)*near_,
                           cam->getPosition() - touch_to_space(0,win->getWindowHeight())*near_,
                           cam->getPosition() - touch_to_space(win->getWindowWidth(),win->getWindowHeight())*near_,
@@ -252,15 +243,16 @@ void Renderer::render_v2(){
                           cam->getPosition() - touch_to_space(win->getWindowWidth(),win->getWindowHeight())*far_);
 
 
+
         //setup the octtree stuff so we cen loop trough the octtree nodes...
-        OctTree * ot = objectworld->getOctTree();
-        OctTreeFast * ot_dynamic_models = objectworld->getOctTreeFastDynamicModels();
-        OctTreeFast * ot_dynamic_lights = objectworld->getOctTreeFastDynamicLights();
+        SP<OctTree> ot = objectworld->getOctTree();
+        SP<OctTreeFast> ot_dynamic_models = objectworld->getOctTreeFastDynamicModels();
+        SP<OctTreeFast> ot_dynamic_lights = objectworld->getOctTreeFastDynamicLights();
 
 
-        QList<OctTree*> ot_nodes = ot->getNodesInFrustum(&frustum);
-        QList<OctTreeFast*> ot_dynamic_models_nodes = ot_dynamic_models->getNodesInFrustum(&frustum);
-        QList<OctTreeFast*> ot_dynamic_lights_nodes = ot_dynamic_lights->getNodesInFrustum(&frustum);
+        QList<SP<OctTree> > ot_nodes = ot->getNodesInFrustum(frustum);
+        QList<SP<OctTreeFast> > ot_dynamic_models_nodes = ot_dynamic_models->getNodesInFrustum(frustum);
+        QList<SP<OctTreeFast> > ot_dynamic_lights_nodes = ot_dynamic_lights->getNodesInFrustum(frustum);
 
         //debugMessage("Nodes: " + QString::number(ot_nodes.size()));
 
@@ -295,10 +287,10 @@ void Renderer::render_v2(){
                 //render one node...
 
                 //copy the lists so we can itterate through them
-                QList<QList<CompositeObject*> > compositeobject_mesh_list = ot_nodes.at(i)->getModelLibrary()->getCompositeobjectMeshList();
-                QList<QList<Mesh*> > mesh_model_list = ot_nodes.at(i)->getModelLibrary()->getMeshModelList();
-                QList<QList<Model*> > model_mesh_list = ot_nodes.at(i)->getModelLibrary()->getModelMeshList();
-                QList<Material*> material_mesh_list = ot_nodes.at(i)->getModelLibrary()->getMaterialMeshList();
+                QList<QList<SP<CompositeObject> > > compositeobject_mesh_list = ot_nodes[i]->getModelLibrary()->getCompositeobjectMeshList();
+                QList<QList<SP<Mesh> > > mesh_model_list = ot_nodes[i]->getModelLibrary()->getMeshModelList();
+                QList<QList<SP<Model> > > model_mesh_list = ot_nodes[i]->getModelLibrary()->getModelMeshList();
+                QList<SP<Material> > material_mesh_list = ot_nodes[i]->getModelLibrary()->getMaterialMeshList();
 
                 //loop trough the material_mesh_list
                 for(int index = 0; index < material_mesh_list.size(); index++){
@@ -325,7 +317,7 @@ void Renderer::render_v2(){
                         ///////
 
                         if(mesh_model_list[index].size()>0){
-                            Mesh * mesh = mesh_model_list[index].at(0);
+                            SP<Mesh> mesh = mesh_model_list[index].at(0);
 
                             //VAO
 
@@ -351,9 +343,13 @@ void Renderer::render_v2(){
                             for(int mdl_index = 0; mdl_index < model_mesh_list[index].size(); mdl_index++){
 
                                 //calculate if we need to draw the model
-                                Model * mdl =  model_mesh_list[index].at(mdl_index);
+                                SP<Model> mdl =  model_mesh_list[index].at(mdl_index);
 
-                                Positation * posi = compositeobject_mesh_list[index].at(mdl_index)->getPositation();
+                                if(!mdl->isReadyToRender()){
+                                    qDebug("mdl not ready to render...");
+                                }
+
+                                SP<Positation> posi = compositeobject_mesh_list[index][mdl_index]->getPositation();
 
                                 m_m = posi->get_model_matrix();
                                 vm_m = v_m * m_m;
@@ -400,19 +396,19 @@ void Renderer::render_v2(){
                 //render one node...
 
                 //copy the lists so we can itterate through them
-                QList<CompositeObject*> compositeobject_list = ot_dynamic_models_nodes.at(i)->getCompositeObjects();
+                QList<SP<CompositeObject> > compositeobject_list = ot_dynamic_models_nodes[i]->getCompositeObjects();
 
                 //loop trough the material_mesh_list
                 for(int index = 0; index < compositeobject_list.size(); index++){
 
-                    CompositeObject * compobj = compositeobject_list.at(index);
-                    Positation * posi = compobj->getPositation();
-                    QList<Mesh*> mesh_list = compobj->getModel()->get_meshs();
+                    SP<CompositeObject> compobj = compositeobject_list.at(index);
+                    SP<Positation> posi = compobj->getPositation();
+                    QList<SP<Mesh> > mesh_list = compobj->getModel()->get_meshs();
 
                     //loop trough mesh...
                     for(int meshs = 0; meshs < mesh_list.size(); meshs++){
 
-                        Mesh * mesh = mesh_list[meshs];
+                        SP<Mesh> mesh = mesh_list[meshs];
 
                         //now set up the material and mesh
 
@@ -539,20 +535,20 @@ void Renderer::render_v2(){
                 //render one node...
 
                 //copy the lists so we can itterate through them
-                QList<CompositeObject*> compositeobject_list = ot_dynamic_lights_nodes.at(i)->getCompositeObjects();
+                QList<SP<CompositeObject> > compositeobject_list = ot_dynamic_lights_nodes[i]->getCompositeObjects();
 
                 //loop trough the material_mesh_list
                 for(int index = 0; index < compositeobject_list.size(); index++){
 
-                    CompositeObject * compobj = compositeobject_list.at(index);
-                    Positation * posi = compobj->getPositation();
-                    QList<Mesh*> mesh_list = compobj->getModel()->get_meshs();
-                    Light * light = compobj->getLight();
+                    SP<CompositeObject> compobj = compositeobject_list.at(index);
+                    SP<Positation> posi = compobj->getPositation();
+                    QList<SP<Mesh> > mesh_list = compobj->getModel()->get_meshs();
+                    SP<Light> light = compobj->getLight();
 
                     //loop trough mesh...
                     for(int meshs = 0; meshs < mesh_list.size(); meshs++){
 
-                        Mesh * mesh = mesh_list[meshs];
+                        SP<Mesh> mesh = mesh_list[meshs];
 
                         //now set up the material and mesh
 
@@ -770,7 +766,6 @@ void Renderer::render_v2(){
 
 
 
-
         //disable stuff so the gl_VertexID var works in GLSL
         /*
             glBindVertexArray(0);
@@ -788,7 +783,6 @@ void Renderer::render_v2(){
 
 
         //glBindFramebuffer (GL_FRAMEBUFFER, 0);
-
 
 
 
@@ -867,9 +861,9 @@ void Renderer::render_v2(){
                      -1.0,
                      0.5); // ambient light direction
 
-        glUniform3f (color_loc_directionalambientpass,  0.150,
-                     0.150,
-                     0.148); // ambient color
+        glUniform3f (color_loc_directionalambientpass,  0.230,
+                     0.210,
+                     0.200); // ambient color
 
 
         for (int f = 0; f < 4; f++) {
@@ -900,6 +894,7 @@ void Renderer::render_v2(){
         glEnable (GL_DEPTH_TEST);
         glDepthMask (GL_TRUE);
         glDisable (GL_BLEND);
+
 
     }//end of PolygonModeStandard
 
@@ -1673,7 +1668,7 @@ void Renderer::render(){
 
 */
 
-void Renderer::render(Model * m){
+void Renderer::render(SP<Model> m){
 
     /*
     if(m->isReadyToRender()){
@@ -1903,8 +1898,10 @@ bool Renderer::createShaders(){
     GLenum ErrorCheckValue = glGetError();
 
     //vertex shader
-    Shader dr_vertex_firstpass(QApplication::applicationDirPath() +
-                               "/shaders/deferred_renderer_first_pass.vsh",
+
+    QString dr_vertex_firstpass_path(QApplication::applicationDirPath() +
+                                     "/shaders/deferred_renderer_first_pass.vsh");
+    Shader dr_vertex_firstpass(dr_vertex_firstpass_path,
                                GL_VERTEX_SHADER);
     if(dr_vertex_firstpass.isCreated()){
         DR_FirstPassVertexShaderId = dr_vertex_firstpass.getShaderId();
@@ -1912,7 +1909,9 @@ bool Renderer::createShaders(){
     }
     else{
         debugMessage("Deferred Renderer first pass vertex shader compiled failed!");
+        debugMessage("path:  " + dr_vertex_firstpass_path);
         debugMessage(dr_vertex_firstpass.getError());
+        debugMessage(QString(dr_vertex_firstpass.getShaderSource()));
         return false;
     }
 

@@ -10,7 +10,6 @@
 #include "Graphics/Camera/camera.h"
 #include "Graphics/Window/window.h"
 #include "Graphics/Model/modellibrary.h"
-#include "Graphics/Model/lightlibrary.h"
 #include "Graphics/Shader/shader.h"
 
 //for frustum culling
@@ -19,6 +18,8 @@
 
 //for appdir
 #include <QApplication>
+
+#include "Object/SmartPointer/smartpointer.h"
 
 class Light;
 class Model;
@@ -44,13 +45,9 @@ public:
 
     void initialize();
 
-    //next 2 will be removed ...
-    void setModelLibrary(ModelLibrary * mdllib);
-    void setLightLibrary(LightLibrary * lightlib);
+    void setObjectWorld(SP<ObjectWorld> objectworld);
 
-    void setObjectWorld(ObjectWorld * objectworld);
-
-    bool meshInFrustum(Frustum f, Model * mdl, Mesh * mesh, Matrix4x4 &pvm_mat);
+    bool meshInFrustum(SP<Frustum> f, SP<Model> mdl, SP<Mesh> mesh, Matrix4x4 &pvm_mat);
 
     //render the objectWorld
     void render_v2();
@@ -59,10 +56,10 @@ public:
     //renders the set ModelLibrary and LightLibrary
     //void render();
     //render a model (inefficient compaired to a modellib rendering)
-    void render(Model * m);
+    void render(SP<Model> m);
 
-    void setCamera(Camera * cam);
-    void setWindow(Window * win);
+    void setCamera(SP<Camera> cam);
+    void setWindow(SP<Window> win);
 
     void setPolygonMode(int polygonMode);
 
@@ -205,21 +202,15 @@ private:
     GLuint rb;
 
 
-    //ModelLibrary
-    ModelLibrary * mdllib;
-
-    //LightLibrary
-    LightLibrary * lightlib;
-
 
 
     //the world all object live in...
-    ObjectWorld * objectworld;
+    SP<ObjectWorld> objectworld;
 
 
     //camera and window
-    Camera * cam;
-    Window * win;
+    SP<Camera> cam;
+    SP<Window> win;
 
 
 

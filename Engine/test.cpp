@@ -43,9 +43,12 @@ Test::Test() :
     qDebug("Test constructed...");
 
     //key J, is the plane created yet ?
-    level_loaded = false;
+    level_loaded = 0;
 
-    test_amount = 1000;
+    test_amount = 10;
+
+
+    lvl_loaded = false;
 
     //Octree test
 
@@ -99,13 +102,13 @@ void Test::keyFunction(){
 
         int count = 1000;
         for(int i = 0; i < count; i++){
-            Positation * posi = new Positation();
+            SP<Positation> posi(new Positation());
             posi->set_position((double)((rand() & 1000)-500),
                               (double)((rand() & 1000)-500),
                               (double)((rand() & 1000)-500));
 
             posi->set_scale(3.0,3.0,3.0);
-            CompositeObject * coTest = loadModelObject("tree", getApplicationDir() + "//tree.obj", posi);
+            SP<CompositeObject> coTest = loadModelObject("tree", getApplicationDir() + "//tree.obj", posi);
         }
         /*
         model_library->setModelsPerThread(1);
@@ -144,22 +147,22 @@ void Test::keyFunction(){
     if(k->isPressed(50))
     {
 
-        int count = 10;
+        int count = 30;
         for(int i = 0; i < count; i++){
-            Positation * posi = new Positation();
-            posi->set_position((double)((rand() & 1000)-500),
-                              (double)((rand() & 1000)-500),
-                              (double)((rand() & 1000)-500));
+            SP<Positation> posi(new Positation());
+            posi->set_position((double)((rand() & 2000)-1000),
+                              (double)((rand() & 2000)-1000),
+                              30.0f);
 
             posi->set_scale(51.12f,51.12f,51.12f);
-            CompositeObject * coTest = loadLightObject("light");
+            SP<CompositeObject> coTest = loadLightObject("light");
             coTest->setPositation(posi);
 
 
-            Light * l= coTest->getLight();
-            double red = ((double)(rand() & 800)+200)* 0.001;
-            double green = ((double)(rand() & 800)+200)* 0.001;
-            double blue = ((double)(rand() & 800)+200)* 0.001;
+            SP<Light> l= coTest->getLight();
+            double red = ((double)(rand() & 200))* 0.001;
+            double green = ((double)(rand() & 200))* 0.001;
+            double blue = ((double)(rand() & 200))* 0.001;
 
             l->setDiffuseColor(red,
                                green,
@@ -173,19 +176,20 @@ void Test::keyFunction(){
     //J
     if(k->isPressed(36))
     {
-        if(!level_loaded){
+        if(level_loaded < 5){
             for(int i = 0; i < test_amount; i++){
                 compositeobjecttest.append(loadModelObject("betty",
                                                            getApplicationDir() +
                                                            "//betty.obj"));
             }
-            level_loaded = true;
+            level_loaded += 1;
         }
         else{
-            for(int i = 0; i < test_amount; i++){
-                compositeobjecttest.at(i)->getPositation()->set_position((double)((rand() & 1000)-500),
-                                                                         (double)((rand() & 1000)-500),
-                                                                         (double)((rand() & 1000)-500));
+            for(int i = 0; i < compositeobjecttest.size(); i++){
+                SP<CompositeObject> coTest = compositeobjecttest.at(i);
+                coTest->getPositation()->set_position(  (double)((rand() & 1000)-500),
+                                                        (double)((rand() & 1000)-500),
+                                                        (double)((rand() & 1000)-500));
             }
         }
     }
@@ -193,15 +197,15 @@ void Test::keyFunction(){
     //K
     if(k->isPressed(37))
     {
-        int count = 100;
-        for(int i = 0; i < count; i++){
-            Positation * posi = new Positation();
-            posi->set_position((double)((rand() & 1000)-500),
-                              (double)((rand() & 1000)-500),
-                              (double)((rand() & 1000)-500));
+        if(!lvl_loaded){
+            SP<Positation> posi(new Positation());
+            posi->set_position(0.0f, 0.0f, 0.0f);
 
-            posi->set_scale(3.0,3.0,3.0);
-            CompositeObject * coTest = loadModelObject("box", getApplicationDir() + "//box.obj", posi);
+            posi->set_scale(1.0,1.0,1.0);
+            posi->set_rotation(90.0f,1.0f,0.0f,0.0f);
+            SP<CompositeObject> coTest = loadModelObject("city", getApplicationDir() + "//Paris//paris2.obj", posi);
+
+            lvl_loaded = true;
         }
         /*
         model_library->setModelsPerThread(1);

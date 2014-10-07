@@ -17,13 +17,13 @@ EventTransmitter::EventTransmitter(int reserved_space) :
     listeners.reserve(reserved_space);
 }
 
-void EventTransmitter::addListener(EventListener * el){
+void EventTransmitter::addListener(SP<EventListener> el){
     if(!containsListener(el)){
         listeners.push_back(el);
     }
 }
 
-bool EventTransmitter::containsListener(EventListener * el){
+bool EventTransmitter::containsListener(SP<EventListener> el){
 
     //contains    needs algorithm, ~ o(n)
     /*
@@ -45,12 +45,12 @@ bool EventTransmitter::containsListener(EventListener * el){
     return false;
 }
 
-void EventTransmitter::removeListener(EventListener * el){
+void EventTransmitter::removeListener(SP<EventListener> el){
 
     unsigned int i;
     for(i=0; i< listeners.size(); i++){
         if(listeners[i] == el){
-            std::vector<EventListener*>::iterator it = listeners.begin() + i;
+            std::vector<SP<EventListener> >::iterator it = listeners.begin() + i;
             listeners.erase(it);
             break;
         }
@@ -58,11 +58,11 @@ void EventTransmitter::removeListener(EventListener * el){
 }
 
 
-std::vector<EventListener*> EventTransmitter::getAllListeners() const{
+std::vector<SP<EventListener> > EventTransmitter::getAllListeners() const{
     return listeners;
 }
 
-void EventTransmitter::setListeners(std::vector<EventListener*> listeners){
+void EventTransmitter::setListeners(std::vector<SP<EventListener> > listeners){
     this->listeners = listeners;
 }
 
@@ -78,6 +78,6 @@ void EventTransmitter::transmit(Event e){
 void EventTransmitter::debugMessage(QString message){
     Event e;
     e.type = Event::EventDebuggerMessage;
-    e.debugger = new EventDebugger(message);
+    e.debugger = SP<EventDebugger>(new EventDebugger(message));
     this->transmit(e);
 }

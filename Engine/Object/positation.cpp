@@ -10,6 +10,7 @@ Positation::Positation() :
     rot = Vector3(0,0,0);
     scl = Vector3(1,1,1);
     size = 0.0;
+    size_scaled = 0.0;
     matrix_changed = true;
 }
 
@@ -91,8 +92,39 @@ Vector3 Positation::get_scale(){
     return scl;
 }
 
+void Positation::set_size(double size){
+    this->size = size;
+    double max_scale = 0.0;
+    double tmp = 0.0;
+
+    tmp = abs(scl[0]) * size;
+    if(tmp > max_scale){
+        max_scale = tmp;
+    }
+
+    tmp = abs(scl[1]) * size;
+    if(tmp > max_scale){
+        max_scale = tmp;
+    }
+
+    tmp = abs(scl[2]) * size;
+    if(tmp > max_scale){
+        max_scale = tmp;
+    }
+
+    size_scaled = max_scale;
+}
+
 double Positation::get_size(){
     return size;
+}
+
+void Positation::set_size_scaled(double size_scaled){
+    this->size_scaled = size_scaled;
+}
+
+double Positation::get_size_scaled(){
+    return size_scaled;
 }
 
 
@@ -153,6 +185,6 @@ void Positation::sendMovedEvent(){
 void Positation::debugMessage(QString message){
     Event e;
     e.type = Event::EventDebuggerMessage;
-    e.debugger = new EventDebugger(message);
+    e.debugger = SP<EventDebugger> (new EventDebugger(message));
     this->transmit(e);
 }

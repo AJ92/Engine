@@ -7,6 +7,8 @@
 
 #include <QList>
 
+#include "Object/SmartPointer/smartpointer.h"
+
 
 class Mesh;
 class Material;
@@ -22,6 +24,8 @@ public:
     //construct empty Model
     Model();
 
+    ~Model();
+
     //override
     void set_data(const Model &mdl);
     void instance_from(const Model &mdl);
@@ -29,17 +33,19 @@ public:
     void set_path(QString path);
     QString get_path() const;
 
-    void add_mesh(Mesh* mesh);
+    void add_mesh(SP<Mesh> mesh);
 
-    QList<Mesh*> get_meshs();
+    QList<SP<Mesh> > get_meshs();
 
     void loadGLdata();
     bool isReadyToRender();
 
     bool equalData(const Model &mdl) const;
 
-    void setParentCompositeObject(CompositeObject * co);
-    CompositeObject * getParentCompositeObject();
+    void setParentCompositeObject(SP<CompositeObject> co);
+    SP<CompositeObject> getParentCompositeObject();
+
+    double get_size();
 
     //override + overload bam
     bool equal(const Model &mdl) const;
@@ -51,11 +57,16 @@ private:
 
     QString path;
 
-    QList<Mesh*> meshs;
+    QList<SP<Mesh> > meshs;
+
+    double max(double a, double b);
+    void recalculate_size();
+    //spherical bounding sphere
+    double size;
 
     //a pointer to its compositeObject if it has one..
     //used by the renderer to get to the location data...
-    CompositeObject * parent_co;
+    SP<CompositeObject> parent_co;
 };
 
 #endif // MODEL_H

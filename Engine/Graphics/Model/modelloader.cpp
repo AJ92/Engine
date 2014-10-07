@@ -2,13 +2,13 @@
 
 #include "Event/event.h"
 
-ModelLoader::ModelLoader(ThreadAccountant * ta) :
+ModelLoader::ModelLoader(SP<ThreadAccountant> ta) :
     EventListener(),
     EventTransmitter(),
     ta(ta)
 {
     //set max Threads
-    streamer = new Streamer(ta);
+    streamer = SP<Streamer>(new Streamer(ta));
 }
 
 void ModelLoader::initialize(){
@@ -22,13 +22,16 @@ void ModelLoader::initialize(){
 }
 
 //public
-QList<Model *> ModelLoader::getModels() const{
+QList<SP<Model> > ModelLoader::getModels() const{
     return all_models_list;
 }
 
-void ModelLoader::loadModel(Model * m){
+void ModelLoader::loadModel(SP<Model> m){
     //compair the paths (has this the same model data? instance it!)
-    Model * instance_from = containsModelData(m);
+
+
+
+    SP<Model> instance_from = containsModelData(m);
     if(instance_from != 0){
         //we found one, instance it!
         //debugMessage("instancing...");
@@ -36,6 +39,14 @@ void ModelLoader::loadModel(Model * m){
         if(m->isReadyToRender()){
             //if the model was already loaded from the disk sort it in
             addModel(m);
+
+
+            //transmit an event so the composite object knows that it's model is loaded!
+            Event e;
+            e.type = Event::EventModelLoaded;
+            e.streamer = SP<EventStreamer>(new EventStreamer(m));
+            m->transmit(e);
+
         }
         else{
             //add it to the instances_to_load_list so it get's sorted in as soon as it's loaded
@@ -71,21 +82,21 @@ void ModelLoader::debugModelData(){
 
 
 //add the model to the model list (contains also instances)
-void ModelLoader::addModel(Model * mdl){
-    if(!containsModel(mdl)){
+void ModelLoader::addModel(SP<Model> mdl){
+    if(containsModel(mdl) != 0){
         all_models_list.push_back(mdl);
     }
 }
 
 //add the model to the unique model list (does not contain instances)
-void ModelLoader::addModelUnique(Model * mdl){
+void ModelLoader::addModelUnique(SP<Model> mdl){
     //do not check if there are instances, cause we know there is a base we instanced from!
     unique_models_list.push_back(mdl);
     unique_model_paths_list.push_back(mdl->get_path());
-    instances_to_load_list.append(QList<Model*>());
+    instances_to_load_list.append(QList<SP<Model> >());
 }
 
-void ModelLoader::addModelInstanceToLoad(Model * mdl){
+void ModelLoader::addModelInstanceToLoad(SP<Model> mdl){
     for(int i = 0; i < unique_model_paths_list.size(); i++){
         //get the right index to sort it in
         if(unique_model_paths_list.at(i).compare(mdl->get_path()) == 0){
@@ -97,23 +108,23 @@ void ModelLoader::addModelInstanceToLoad(Model * mdl){
                  mdl->get_path());
 }
 
-void ModelLoader::updateInstances(Model * mdl){
+void ModelLoader::updateInstances(SP<Model> mdl){
     for(int i = 0; i < unique_model_paths_list.size(); i++){
         //get the right index to sort it in
-        if(unique_model_paths_list.at(i).compare(mdl->get_path()) == 0){
+        if(unique_model_paths_list[i].compare(mdl->get_path()) == 0){
             //update all instances and sort them in correctly to render
             for(int j = 0; j < instances_to_load_list.at(i).size(); j++){
-                Model * m = instances_to_load_list.at(i).at(j);
+                SP<Model> m = instances_to_load_list.at(i).at(j);
                 m->instance_from(*mdl);
-
-                //not needed anymore ...
-                /*
-                if(m->getParentCompositeObject() == 0){
-                    qDebug("[WARNING] ModelLoader::updateInstances(Model * mdl) : no CompositeObject parent reference in model...");
-                }
-                */
-
                 addModel(m);
+
+
+                //give the compositeobject a notification...
+                //the model is loaded...
+                Event e;
+                e.type = Event::EventModelLoaded;
+                e.streamer = SP<EventStreamer>(new EventStreamer(m));
+                m->transmit(e);
             }
             instances_to_load_list[i].clear();
         }
@@ -122,33 +133,33 @@ void ModelLoader::updateInstances(Model * mdl){
 
 
 
-Model * ModelLoader::containsModelData(Model * mdl){
-    QList<Model *>::iterator i;
+SP<Model> ModelLoader::containsModelData(SP<Model> mdl){
+    QList<SP<Model> >::iterator i;
     for (i = unique_models_list.begin(); i != unique_models_list.end(); ++i){
-        Model * m = *i;
+        SP<Model> m = *i;
         if((*m).equalData(*mdl)){
             return m;
         }
     }
-    return 0;
+    return SP<Model>();
 }
 
-Model * ModelLoader::containsModel(Model * mdl){
-    QList<Model *>::iterator i;
+SP<Model> ModelLoader::containsModel(SP<Model> mdl){
+    QList<SP<Model> >::iterator i;
     for (i = all_models_list.begin(); i != all_models_list.end(); ++i){
-        Model * m = *i;
+        SP<Model> m = *i;
         if(*m == *mdl){
             return m;
         }
     }
-    return 0;
+    return SP<Model>();
 }
 
-bool ModelLoader::removeModel(Model * mdl){
-    QList<Model *>::iterator i;
+bool ModelLoader::removeModel(SP<Model> mdl){
+    QList<SP<Model> >::iterator i;
     int j = 0;
     for (i = all_models_list.begin(); i != all_models_list.end(); ++i){
-        Model * m = *i;
+        SP<Model> m = *i;
         if(*m == *mdl){
             all_models_list.removeAt(j);
             return true;

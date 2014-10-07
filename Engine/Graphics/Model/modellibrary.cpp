@@ -7,13 +7,13 @@
 #include "Event/event.h"
 #include "Object/compositeobject.h"
 
-ModelLibrary::ModelLibrary(ThreadAccountant * ta) :
+ModelLibrary::ModelLibrary(SP<ThreadAccountant> ta) :
     EventListener(),
     EventTransmitter(),
     ta(ta)
 {
     //set max Threads
-    streamer = new Streamer(ta);
+    streamer = SP<Streamer>(new Streamer(ta));
 }
 
 void ModelLibrary::initialize(){
@@ -27,16 +27,16 @@ void ModelLibrary::initialize(){
 }
 
 //public
-QList<Model *> ModelLibrary::getModels() const{
+QList<SP<Model> > ModelLibrary::getModels() const{
     return model_list;
 }
 
-Model* ModelLibrary::loadModel(QString path){
-    Model * m = new Model();
+SP<Model> ModelLibrary::loadModel(QString path){
+    SP<Model> m(new Model());
     m->set_path(path);
 
     //compair the paths (has this the same model data? instance it!)
-    Model * instance_from = containsModelData(m);
+    SP<Model> instance_from = containsModelData(m);
     if(instance_from != 0){
         //we found one, instance it!
         debugMessage("instancing...");
@@ -68,15 +68,15 @@ void ModelLibrary::setModelsPerThread(int model_count){
 }
 
 
-QList<QList<Mesh*> > ModelLibrary::getMeshModelList(){
+QList<QList<SP<Mesh> > > ModelLibrary::getMeshModelList(){
     return mesh_model_list;
 }
 
-QList<QList<Model*> > ModelLibrary::getModelMeshList(){
+QList<QList<SP<Model> > > ModelLibrary::getModelMeshList(){
     return model_mesh_list;
 }
 
-QList<Material*> ModelLibrary::getMaterialMeshList(){
+QList<SP<Material> > ModelLibrary::getMaterialMeshList(){
     return material_mesh_list;
 }
 
@@ -87,10 +87,10 @@ void ModelLibrary::debugModelData(){
         debugMessage("Mtl: " + material_mesh_list[i]->get_name() +
                      QString::number(material_mesh_list[i]->id()));
         for(int j = 0; j < mesh_model_list[i].size(); j++){
-            debugMessage(" - Mesh: " + mesh_model_list[i].at(j)->get_name() +
-                         QString::number(mesh_model_list[i].at(j)->id()) +
-                         "   " + model_mesh_list[i].at(j)->get_path() +
-                         QString::number(model_mesh_list[i].at(j)->id()));
+            debugMessage(" - Mesh: " + mesh_model_list[i][j]->get_name() +
+                         QString::number(mesh_model_list[i][j]->id()) +
+                         "   " + model_mesh_list[i][j]->get_path() +
+                         QString::number(model_mesh_list[i][j]->id()));
         }
     }
 }
@@ -99,22 +99,22 @@ void ModelLibrary::debugModelData(){
 
 //private
 //add the model to the model list (contains also instances)
-void ModelLibrary::addModel(Model * mdl){
-    if(!containsModel(mdl)){
+void ModelLibrary::addModel(SP<Model> mdl){
+    if(containsModel(mdl) != 0){
         model_list.push_back(mdl);
         addModelData(mdl);
     }
 }
 
 //add the model to the unique model list (does not contain instances)
-void ModelLibrary::addModelUnique(Model * mdl){
+void ModelLibrary::addModelUnique(SP<Model> mdl){
     //do not check if there are instances, cause we know there is a base we instanced from!
     unique_model_list.push_back(mdl);
     unique_model_path_list.push_back(mdl->get_path());
-    instances_to_load_list.append(QList<Model*>());
+    instances_to_load_list.append(QList<SP<Model> >());
 }
 
-void ModelLibrary::addModelInstanceToLoad(Model * mdl){
+void ModelLibrary::addModelInstanceToLoad(SP<Model> mdl){
     for(int i = 0; i < unique_model_path_list.size(); i++){
         //get the right index to sort it in
         if(unique_model_path_list.at(i).compare(mdl->get_path()) == 0){
@@ -128,18 +128,18 @@ void ModelLibrary::addModelInstanceToLoad(Model * mdl){
 
 
 //sort in the model data so we can skip several render setup calls...
-void ModelLibrary::addModelData(Model * mdl){
-    QList<Mesh*> mdl_meshs = mdl->get_meshs();
+void ModelLibrary::addModelData(SP<Model> mdl){
+    QList<SP<Mesh> > mdl_meshs = mdl->get_meshs();
 
-    QList<Mesh *>::iterator i;
+    QList<SP<Mesh> >::iterator i;
     for (i = mdl_meshs.begin(); i != mdl_meshs.end(); ++i){
-        Mesh * mesh = *i;
+        SP<Mesh> mesh = *i;
         //we have a mesh, let's check if we have it already sorted into our lists:
-        Material* mesh_mtl = mesh->get_material();
+        SP<Material> mesh_mtl = mesh->get_material();
         bool sort_in = false;
         int sort_in_index = -1;
         for(int j = 0; j < material_mesh_list.size(); j++){
-            if(mesh_mtl->equal(*material_mesh_list.at(j))){
+            if(mesh_mtl->equal(*material_mesh_list[j])){
                 //we have it already sorted in, just init the addition of the
                 //resources to the existing lists
                 sort_in_index = j;
@@ -154,8 +154,8 @@ void ModelLibrary::addModelData(Model * mdl){
         else{
             //model is not found in the lists, create a new entry
             material_mesh_list.append(mesh_mtl);
-            mesh_model_list.append(QList<Mesh*>());
-            model_mesh_list.append(QList<Model*>());
+            mesh_model_list.append(QList<SP<Mesh> >());
+            model_mesh_list.append(QList<SP<Model> >());
             int size_index = mesh_model_list.size()-1;
             mesh_model_list[size_index].append(mesh);
             model_mesh_list[size_index].append(mdl);
@@ -163,13 +163,13 @@ void ModelLibrary::addModelData(Model * mdl){
     }
 }
 
-void ModelLibrary::updateInstances(Model * mdl){
+void ModelLibrary::updateInstances(SP<Model> mdl){
     for(int i = 0; i < unique_model_path_list.size(); i++){
         //get the right index to sort it in
         if(unique_model_path_list.at(i).compare(mdl->get_path()) == 0){
             //update all instances and sort them in correctly to render
             for(int j = 0; j < instances_to_load_list.at(i).size(); j++){
-                Model * m = instances_to_load_list.at(i).at(j);
+                SP<Model> m = instances_to_load_list.at(i).at(j);
                 m->instance_from(*mdl);
                 addModel(m);
             }
@@ -178,10 +178,10 @@ void ModelLibrary::updateInstances(Model * mdl){
     }
 }
 
-Model * ModelLibrary::containsModelData(Model * mdl){
-    QList<Model *>::iterator i;
+SP<Model> ModelLibrary::containsModelData(SP<Model> mdl){
+    QList<SP<Model> >::iterator i;
     for (i = unique_model_list.begin(); i != unique_model_list.end(); ++i){
-        Model * m = *i;
+        SP<Model> m = *i;
         if((*m).equalData(*mdl)){
             return m;
         }
@@ -189,10 +189,10 @@ Model * ModelLibrary::containsModelData(Model * mdl){
     return 0;
 }
 
-Model * ModelLibrary::containsModel(Model * mdl){
-    QList<Model *>::iterator i;
+SP<Model> ModelLibrary::containsModel(SP<Model> mdl){
+    QList<SP<Model> >::iterator i;
     for (i = model_list.begin(); i != model_list.end(); ++i){
-        Model * m = *i;
+        SP<Model> m = *i;
         if(*m == *mdl){
             return m;
         }
@@ -200,11 +200,11 @@ Model * ModelLibrary::containsModel(Model * mdl){
     return 0;
 }
 
-bool ModelLibrary::removeModel(Model * mdl){
-    QList<Model *>::iterator i;
+bool ModelLibrary::removeModel(SP<Model> mdl){
+    QList<SP<Model> >::iterator i;
     int j = 0;
     for (i = model_list.begin(); i != model_list.end(); ++i){
-        Model * m = *i;
+        SP<Model> m = *i;
         if(*m == *mdl){
             model_list.removeAt(j);
             return true;
@@ -294,11 +294,11 @@ void ModelLibrary_v2::initialize(){
     debugMessage("modellibrary v2 initialized.");
 }
 
-QList<Model *> ModelLibrary_v2::getModels() const{
+QList<SP<Model> > ModelLibrary_v2::getModels() const{
     return model_list;
 }
 
-QList<CompositeObject*> ModelLibrary_v2::getCompositeObjects() const{
+QList<SP<CompositeObject> > ModelLibrary_v2::getCompositeObjects() const{
     return compositeobject_list;
 }
 
@@ -309,19 +309,19 @@ int ModelLibrary_v2::modelCount(){
 
 
 
-QList<QList<CompositeObject*> > ModelLibrary_v2::getCompositeobjectMeshList(){
+QList<QList<SP<CompositeObject> > > ModelLibrary_v2::getCompositeobjectMeshList(){
     return compositeobject_mesh_list;
 }
 
-QList<QList<Mesh*> > ModelLibrary_v2::getMeshModelList(){
+QList<QList<SP<Mesh> > > ModelLibrary_v2::getMeshModelList(){
     return mesh_model_list;
 }
 
-QList<QList<Model*> > ModelLibrary_v2::getModelMeshList(){
+QList<QList<SP<Model> > > ModelLibrary_v2::getModelMeshList(){
     return model_mesh_list;
 }
 
-QList<Material*> ModelLibrary_v2::getMaterialMeshList(){
+QList<SP<Material> > ModelLibrary_v2::getMaterialMeshList(){
     return material_mesh_list;
 }
 
@@ -332,10 +332,10 @@ void ModelLibrary_v2::debugModelData(){
         debugMessage("Mtl: " + material_mesh_list[i]->get_name() +
                      QString::number(material_mesh_list[i]->id()));
         for(int j = 0; j < mesh_model_list[i].size(); j++){
-            debugMessage(" - Mesh: " + mesh_model_list[i].at(j)->get_name() +
-                         QString::number(mesh_model_list[i].at(j)->id()) +
-                         "   " + model_mesh_list[i].at(j)->get_path() +
-                         QString::number(model_mesh_list[i].at(j)->id()));
+            debugMessage(" - Mesh: " + mesh_model_list[i][j]->get_name() +
+                         QString::number(mesh_model_list[i][j]->id()) +
+                         "   " + model_mesh_list[i][j]->get_path() +
+                         QString::number(model_mesh_list[i][j]->id()));
         }
     }
 }
@@ -354,11 +354,11 @@ void ModelLibrary_v2::clearLib(){
 
 //private
 //add the model to the model list (contains also instances)
-void ModelLibrary_v2::addModel(CompositeObject * co){
+void ModelLibrary_v2::addModel(SP<CompositeObject> co){
     //check if CompositeObject was build properly...
     if(co->hasModel()){
         //check if it was added already...
-        if(!containsCompositeObject(co)){
+        if(containsCompositeObject(co) == 0){
             addModelData(co);
         }
     }
@@ -372,9 +372,9 @@ void ModelLibrary_v2::addModel(CompositeObject * co){
 
 
 //sort in the model data so we can skip several render setup calls...
-void ModelLibrary_v2::addModelData(CompositeObject * co){
+void ModelLibrary_v2::addModelData(SP<CompositeObject> co){
 
-    Model* mdl = co->getModel();
+    SP<Model> mdl = co->getModel();
 
     //add it to the lists...
 
@@ -384,17 +384,17 @@ void ModelLibrary_v2::addModelData(CompositeObject * co){
 
 
 
-    QList<Mesh*> mdl_meshs = mdl->get_meshs();
+    QList<SP<Mesh> > mdl_meshs = mdl->get_meshs();
 
-    QList<Mesh *>::iterator i;
+    QList<SP<Mesh> >::iterator i;
     for (i = mdl_meshs.begin(); i != mdl_meshs.end(); ++i){
-        Mesh * mesh = *i;
+        SP<Mesh> mesh = *i;
         //we have a mesh, let's check if we have it already sorted into our lists:
-        Material* mesh_mtl = mesh->get_material();
+        SP<Material> mesh_mtl = mesh->get_material();
         bool sort_in = false;
         int sort_in_index = -1;
         for(int j = 0; j < material_mesh_list.size(); j++){
-            if(mesh_mtl->equal(*material_mesh_list.at(j))){
+            if(mesh_mtl->equal(*material_mesh_list[j])){
                 //we have it already sorted in, just init the addition of the
                 //resources to the existing lists
                 sort_in_index = j;
@@ -410,9 +410,9 @@ void ModelLibrary_v2::addModelData(CompositeObject * co){
         else{
             //model is not found in the lists, create a new entry
             material_mesh_list.append(mesh_mtl);
-            mesh_model_list.append(QList<Mesh*>());
-            model_mesh_list.append(QList<Model*>());
-            compositeobject_mesh_list.append(QList<CompositeObject*>());
+            mesh_model_list.append(QList<SP<Mesh> >());
+            model_mesh_list.append(QList<SP<Model> >());
+            compositeobject_mesh_list.append(QList<SP<CompositeObject> >());
             int size_index = mesh_model_list.size()-1;
             mesh_model_list[size_index].append(mesh);
             model_mesh_list[size_index].append(mdl);
@@ -423,49 +423,49 @@ void ModelLibrary_v2::addModelData(CompositeObject * co){
 
 
 
-Model * ModelLibrary_v2::containsModelData(Model * mdl){
-    QList<Model *>::iterator i;
+SP<Model> ModelLibrary_v2::containsModelData(SP<Model> mdl){
+    QList<SP<Model> >::iterator i;
     for (i = model_list.begin(); i != model_list.end(); ++i){
-        Model * m = *i;
+        SP<Model> m = *i;
         if((*m).equalData(*mdl)){
             return m;
         }
     }
-    return 0;
+    return SP<Model>();
 }
 
-Model * ModelLibrary_v2::containsModel(Model * mdl){
-    QList<Model *>::iterator i;
+SP<Model> ModelLibrary_v2::containsModel(SP<Model> mdl){
+    QList<SP<Model> >::iterator i;
     for (i = model_list.begin(); i != model_list.end(); ++i){
-        Model * m = *i;
+        SP<Model> m = *i;
         if(*m == *mdl){
             return m;
         }
     }
-    return 0;
+    return SP<Model>();
 }
 
-CompositeObject * ModelLibrary_v2::containsCompositeObject(CompositeObject * co){
-    QList<CompositeObject *>::iterator i;
+SP<CompositeObject> ModelLibrary_v2::containsCompositeObject(SP<CompositeObject> co){
+    QList<SP<CompositeObject> >::iterator i;
     for (i = compositeobject_list.begin(); i != compositeobject_list.end(); ++i){
-        CompositeObject * c = *i;
+        SP<CompositeObject> c = *i;
         //if(*c == *co){
         if(c->EventListener::id() == co->EventListener::id() ){
             return c;
         }
     }
-    return 0;
+    return SP<CompositeObject>();
 }
 
 //untested crappy delete function ...
 //guessed O(over 9000)
-bool ModelLibrary_v2::removeModel(CompositeObject * co){
+bool ModelLibrary_v2::removeModel(SP<CompositeObject> co){
 
     //delete from the simple list...
-    QList<CompositeObject *>::iterator i;
+    QList<SP<CompositeObject> >::iterator i;
     int j = 0;
     for (i = compositeobject_list.begin(); i != compositeobject_list.end(); ++i){
-        CompositeObject * c = *i;
+        SP<CompositeObject> c = *i;
         //if(*c == *co){
         if(c->EventListener::id() == co->EventListener::id() ){
             model_list.removeAt(j);
@@ -484,7 +484,7 @@ bool ModelLibrary_v2::removeModel(CompositeObject * co){
         bool created = false;
         for(int k = 0; k < compositeobject_mesh_list.at(i).size(); k++){
             //if(*compositeobject_mesh_list.at(i).at(k) == *co){
-            if(compositeobject_mesh_list.at(i).at(k)->EventListener::id() == co->EventListener::id()){
+            if(compositeobject_mesh_list[i][k]->EventListener::id() == co->EventListener::id()){
                 if(!created){
                     index_i.append(i);
                     index_i_k.append(QList<int>());
@@ -521,6 +521,6 @@ void ModelLibrary_v2::eventRecieved(Event e){
 void ModelLibrary_v2::debugMessage(QString message){
     Event e;
     e.type = Event::EventDebuggerMessage;
-    e.debugger = new EventDebugger(message);
+    e.debugger = SP<EventDebugger> (new EventDebugger(message));
     this->transmit(e);
 }

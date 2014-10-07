@@ -29,6 +29,7 @@ Model::Model(const Model &mdl) :
     this->path = mdl.path;
     this->isReady = mdl.isReady;
     this->parent_co = mdl.parent_co;
+    this->size = 0.0;
 }
 
 Model::Model() :
@@ -36,19 +37,38 @@ Model::Model() :
 {
     isReady = false;
     parent_co = 0;
+    size = 0.0;
+}
+
+Model::~Model(){
+    qDebug("Model::~Model");
+}
+
+double Model::get_size(){
+    return size;
+}
+
+double Model::max(double a, double b){
+    if(a > b){
+        return a;
+    }
+    return b;
+}
+
+void Model::recalculate_size(){
+    double temp_size = this->size;
+    for(int i = 0; i < meshs.size(); i++){
+        Vector3 pos = meshs[i]->getBoundingSpherePos();
+        double rad = meshs[i]->getBoundingSphereRadius();
+        temp_size = max(pos.length() + rad, temp_size);
+    }
+    this->size = temp_size;
 }
 
 void Model::instance_from(const Model &mdl){
     this->meshs = mdl.meshs;
     this->isReady = mdl.isReady;
-
-    if(this->isReady){
-        Event e;
-        e.type = Event::EventModelLoaded;
-        e.streamer = new EventStreamer(this);
-        this->transmit(e);
-        qDebug("model instance transmitted...");
-    }
+    recalculate_size();
 }
 
 
@@ -78,18 +98,19 @@ QString Model::get_path() const{
     return path;
 }
 
-void Model::add_mesh(Mesh* mesh){
+void Model::add_mesh(SP<Mesh> mesh){
     meshs.append(mesh);
+    recalculate_size();
 }
 
-QList<Mesh*> Model::get_meshs(){
+QList<SP<Mesh> > Model::get_meshs(){
     return meshs;
 }
 
 void Model::loadGLdata(){
     for(int i = 0; i < meshs.size(); i++){
-        Mesh * mesh = meshs.at(i);
-        Material * mtl = mesh->get_material();
+        SP<Mesh> mesh = meshs.at(i);
+        SP<Material> mtl = mesh->get_material();
 
         if(!mtl->isLoaded()){
             mtl->loadGLdata();
@@ -99,11 +120,7 @@ void Model::loadGLdata(){
         }
     }
     isReady = true;
-    Event e;
-    e.type = Event::EventModelLoaded;
-    e.streamer = new EventStreamer(this);
-    this->transmit(e);
-    qDebug("model loading transmitted...");
+    qDebug("Model::loadGLdata()");
 }
 
 bool Model::isReadyToRender(){
@@ -118,11 +135,11 @@ bool Model::equalData(const Model &mdl) const{
 }
 
 
-void Model::setParentCompositeObject(CompositeObject * co){
+void Model::setParentCompositeObject(SP<CompositeObject> co){
     this->parent_co = co;
 }
 
-CompositeObject * Model::getParentCompositeObject(){
+SP<CompositeObject> Model::getParentCompositeObject(){
     return parent_co;
 }
 

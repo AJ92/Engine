@@ -157,7 +157,7 @@ void Engine::initialize(int argc, char *argv[]){
     model_loader->addListener(debuggerListener);
 
     //our world with all the fancy objects...
-    object_world = new ObjectWorld(threadAccountant);
+    object_world = SP<ObjectWorld>(new ObjectWorld(threadAccountant));
     object_world->addListener(debuggerListener);
     object_world->setModelLoader(model_loader);
     object_world->setLightModelPath(getApplicationDir() + "//light_sphere.obj");
@@ -228,6 +228,8 @@ void Engine::initialize(int argc, char *argv[]){
     QObject::connect(fps_timer,SIGNAL(timeout()),this,SLOT(timer()));
     fps_timer->setInterval(1000);
     fps_timer->start();
+
+
 }
 
 void Engine::setWindowTitle(QString title){
@@ -388,6 +390,7 @@ void Engine::render()
 
         //set the objectworld
         r->setObjectWorld(object_world);
+
         r->render_v2();
 
         //glutSwapBuffers();
@@ -395,6 +398,8 @@ void Engine::render()
 
         glfwSwapBuffers(window->getGLFWwindow());
         glfwPollEvents();
+
+
     }
     else{
         //window gets closed
@@ -425,17 +430,17 @@ void Engine::eventLoop(){
 }
 
 //dynamic light
-CompositeObject * Engine::loadLightObject(QString name){
+SP<CompositeObject> Engine::loadLightObject(QString name){
     return object_world->loadLightobject(name);
 }
 
 //dynamic
-CompositeObject * Engine::loadModelObject(QString name, QString path){
+SP<CompositeObject> Engine::loadModelObject(QString name, QString path){
     return object_world->loadModelobject(name, path);
 }
 
 //static
-CompositeObject * Engine::loadModelObject(QString name, QString path, Positation * posi){
+SP<CompositeObject> Engine::loadModelObject(QString name, QString path, SP<Positation> posi){
     return object_world->loadModelobject(name, path, posi);
 }
 

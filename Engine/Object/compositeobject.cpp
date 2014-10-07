@@ -12,11 +12,11 @@ CompositeObject::CompositeObject() :
     name_("Empty")
 
 {
-    model_ = 0;
-    light_ = 0;
-    positation_ = 0;
     type_ = ObjectEmpty;
     movementType_ = MovementStatic;
+
+    me_ = SP<CompositeObject>(this);
+    me_eventListener_ = SP<EventListener>(this);
 }
 
 CompositeObject::CompositeObject(QString name, ObjectMovementType movementType) :
@@ -24,18 +24,18 @@ CompositeObject::CompositeObject(QString name, ObjectMovementType movementType) 
     EventTransmitter(),
     name_(name)
 {
-    model_ = 0;
-    light_ = 0;
-    positation_ = 0;
     type_ = ObjectEmpty;
     movementType_ = movementType;
+
+    me_ = SP<CompositeObject>(this);
+    me_eventListener_ = SP<EventListener>(this);
 }
 
 
 
-void CompositeObject::setModel(Model * model){
+void CompositeObject::setModel(SP<Model> model){
     if(model_ != 0){
-        model_->removeListener(this);
+        model_->removeListener(me_eventListener_);
     }
     model_ = model;
 
@@ -43,30 +43,21 @@ void CompositeObject::setModel(Model * model){
     type_ = type_ | ObjectModel; //binary or
 
     //model should send if it is loaded... but it probably won't so...
-    model_->addListener(this);
-
-    //in case our model is already loaded... for example lights...
-    if(model_->isReadyToRender()){
-        Event e;
-        e.type = Event::EventCompositeObjectModelLoaded;
-        e.compositeObject = new EventCompositeObject(this);
-        this->transmit(e);
-    }
-
+    model_->addListener(me_eventListener_);
 }
 
-void CompositeObject::setLight(Light * light){
+void CompositeObject::setLight(SP<Light> light){
     light_ = light;
     type_ = type_ | ObjectLight; //binary or
 }
 
-void CompositeObject::setPositation(Positation * positation){
+void CompositeObject::setPositation(SP<Positation> positation){
     if(positation_ != 0){
-        positation_->removeListener(this);
+        positation_->removeListener(me_eventListener_);
     }
     positation_ = positation;
     type_ = type_ | ObjectPositionRotation; //binary or
-    positation_->addListener(this);
+    positation_->addListener(me_eventListener_);
 }
 
 
@@ -94,15 +85,15 @@ bool CompositeObject::hasPositation(){
 
 
 
-Model * CompositeObject::getModel(){
+SP<Model> CompositeObject::getModel(){
     return model_;
 }
 
-Light * CompositeObject::getLight(){
+SP<Light> CompositeObject::getLight(){
     return light_;
 }
 
-Positation * CompositeObject::getPositation(){
+SP<Positation> CompositeObject::getPositation(){
     return positation_;
 }
 
@@ -116,9 +107,13 @@ CompositeObject::ObjectMovementType CompositeObject::getObjectMovementType(){
 //do not invoke the parents method...
 void CompositeObject::eventRecieved(Event e){
     if(e.type == Event::EventModelLoaded){
+
+        //adjust the size
+        positation_->set_size(model_->get_size());
+
         Event e2;
         e2.type = Event::EventCompositeObjectModelLoaded;
-        e2.compositeObject = new EventCompositeObject(this);
+        e2.compositeObject = SP<EventCompositeObject> (new EventCompositeObject(me_));
         this->transmit(e2);
     }
 
@@ -126,7 +121,7 @@ void CompositeObject::eventRecieved(Event e){
     if((e.type == Event::EventCompositeObjectMoved) ||
        (e.type == Event::EventCompositeObjectRotated) ||
        (e.type == Event::EventCompositeObjectScaled)){
-        e.compositeObject = new EventCompositeObject(this);
+        e.compositeObject = SP<EventCompositeObject> (new EventCompositeObject(me_));
         this->transmit(e);
     }
 
@@ -141,6 +136,6 @@ void CompositeObject::eventRecieved(Event e){
 void CompositeObject::debugMessage(QString message){
     Event e;
     e.type = Event::EventDebuggerMessage;
-    e.debugger = new EventDebugger(message);
+    e.debugger = SP<EventDebugger> (new EventDebugger(message));
     this->transmit(e);
 }

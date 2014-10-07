@@ -3,6 +3,7 @@
 
 #include "engine.h"
 #include <QList>
+#include "Object/SmartPointer/smartpointer.h"
 
 class Event;
 
@@ -27,13 +28,10 @@ private:
 
     void eventCall();
 
-    //Test octtree
-    OctTree * ot;
-
-
-    bool level_loaded;
+    int level_loaded;
+    bool lvl_loaded;
     int test_amount;
-    QList<CompositeObject *> compositeobjecttest;
+    QList<SP<CompositeObject> > compositeobjecttest;
 };
 
 #endif // TEST_H

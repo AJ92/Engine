@@ -3,17 +3,19 @@
 
 #include "Graphics/Model/model.h"
 
+#include "Object/SmartPointer/smartpointer.h"
+
 class EventStreamer
 {
 public:
-    EventStreamer(Model* mdl);
+    EventStreamer(SP<Model> mdl);
     ~EventStreamer();
 
-    Model * getModel();
-    void setModel(Model* mdl);
+    SP<Model> getModel();
+    void setModel(SP<Model> mdl);
 
 private:
-    Model * mdl;
+    SP<Model> mdl;
 };
 
 #endif // EVENTSTREAMER_H

@@ -23,6 +23,8 @@
 #include <QList>
 #include <QHash>
 
+#include "Object/SmartPointer/smartpointer.h"
+
 class Event;
 class CompositeObject;
 class Positation;
@@ -35,19 +37,19 @@ public:
 
     //for inner/leaf nodes
     OctTree(int subdiv_lvl,Vector3 pos, double node_size, int max_amount_objects);
-    ~OctTree();
+    virtual ~OctTree();
 
     void constructNodePoints();
 
-    int fits(CompositeObject * obj);
+    int fits(SP<CompositeObject> obj);
     void subdivide();
 
-    int addModel(CompositeObject * obj);
-    int addModels(ModelLibrary_v2 * lib);
+    int addModel(SP<CompositeObject> obj);
+    int addModels(SP<ModelLibrary_v2> lib);
 
-    ModelLibrary_v2 * getModelLibrary();
+    SP<ModelLibrary_v2> getModelLibrary();
 
-    QList<OctTree* > getNodesInFrustum(Frustum * f);
+    QList<SP<OctTree> > getNodesInFrustum(SP<Frustum> f);
 
     QString debug_string();
 
@@ -61,16 +63,20 @@ public:
     NodeType type;
 
 private:
-    //the subdivided "sub-cubes"
-    OctTree* tree_northwest_high;
-    OctTree* tree_northeast_high;
-    OctTree* tree_southwest_high;
-    OctTree* tree_southeast_high;
 
-    OctTree* tree_northwest_low;
-    OctTree* tree_northeast_low;
-    OctTree* tree_southwest_low;
-    OctTree* tree_southeast_low;
+    SP<OctTree> me;
+    SP<EventListener> me_eventListener;
+
+    //the subdivided "sub-cubes"
+    SP<OctTree> tree_northwest_high;
+    SP<OctTree> tree_northeast_high;
+    SP<OctTree> tree_southwest_high;
+    SP<OctTree> tree_southeast_high;
+
+    SP<OctTree> tree_northwest_low;
+    SP<OctTree> tree_northeast_low;
+    SP<OctTree> tree_southwest_low;
+    SP<OctTree> tree_southeast_low;
 
     //info about the current node
     int subdivision_level;
@@ -86,11 +92,11 @@ private:
     int amount_objects;
 
     //internal data
-    ModelLibrary_v2 * mdllib;
-    QHash<unsigned long long, CompositeObject* > id_compositeobject_hash;
+    SP<ModelLibrary_v2> mdllib;
+    QHash<unsigned long long, SP<CompositeObject> > id_compositeobject_hash;
 
 
-    ModelLibrary * real_lib;
+    SP<ModelLibrary> real_lib;
     QString path;
 
     QList<Vector3> node_bounds;

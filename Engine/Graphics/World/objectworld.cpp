@@ -4,7 +4,7 @@
 #include "Object/positation.h"
 #include "Graphics/Model/light.h"
 
-ObjectWorld::ObjectWorld(ThreadAccountant * ta) :
+ObjectWorld::ObjectWorld(SP<ThreadAccountant> ta) :
     EventListener(),
     EventTransmitter()
 {
@@ -12,20 +12,20 @@ ObjectWorld::ObjectWorld(ThreadAccountant * ta) :
 
     count_models_in = 0;
     count_models_out = 0;
+
+    me_eventListener = SP<EventListener> (this);
 }
 
 ObjectWorld::~ObjectWorld(){
     //DESTRUCTOR... soon
 }
 
-void ObjectWorld::setModelLoader(ModelLoader * ml){
+void ObjectWorld::setModelLoader(SP<ModelLoader> ml){
     this->ml = ml;
 }
 
 void ObjectWorld::setModelsPerThread(int model_count){
-    if(ml){
-        ml->setModelsPerThread(model_count);
-    }
+    ml->setModelsPerThread(model_count);
 }
 
 void ObjectWorld::setLightModelPath(QString path){
@@ -33,95 +33,106 @@ void ObjectWorld::setLightModelPath(QString path){
 }
 
 void ObjectWorld::initialize(){
-    ml->addListener(this);
+    ml->addListener(me_eventListener);
     ml->initialize();
 
-    ot = new OctTree(200);
+    ot = SP<OctTree>(new OctTree(2000));
 
-    ot_dynamic_model = new OctTreeFast(200);
-    ot_dynamic_lights = new OctTreeFast(200);
+    ot_dynamic_model = SP<OctTreeFast>(new OctTreeFast(20));
+    ot_dynamic_lights = SP<OctTreeFast>(new OctTreeFast(20));
 
 
     //preload the light model...
     // maybe in a later version of the engine generate the light mesh....
-    light_model = new Model();
+    light_model = SP<Model>(new Model());
     light_model->set_path(light_model_path);
     loadModel(light_model);
 }
 
 
-OctTree * ObjectWorld::getOctTree(){
+SP<OctTree> ObjectWorld::getOctTree(){
     return ot;
 }
 
-OctTreeFast * ObjectWorld::getOctTreeFastDynamicModels(){
+SP<OctTreeFast> ObjectWorld::getOctTreeFastDynamicModels(){
     return ot_dynamic_model;
 }
 
-OctTreeFast * ObjectWorld::getOctTreeFastDynamicLights(){
+SP<OctTreeFast> ObjectWorld::getOctTreeFastDynamicLights(){
     return ot_dynamic_lights;
 }
 
 
 //dynamic light
-CompositeObject * ObjectWorld::loadLightobject(QString name){
-    CompositeObject * co = new CompositeObject(name, CompositeObject::MovementDynamic);
+SP<CompositeObject> ObjectWorld::loadLightobject(QString name){
+    SP<CompositeObject> co(new CompositeObject(name, CompositeObject::MovementDynamic));
     //randomized pos, for octtree test
     //they won't land by default in the same node and the octtree won't
     //grow in depth that fast ...
-    Positation * posi = new Positation();
+    SP<Positation> posi(new Positation());
     posi->set_position((double)((rand() & 1000)-500),
                       (double)((rand() & 1000)-500),
                       (double)((rand() & 1000)-500));
 
     co->setPositation(posi);
 
-    Light * light = new Light();
+    SP<Light> light(new Light());
     co->setLight(light);
 
-    co->addListener(this);
-    co->setModel(light_model);
+    co->addListener(me_eventListener);
+
+    SP<Model> light_mdl(new Model());
+    light_mdl->set_path(light_model_path);
+
+    co->setModel(light_mdl);
+    this->loadModel(light_mdl);
 
     count_models_in += 1;
+
+    all_comp_objs.append(co);
 
     return co;
 }
 
 
 //dynamic
-CompositeObject * ObjectWorld::loadModelobject(QString name, QString path){
-    CompositeObject * co = new CompositeObject(name, CompositeObject::MovementDynamic);
+SP<CompositeObject> ObjectWorld::loadModelobject(QString name, QString path){
+    SP<CompositeObject> co(new CompositeObject(name, CompositeObject::MovementDynamic));
     //randomized pos, for octtree test
     //they won't land by default in the same node and the octtree won't
     //grow in depth that fast ...
-    Positation * posi = new Positation();
+    SP<Positation> posi(new Positation());
     posi->set_position((double)((rand() & 1000)-500),
                       (double)((rand() & 1000)-500),
                       (double)((rand() & 1000)-500));
 
     co->setPositation(posi);
 
-    co->addListener(this);
-    Model * m = new Model();
+    co->addListener(me_eventListener);
+    SP<Model> m(new Model());
     m->set_path(path);
     co->setModel(m);
     this->loadModel(m);
 
     count_models_in += 1;
 
+    all_comp_objs.append(co);
+
     return co;
 }
 
 //static
-CompositeObject * ObjectWorld::loadModelobject(QString name, QString path, Positation * posi){
-    CompositeObject * co = new CompositeObject(name, CompositeObject::MovementStatic);
+SP<CompositeObject> ObjectWorld::loadModelobject(QString name, QString path, SP<Positation> posi){
+    SP<CompositeObject> co(new CompositeObject(name, CompositeObject::MovementStatic));
     co->setPositation(posi);
 
-    co->addListener(this);
-    Model * m = new Model();
+    co->addListener(me_eventListener);
+    SP<Model> m(new Model());
     m->set_path(path);
     co->setModel(m);
     this->loadModel(m);
+
+    all_comp_objs.append(co);
 
     return co;
 }
@@ -131,18 +142,15 @@ CompositeObject * ObjectWorld::loadModelobject(QString name, QString path, Posit
 
 
 //private stuff...
-void ObjectWorld::loadModel(Model * m){
-    if(ml){
+void ObjectWorld::loadModel(SP<Model> m){
+    //test for nullpointer...
+    //better said if the smartpointer has a pointer...
+    if(ml != 0){
         //debugMessage("ObjectWorld::loadModel(Model * m);;
         ml->loadModel(m);
         return;
     }
     debugMessage("ModelLoader wasn't set up... it's useless to load Models yet!");
-}
-
-
-void ObjectWorld::addModelToOctTree(CompositeObject * co){
-    ot->addModel(co);
 }
 
 
@@ -157,7 +165,7 @@ void ObjectWorld::eventRecieved(Event e){
     */
 
     if(e.type == Event::EventCompositeObjectModelLoaded){
-        CompositeObject * obj = e.compositeObject->getCompositeObject();
+        SP<CompositeObject> obj = e.compositeObject->getCompositeObject();
         //dispatch to correct tree
         if(obj->hasLight()){
             debugMessage("light...");
@@ -192,6 +200,6 @@ void ObjectWorld::eventRecieved(Event e){
 void ObjectWorld::debugMessage(QString message){
     Event e;
     e.type = Event::EventDebuggerMessage;
-    e.debugger = new EventDebugger(message);
+    e.debugger = SP<EventDebugger>(new EventDebugger(message));
     this->transmit(e);
 }

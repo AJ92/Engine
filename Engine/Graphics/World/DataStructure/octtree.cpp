@@ -12,12 +12,15 @@ OctTree::OctTree(int max_amount_objects)
     this->pos = Vector3(2.0,2.0,2.0);
     //temporary limit...
     this->node_size = 1000.0;
-    mdllib = new ModelLibrary_v2(max_amount_objects,max_amount_objects);
+    mdllib = SP<ModelLibrary_v2>(new ModelLibrary_v2(max_amount_objects,max_amount_objects));
     mdllib->initialize();
     id_compositeobject_hash.reserve(max_amount_objects);
     amount_objects = 0;
     type = NodeRoot;
     constructNodePoints();
+
+    me = SP<OctTree>(this);
+    me_eventListener = SP<EventListener> (this);
 }
 
 OctTree::OctTree(int subdiv_lvl,Vector3 pos, double node_size, int max_amount_objects)
@@ -27,12 +30,15 @@ OctTree::OctTree(int subdiv_lvl,Vector3 pos, double node_size, int max_amount_ob
     this->pos = pos;
     this->node_size = node_size;
     this->max_amount_objects = max_amount_objects;
-    mdllib = new ModelLibrary_v2(max_amount_objects,max_amount_objects);
+    mdllib = SP<ModelLibrary_v2>(new ModelLibrary_v2(max_amount_objects,max_amount_objects));
     mdllib->initialize();
     id_compositeobject_hash.reserve(max_amount_objects);
     amount_objects = 0;
     type = NodeLeaf;
     constructNodePoints();
+
+    me = SP<OctTree>(this);
+    me_eventListener = SP<EventListener> (this);
 }
 
 void OctTree::constructNodePoints(){
@@ -66,10 +72,11 @@ void OctTree::constructNodePoints(){
 
 OctTree::~OctTree(){
     //DESTRUCTOR... soon
+    qDebug("OctTree::~OctTree");
 }
 
-QList<OctTree* > OctTree::getNodesInFrustum(Frustum * f){
-    QList<OctTree *> treeList;
+QList<SP<OctTree> > OctTree::getNodesInFrustum(SP<Frustum> f){
+    QList<SP<OctTree> > treeList;
 
 
     //check if points of the node are inside of the frustum...
@@ -77,14 +84,14 @@ QList<OctTree* > OctTree::getNodesInFrustum(Frustum * f){
     if(check == Frustum::Inside || check == Frustum::Intersect){
         //lets add this leaf node, might be root aswell...
         if(is_subdivided == false){
-            treeList.append(this);
+            treeList.append(me);
         }
         //lets get subnodes...
         else{
             //unfortunatly inner nodes can have models as well...
             //add all the OctTree nodes to the list..
 
-            treeList.append(this);
+            treeList.append(me);
 
             treeList.append(tree_northwest_high->getNodesInFrustum(f));
             treeList.append(tree_northeast_high->getNodesInFrustum(f));
@@ -100,23 +107,23 @@ QList<OctTree* > OctTree::getNodesInFrustum(Frustum * f){
     return treeList;
 }
 
-int OctTree::fits(CompositeObject * obj){
+int OctTree::fits(SP<CompositeObject> obj){
 
     if(obj == 0){
         qDebug("[WARNING] OctTree::fits(CompositeObject * obj) : no CompositeObject ...");
         return false;
     }
 
-    Positation * posi = obj->getPositation();
+    SP<Positation> posi = obj->getPositation();
     Vector3 mdl_pos = posi->getPosition();
-    if((mdl_pos.x()+posi->get_size()) <= (pos.x()+node_size) &&
-       (mdl_pos.x()-posi->get_size()) >= (pos.x()-node_size)){
+    if((mdl_pos.x()+posi->get_size_scaled()) <= (pos.x()+node_size) &&
+       (mdl_pos.x()-posi->get_size_scaled()) >= (pos.x()-node_size)){
         //inside of the X axis
-        if((mdl_pos.y()+posi->get_size()) <= (pos.y()+node_size) &&
-           (mdl_pos.y()-posi->get_size()) >= (pos.y()-node_size)){
+        if((mdl_pos.y()+posi->get_size_scaled()) <= (pos.y()+node_size) &&
+           (mdl_pos.y()-posi->get_size_scaled()) >= (pos.y()-node_size)){
             //inside of the Y axis
-            if((mdl_pos.z()+posi->get_size()) <= (pos.z()+node_size) &&
-               (mdl_pos.z()-posi->get_size()) >= (pos.z()-node_size)){
+            if((mdl_pos.z()+posi->get_size_scaled()) <= (pos.z()+node_size) &&
+               (mdl_pos.z()-posi->get_size_scaled()) >= (pos.z()-node_size)){
                 //model fits in this node
                 return true;
             }
@@ -152,11 +159,19 @@ QString OctTree::debug_string(){
 }
 
 
-int OctTree::addModel(CompositeObject * obj){
+int OctTree::addModel(SP<CompositeObject> obj){
+
+    qDebug("adding to octree...");
+
     if(obj->hasModel()){
         if(!obj->getModel()->isReadyToRender()){
             debugMessage("OctTree::addModel(CompositeObject * obj) : model of compositeObject not ready...");
+            qDebug("    model not ready yet...");
         }
+    }
+    else{
+        debugMessage("OctTree::addModel(CompositeObject * obj) : compositeObject has no fuckin MODEL !!!! ...");
+        qDebug("    no model ???!!!???!...");
     }
 
     //lets check if we need to add it or to send to our leaf nodes
@@ -219,6 +234,7 @@ int OctTree::addModel(CompositeObject * obj){
         }
 
         amount_objects += result_added;
+        qDebug( QString::number(amount_objects).toUtf8());
         return result_added;
 
     }
@@ -234,15 +250,17 @@ int OctTree::addModel(CompositeObject * obj){
     if(amount_objects > max_amount_objects){
         subdivide();
     }
+    debug_string();
+    qDebug( QString::number(amount_objects).toUtf8());
     return 1;
 
 }
 
-int OctTree::addModels(ModelLibrary_v2 * lib){
+int OctTree::addModels(SP<ModelLibrary_v2> lib){
 
     int added_count = 0;
 
-    QList<CompositeObject*> objs = lib->getCompositeObjects();
+    QList<SP<CompositeObject> > objs = lib->getCompositeObjects();
 
     for(int i = 0; i < objs.size(); i++){
         if(fits(objs.at(i))){
@@ -254,15 +272,15 @@ int OctTree::addModels(ModelLibrary_v2 * lib){
     return added_count;
 }
 
-ModelLibrary_v2 * OctTree::getModelLibrary(){
+SP<ModelLibrary_v2> OctTree::getModelLibrary(){
     return mdllib;
 }
 
 
 void OctTree::subdivide(){
 
-    ModelLibrary_v2 * old_lib = mdllib;
-    mdllib = new ModelLibrary_v2(max_amount_objects,max_amount_objects);
+    SP<ModelLibrary_v2> old_lib = mdllib;
+    mdllib = SP<ModelLibrary_v2>(new ModelLibrary_v2(max_amount_objects,max_amount_objects));
     mdllib->initialize();
 
     amount_objects = 0;
@@ -272,70 +290,70 @@ void OctTree::subdivide(){
 
 
 
-    tree_northwest_high = new OctTree(this->subdivision_level+1,
+    tree_northwest_high = SP<OctTree>(new OctTree(this->subdivision_level+1,
                                       Vector3(this->pos.x()-new_node_pos,
                                               this->pos.y()+new_node_pos,
                                               this->pos.z()+new_node_pos),
                                       new_node_size,
-                                      this->max_amount_objects);
+                                      this->max_amount_objects));
     //amount_objects += tree_northwest_high->addModels(old_lib);
 
-    tree_northeast_high = new OctTree(this->subdivision_level+1,
+    tree_northeast_high = SP<OctTree>(new OctTree(this->subdivision_level+1,
                                       Vector3(this->pos.x()+new_node_pos,
                                               this->pos.y()+new_node_pos,
                                               this->pos.z()+new_node_pos),
                                       new_node_size,
-                                      this->max_amount_objects);
+                                      this->max_amount_objects));
     //amount_objects += tree_northeast_high->addModels(old_lib);
 
-    tree_southwest_high = new OctTree(this->subdivision_level+1,
+    tree_southwest_high = SP<OctTree>(new OctTree(this->subdivision_level+1,
                                       Vector3(this->pos.x()-new_node_pos,
                                               this->pos.y()-new_node_pos,
                                               this->pos.z()+new_node_pos),
                                       new_node_size,
-                                      this->max_amount_objects);
+                                      this->max_amount_objects));
     //amount_objects += tree_southwest_high->addModels(old_lib);
 
-    tree_southeast_high = new OctTree(this->subdivision_level+1,
+    tree_southeast_high = SP<OctTree>(new OctTree(this->subdivision_level+1,
                                       Vector3(this->pos.x()+new_node_pos,
                                               this->pos.y()-new_node_pos,
                                               this->pos.z()+new_node_pos),
                                       new_node_size,
-                                      this->max_amount_objects);
+                                      this->max_amount_objects));
     //amount_objects += tree_southeast_high->addModels(old_lib);
 
 
 
-    tree_northwest_low = new OctTree(this->subdivision_level+1,
+    tree_northwest_low = SP<OctTree>(new OctTree(this->subdivision_level+1,
                                      Vector3(this->pos.x()-new_node_pos,
                                              this->pos.y()+new_node_pos,
                                              this->pos.z()-new_node_pos),
                                      new_node_size,
-                                     this->max_amount_objects);
+                                     this->max_amount_objects));
     //amount_objects += tree_northwest_low->addModels(old_lib);
 
-    tree_northeast_low = new OctTree(this->subdivision_level+1,
+    tree_northeast_low = SP<OctTree>(new OctTree(this->subdivision_level+1,
                                      Vector3(this->pos.x()+new_node_pos,
                                              this->pos.y()+new_node_pos,
                                              this->pos.z()-new_node_pos),
                                      new_node_size,
-                                     this->max_amount_objects);
+                                     this->max_amount_objects));
     //amount_objects += tree_northeast_low->addModels(old_lib);
 
-    tree_southwest_low = new OctTree(this->subdivision_level+1,
+    tree_southwest_low = SP<OctTree>(new OctTree(this->subdivision_level+1,
                                      Vector3(this->pos.x()-new_node_pos,
                                              this->pos.y()-new_node_pos,
                                              this->pos.z()-new_node_pos),
                                      new_node_size,
-                                     this->max_amount_objects);
+                                     this->max_amount_objects));
     //amount_objects += tree_southwest_low->addModels(old_lib);
 
-    tree_southeast_low = new OctTree(this->subdivision_level+1,
+    tree_southeast_low = SP<OctTree>(new OctTree(this->subdivision_level+1,
                                      Vector3(this->pos.x()+new_node_pos,
                                              this->pos.y()-new_node_pos,
                                              this->pos.z()-new_node_pos),
                                      new_node_size,
-                                     this->max_amount_objects);
+                                     this->max_amount_objects));
     //amount_objects += tree_southeast_low->addModels(old_lib);
 
     this->is_subdivided = true;
@@ -370,6 +388,6 @@ void OctTree::eventRecieved(Event e){
 void OctTree::debugMessage(QString message){
     Event e;
     e.type = Event::EventDebuggerMessage;
-    e.debugger = new EventDebugger(message);
+    e.debugger = SP<EventDebugger> (new EventDebugger(message));
     this->transmit(e);
 }

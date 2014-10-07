@@ -4,7 +4,8 @@
 #include "Event/event.h"
 #include "Graphics/Model/model.h"
 
-Streamer::Streamer(ThreadAccountant * ta, QObject *parent) :
+
+Streamer::Streamer(SP<ThreadAccountant> ta, QObject *parent) :
     EventListener(),
     EventTransmitter(),
     QObject(parent),
@@ -29,13 +30,13 @@ void Streamer::initialize(){
 }
 
 
-void Streamer::streamModelToDisk(Model * m){
+void Streamer::streamModelToDisk(SP<Model> m){
     //might stay unused
 }
 
-void Streamer::streamModelFromDisk(Model * m){
+void Streamer::streamModelFromDisk(SP<Model> m){
     //put the model into the queue
-    model_list.append(m);
+    model_list.append(m.getPointer());
     t->start();
 }
 
@@ -67,9 +68,9 @@ void Streamer::assignModeltoThread(){
 
         if(ta->addThread()){
             while(model_list.size() >= models_per_thread){
-                QList<Model*> model_list_for_thread;
+                QList<Model* > model_list_for_thread;
                 for(int i = 0; i < models_per_thread; i++){
-                    Model *m = model_list.first();
+                    Model * m = model_list.first();
                     id_model_map[m->id()] = m; //map id and model
                     model_list_for_thread.append(m);
                     model_list.pop_front();
@@ -84,16 +85,26 @@ void Streamer::assignModeltoThread(){
     //process models that wait for gpu (GPU IOs)
     if(finished_model_list.size() > 0){
         for(int i = 0; i < finished_model_list.size(); i++){
-            Model * m = finished_model_list.front();
+            SP<Model> m = finished_model_list.front();
 
             //we are now in mainthread and can load GL data
             m->loadGLdata();
             finished_model_list.pop_front();
             //the model is now done and we send an event to the modellib
+
+
+
             Event e;
             e.type = Event::EventModelStreamedFromDisk;
-            e.streamer = new EventStreamer(m);
+            e.streamer = SP<EventStreamer>(new EventStreamer(m));
             this->transmit(e);
+
+
+            //notifiy the composite object hat the model is ready
+            Event e2;
+            e2.type = Event::EventModelLoaded;
+            e2.streamer = SP<EventStreamer>(new EventStreamer(m));
+            m->transmit(e2);
         }
         keep_timer = true;
     }
@@ -102,7 +113,7 @@ void Streamer::assignModeltoThread(){
     }
 }
 
-void Streamer::assignModelListToThread(QList<Model *> model_list){
+void Streamer::assignModelListToThread(QList<Model * > model_list){
     qDebug() << "Creating new thread...";
     QThread* thread = new QThread();
 
@@ -110,7 +121,7 @@ void Streamer::assignModelListToThread(QList<Model *> model_list){
     qDebug() << "   Current thread: " << QThread::currentThread();
     qDebug() << "   Thread to move: " << thread;
 
-    StreamToDisk* worker = new StreamToDisk(model_list);
+    StreamToDisk * worker = new StreamToDisk(model_list);
 
     qDebug() << "   Worker thread: " << worker->thread();
 
@@ -119,8 +130,8 @@ void Streamer::assignModelListToThread(QList<Model *> model_list){
     QObject::connect(worker, SIGNAL(error(QString)), this, SLOT(debugMessage(QString)), Qt::QueuedConnection);
     QObject::connect(thread, SIGNAL(started()), worker, SLOT(stream()), Qt::QueuedConnection);
     //here we need a slot for returning the model or so...
-    QObject::connect(worker, SIGNAL(loaded(Model*, unsigned long long)),
-            this, SLOT(streamModelFromDiskFinished(Model*, unsigned long long)), Qt::QueuedConnection);
+    QObject::connect(worker, SIGNAL(loaded(Model* , unsigned long long)),
+            this, SLOT(streamModelFromDiskFinished(Model* , unsigned long long)), Qt::QueuedConnection);
     QObject::connect(worker, SIGNAL(finished()),this, SLOT(streamThreadFinished()), Qt::QueuedConnection);
     QObject::connect(worker, SIGNAL(finished()),thread, SLOT(quit()), Qt::QueuedConnection);
     QObject::connect(worker, SIGNAL(finished()),worker, SLOT(deleteLater()), Qt::QueuedConnection);
@@ -129,13 +140,13 @@ void Streamer::assignModelListToThread(QList<Model *> model_list){
 }
 
 
-void Streamer::streamModelToDiskFinished(Model* m, unsigned long long id){
+void Streamer::streamModelToDiskFinished(Model *m, unsigned long long id){
     //now set the pointer right...
 }
 
-void Streamer::streamModelFromDiskFinished(Model* m, unsigned long long id){
+void Streamer::streamModelFromDiskFinished(Model *m, unsigned long long id){
 
-    Model * stored_m = id_model_map[id];
+    SP<Model> stored_m = id_model_map[id];
     //set the data of old model to the new loaded model...
     m->set_data(*stored_m);
     *stored_m = *m;

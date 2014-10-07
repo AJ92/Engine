@@ -33,7 +33,6 @@ INPUT(
 ./debug\keyboard.o
 ./debug\mouse.o
 ./debug\light.o
-./debug\lightlibrary.o
 ./debug\eventwindow.o
 ./debug\frustum.o
 ./debug\test.o
@@ -46,6 +45,7 @@ INPUT(
 ./debug\eventcompositeobject.o
 ./debug\customgraph.o
 ./debug\octtreefast.o
+./debug\referencecounter.o
 ./debug\moc_debugwindow.o
 ./debug\moc_engine.o
 ./debug\moc_streamToDisk.o

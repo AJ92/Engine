@@ -11,6 +11,8 @@
 #include <vector>
 //#include <algorithm>
 
+#include "Object/SmartPointer/smartpointer.h"
+
 
 #include <QDebug>
 
@@ -24,19 +26,19 @@ public:
     EventTransmitter(int reserved_space);
 
     //WE USE POINTER FOR PROPPER INHERITANCE
-    virtual void addListener(EventListener * el);
-    virtual bool containsListener(EventListener * el);
-    virtual void removeListener(EventListener * el);
+    virtual void addListener(SP<EventListener> el);
+    virtual bool containsListener(SP<EventListener> el);
+    virtual void removeListener(SP<EventListener> el);
 
     virtual void transmit(Event e);
     virtual void debugMessage(QString message);
 
-    virtual std::vector<EventListener*> getAllListeners() const;
-    virtual void setListeners(std::vector<EventListener*> listeners);
+    virtual std::vector<SP<EventListener> > getAllListeners() const;
+    virtual void setListeners(std::vector<SP<EventListener> > listeners);
 
 private:
 
-    std::vector<EventListener*> listeners;
+    std::vector<SP<EventListener> > listeners;
 
 };
 

@@ -5,6 +5,7 @@
 #include <QString>
 #include "Event/eventtransmitter.h"
 #include "Event/eventlistener.h"
+#include "Object/SmartPointer/smartpointer.h"
 
 class Model;
 class Light;
@@ -43,28 +44,32 @@ public:
     CompositeObject();
     CompositeObject(QString name, ObjectMovementType movementType);
 
-    void setModel(Model * model);
-    void setLight(Light * light);
-    void setPositation(Positation * positation);
+    void setModel(SP<Model> model);
+    void setLight(SP<Light> light);
+    void setPositation(SP<Positation> positation);
 
     bool hasModel();
     bool hasLight();
     bool hasPositation();
 
-    Model * getModel();
-    Light * getLight();
-    Positation * getPositation();
+    SP<Model> getModel();
+    SP<Light> getLight();
+    SP<Positation> getPositation();
 
     ObjectMovementType getObjectMovementType();
 
 private:
+
+    SP<CompositeObject> me_;
+    SP<EventListener> me_eventListener_;
+
     QString name_;
     int type_;
     ObjectMovementType movementType_;
 
-    Model * model_;
-    Light * light_;
-    Positation * positation_;
+    SP<Model> model_;
+    SP<Light> light_;
+    SP<Positation> positation_;
 
 
     void debugMessage(QString message);

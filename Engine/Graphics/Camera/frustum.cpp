@@ -5,7 +5,7 @@ Frustum::Frustum()
 }
 
 Frustum::~Frustum(){
-
+    //qDebug("Frustum::~Frustum");
 }
 
 void Frustum::setCamInt(double angle, double ratio, double z_near, double z_far){

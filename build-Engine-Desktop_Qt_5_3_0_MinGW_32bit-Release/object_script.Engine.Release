@@ -45,6 +45,7 @@ INPUT(
 ./release\eventcompositeobject.o
 ./release\customgraph.o
 ./release\octtreefast.o
+./release\referencecounter.o
 ./release\moc_debugwindow.o
 ./release\moc_engine.o
 ./release\moc_streamToDisk.o

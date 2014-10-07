@@ -43,6 +43,8 @@
 
 #include "Object/compositeobject.h"
 
+#include "Object/SmartPointer/sp.h"
+
 
 class Event;
 class Positation;
@@ -87,9 +89,9 @@ public:
     //KEYBOARD (override if needed)
     //void keyFunction();
 
-    CompositeObject * loadLightObject(QString name);
-    CompositeObject * loadModelObject(QString name, QString path);
-    CompositeObject * loadModelObject(QString name, QString path, Positation * posi);
+    SP<CompositeObject> loadLightObject(QString name);
+    SP<CompositeObject> loadModelObject(QString name, QString path);
+    SP<CompositeObject> loadModelObject(QString name, QString path, SP<Positation> posi);
 
     void setCamera(Camera * cam);
 
@@ -135,7 +137,7 @@ protected:
 
     ModelLoader * model_loader;
     //holds all objects ... soooooon...
-    ObjectWorld * object_world;
+    SP<ObjectWorld> object_world;
 
 
 private:

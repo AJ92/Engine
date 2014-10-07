@@ -1,6 +1,6 @@
 #include "mesh.h"
 
-Mesh::Mesh(QString name, int triangle_count, GLfloat vertices[], GLfloat texcoords[], GLfloat normals[], Material *material) :
+Mesh::Mesh(QString name, int triangle_count, GLfloat vertices[], GLfloat texcoords[], GLfloat normals[], SP<Material> material) :
     loaded(false)
 {
     mesh_name = name;
@@ -36,11 +36,11 @@ QString Mesh::get_name(){
     return mesh_name;
 }
 
-Material* Mesh::get_material(){
+SP<Material> Mesh::get_material(){
     return material;
 }
 
-void Mesh::set_material(Material* mtl){
+void Mesh::set_material(SP<Material> mtl){
     material = mtl;
 }
 

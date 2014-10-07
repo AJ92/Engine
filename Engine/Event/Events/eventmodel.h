@@ -1,20 +1,21 @@
 #ifndef EVENTMODEL_H
 #define EVENTMODEL_H
 
+#include "Object/SmartPointer/smartpointer.h"
 
 class Model;
 
 class EventModel
 {
 public:   
-    EventModel(Model * mdl);
+    EventModel(SP<Model> mdl);
     ~EventModel();
 
-    Model * getModel();
-    void setModel(Model * mdl);
+    SP<Model> getModel();
+    void setModel(SP<Model> mdl);
 
 private:
-    Model * mdl;
+    SP<Model> mdl;
 };
 
 #endif // EVENTMODEL_H

@@ -126,7 +126,6 @@ int OctTreeFast::fits(SP<CompositeObject> obj){
         return false;
     }
 
-
     Sphere mdl_sphere = obj->getPositation()->getSphere();
 
     //check if the center of bounding sphere is inside the octree node
@@ -419,20 +418,15 @@ void OctTreeFast::eventRecieved(Event e){
         //check if it still fits in this node...
         //if not, remove it and add it to the root node,
         //so it can add it to the node it fits...
-
-        debugMessage("OctTreeFast: removing object and inserting it into root node...");
-
         SP<CompositeObject> obj = e.compositeObject->getCompositeObject();
-     //   int fitting = 0;
-     //   fitting = fits(obj);
-     //   if(fitting == 0){
-            qDebug("OctTreeFast: removing object and inserting it into root node...");
-
+        int fitting = 0;
+        fitting = fits(obj);
+        if(fitting == 0){
             removeCompositeObject(obj);
             //obj->removeListener(me_eventListener);
             tree_root->addCompositeObject(obj);
-     //   }
-     //   qDebug("still fits");
+        }
+
         return;
     }
     if(e.type == Event::EventCompositeObjectRemoved || e.type == Event::EventCompositeObjectDeleted){

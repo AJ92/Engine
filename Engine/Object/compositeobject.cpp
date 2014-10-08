@@ -58,6 +58,11 @@ void CompositeObject::setPositation(SP<Positation> positation){
     positation_ = positation;
     type_ = type_ | ObjectPositionRotation; //binary or
     positation_->addListener(me_eventListener_);
+
+    Event e;
+    e.type = Event::EventCompositeObjectMoved;
+    e.compositeObject = SP<EventCompositeObject> (new EventCompositeObject(me_));
+    this->transmit(e);
 }
 
 

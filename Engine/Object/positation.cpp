@@ -33,12 +33,14 @@ void Positation::set_position(double x, double y, double z){
     pos[0] = x;
     pos[1] = y;
     pos[2] = z;
+
     set_matrix_pos();
     sendMovedEvent();
 }
 
 void Positation::set_position(Vector3 position){
     pos = position;
+
     set_matrix_pos();
     sendMovedEvent();
 }
@@ -147,6 +149,9 @@ void Positation::set_matrix_pos(){
     mat_pos.translate(pos);
     matrix_changed = true;
 
+    //construct new Sphere for fast intersection tests...
+    this->sphere = Sphere(pos.x(), pos.y(), pos.z(), size_scaled);
+
     Event e;
     e.type = Event::EventCompositeObjectMoved;
     this->transmit(e);
@@ -175,6 +180,9 @@ void Positation::set_matrix_rot(){
 void Positation::set_matrix_scl(){
     mat_scl.scale(scl);
     matrix_changed = true;
+
+    //construct new Sphere for fast intersection tests...
+    this->sphere = Sphere(pos.x(), pos.y(), pos.z(), size_scaled);
 
     Event e;
     e.type = Event::EventCompositeObjectScaled;

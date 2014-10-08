@@ -36,7 +36,8 @@ private:
     QString error_string;
     GLuint m_shader_id;
 
-    const char * shader_source;
+    QByteArray shader_content;
+    const GLchar * shader_source;
 };
 
 #endif // SHADER_H

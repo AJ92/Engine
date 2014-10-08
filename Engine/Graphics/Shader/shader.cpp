@@ -1,12 +1,16 @@
 #include "shader.h"
 
+Shader::Shader(){
+    //dummy constructor...
+}
+
 Shader::Shader(QString shaderPath, GLenum shaderType) :
     Object(),
-    shader_path(shaderPath),
+    created(false),
     shader_type(shaderType),
+    shader_path(shaderPath),
     error_string("None"),
-    m_shader_id(0),
-    created(false)
+    m_shader_id(0)
 {
     //load the shader source code.
     if(!load_shader_source(shaderPath)){
@@ -16,7 +20,7 @@ Shader::Shader(QString shaderPath, GLenum shaderType) :
 
     //create the shader, load the source and compile it
     m_shader_id = glCreateShader(shaderType);
-    glShaderSource(m_shader_id, 1, &shader_source, NULL);
+    glShaderSource( m_shader_id, 1, &shader_source, NULL);
     glCompileShader(m_shader_id);
 
     //check if we could compile the stuff...
@@ -76,8 +80,7 @@ bool Shader::load_shader_source(QString path){
         return false;
     }
 
-    QByteArray shader_content = shaderfile.readAll();
-    shader_source = shader_content.constData();
-
+    shader_content = shaderfile.readAll();
+    shader_source = (GLchar*) shader_content.constData();
     return true;
 }

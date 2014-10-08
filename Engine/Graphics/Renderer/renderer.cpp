@@ -1906,6 +1906,7 @@ bool Renderer::createShaders(){
     if(dr_vertex_firstpass.isCreated()){
         DR_FirstPassVertexShaderId = dr_vertex_firstpass.getShaderId();
         debugMessage("Deferred Renderer first pass vertex shader compiled successful.");
+        debugMessage("path:  " + dr_vertex_firstpass_path);
     }
     else{
         debugMessage("Deferred Renderer first pass vertex shader compiled failed!");

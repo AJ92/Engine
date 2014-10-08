@@ -4,6 +4,8 @@
 #include "Object/compositeobject.h"
 #include "Object/positation.h"
 
+
+
 OctTreeFast::OctTreeFast(int max_amount_objects)
 {
     this->subdivision_level = 0;
@@ -70,6 +72,13 @@ void OctTreeFast::constructNodePoints(){
 
     spherical_node_size = pos.distance(p1);
 
+
+    //construct AABB
+    //p1 and p7 should do it...
+
+    aabb = AABB(p7, p1);
+    sphere = Sphere(pos, spherical_node_size);
+
 }
 
 OctTreeFast::~OctTreeFast(){
@@ -117,6 +126,21 @@ int OctTreeFast::fits(SP<CompositeObject> obj){
         return false;
     }
 
+
+    Sphere mdl_sphere = obj->getPositation()->getSphere();
+
+    //check if the center of bounding sphere is inside the octree node
+    if(Intersections::pointInAABB(mdl_sphere.getPos(),aabb)){
+        return 1;
+    }
+    if(Intersections::sphereAABBIntersection(mdl_sphere,aabb)){
+        return 1;
+    }
+    return 0;
+
+
+    //point in BOX
+    /*
     SP<Positation> posi = obj->getPositation();
     Vector3 obj_pos = posi->getPosition();
     if((obj_pos.x()+posi->get_size_scaled()) <= (pos.x()+node_size) &&
@@ -133,6 +157,7 @@ int OctTreeFast::fits(SP<CompositeObject> obj){
         }
     }
     return false;
+    */
 }
 
 QString OctTreeFast::debug_string(){
@@ -166,6 +191,8 @@ int OctTreeFast::addCompositeObject(SP<CompositeObject> obj){
     if(obj == 0){
         debugMessage("OctTreeFast::addCompositeObject(CompositeObject * obj) : obj is null...");
     }
+
+    qDebug("adding object to octtreefast");
 
     //lets check if we need to add it or to send to our leaf nodes
     if(is_subdivided){
@@ -273,10 +300,11 @@ int OctTreeFast::removeCompositeObject(SP<CompositeObject> obj){
     if(objectLib.contains(obj)){
         objectLib.removeOne(obj);
         removed = true;
-        obj->addListener(me_eventListener);
+        obj->removeListener(me_eventListener);
         amount_objects -= 1;
+
+        id_compositeobject_hash.remove(obj->EventTransmitter::id());
     }
-    id_compositeobject_hash.remove(obj->EventTransmitter::id());
     return removed;
 }
 
@@ -286,7 +314,6 @@ QList<SP<CompositeObject> > OctTreeFast::getCompositeObjects(){
 
 
 void OctTreeFast::subdivide(){
-
     QList<SP<CompositeObject> > objectLib_old = objectLib;
     objectLib.clear();
 
@@ -299,8 +326,6 @@ void OctTreeFast::subdivide(){
 
     double new_node_size = this->node_size/2.0;
     double new_node_pos = new_node_size;
-
-
 
     tree_northwest_high = SP<OctTreeFast>(new OctTreeFast(this->subdivision_level+1,
                                           Vector3(this->pos.x()-new_node_pos,
@@ -383,7 +408,6 @@ void OctTreeFast::subdivide(){
     }
 
     amount_objects += addCompositeObjects(objectLib_old);
-
 }
 
 
@@ -399,14 +423,20 @@ void OctTreeFast::eventRecieved(Event e){
         debugMessage("OctTreeFast: removing object and inserting it into root node...");
 
         SP<CompositeObject> obj = e.compositeObject->getCompositeObject();
-        if(fits(obj) == false){
+     //   int fitting = 0;
+     //   fitting = fits(obj);
+     //   if(fitting == 0){
+            qDebug("OctTreeFast: removing object and inserting it into root node...");
+
             removeCompositeObject(obj);
-            obj->removeListener(me_eventListener);
+            //obj->removeListener(me_eventListener);
             tree_root->addCompositeObject(obj);
-        }
+     //   }
+     //   qDebug("still fits");
         return;
     }
     if(e.type == Event::EventCompositeObjectRemoved || e.type == Event::EventCompositeObjectDeleted){
+        //never tested...
         SP<CompositeObject> obj = e.compositeObject->getCompositeObject();
         removeCompositeObject(obj);
         return;
@@ -416,6 +446,6 @@ void OctTreeFast::eventRecieved(Event e){
 void OctTreeFast::debugMessage(QString message){
     Event e;
     e.type = Event::EventDebuggerMessage;
-    e.debugger = new EventDebugger(message);
+    e.debugger = SP<EventDebugger> (new EventDebugger(message));
     this->transmit(e);
 }

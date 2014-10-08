@@ -36,10 +36,10 @@ void ObjectWorld::initialize(){
     ml->addListener(me_eventListener);
     ml->initialize();
 
-    ot = SP<OctTree>(new OctTree(2000));
+    ot = SP<OctTree>(new OctTree(10));
 
-    ot_dynamic_model = SP<OctTreeFast>(new OctTreeFast(20));
-    ot_dynamic_lights = SP<OctTreeFast>(new OctTreeFast(20));
+    ot_dynamic_model = SP<OctTreeFast>(new OctTreeFast(2));
+    ot_dynamic_lights = SP<OctTreeFast>(new OctTreeFast(3));
 
 
     //preload the light model...
@@ -71,8 +71,8 @@ SP<CompositeObject> ObjectWorld::loadLightobject(QString name){
     //grow in depth that fast ...
     SP<Positation> posi(new Positation());
     posi->set_position((double)((rand() & 1000)-500),
-                      (double)((rand() & 1000)-500),
-                      (double)((rand() & 1000)-500));
+                       (double)((rand() & 1000)-500),
+                       (double)((rand() & 1000)-500));
 
     co->setPositation(posi);
 
@@ -124,6 +124,9 @@ SP<CompositeObject> ObjectWorld::loadModelobject(QString name, QString path){
 //static
 SP<CompositeObject> ObjectWorld::loadModelobject(QString name, QString path, SP<Positation> posi){
     SP<CompositeObject> co(new CompositeObject(name, CompositeObject::MovementStatic));
+
+
+
     co->setPositation(posi);
 
     co->addListener(me_eventListener);
@@ -178,18 +181,20 @@ void ObjectWorld::eventRecieved(Event e){
             if(obj->getObjectMovementType() == CompositeObject::MovementDynamic){
                 debugMessage("dynamic...");
                 ot_dynamic_model->addCompositeObject(obj);
-                count_models_out += 1;
 
+
+                //count_models_out += 1;
+                /*
                 debugMessage("ObjectWorld : dyn_object in/out:  " +
                              QString::number(count_models_in) + " / " +
                              QString::number(count_models_out) + " ... " +
                              QString::number(obj->getAllListeners().size()));
-
+                */
                 return;
             }
             if(obj->getObjectMovementType() == CompositeObject::MovementStatic){
                 debugMessage("static...");
-                ot->addModel(e.compositeObject->getCompositeObject());
+                ot->addModel(obj);
                 return;
             }
         }

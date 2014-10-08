@@ -100,14 +100,14 @@ void Test::keyFunction(){
     if(k->isPressed(38))
     {
 
-        int count = 1000;
+        int count = 1;
         for(int i = 0; i < count; i++){
             SP<Positation> posi(new Positation());
             posi->set_position((double)((rand() & 1000)-500),
                               (double)((rand() & 1000)-500),
                               (double)((rand() & 1000)-500));
 
-            posi->set_scale(3.0,3.0,3.0);
+            posi->set_scale(9.0,9.0,9.0);
             SP<CompositeObject> coTest = loadModelObject("tree", getApplicationDir() + "//tree.obj", posi);
         }
         /*
@@ -176,7 +176,7 @@ void Test::keyFunction(){
     //J
     if(k->isPressed(36))
     {
-        if(level_loaded < 5){
+        if(level_loaded < 1){
             for(int i = 0; i < test_amount; i++){
                 compositeobjecttest.append(loadModelObject("betty",
                                                            getApplicationDir() +
@@ -187,9 +187,9 @@ void Test::keyFunction(){
         else{
             for(int i = 0; i < compositeobjecttest.size(); i++){
                 SP<CompositeObject> coTest = compositeobjecttest.at(i);
-                coTest->getPositation()->set_position(  (double)((rand() & 1000)-500),
-                                                        (double)((rand() & 1000)-500),
-                                                        (double)((rand() & 1000)-500));
+                coTest->getPositation()->set_position(  (double)((rand() & 2000)-1000),
+                                                        (double)((rand() & 2000)-1000),
+                                                        (double)((rand() & 2000)-1000));
             }
         }
     }

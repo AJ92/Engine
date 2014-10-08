@@ -68,6 +68,13 @@ void OctTree::constructNodePoints(){
 
     spherical_node_size = pos.distance(p1);
 
+    //construct AABB
+    //p1 and p7 should do it...
+
+    aabb = AABB(p7, p1);
+    sphere = Sphere(pos, spherical_node_size);
+
+
 }
 
 OctTree::~OctTree(){
@@ -111,25 +118,40 @@ int OctTree::fits(SP<CompositeObject> obj){
 
     if(obj == 0){
         qDebug("[WARNING] OctTree::fits(CompositeObject * obj) : no CompositeObject ...");
-        return false;
+        return 0;
     }
 
-    SP<Positation> posi = obj->getPositation();
-    Vector3 mdl_pos = posi->getPosition();
-    if((mdl_pos.x()+posi->get_size_scaled()) <= (pos.x()+node_size) &&
-       (mdl_pos.x()-posi->get_size_scaled()) >= (pos.x()-node_size)){
+
+    Sphere mdl_sphere = obj->getPositation()->getSphere();
+
+    //check if the center of bounding sphere is inside the octree node
+    if(Intersections::pointInAABB(mdl_sphere.getPos(),aabb)){
+        return 1;
+    }
+    if(Intersections::sphereAABBIntersection(mdl_sphere,aabb)){
+        return 1;
+    }
+    return 0;
+
+    //point in BOX
+    /*
+    double size_scaled = 0.0;//posi->get_size_scaled();
+
+    if((mdl_pos.x()+size_scaled) <= (pos.x()+node_size) &&
+       (mdl_pos.x()-size_scaled) >= (pos.x()-node_size)){
         //inside of the X axis
-        if((mdl_pos.y()+posi->get_size_scaled()) <= (pos.y()+node_size) &&
-           (mdl_pos.y()-posi->get_size_scaled()) >= (pos.y()-node_size)){
+        if((mdl_pos.y()+size_scaled) <= (pos.y()+node_size) &&
+           (mdl_pos.y()-size_scaled) >= (pos.y()-node_size)){
             //inside of the Y axis
-            if((mdl_pos.z()+posi->get_size_scaled()) <= (pos.z()+node_size) &&
-               (mdl_pos.z()-posi->get_size_scaled()) >= (pos.z()-node_size)){
+            if((mdl_pos.z()+size_scaled) <= (pos.z()+node_size) &&
+               (mdl_pos.z()-size_scaled) >= (pos.z()-node_size)){
                 //model fits in this node
                 return true;
             }
         }
     }
     return false;
+    */
 }
 
 QString OctTree::debug_string(){
@@ -171,7 +193,7 @@ int OctTree::addModel(SP<CompositeObject> obj){
     }
     else{
         debugMessage("OctTree::addModel(CompositeObject * obj) : compositeObject has no fuckin MODEL !!!! ...");
-        qDebug("    no model ???!!!???!...");
+        qDebug("    no model...");
     }
 
     //lets check if we need to add it or to send to our leaf nodes
@@ -191,6 +213,9 @@ int OctTree::addModel(SP<CompositeObject> obj){
         int f8 = tree_southeast_low->fits(obj);
 
         int fit_count = f1 + f2 + f3 + f4 + f5 + f6 + f7 + f8;
+
+        qDebug("Fits:");
+        qDebug(QString::number(fit_count).toUtf8());
 
         int result_added = 0;
 
@@ -257,6 +282,8 @@ int OctTree::addModel(SP<CompositeObject> obj){
 }
 
 int OctTree::addModels(SP<ModelLibrary_v2> lib){
+
+    qDebug("ADDING LIB to OctTree");
 
     int added_count = 0;
 
@@ -363,6 +390,7 @@ void OctTree::subdivide(){
     }
 
     amount_objects += addModels(old_lib);
+    old_lib->clearLib();
 
 
     ////////////////////////////////////////////////////////////////////////////////////////////

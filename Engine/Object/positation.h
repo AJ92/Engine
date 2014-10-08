@@ -7,6 +7,8 @@
 
 #include "Object/SmartPointer/smartpointer.h"
 
+#include "Math/Intersections/intersections.h"
+
 class Event;
 
 
@@ -41,6 +43,8 @@ public:
     void set_size_scaled(double size_scaled);
     double get_size_scaled();
 
+    Sphere getSphere();
+
     Matrix4x4 get_model_matrix();
 
 protected:
@@ -52,6 +56,8 @@ protected:
 
     //spherical bound by vertices and scale...
     double size_scaled;
+
+    Sphere sphere;
 
     //translation, scale, rotation...
     Vector3 pos;

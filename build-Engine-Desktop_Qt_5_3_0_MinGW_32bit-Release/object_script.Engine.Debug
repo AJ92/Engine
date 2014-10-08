@@ -46,6 +46,9 @@ INPUT(
 ./debug\customgraph.o
 ./debug\octtreefast.o
 ./debug\referencecounter.o
+./debug\intersections.o
+./debug\aabb.o
+./debug\sphere.o
 ./debug\moc_debugwindow.o
 ./debug\moc_engine.o
 ./debug\moc_streamToDisk.o

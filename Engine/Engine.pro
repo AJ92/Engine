@@ -60,7 +60,10 @@ SOURCES += main.cpp\
     Debug/Ui/customgraph.cpp \
     Graphics/World/DataStructure/octtreefast.cpp \
     Object/SmartPointer/sp.cpp \
-    Object/SmartPointer/referencecounter.cpp
+    Object/SmartPointer/referencecounter.cpp \
+    Math/Intersections/intersections.cpp \
+    Math/Geometry/aabb.cpp \
+    Math/Geometry/sphere.cpp
 
 
 
@@ -115,7 +118,10 @@ HEADERS  += \
     Graphics/World/DataStructure/octtreefast.h \
     Object/SmartPointer/sp.h \
     Object/SmartPointer/referencecounter.h \
-    Object/SmartPointer/smartpointer.h
+    Object/SmartPointer/smartpointer.h \
+    Math/Intersections/intersections.h \
+    Math/Geometry/aabb.h \
+    Math/Geometry/sphere.h
 
 
 

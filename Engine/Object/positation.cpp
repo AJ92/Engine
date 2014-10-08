@@ -34,11 +34,13 @@ void Positation::set_position(double x, double y, double z){
     pos[1] = y;
     pos[2] = z;
     set_matrix_pos();
+    sendMovedEvent();
 }
 
 void Positation::set_position(Vector3 position){
     pos = position;
     set_matrix_pos();
+    sendMovedEvent();
 }
 
 
@@ -113,6 +115,10 @@ void Positation::set_size(double size){
     }
 
     size_scaled = max_scale;
+
+    //construct new Sphere for fast intersection tests...
+    this->sphere = Sphere(pos.x(), pos.y(), pos.z(), size_scaled);
+
 }
 
 double Positation::get_size(){
@@ -125,6 +131,10 @@ void Positation::set_size_scaled(double size_scaled){
 
 double Positation::get_size_scaled(){
     return size_scaled;
+}
+
+Sphere Positation::getSphere(){
+    return sphere;
 }
 
 
@@ -179,7 +189,11 @@ void Positation::build_model_matrix(){
 }
 
 void Positation::sendMovedEvent(){
-
+    /*
+    Event e;
+    e.type = Event::EventCompositeObjectMoved;
+    this->transmit(e);
+    */
 }
 
 void Positation::debugMessage(QString message){

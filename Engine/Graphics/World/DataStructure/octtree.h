@@ -25,6 +25,8 @@
 
 #include "Object/SmartPointer/smartpointer.h"
 
+#include "Math/Intersections/intersections.h"
+
 class Event;
 class CompositeObject;
 class Positation;
@@ -100,7 +102,8 @@ private:
     QString path;
 
     QList<Vector3> node_bounds;
-
+    AABB aabb;
+    Sphere sphere;
 
 
     //event stuff

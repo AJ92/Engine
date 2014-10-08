@@ -30,7 +30,7 @@ Test::Test() :
     qDebug("3");
 
     Camera * cam = new Camera();
-    cam->setZFAR(5000.0);
+    cam->setZFAR(15000.0);
     cam->set_position(0.0,-1200.0,650.0);
     cam->set_rotation_local(-50.0,1.0,0.0,0.0);
     setCamera(cam);
@@ -149,14 +149,11 @@ void Test::keyFunction(){
 
         int count = 30;
         for(int i = 0; i < count; i++){
-            SP<Positation> posi(new Positation());
-            posi->set_position((double)((rand() & 2000)-1000),
-                              (double)((rand() & 2000)-1000),
-                              30.0f);
-
-            posi->set_scale(51.12f,51.12f,51.12f);
             SP<CompositeObject> coTest = loadLightObject("light");
-            coTest->setPositation(posi);
+            coTest->getPositation()->set_position((double)((rand() & 2000)-1000),
+                                                (double)((rand() & 2000)-1000),
+                                                30.0f);
+            coTest->getPositation()->set_scale(51.12f,51.12f,51.12f);
 
 
             SP<Light> l= coTest->getLight();

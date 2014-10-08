@@ -419,6 +419,18 @@ void OctTreeFast::eventRecieved(Event e){
         //if not, remove it and add it to the root node,
         //so it can add it to the node it fits...
         SP<CompositeObject> obj = e.compositeObject->getCompositeObject();
+
+
+
+        if(obj->hasPositation()){
+            qDebug("CO sphere pos:");
+            qDebug(QString::number(obj->getPositation()->getSphere().getPos().x()).toUtf8());
+            qDebug(QString::number(obj->getPositation()->getSphere().getPos().y()).toUtf8());
+            qDebug(QString::number(obj->getPositation()->getSphere().getPos().z()).toUtf8());
+        }
+
+
+
         int fitting = 0;
         fitting = fits(obj);
         if(fitting == 0){

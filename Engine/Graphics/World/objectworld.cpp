@@ -39,7 +39,7 @@ void ObjectWorld::initialize(){
     ot = SP<OctTree>(new OctTree(10));
 
     ot_dynamic_model = SP<OctTreeFast>(new OctTreeFast(5));
-    ot_dynamic_lights = SP<OctTreeFast>(new OctTreeFast(10));
+    ot_dynamic_lights = SP<OctTreeFast>(new OctTreeFast(3000));
 
 
     //preload the light model...

@@ -55,14 +55,35 @@ void CompositeObject::setPositation(SP<Positation> positation){
     if(positation_ != 0){
         positation_->removeListener(me_eventListener_);
     }
+
+    if(hasPositation()){
+        qDebug("CO old pos:");
+        qDebug(QString::number(positation_->getPosition().x()).toUtf8());
+        qDebug(QString::number(positation_->getPosition().y()).toUtf8());
+        qDebug(QString::number(positation_->getPosition().z()).toUtf8());
+    }
+
     positation_ = positation;
     type_ = type_ | ObjectPositionRotation; //binary or
     positation_->addListener(me_eventListener_);
 
+
+    if(hasPositation()){
+        qDebug("CO new pos:");
+        qDebug(QString::number(positation_->getPosition().x()).toUtf8());
+        qDebug(QString::number(positation_->getPosition().y()).toUtf8());
+        qDebug(QString::number(positation_->getPosition().z()).toUtf8());
+    }
+
+    //scaled, because the spherical bound needs to be adjusted...
     Event e;
-    e.type = Event::EventCompositeObjectMoved;
-    e.compositeObject = SP<EventCompositeObject> (new EventCompositeObject(me_));
-    this->transmit(e);
+    e.type = Event::EventCompositeObjectScaled;
+    positation_->transmit(e);
+
+    Event e2;
+    e2.type = Event::EventCompositeObjectMoved;
+    positation_->transmit(e2);
+    //e.compositeObject = SP<EventCompositeObject> (new EventCompositeObject(me_));
 }
 
 
@@ -114,7 +135,9 @@ void CompositeObject::eventRecieved(Event e){
     if(e.type == Event::EventModelLoaded){
 
         //adjust the size
-        positation_->set_size(model_->get_size());
+        if(hasPositation() && hasModel()){
+            positation_->set_size(model_->get_size());
+        }
 
         Event e2;
         e2.type = Event::EventCompositeObjectModelLoaded;
@@ -124,8 +147,17 @@ void CompositeObject::eventRecieved(Event e){
 
     //forward the message...
     if((e.type == Event::EventCompositeObjectMoved) ||
-       (e.type == Event::EventCompositeObjectRotated) ||
-       (e.type == Event::EventCompositeObjectScaled)){
+       (e.type == Event::EventCompositeObjectRotated)){
+        //forward the message...
+        e.compositeObject = SP<EventCompositeObject> (new EventCompositeObject(me_));
+        this->transmit(e);
+    }
+
+    if(e.type == Event::EventCompositeObjectScaled){
+        if(hasPositation() && hasModel()){
+            positation_->set_size(model_->get_size());
+        }
+        //forward the message...
         e.compositeObject = SP<EventCompositeObject> (new EventCompositeObject(me_));
         this->transmit(e);
     }

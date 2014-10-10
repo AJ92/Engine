@@ -8,7 +8,8 @@ uniform vec3 ld;
 uniform vec3 lp;
 uniform vec2 win_size;
 
-layout( location = 0 ) out vec4 frag_color;
+//was vec4
+layout( location = 0 ) out vec3 frag_color;
 const vec3 kd = vec3 (1.0, 1.0, 1.0);
 const vec3 ks = vec3 (1.0, 1.0, 1.0);
 const float specular_exponent = 100.0;
@@ -33,7 +34,7 @@ vec3 phong (in vec3 p_eye, in vec3 n_eye) {
   // attenuation (fade out to sphere edges)
   float dist_2d = distance (light_position_eye, p_eye);
    //175.0 is the spheres scale...
-  float atten_factor = -log (min (1.0, dist_2d / 75.0));
+  float atten_factor = -log (min (1.0, dist_2d / 175.0));
   
   return (Id + Is) * atten_factor;
 }
@@ -51,5 +52,5 @@ void main () {
   vec4 c_texel = texture (c_tex, st);
   
   frag_color.rgb = c_texel.rgb * phong (p_texel.rgb, normalize (n_texel).rgb);
-  frag_color.a = 1.0;
+  //frag_color.a = 1.0;
 }

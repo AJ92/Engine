@@ -7,7 +7,8 @@ uniform vec3 ambient;
 //uniform vec3 direction;
 uniform vec2 win_size;
 
-layout( location = 0 ) out vec4 frag_color;
+//was vec4
+layout( location = 0 ) out vec3 frag_color;
 
 void main () {
   vec2 st;
@@ -18,11 +19,13 @@ void main () {
   if (p_texel.z > -0.0001) {
     discard;
   }
+  
   vec4 n_texel = texture (n_tex, st);
   vec4 c_texel = texture (c_tex, st);
+  
   
   //float dir = max(dot(n_texel.xyz,direction),0.0);
   
   frag_color.rgb = c_texel.rgb * ambient/* * dir*/;
-  frag_color.a = 1.0;
+  //frag_color.a = 1.0;
 }

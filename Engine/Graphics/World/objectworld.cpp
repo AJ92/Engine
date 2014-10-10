@@ -36,7 +36,7 @@ void ObjectWorld::initialize(){
     ml->addListener(me_eventListener);
     ml->initialize();
 
-    ot = SP<OctTree>(new OctTree(100));
+    ot = SP<OctTree>(new OctTree(64));
 
     ot_dynamic_model = SP<OctTreeFast>(new OctTreeFast(10));
     ot_dynamic_lights = SP<OctTreeFast>(new OctTreeFast(10));

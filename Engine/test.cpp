@@ -147,13 +147,13 @@ void Test::keyFunction(){
     if(k->isPressed(50))
     {
 
-        int count = 30;
+        int count = 1;
         for(int i = 0; i < count; i++){
             SP<CompositeObject> coTest = loadLightObject("light");
             coTest->getPositation()->set_position((double)((rand() & 2000)-1000),
                                                 (double)((rand() & 2000)-1000),
                                                 30.0f);
-            coTest->getPositation()->set_scale(51.12f,51.12f,51.12f);
+            coTest->getPositation()->set_scale(31.12f,31.12f,31.12f);
 
 
             SP<Light> l= coTest->getLight();
@@ -201,7 +201,7 @@ void Test::keyFunction(){
             posi->set_scale(1.0,1.0,1.0);
             posi->set_rotation(90.0f,1.0f,0.0f,0.0f);
             SP<CompositeObject> coTest = loadModelObject("city", getApplicationDir() + "//Paris//paris2.obj", posi);
-
+            //SP<CompositeObject> coTest = loadModelObject("city", getApplicationDir() + "//city2//Organodron City.obj", posi);
             lvl_loaded = true;
         }
         /*

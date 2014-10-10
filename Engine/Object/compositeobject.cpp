@@ -56,24 +56,28 @@ void CompositeObject::setPositation(SP<Positation> positation){
         positation_->removeListener(me_eventListener_);
     }
 
+    /*
     if(hasPositation()){
         qDebug("CO old pos:");
         qDebug(QString::number(positation_->getPosition().x()).toUtf8());
         qDebug(QString::number(positation_->getPosition().y()).toUtf8());
         qDebug(QString::number(positation_->getPosition().z()).toUtf8());
     }
+    */
 
     positation_ = positation;
     type_ = type_ | ObjectPositionRotation; //binary or
     positation_->addListener(me_eventListener_);
 
 
+    /*
     if(hasPositation()){
         qDebug("CO new pos:");
         qDebug(QString::number(positation_->getPosition().x()).toUtf8());
         qDebug(QString::number(positation_->getPosition().y()).toUtf8());
         qDebug(QString::number(positation_->getPosition().z()).toUtf8());
     }
+    */
 
     //scaled, because the spherical bound needs to be adjusted...
     Event e;

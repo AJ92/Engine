@@ -36,10 +36,10 @@ void ObjectWorld::initialize(){
     ml->addListener(me_eventListener);
     ml->initialize();
 
-    ot = SP<OctTree>(new OctTree(10));
+    ot = SP<OctTree>(new OctTree(100));
 
-    ot_dynamic_model = SP<OctTreeFast>(new OctTreeFast(5));
-    ot_dynamic_lights = SP<OctTreeFast>(new OctTreeFast(3000));
+    ot_dynamic_model = SP<OctTreeFast>(new OctTreeFast(10));
+    ot_dynamic_lights = SP<OctTreeFast>(new OctTreeFast(10));
 
 
     //preload the light model...

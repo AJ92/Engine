@@ -41,7 +41,7 @@ Model::Model() :
 }
 
 Model::~Model(){
-    qDebug("Model::~Model");
+    //qDebug("Model::~Model");
 }
 
 double Model::get_size(){
@@ -120,7 +120,7 @@ void Model::loadGLdata(){
         }
     }
     isReady = true;
-    qDebug("Model::loadGLdata()");
+    //qDebug("Model::loadGLdata()");
 }
 
 bool Model::isReadyToRender(){

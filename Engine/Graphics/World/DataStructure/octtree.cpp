@@ -79,7 +79,7 @@ void OctTree::constructNodePoints(){
 
 OctTree::~OctTree(){
     //DESTRUCTOR... soon
-    qDebug("OctTree::~OctTree");
+    //qDebug("OctTree::~OctTree");
 }
 
 QList<SP<OctTree> > OctTree::getNodesInFrustum(SP<Frustum> f){
@@ -183,7 +183,7 @@ QString OctTree::debug_string(){
 
 int OctTree::addModel(SP<CompositeObject> obj){
 
-    qDebug("adding to octree...");
+    //qDebug("adding to octree...");
 
     if(obj->hasModel()){
         if(!obj->getModel()->isReadyToRender()){
@@ -214,8 +214,8 @@ int OctTree::addModel(SP<CompositeObject> obj){
 
         int fit_count = f1 + f2 + f3 + f4 + f5 + f6 + f7 + f8;
 
-        qDebug("Fits:");
-        qDebug(QString::number(fit_count).toUtf8());
+        //qDebug("Fits:");
+        //qDebug(QString::number(fit_count).toUtf8());
 
         int result_added = 0;
 
@@ -259,7 +259,7 @@ int OctTree::addModel(SP<CompositeObject> obj){
         }
 
         amount_objects += result_added;
-        qDebug( QString::number(amount_objects).toUtf8());
+        //qDebug( QString::number(amount_objects).toUtf8());
         return result_added;
 
     }
@@ -276,14 +276,14 @@ int OctTree::addModel(SP<CompositeObject> obj){
         subdivide();
     }
     debug_string();
-    qDebug( QString::number(amount_objects).toUtf8());
+    //qDebug( QString::number(amount_objects).toUtf8());
     return 1;
 
 }
 
 int OctTree::addModels(SP<ModelLibrary_v2> lib){
 
-    qDebug("ADDING LIB to OctTree");
+    //qDebug("ADDING LIB to OctTree");
 
     int added_count = 0;
 

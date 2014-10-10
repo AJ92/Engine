@@ -7,7 +7,8 @@ uniform vec3 ambient;
 uniform vec3 direction;
 uniform vec2 win_size;
 
-layout( location = 0 ) out vec4 frag_color;
+//was vec4
+layout( location = 0 ) out vec3 frag_color;
 const vec3 kd = vec3 (1.0, 1.0, 1.0);
 void main () {
   vec2 st;
@@ -46,6 +47,6 @@ void main () {
   vec3 Ia = ambient * kd * dot_prod;
 
   frag_color.rgb = c_texel.rgb * Ia;
-  frag_color.a = 1.0; 
+  //frag_color.a = 1.0; 
 
 }

@@ -501,10 +501,10 @@ void Renderer::render_v2(){
 
 
 
-            glBindFramebuffer (GL_FRAMEBUFFER, 0);
+            //glBindFramebuffer (GL_FRAMEBUFFER, fb);
             //glDrawBuffer(GL_BACK);
-            glClearColor (0.0, 0.0, 0.0, 1.0f); // no ambient... we add it later...
-            glClear (GL_COLOR_BUFFER_BIT);
+            //glClearColor (0.0, 0.0, 0.0, 1.0f); // no ambient... we add it later...
+            //glClear (GL_COLOR_BUFFER_BIT);
 
             glEnable (GL_BLEND); // --- could reject background frags!
             glBlendEquation (GL_FUNC_ADD);
@@ -636,126 +636,6 @@ void Renderer::render_v2(){
                     }
                 }
             }
-
-
-            /*
-            //////////////////////////////////////////////////////
-            // OLD
-            //////////////////////////////////////////////////////
-            for(int i = 0; i < ot_nodes.size(); i++){
-                //render one node...
-
-
-                //copy the lists so we can itterate through them
-                QList<QList<Mesh*> > l_mesh_model_list = lightlib->getMeshModelList();
-                QList<QList<Model*> > l_model_mesh_list = lightlib->getModelMeshList();
-                QList<QList<Light*> > l_light_mesh_list = lightlib->getLightMeshList();
-                QList<Material*> l_material_mesh_list = lightlib->getMaterialMeshList();
-
-
-                //loop trough the material_mesh_list
-                for(int index = 0; index < l_material_mesh_list.size(); index++){
-                    ///////////////////////////////////////////////////////////////////////////////////
-                    ///
-                    /// TODO:
-                    ///
-                    /// WE NEED TO CHECK IF THE MESH DATA IS UNIQUE..
-                    /// BUT AT THIS POINt WE ASUME IT's ALLWAYS THE SAME
-                    ///
-                    ///////
-
-                    if(l_mesh_model_list[index].size()>0){
-
-
-                        Mesh * mesh = l_mesh_model_list[index].at(0);
-
-                        //VAO
-
-                        glBindVertexArray(mesh->get_vertex_array_object());
-
-                        //VBOs
-                        glBindBuffer(GL_ARRAY_BUFFER, mesh->get_vertex_vbo());
-                        glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, 0);
-                        glEnableVertexAttribArray(0);
-
-                        //tex coords actually not needed!!!
-                        glBindBuffer(GL_ARRAY_BUFFER, mesh->get_texcoord_vbo());
-                        glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 0, 0);
-                        glEnableVertexAttribArray(1);
-
-                        glBindBuffer(GL_ARRAY_BUFFER, mesh->get_normal_vbo());
-                        glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, 0, 0);
-                        glEnableVertexAttribArray(2);
-
-
-
-                        //draw
-                        int rendered = 0;
-                        for(int mdl_index = 0; mdl_index < l_model_mesh_list[index].size(); mdl_index++){
-                            Model * mdl =  l_model_mesh_list[index].at(mdl_index);
-
-                            Positation * posi = mdl->getParentCompositeObject()->getPositation();
-
-                            vm_m = v_m * m_m;
-                            pvm_m = p_m * v_m * m_m;
-
-
-                            if(meshInFrustum(frustum, mdl, mesh, pvm_m)){
-
-                                Light * light =  l_light_mesh_list[index].at(mdl_index);
-
-
-                                //Indizes
-                                //|    0        4        8        12   |
-                                //|                                    |
-                                //|    1        5        9        13   |
-                                //|                                    |
-                                //|    2        6        10       14   |
-                                //|                                    |
-                                //|    3        7        11       15   |
-
-
-                                //set the mesh to a billboard like position (give it the cam's rotation)
-                                m_m = posi->get_model_matrix();
-
-
-                                pvm_m = p_m * v_m * m_m;
-
-                                for (int f = 0; f < 4; f++) {
-                                    for (int g = 0; g < 4; g++) {
-                                        p_mat[f * 4 + g] = (GLfloat) (p_m[f*4+g]);
-                                        v_mat[f * 4 + g] = (GLfloat) (v_m[f*4+g]);
-                                        m_mat[f * 4 + g] = (GLfloat) (m_m[f*4+g]);
-                                        pvm_mat[f * 4 + g] = (GLfloat) (pvm_m[f*4+g]);
-                                    }
-                                }
-
-
-                                glUniformMatrix4fv(p_mat_loc_secondpass, 1, GL_FALSE, p_mat);
-                                glUniformMatrix4fv(v_mat_loc_secondpass, 1, GL_FALSE, v_mat);
-                                glUniformMatrix4fv(m_mat_loc_secondpass, 1, GL_FALSE, m_mat);
-                                glUniformMatrix4fv(pvm_mat_loc_secondpass, 1, GL_FALSE, pvm_mat);
-
-                                glUniform3f (lp_loc_secondpass, posi->getPosition().x(),
-                                                                posi->getPosition().y(),
-                                                                posi->getPosition().z()); // world position
-                                glUniform3f (ld_loc_secondpass, light->getDiffuseColor().x(),
-                                                                light->getDiffuseColor().y(),
-                                                                light->getDiffuseColor().z()); // diffuse colour
-                                glUniform3f (ls_loc_secondpass, light->getSpecularColor().x(),
-                                                                light->getSpecularColor().y(),
-                                                                light->getSpecularColor().z()); // specular colour
-
-                                //draw
-                                glDrawArrays(GL_TRIANGLES, 0, mesh->get_triangle_count()*3);
-                                rendered += 1;
-                            }
-                        }
-                    }
-                }
-            }*/
-
-
         }
 
 
@@ -861,9 +741,9 @@ void Renderer::render_v2(){
                      -1.0,
                      0.5); // ambient light direction
 
-        glUniform3f (color_loc_directionalambientpass,  0.230,
-                     0.210,
-                     0.200); // ambient color
+        glUniform3f (color_loc_directionalambientpass,  0.930,
+                     0.910,
+                     0.900); // ambient color
 
 
         for (int f = 0; f < 4; f++) {
@@ -882,6 +762,57 @@ void Renderer::render_v2(){
         //
         // DRAWING FINISHED
         //////////////////////////////////////////////////////////////////////////////////////////
+
+
+
+
+
+        ////////////////////////////////////////////////////////////
+        //  POST PROCESSING EDGE DETECTION SHADER
+        //
+
+        glDisable (GL_BLEND);
+
+        //bind framebuffer so we can draw to the edge texture....
+        //glBindFramebuffer(GL_FRAMEBUFFER, fb);
+
+
+        glBindFramebuffer(GL_FRAMEBUFFER, 0);
+        glDrawBuffer(GL_BACK);
+
+        //switch texture slot... color to 0
+        glActiveTexture (GL_TEXTURE0);
+        glBindTexture (GL_TEXTURE_2D, fb_tex_l);
+
+        glBindVertexArray(fsq_vertex_array_object);
+
+        //VBOs
+        glBindBuffer(GL_ARRAY_BUFFER, fsq_vertex_vbo);
+        glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, 0);
+        glEnableVertexAttribArray(0);
+
+        //tex coords actually not needed!!!
+        glBindBuffer(GL_ARRAY_BUFFER, fsq_texcoord_vbo);
+        glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 0, 0);
+        glEnableVertexAttribArray(1);
+
+        glBindBuffer(GL_ARRAY_BUFFER, fsq_normal_vbo);
+        glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, 0, 0);
+        glEnableVertexAttribArray(2);
+
+        glUseProgram (DR_EdgeDetectionPassProgramIdId);
+
+        glPolygonMode(GL_FRONT_AND_BACK, GL_POLYGON);
+
+        glUniform2f (win_size_loc_edgedetectionpass, win->getWindowWidth(), win->getWindowHeight());
+
+        glDrawArrays(GL_TRIANGLES, 0, triangle_count*3);
+
+        //
+        ////////////////////////////////////////////////////////////
+
+
+
 
 
         glActiveTexture(GL_TEXTURE0);
@@ -2286,6 +2217,8 @@ bool Renderer::createShaders(){
     glUniform1i(glGetUniformLocation(DR_DirectionalAmbientPassProgramIdId, "p_tex"), 0);
     glUniform1i(glGetUniformLocation(DR_DirectionalAmbientPassProgramIdId, "n_tex"), 1);
     glUniform1i(glGetUniformLocation(DR_DirectionalAmbientPassProgramIdId, "c_tex"), 2);
+
+
     //ambient light dir pass end
     /////////////////////////////////////////////////////////////////////////////////////
 
@@ -2391,6 +2324,97 @@ bool Renderer::createShaders(){
 
 
 
+    /////////////////////////////////////////////////////////////////////////////////////
+    //EDGE DETECTION PASS
+
+
+    //vertex shader
+    Shader dr_vertex_nfaa_edge(QApplication::applicationDirPath() +
+                               "/shaders/nfaa_edge_vertex_shader.vsh",
+                               GL_VERTEX_SHADER);
+    if(dr_vertex_nfaa_edge.isCreated()){
+        DR_EdgeDetectionPassVertexShaderId = dr_vertex_nfaa_edge.getShaderId();
+        debugMessage("Deferred Renderer nfaa edge detection vertex shader compiled successful.");
+    }
+    else{
+        debugMessage("Deferred Renderer nfaa edge detection vertex shader compiled failed!");
+        debugMessage(dr_vertex_nfaa_edge.getError());
+        return false;
+    }
+
+
+    //fragment shader
+    Shader dr_fragment_nfaa_edge(QApplication::applicationDirPath() +
+                               "/shaders/nfaa_edge_fragment_shader.fsh",
+                               GL_FRAGMENT_SHADER);
+    if(dr_fragment_nfaa_edge.isCreated()){
+        DR_EdgeDetectionPassFragmentShaderId = dr_fragment_nfaa_edge.getShaderId();
+        debugMessage("Deferred Renderer nfaa edge detection fragment shader compiled successful.");
+    }
+    else{
+        debugMessage("Deferred Renderer nfaa edge detection fragment shader compiled failed!");
+        debugMessage(dr_fragment_nfaa_edge.getError());
+        return false;
+    }
+
+
+
+
+
+    //create program, link it and bind locs
+    DR_EdgeDetectionPassProgramIdId = glCreateProgram();
+    glAttachShader(DR_EdgeDetectionPassProgramIdId, DR_EdgeDetectionPassVertexShaderId);
+    glAttachShader(DR_EdgeDetectionPassProgramIdId, DR_EdgeDetectionPassFragmentShaderId);
+
+
+
+    glLinkProgram(DR_EdgeDetectionPassProgramIdId);
+
+    //GLint linked;
+    glGetProgramiv(DR_EdgeDetectionPassProgramIdId, GL_LINK_STATUS, &linked);
+    if (linked){
+        debugMessage("deferred renderer program pass nfaa edge detection linked");
+    }
+    else{
+        debugMessage("deferred renderer program pass nfaa edge detection linking failed!!!");
+        char messages[256];
+        glGetProgramInfoLog(DR_EdgeDetectionPassProgramIdId, sizeof(messages), 0, &messages[0]);
+        debugMessage(QString(messages));
+        return false;
+    }
+
+    glUseProgram(DR_EdgeDetectionPassProgramIdId);
+
+    ErrorCheckValue = glGetError();
+    if (ErrorCheckValue != GL_NO_ERROR)
+    {
+        debugMessage("ERROR(3): Could not create the shaders: " + QString((char*) gluErrorString(ErrorCheckValue)));
+        //exit(EXIT_FAILURE);
+        return false;
+    }
+
+    win_size_loc_edgedetectionpass = glGetUniformLocation(DR_EdgeDetectionPassProgramIdId, "win_size");
+
+
+    glUniform1i(glGetUniformLocation(DR_EdgeDetectionPassProgramIdId, "l_tex"), 0);
+
+
+    //EDGE DETECTION PASS pass end
+    /////////////////////////////////////////////////////////////////////////////////////
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
     //TEST FOR ERRORS
 
@@ -2417,6 +2441,8 @@ bool Renderer::createBuffers(){
     fb = 0;
     glGenFramebuffers (1, &fb);
     glBindFramebuffer (GL_FRAMEBUFFER, fb);
+
+
     //position texture
     glGenTextures (1, &fb_tex_p);
     glBindTexture (GL_TEXTURE_2D, fb_tex_p);
@@ -2431,8 +2457,8 @@ bool Renderer::createBuffers(){
       GL_UNSIGNED_BYTE,
       NULL
     );
-    glTexParameteri (GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-    glTexParameteri (GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+    glTexParameteri (GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexParameteri (GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 
@@ -2451,8 +2477,8 @@ bool Renderer::createBuffers(){
       GL_UNSIGNED_BYTE,
       NULL
     );
-    glTexParameteri (GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-    glTexParameteri (GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+    glTexParameteri (GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexParameteri (GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 
@@ -2471,8 +2497,28 @@ bool Renderer::createBuffers(){
                 GL_UNSIGNED_BYTE,
                 NULL
                 );
-    glTexParameteri (GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-    glTexParameteri (GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+    glTexParameteri (GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexParameteri (GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+
+
+    //edge detection texture, post processing AA (NFAA)
+    glGenTextures (1, &fb_tex_l);
+    glBindTexture (GL_TEXTURE_2D, fb_tex_l);
+    glTexImage2D (
+                GL_TEXTURE_2D,
+                0,
+                GL_RGB16F,
+                600,
+                400,
+                0,
+                GL_BGR,
+                GL_UNSIGNED_BYTE,
+                NULL
+                );
+    glTexParameteri (GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexParameteri (GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 
@@ -2486,6 +2532,10 @@ bool Renderer::createBuffers(){
     glFramebufferTexture2D (
       GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT2, GL_TEXTURE_2D, fb_tex_c, 0
     );
+    glFramebufferTexture2D (
+      GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT3, GL_TEXTURE_2D, fb_tex_l, 0
+    );
+
 
 
     rb = 0;
@@ -2498,8 +2548,9 @@ bool Renderer::createBuffers(){
       GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, rb
     );
 
-    GLenum draw_bufs[] = { GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1, GL_COLOR_ATTACHMENT2 };
-    glDrawBuffers (3, draw_bufs);
+    GLenum draw_bufs[] = { GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1,
+                           GL_COLOR_ATTACHMENT2, GL_COLOR_ATTACHMENT3 };
+    glDrawBuffers (4, draw_bufs);
 
 
 
@@ -2639,6 +2690,25 @@ void Renderer::resizeBuffers(int x, int y){
 
         //color texture
         glBindTexture (GL_TEXTURE_2D, fb_tex_c);
+        glTexImage2D (
+                    GL_TEXTURE_2D,
+                    0,
+                    GL_RGB16F,
+                    x,
+                    y,
+                    0,
+                    GL_BGR,
+                    GL_UNSIGNED_BYTE,
+                    NULL
+                    );
+        glTexParameteri (GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+        glTexParameteri (GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+
+
+        //edge detection texture
+        glBindTexture (GL_TEXTURE_2D, fb_tex_l);
         glTexImage2D (
                     GL_TEXTURE_2D,
                     0,

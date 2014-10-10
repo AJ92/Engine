@@ -9,7 +9,7 @@ EventListener::EventListener() :
 }
 
 EventListener::~EventListener(){
-    qDebug("EventListener::~EventListener");
+    //qDebug("EventListener::~EventListener");
 }
 
 //inherit from this class and implement the eventRecieved

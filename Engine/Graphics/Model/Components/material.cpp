@@ -14,11 +14,11 @@ Material::Material(QString name,QString path) :
 }
 
 Material::~Material(){
-    qDebug("Material DESTRUCTOR CALLED");
+    //qDebug("Material DESTRUCTOR CALLED");
     glDeleteTextures(tex_slots,gl_mtls);
     //might need to delete those...
 
-    qDebug("Material DESTRUCTOR FINISHED");
+    //qDebug("Material DESTRUCTOR FINISHED");
 }
 
 void Material::loadData(){
@@ -92,12 +92,12 @@ bool Material::load_gl_map(int slot, QImage &image){
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
 
     //for mipmaps smooth
-    //glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-    //glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
 
     //mipmaps pixelated
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST_MIPMAP_NEAREST);
+    //glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+    //glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST_MIPMAP_NEAREST);
 
 
     //smooth

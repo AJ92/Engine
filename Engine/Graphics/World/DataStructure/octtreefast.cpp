@@ -83,7 +83,7 @@ void OctTreeFast::constructNodePoints(){
 
 OctTreeFast::~OctTreeFast(){
     //DESTRUCTOR... soon
-    qDebug("OctTreeFast::~OctTreeFast");
+    //qDebug("OctTreeFast::~OctTreeFast");
 }
 
 QList<SP<OctTreeFast> > OctTreeFast::getNodesInFrustum(SP<Frustum> f){
@@ -191,7 +191,7 @@ int OctTreeFast::addCompositeObject(SP<CompositeObject> obj){
         debugMessage("OctTreeFast::addCompositeObject(CompositeObject * obj) : obj is null...");
     }
 
-    qDebug("adding object to octtreefast");
+    //qDebug("adding object to octtreefast");
 
     //lets check if we need to add it or to send to our leaf nodes
     if(is_subdivided){
@@ -421,13 +421,14 @@ void OctTreeFast::eventRecieved(Event e){
         SP<CompositeObject> obj = e.compositeObject->getCompositeObject();
 
 
-
+        /*
         if(obj->hasPositation()){
             qDebug("CO sphere pos:");
             qDebug(QString::number(obj->getPositation()->getSphere().getPos().x()).toUtf8());
             qDebug(QString::number(obj->getPositation()->getSphere().getPos().y()).toUtf8());
             qDebug(QString::number(obj->getPositation()->getSphere().getPos().z()).toUtf8());
         }
+        */
 
 
 

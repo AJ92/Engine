@@ -191,11 +191,24 @@ private:
     GLuint color_loc_debugpass;
 
 
+
+    //DEFERRED edge detection pass
+    GLuint DR_EdgeDetectionPassVertexShaderId;
+    GLuint DR_EdgeDetectionPassFragmentShaderId;
+    GLuint DR_EdgeDetectionPassProgramIdId;
+
+    GLuint win_size_loc_edgedetectionpass;
+
+
+
+
     //framebuffer textures
     GLuint fb;
-    GLuint fb_tex_p;
-    GLuint fb_tex_n;
-    GLuint fb_tex_c;
+    GLuint fb_tex_p;    //position
+    GLuint fb_tex_n;    //normal
+    GLuint fb_tex_c;    //color
+
+    GLuint fb_tex_l;    //lit scene
 
 
     //renderbuffer

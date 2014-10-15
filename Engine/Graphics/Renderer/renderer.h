@@ -35,9 +35,16 @@ class Renderer :  virtual public EventListener, virtual public EventTransmitter
 public:
 
     enum PolygonModes {
-        PolygonModeStandard     = 0x0001,
-        PolygonModeVertex       = 0x0002,
-        PolygonModeWireframe    = 0x0004
+        PolygonModeStandard         = 0x0001,
+        PolygonModeVertex           = 0x0002,
+        PolygonModeWireframe        = 0x0004,
+        //additionl debug modes
+        //light
+        PolygonModeLightVertex      = 0x0008,
+        PolygonModeLightWireframe   = 0x0010,
+        //octtree
+        PolygonModeOctTreeVertex    = 0x0020,
+        PolygonModeOctTreeWireframe = 0x0040
     };
 
     Renderer();
@@ -51,6 +58,7 @@ public:
 
     //render the objectWorld
     void render_v2();
+
 
 
     //renders the set ModelLibrary and LightLibrary

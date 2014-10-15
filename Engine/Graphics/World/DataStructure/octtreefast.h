@@ -64,6 +64,12 @@ public:
     //The event type.
     NodeType type;
 
+    int getObjectCount();
+
+    Vector3 getPosition();
+
+    double getSize();
+
 private:
     //store the tree root for fast access from inner nodes or leafs...
     SP<OctTreeFast> tree_root;

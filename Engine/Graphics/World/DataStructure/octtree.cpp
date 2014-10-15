@@ -11,7 +11,7 @@ OctTree::OctTree(int max_amount_objects)
     this->is_subdivided = false;
     this->pos = Vector3(2.0,2.0,2.0);
     //temporary limit...
-    this->node_size = 1000.0;
+    this->node_size = 9999999.0;
     mdllib = SP<ModelLibrary_v2>(new ModelLibrary_v2(max_amount_objects,max_amount_objects));
     mdllib->initialize();
     id_compositeobject_hash.reserve(max_amount_objects);
@@ -180,6 +180,13 @@ QString OctTree::debug_string(){
     return debug_str;
 }
 
+Vector3 OctTree::getPosition(){
+    return pos;
+}
+
+double OctTree::getSize(){
+    return node_size;
+}
 
 int OctTree::addModel(SP<CompositeObject> obj){
 

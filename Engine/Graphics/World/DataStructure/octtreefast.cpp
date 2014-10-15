@@ -13,7 +13,7 @@ OctTreeFast::OctTreeFast(int max_amount_objects)
     this->is_subdivided = false;
     this->pos = Vector3(2.0,2.0,2.0);
     //temporary limit...
-    this->node_size = 1000.0;
+    this->node_size = 2000.0;
     objectLib.reserve(max_amount_objects);
     id_compositeobject_hash.reserve(max_amount_objects);
     amount_objects = 0;
@@ -185,6 +185,17 @@ QString OctTreeFast::debug_string(){
     return debug_str;
 }
 
+int OctTreeFast::getObjectCount(){
+    return objectLib.size();
+}
+
+Vector3 OctTreeFast::getPosition(){
+    return pos;
+}
+
+double OctTreeFast::getSize(){
+    return node_size;
+}
 
 int OctTreeFast::addCompositeObject(SP<CompositeObject> obj){
     if(obj == 0){
@@ -432,13 +443,19 @@ void OctTreeFast::eventRecieved(Event e){
 
 
 
-        int fitting = 0;
-        fitting = fits(obj);
+        //by this technique our models move upwards in the tree...
+
+        int fitting = fits(obj);
         if(fitting == 0){
             removeCompositeObject(obj);
             //obj->removeListener(me_eventListener);
             tree_root->addCompositeObject(obj);
         }
+        else if((rand() & 100) < 10){  //try by random to remove and add the model again ...
+            removeCompositeObject(obj);
+            tree_root->addCompositeObject(obj);
+        }
+
 
         return;
     }

@@ -30,6 +30,9 @@ public:
     void setModelLoader(SP<ModelLoader> ml);
     void setModelsPerThread(int model_count);
     void setLightModelPath(QString path);
+    void setUnitCubeModelPath(QString path);
+
+    SP<Model> getUnitCubeModel();
 
     void initialize();
 
@@ -52,6 +55,9 @@ private:
 
     QString light_model_path;
     SP<Model> light_model;
+
+    QString unitcube_model_path;
+    SP<Model> unitcube_model;
 
     SP<OctTree> ot;
 

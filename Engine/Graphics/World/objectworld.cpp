@@ -32,14 +32,22 @@ void ObjectWorld::setLightModelPath(QString path){
     light_model_path = path;
 }
 
+void ObjectWorld::setUnitCubeModelPath(QString path){
+    unitcube_model_path = path;
+}
+
+SP<Model> ObjectWorld::getUnitCubeModel(){
+    return unitcube_model;
+}
+
 void ObjectWorld::initialize(){
     ml->addListener(me_eventListener);
     ml->initialize();
 
     ot = SP<OctTree>(new OctTree(64));
 
-    ot_dynamic_model = SP<OctTreeFast>(new OctTreeFast(10));
-    ot_dynamic_lights = SP<OctTreeFast>(new OctTreeFast(10));
+    ot_dynamic_model = SP<OctTreeFast>(new OctTreeFast(20));
+    ot_dynamic_lights = SP<OctTreeFast>(new OctTreeFast(20));
 
 
     //preload the light model...
@@ -47,6 +55,12 @@ void ObjectWorld::initialize(){
     light_model = SP<Model>(new Model());
     light_model->set_path(light_model_path);
     loadModel(light_model);
+
+
+    //preload the unitcube...
+    unitcube_model = SP<Model>(new Model());
+    unitcube_model->set_path(unitcube_model_path);
+    loadModel(unitcube_model);
 }
 
 

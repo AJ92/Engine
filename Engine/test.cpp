@@ -24,7 +24,7 @@ Test::Test() :
     setClearColor(0.03f,0.02f,0.05f,0.0f);
     //setClearColor(0.3f,0.3f,0.4f,0.0f);
 
-    setWindowTitle("Engine v0.001a");
+    setWindowTitle("Engine v0.01a");
     setWindowSize(800,600);
 
     qDebug("3");
@@ -45,7 +45,7 @@ Test::Test() :
     //key J, is the plane created yet ?
     level_loaded = 0;
 
-    test_amount = 10;
+    test_amount = 50;
 
 
     lvl_loaded = false;
@@ -96,6 +96,26 @@ void Test::keyFunction(){
     if(k->isPressed(7)){
         r->setPolygonMode(Renderer::PolygonModeStandard | Renderer::PolygonModeVertex | Renderer::PolygonModeWireframe);
     }
+
+
+    //7
+    if(k->isPressed(8)){
+        r->setPolygonMode(Renderer::PolygonModeStandard | Renderer::PolygonModeLightVertex);
+    }
+    //8
+    if(k->isPressed(9)){
+        r->setPolygonMode(Renderer::PolygonModeStandard | Renderer::PolygonModeLightWireframe);
+    }
+    //9
+    if(k->isPressed(10)){
+        r->setPolygonMode(Renderer::PolygonModeStandard | Renderer::PolygonModeOctTreeWireframe);
+    }
+    //0
+    if(k->isPressed(11)){
+        r->setPolygonMode(Renderer::PolygonModeStandard | Renderer::PolygonModeOctTreeVertex);
+    }
+
+
     //L
     if(k->isPressed(38))
     {
@@ -191,6 +211,11 @@ void Test::keyFunction(){
         }
     }
 
+    //H
+    if(k->isPressed(35)){
+        level_loaded = 0;
+    }
+
     //K
     if(k->isPressed(37))
     {
@@ -215,18 +240,7 @@ void Test::keyFunction(){
         */
     }
 
-    //0
-    if(k->isPressed(11)){
-        //glutFullScreenToggle();
-    }
-    //Scharfes S
-    if(k->isPressed(10)){
-        //model_library->debugModelData();
-    }
 
-    if(k->isPressed(24)){
-        //light_library->debugLightModelData();
-    }
 
     /*
     x_angle += getTimeStep() * 0.2 * double(m->posX());

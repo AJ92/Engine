@@ -1,6 +1,4 @@
 #include "engine.h"
-#include "Event/event.h"
-#include "Object/positation.h"
 
 /*!
   Main class.
@@ -71,19 +69,20 @@ Engine::Engine(QObject *parent) :
     addListener(debuggerListener);
 
     debugMessage("engine created.");
-}
 
-Engine::~Engine(){
-    running = false;
-    glfwTerminate();
-    qDebug("engine stopped.");
-}
 
-/*!
-  If everything is set up, this command starts the engine.
-  */
-void Engine::initialize(int argc, char *argv[]){
-    debugMessage("engine initializing...");
+    //creating the window
+    window = new Window();
+    //listener has to be set before initialization for debug output.
+    windowTransmitter = window;
+    windowTransmitter->addListener(debuggerListener);
+
+    debugMessage("Ideal thread number: " + QString::number(QThread::idealThreadCount()));
+    idealThreadCount = QThread::idealThreadCount();
+
+    //-1 == keep mainthread free
+    threadAccountant = new ThreadAccountant(idealThreadCount);
+
 
     app_dir = QApplication::applicationDirPath();
     debugMessage("Application Dir: " + app_dir);
@@ -91,6 +90,70 @@ void Engine::initialize(int argc, char *argv[]){
     if(QElapsedTimer::clockType() == QElapsedTimer::PerformanceCounter){
         debugMessage("PerformanceTimer in use");
     }
+
+
+
+    //loads models
+    //we do not init it cause ObjectWorld does this for us...
+    model_loader = new ModelLoader(threadAccountant);
+    model_loader->addListener(debuggerListener);
+
+    //our world with all the fancy objects...
+    object_world = SP<ObjectWorld>(new ObjectWorld(threadAccountant));
+    object_world->addListener(debuggerListener);
+    object_world->setModelLoader(model_loader);
+    object_world->setLightModelPath(getApplicationDir() + "//light_sphere.obj");
+    object_world->setUnitCubeModelPath(getApplicationDir() + "//cube.obj");
+
+
+    //create keyboard
+    k = new KeyBoard(window);
+    k->addListener(debuggerListener);
+
+    //create mouse
+    m = new Mouse(window);
+    m->addListener(debuggerListener);
+
+    //create renderer
+    r = new Renderer();
+    r->addListener(debuggerListener);
+
+    //create default cam
+    cam = new Camera();
+
+
+    t = new QTimer(this);
+    //1000 ms / 60 fps = 16.6 ms/second
+    //16 makes some high cpu usage
+    //17 is just fina actually but only 59 fps
+    t->setInterval(16);
+
+    frameTime = 0;
+    time = 0;
+    //deltatime in ns (16 ms)
+    deltaTime = 1000000000/60;
+    accumulator = 0;
+    timestep = 1.0f;
+
+
+
+    fps_timer = new QTimer(this);
+    fps_timer->setInterval(1000);
+}
+
+Engine::~Engine(){
+    running = false;
+    glfwTerminate();
+    qDebug("engine stopped.");
+
+    //need to delete remaining rawpointers here...
+}
+
+/*!
+  If everything is set up, this command starts the engine.
+  */
+void Engine::initialize(int argc, char *argv[]){
+    debugMessage("engine initializing...");
 
     //GLEW
     GLenum GlewInitResult;
@@ -101,11 +164,7 @@ void Engine::initialize(int argc, char *argv[]){
     glfwSetErrorCallback(error_callback);
 
 
-    //creating the window
-    window = new Window();
-    //listener has to be set before initialization for debug output.
-    windowTransmitter = window;
-    windowTransmitter->addListener(debuggerListener);
+
     //CONNECT RESIZE EVENT HERE
     window->initialize();
 
@@ -124,73 +183,26 @@ void Engine::initialize(int argc, char *argv[]){
     debugMessage("INFO: OpenGL Renderer: " + QString((char*)glGetString(GL_RENDERER)));
     debugMessage("INFO: OpenGL Shading Language version: " + QString((char*)glGetString(GL_SHADING_LANGUAGE_VERSION)));
 
-    glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
 
 
 
-    debugMessage("Ideal thread number: " + QString::number(QThread::idealThreadCount()));
-    idealThreadCount = QThread::idealThreadCount();
 
-    //-1 == keep mainthread free
-    threadAccountant = new ThreadAccountant(idealThreadCount);
-
-
-    //soon to disapear from here
-    //init Streamer
-    /*
-    model_library = new ModelLibrary(threadAccountant);
-    model_library->addListener(debuggerListener);
-    model_library->initialize();
-    */
-
-    //soon to disapear from here
-    //init Streamer
-    /*
-    light_library = new LightLibrary(threadAccountant);
-    light_library->addListener(debuggerListener);
-    light_library->initialize();
-    */
-
-    //loads models
-    //we do not init it cause ObjectWorld does this for us...
-    model_loader = new ModelLoader(threadAccountant);
-    model_loader->addListener(debuggerListener);
-
-    //our world with all the fancy objects...
-    object_world = SP<ObjectWorld>(new ObjectWorld(threadAccountant));
-    object_world->addListener(debuggerListener);
-    object_world->setModelLoader(model_loader);
-    object_world->setLightModelPath(getApplicationDir() + "//light_sphere.obj");
+    //init modelloader and objectworld... octrees n stuff...
     object_world->initialize();
 
 
     //init keyboard
-    k = new KeyBoard(window);
-    k->addListener(debuggerListener);
     k->initialize();
     window->registerKeyboard(k);
 
     //init mouse
-    m = new Mouse(window);
-    m->addListener(debuggerListener);
     m->initialize();
     window->registerMouse(m);
 
-    /*
-    x_angle = 0.0;
-    y_angle = 0.0;
-    */
 
-
-    //init RENDERER
-    r = new Renderer();
-    r->addListener(debuggerListener);
+    //init eenderer
     r->initialize();
     r->setPolygonMode(Renderer::PolygonModeStandard);
-
-
-    cam = new Camera();
-
     r->setCamera(cam);
     r->setWindow(window);
 
@@ -202,34 +214,15 @@ void Engine::initialize(int argc, char *argv[]){
     debugMessage("starting main event timer...");
     running = true;
 
-    //here the "main 'thread' starts"
-    t = new QTimer(this);
+    //here the "main 'thread' starts
     QObject::connect(t,SIGNAL(timeout()),this,SLOT(eventLoop()));
-
-    frameTime = 0;
-    time = 0;
-    //deltatime in ns (16 ms)
-    deltaTime = 1000000000/60;
-    accumulator = 0;
-    timestep = 1.0f;
-
     elapseTimer.start();
-
-
-    //1000 ms / 60 fps = 16.6 ms/second
-    //16 makes some high cpu usage
-    //17 is just fina actually but only 59 fps
-    t->setInterval(16);
     t->start();
 
 
-
-    fps_timer = new QTimer(this);
     QObject::connect(fps_timer,SIGNAL(timeout()),this,SLOT(timer()));
-    fps_timer->setInterval(1000);
     fps_timer->start();
-
-
+    debugMessage("engine initialized.");
 }
 
 void Engine::setWindowTitle(QString title){

@@ -64,6 +64,9 @@ public:
     //The event type.
     NodeType type;
 
+    Vector3 getPosition();
+    double getSize();
+
 private:
 
     SP<OctTree> me;

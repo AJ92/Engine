@@ -26,7 +26,6 @@
 #include "Graphics/Model/modellibrary.h"
 #include "Graphics/Model/model.h"
 
-//#include "Graphics/Model/lightlibrary.h"
 #include "Graphics/Model/light.h"
 
 #include <QApplication>
@@ -44,6 +43,10 @@
 #include "Object/compositeobject.h"
 
 #include "Object/SmartPointer/sp.h"
+
+#include "Event/event.h"
+
+#include "Object/positation.h"
 
 
 class Event;

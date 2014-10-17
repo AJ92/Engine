@@ -13,7 +13,7 @@ OctTreeFast::OctTreeFast(int max_amount_objects)
     this->is_subdivided = false;
     this->pos = Vector3(2.0,2.0,2.0);
     //temporary limit...
-    this->node_size = 2000.0;
+    this->node_size = 9999999.0;
     objectLib.reserve(max_amount_objects);
     id_compositeobject_hash.reserve(max_amount_objects);
     amount_objects = 0;

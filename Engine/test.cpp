@@ -120,15 +120,15 @@ void Test::keyFunction(){
     if(k->isPressed(38))
     {
 
-        int count = 1;
+        int count = 10;
         for(int i = 0; i < count; i++){
             SP<Positation> posi(new Positation());
-            posi->set_position((double)((rand() & 1000)-500),
-                              (double)((rand() & 1000)-500),
-                              (double)((rand() & 1000)-500));
+            posi->set_position((double)((rand() & 2000)-1000),
+                              (double)((rand() & 2000)-1000),
+                              (double)((rand() & 2000)-1000));
 
-            posi->set_scale(9.0,9.0,9.0);
-            SP<CompositeObject> coTest = loadModelObject("tree", getApplicationDir() + "//tree.obj", posi);
+            posi->set_scale(4.0,4.0,4.0);
+            SP<CompositeObject> coTest = loadModelObject("tree", getApplicationDir() + "//box.obj", posi);
         }
         /*
         model_library->setModelsPerThread(1);
@@ -172,14 +172,14 @@ void Test::keyFunction(){
             SP<CompositeObject> coTest = loadLightObject("light");
             coTest->getPositation()->set_position((double)((rand() & 2000)-1000),
                                                 (double)((rand() & 2000)-1000),
-                                                30.0f);
+                                                (double)((rand() & 2000)-1000));
             coTest->getPositation()->set_scale(31.12f,31.12f,31.12f);
 
 
             SP<Light> l= coTest->getLight();
-            double red = ((double)(rand() & 200))* 0.001;
-            double green = ((double)(rand() & 200))* 0.001;
-            double blue = ((double)(rand() & 200))* 0.001;
+            double red = ((double)(rand() & 200))* 0.011;
+            double green = ((double)(rand() & 200))* 0.011;
+            double blue = ((double)(rand() & 200))* 0.011;
 
             l->setDiffuseColor(red,
                                green,
@@ -207,6 +207,8 @@ void Test::keyFunction(){
                 coTest->getPositation()->set_position(  (double)((rand() & 2000)-1000),
                                                         (double)((rand() & 2000)-1000),
                                                         (double)((rand() & 2000)-1000));
+
+                coTest->getPositation()->set_rotation((double) (rand() & 360), rand() & 1, rand() & 1, rand() & 1);
             }
         }
     }

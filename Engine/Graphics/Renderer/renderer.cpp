@@ -691,9 +691,9 @@ void Renderer::render_v2(){
         glUniform2f (win_size_loc_ambientpass, win->getWindowWidth(), win->getWindowHeight());
 
         glUniform3f (color_loc_ambientpass,
-                     0.110,
-                     0.110,
-                     0.108); // ambient color
+                     0.010,
+                     0.010,
+                     0.008); // ambient color
 
         //glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
         glDrawArrays(GL_TRIANGLES, 0, triangle_count*3);
@@ -736,9 +736,9 @@ void Renderer::render_v2(){
                      -1.0,
                      0.5); // ambient light direction
 
-        glUniform3f (color_loc_directionalambientpass,  0.930,
-                     0.910,
-                     0.900); // ambient color
+        glUniform3f (color_loc_directionalambientpass,  0.330,
+                     0.310,
+                     0.300); // ambient color
 
 
         for (int f = 0; f < 4; f++) {
@@ -1473,7 +1473,7 @@ void Renderer::render_v2(){
 
 
                 //the color we want to render in...
-                glUniform3f (color_loc_debugpass, 1.0, 1.0, 1.0);
+                glUniform3f (color_loc_debugpass, 0.2, 0.2, 1.0);
                 //glPointSize(3.0f);
 
                 //setup the model...

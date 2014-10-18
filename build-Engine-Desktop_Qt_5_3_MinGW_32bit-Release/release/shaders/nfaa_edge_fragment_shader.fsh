@@ -52,7 +52,7 @@ void main () {
 
   vec3 Scene0 = texture( l_tex, st ).rgb;
 
-  if(abs(vector1) < 0.0001 || abs(vector2) < 0.0001){
+  if(abs(vector1) < 0.0011 || abs(vector2) < 0.0011){
     //we don't need to smooth ...
     def_e.rgb = Scene0;
   }

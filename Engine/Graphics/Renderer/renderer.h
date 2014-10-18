@@ -210,17 +210,29 @@ private:
 
 
 
-    //framebuffer textures
-    GLuint fb;
-    GLuint fb_tex_p;    //position
-    GLuint fb_tex_n;    //normal
-    GLuint fb_tex_c;    //color
+//FIRST PASS FBO
 
-    GLuint fb_tex_l;    //lit scene
+    //framebuffer textures
+    GLuint fbo_1;
+    GLuint fbo_1_tex_p;    //position
+    GLuint fbo_1_tex_n;    //normal
+    GLuint fbo_1_tex_c;    //color
 
 
     //renderbuffer
-    GLuint rb;
+    GLuint rb1;
+
+
+//SECOND PASS FBO
+
+    //framebuffer textures
+    GLuint fbo_2;
+    GLuint fbo_2_tex_c1;    //color1
+    GLuint fbo_2_tex_c2;    //color2
+
+    //renderbuffer
+    GLuint rb2;
+
 
 
 

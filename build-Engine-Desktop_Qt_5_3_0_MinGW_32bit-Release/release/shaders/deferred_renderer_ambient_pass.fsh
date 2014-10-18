@@ -27,5 +27,5 @@ void main () {
   //float dir = max(dot(n_texel.xyz,direction),0.0);
   
   frag_color.rgb = c_texel.rgb * ambient/* * dir*/;
-  //frag_color.a = 1.0;
+  //frag_color.a = 1.0;  
 }

@@ -8,7 +8,7 @@ uniform vec3 ambient;
 uniform vec2 win_size;
 
 //was vec4
-layout( location = 3 ) out vec3 frag_color;
+layout( location = 0 ) out vec3 frag_color;
 
 void main () {
   vec2 st;

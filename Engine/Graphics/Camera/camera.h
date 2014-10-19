@@ -2,7 +2,7 @@
 #define CAMERA_H
 
 #include "Object/object.h"
-#include "Math/mathematics.h"
+#include "mathematics.h"
 
 class Camera : public Object
 {

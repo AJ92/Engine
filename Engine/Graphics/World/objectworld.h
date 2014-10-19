@@ -4,7 +4,7 @@
 #include "Object/object.h"
 
 #include "Event/eventtransmitter.h"
-#include "Math/mathematics.h"
+#include "mathematics.h"
 
 #include "Threading/threadaccountant.h"
 

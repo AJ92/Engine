@@ -11,7 +11,7 @@
 
 #include "Event/eventlistener.h"
 #include "Event/eventtransmitter.h"
-#include "Math/mathematics.h"
+#include "mathematics.h"
 
 //no model lib... we just use a simple list or hash... lets see...
 #include "Graphics/Camera/frustum.h"
@@ -21,7 +21,7 @@
 
 #include "Object/SmartPointer/smartpointer.h"
 
-#include "Math/Intersections/intersections.h"
+#include "Intersections/intersections.h"
 
 class Event;
 class CompositeObject;

@@ -7,9 +7,6 @@
 Test::Test() :
     Engine()
 {
-
-    qDebug("1");
-
     x_angle = 0.0;
     y_angle = 0.0;
 
@@ -19,23 +16,15 @@ Test::Test() :
     showDebugWindow();
     initialize(0, 0);
 
-    qDebug("2");
-
-    setClearColor(0.03f,0.02f,0.05f,0.0f);
-    //setClearColor(0.3f,0.3f,0.4f,0.0f);
-
     setWindowTitle("Engine v0.01a");
     setWindowSize(800,600);
 
-    qDebug("3");
 
     Camera * camera = new Camera();
     camera->setZFAR(15000.0);
     camera->set_position(0.0,-1200.0,650.0);
     camera->set_rotation_local(-50.0,1.0,0.0,0.0);
     setCamera(camera);
-
-    qDebug("4");
 
     //physics test
     //btDefaultCollisionConfiguration * collisionConfiguration = new btDefaultCollisionConfiguration();
@@ -47,18 +36,10 @@ Test::Test() :
 
     test_amount = 50;
 
-
     lvl_loaded = false;
 
     mPosX = 0;
     mPosY = 0;
-
-    //Octree test
-
-    /*
-    ot = new OctTree(1000);
-    ot->setDebugMdl(model_library,getApplicationDir() + "//cube.obj");
-    */
 }
 
 

@@ -7,7 +7,7 @@
 //#include "Graphics/Model/model.h"
 
 
-#include "Math/Vector/vector3.h"
+#include "Vector/vector3.h"
 
 #include <QMap>
 #include <QVector>

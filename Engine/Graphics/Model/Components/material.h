@@ -6,7 +6,7 @@
 
 #include "Object/object.h"
 
-#include "Math/mathematics.h"
+#include "mathematics.h"
 
 #include <QString>
 #include <QStringList>

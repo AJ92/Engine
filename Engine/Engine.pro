@@ -30,11 +30,6 @@ SOURCES += main.cpp\
     Graphics/Model/Components/material.cpp \
     Graphics/Model/Parser/loader.cpp \
     Graphics/Model/Parser/Format_obj/loader_obj.cpp \
-    Math/Vector/vector4.cpp \
-    Math/Vector/vector3.cpp \
-    Math/Matrix/matrix4x4.cpp \
-    Math/Matrix/matrix3x3.cpp \
-    Math/Geometry/plane.cpp\
     Graphics/Shader/shader.cpp \
     Graphics/Camera/camera.cpp \
     Graphics/Model/modellibrary.cpp \
@@ -62,10 +57,7 @@ SOURCES += main.cpp\
     Debug/Ui/customgraph.cpp \
     Graphics/World/DataStructure/octtreefast.cpp \
     Object/SmartPointer/sp.cpp \
-    Object/SmartPointer/referencecounter.cpp \
-    Math/Intersections/intersections.cpp \
-    Math/Geometry/aabb.cpp \
-    Math/Geometry/sphere.cpp
+    Object/SmartPointer/referencecounter.cpp
 
 
 
@@ -84,13 +76,7 @@ HEADERS  += \
     Graphics/Model/Components/material.h \
     Graphics/Model/Parser/loader.h \
     Graphics/Model/Parser/Format_obj/loader_obj.h \
-    Math/Vector/vector4.h \
-    Math/Vector/vector3.h \
-    Math/Matrix/matrix4x4.h \
-    Math/Matrix/matrix3x3.h \
-    Math/Geometry/plane.h \
     Graphics/OpenGL/OpenGL.h \
-    Math/mathematics.h \
     Graphics/Shader/shader.h \
     Graphics/Camera/camera.h \
     Graphics/Model/modellibrary.h \
@@ -120,10 +106,7 @@ HEADERS  += \
     Graphics/World/DataStructure/octtreefast.h \
     Object/SmartPointer/sp.h \
     Object/SmartPointer/referencecounter.h \
-    Object/SmartPointer/smartpointer.h \
-    Math/Intersections/intersections.h \
-    Math/Geometry/aabb.h \
-    Math/Geometry/sphere.h
+    Object/SmartPointer/smartpointer.h
 
 
 
@@ -134,6 +117,15 @@ FORMS    += \
 windows: {
     message(Windows desktop build mingw 32 bit)
 
+
+
+
+    #Mathematics lib
+    DEPENDPATH  +=  Math/lib
+    INCLUDEPATH +=  Math/include
+    LIBS += -L$$_PRO_FILE_PWD_/Math/lib
+    CONFIG(release, debug|release): LIBS += -lMathematics
+    CONFIG(debug, debug|release): LIBS += -lMathematics
 
 
     #GLFW

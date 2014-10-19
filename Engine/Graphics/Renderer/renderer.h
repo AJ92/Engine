@@ -6,7 +6,12 @@
 #include "Event/eventtransmitter.h"
 #include <QString>
 
-#include "Math/mathematics.h"
+
+#include "Vector/vector3.h"
+#include "Matrix/matrix4x4.h"
+
+
+
 #include "Graphics/Camera/camera.h"
 #include "Graphics/Window/window.h"
 #include "Graphics/Model/modellibrary.h"
@@ -14,7 +19,7 @@
 
 //for frustum culling
 #include "Graphics/Camera/frustum.h"
-#include "Math/mathematics.h"
+
 
 //for appdir
 #include <QApplication>

@@ -2,8 +2,8 @@
 #define FRUSTUM_H
 
 #include "Object/object.h"
-#include "Math/mathematics.h"
-#include "Math/Geometry/plane.h"
+#include "mathematics.h"
+#include "Geometry/plane.h"
 
 //PI / 180 degree (very good, much precise, such math)
 #define ANG2RAD 3.14159265358979323846/180.0

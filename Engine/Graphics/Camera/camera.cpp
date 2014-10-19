@@ -163,21 +163,22 @@ void Camera::move(double x_dir, double y_dir, double z_dir)
 
 
     /*
-    x = x + (x_dir * M_camera_view[0]);        //right / left
-    y = y + (x_dir * M_camera_view[4]);
-    z = z + (x_dir * M_camera_view[8]);
+    pos[0]  = pos[0] + (x_dir * M_camera_view[0]);        //right / left
+    pos[1]  = pos[1]  + (x_dir * M_camera_view[4]);
+    pos[2]  = pos[2]  + (x_dir * M_camera_view[8]);
 
-    x = x + (y_dir * M_camera_view[1]);        //up / down
-    y = y + (y_dir * M_camera_view[5]);
-    z = z + (y_dir * M_camera_view[9]);
+    pos[0]  = pos[0]  + (y_dir * M_camera_view[1]);        //up / down
+    pos[1]  = pos[1]  + (y_dir * M_camera_view[5]);
+    pos[2]  = pos[2]  + (y_dir * M_camera_view[9]);
 
-    x = x + (z_dir * M_camera_view[2]);        //forward / backward
-    y = y + (z_dir * M_camera_view[6]);
-    z = z + (z_dir * M_camera_view[10]);
+    pos[0]  = pos[0]  + (z_dir * M_camera_view[2]);        //forward / backward
+    pos[1]  = pos[1]  + (z_dir * M_camera_view[6]);
+    pos[2]  = pos[2]  + (z_dir * M_camera_view[10]);
 
-    M_camera_translation.translate(x,y,z);
+    M_camera_translation.translate(pos[0] ,pos[1] ,pos[2] );
     M_camera_view = M_camera_rotation_global * M_camera_translation * M_camera_rotation_local;
     */
+
 }
 
 void Camera::translate(double x_dir, double y_dir, double z_dir)
@@ -326,6 +327,18 @@ void Camera::setZFAR(double zfar){
     this->Z_FAR = zfar;
 }
 
+
+Vector3 Camera::getDirForward(){
+    return Vector3(M_camera_view[2],M_camera_view[6], M_camera_view[10]);
+}
+
+Vector3 Camera::getDirUp(){
+    return Vector3(M_camera_view[1],M_camera_view[5], M_camera_view[9]);
+}
+
+Vector3 Camera::getDirRight(){
+    return Vector3(M_camera_view[0],M_camera_view[4], M_camera_view[8]);
+}
 
 void Camera::set_matrix_pos(){
     M_camera_translation.translate(pos);

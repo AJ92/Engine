@@ -206,6 +206,7 @@ private:
     GLuint DR_EdgeDetectionPassProgramIdId;
 
     GLuint win_size_loc_edgedetectionpass;
+    GLuint frame_switch_loc_edgedetectionpass;
 
 
 
@@ -227,11 +228,13 @@ private:
 
     //framebuffer textures
     GLuint fbo_2;
-    GLuint fbo_2_tex_c1;    //color1
-    GLuint fbo_2_tex_c2;    //color2
+    GLuint fbo_2_tex_c;    //color1
 
     //renderbuffer
     GLuint rb2;
+
+
+    int frame_switch;
 
 
 

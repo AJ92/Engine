@@ -274,6 +274,7 @@ bool Material::load_map_rgba(QString path, QImage &image){
 
     //If QImage failed loading the image...
     if(image.isNull()){
+        qDebug("image could not be loaded...");
         return false;
     }
     //setting the QImage bits by hand... ARGB to BGRA

@@ -25,6 +25,10 @@ private:
     double lighttime;
 
     void keyFunction();
+    void mouseFunction();
+
+    double mPosX;
+    double mPosY;
 
     void eventCall();
 

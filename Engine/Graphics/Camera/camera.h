@@ -67,6 +67,11 @@ public:
     void setZFAR(double zfar);
 
 
+    Vector3 getDirForward();
+    Vector3 getDirUp();
+    Vector3 getDirRight();
+
+
 
 
 private:

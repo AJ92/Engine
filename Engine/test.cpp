@@ -29,11 +29,11 @@ Test::Test() :
 
     qDebug("3");
 
-    Camera * cam = new Camera();
-    cam->setZFAR(15000.0);
-    cam->set_position(0.0,-1200.0,650.0);
-    cam->set_rotation_local(-50.0,1.0,0.0,0.0);
-    setCamera(cam);
+    Camera * camera = new Camera();
+    camera->setZFAR(15000.0);
+    camera->set_position(0.0,-1200.0,650.0);
+    camera->set_rotation_local(-50.0,1.0,0.0,0.0);
+    setCamera(camera);
 
     qDebug("4");
 
@@ -50,6 +50,9 @@ Test::Test() :
 
     lvl_loaded = false;
 
+    mPosX = 0;
+    mPosY = 0;
+
     //Octree test
 
     /*
@@ -57,6 +60,21 @@ Test::Test() :
     ot->setDebugMdl(model_library,getApplicationDir() + "//cube.obj");
     */
 }
+
+
+void Test::mouseFunction(){
+    double temp_x = m->posX();
+    double temp_y = m->posY();
+
+    if(m->isPressed(0)){
+        getCamera()->add_rotation_local((mPosX - temp_x)/3.0 *getTimeStep(),0.0,1.0,0.0);
+        getCamera()->add_rotation_local((mPosY - temp_y)/3.0 *getTimeStep(),1.0,0.0,0.0);
+    }
+
+    mPosX = temp_x;
+    mPosY = temp_y;
+}
+
 
 void Test::keyFunction(){
     //ESC
@@ -127,8 +145,9 @@ void Test::keyFunction(){
                               (double)((rand() & 2000)-1000),
                               (double)((rand() & 2000)-1000));
 
-            posi->set_scale(4.0,4.0,4.0);
+            posi->set_scale(17.0,17.0,17.0);
             SP<CompositeObject> coTest = loadModelObject("tree", getApplicationDir() + "//box.obj", posi);
+            coTest->getPositation()->set_rotation((double) (rand() & 360), rand() & 1, rand() & 1, rand() & 1);
         }
         /*
         model_library->setModelsPerThread(1);
@@ -229,6 +248,7 @@ void Test::keyFunction(){
             posi->set_rotation(90.0f,1.0f,0.0f,0.0f);
             SP<CompositeObject> coTest = loadModelObject("city", getApplicationDir() + "//Paris//paris2.obj", posi);
             //SP<CompositeObject> coTest = loadModelObject("city", getApplicationDir() + "//city2//Organodron City.obj", posi);
+            //SP<CompositeObject> coTest = loadModelObject("city", getApplicationDir() + "//sponza//sponzalvl.obj", posi);
             lvl_loaded = true;
         }
         /*
@@ -261,37 +281,66 @@ void Test::keyFunction(){
     }
 
     //Q W E A S D
+
+    //W
     if(k->isPressed(17)){
         Vector3 cam_pos = getCamera()->getPosition();
-        getCamera()->set_position(cam_pos.x(),cam_pos.y() + 1.0*getTimeStep()* speed_up,cam_pos.z());
-    }
+        Vector3 cam_dir = getCamera()->getDirForward();
 
+        getCamera()->set_position(cam_pos.x() - cam_dir[0] * getTimeStep()* speed_up,
+                                  cam_pos.y() - cam_dir[1] * getTimeStep()* speed_up,
+                                  cam_pos.z() - cam_dir[2] * getTimeStep()* speed_up);
+    }
+    //A
     if(k->isPressed(30)){
         Vector3 cam_pos = getCamera()->getPosition();
-        getCamera()->set_position(cam_pos.x() - 1.0*getTimeStep() * speed_up,cam_pos.y(),cam_pos.z());
+        Vector3 cam_dir = getCamera()->getDirRight();
+
+        getCamera()->set_position(cam_pos.x() - cam_dir[0] * getTimeStep()* speed_up,
+                                  cam_pos.y() - cam_dir[1] * getTimeStep()* speed_up,
+                                  cam_pos.z() - cam_dir[2] * getTimeStep()* speed_up);
     }
+    //S
     if(k->isPressed(31)){
         Vector3 cam_pos = getCamera()->getPosition();
-        getCamera()->set_position(cam_pos.x(),cam_pos.y() - 1.0*getTimeStep() * speed_up,cam_pos.z());
+        Vector3 cam_dir = getCamera()->getDirForward();
+
+        getCamera()->set_position(cam_pos.x() + cam_dir[0] * getTimeStep()* speed_up,
+                                  cam_pos.y() + cam_dir[1] * getTimeStep()* speed_up,
+                                  cam_pos.z() + cam_dir[2] * getTimeStep()* speed_up);
     }
+    //D
     if(k->isPressed(32)){
         Vector3 cam_pos = getCamera()->getPosition();
-        getCamera()->set_position(cam_pos.x() + 1.0*getTimeStep() * speed_up,cam_pos.y(),cam_pos.z());
-    }
+        Vector3 cam_dir = getCamera()->getDirRight();
 
+        getCamera()->set_position(cam_pos.x() + cam_dir[0] * getTimeStep()* speed_up,
+                                  cam_pos.y() + cam_dir[1] * getTimeStep()* speed_up,
+                                  cam_pos.z() + cam_dir[2] * getTimeStep()* speed_up);
+    }
+    //Q
     if(k->isPressed(16)){
         Vector3 cam_pos = getCamera()->getPosition();
-        getCamera()->set_position(cam_pos.x(),cam_pos.y(),cam_pos.z() - 1.0*getTimeStep() * speed_up);
+        Vector3 cam_dir = getCamera()->getDirUp();
+
+        getCamera()->set_position(cam_pos.x() + cam_dir[0] * getTimeStep()* speed_up,
+                                  cam_pos.y() + cam_dir[1] * getTimeStep()* speed_up,
+                                  cam_pos.z() + cam_dir[2] * getTimeStep()* speed_up);
     }
-    if(k->isPressed(18)){
+    //Y
+    if(k->isPressed(44)){
         Vector3 cam_pos = getCamera()->getPosition();
-        getCamera()->set_position(cam_pos.x(),cam_pos.y(),cam_pos.z() + 1.0*getTimeStep() * speed_up);
+        Vector3 cam_dir = getCamera()->getDirUp();
+
+        getCamera()->set_position(cam_pos.x() - cam_dir[0] * getTimeStep()* speed_up,
+                                  cam_pos.y() - cam_dir[1] * getTimeStep()* speed_up,
+                                  cam_pos.z() - cam_dir[2] * getTimeStep()* speed_up);
     }
 }
 
 void Test::eventCall(){
     keyFunction();
-
+    mouseFunction();
     /*
     for(int i = 0; i < lights.size(); i++){
         Model *m = lights[i]->getModel();

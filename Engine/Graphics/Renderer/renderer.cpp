@@ -24,6 +24,7 @@ Renderer::Renderer() :
     meshPerFrameCount = 0;
     trianglesPerFrameCount = 0;
     texBindsPerFrameCount = 0;
+    frame_switch = 0;
 }
 
 void Renderer::initialize(){
@@ -781,7 +782,7 @@ void Renderer::render_v2(){
 
         //switch texture slot... color to 0
         glActiveTexture (GL_TEXTURE0);
-        glBindTexture (GL_TEXTURE_2D, fbo_2_tex_c1);
+        glBindTexture (GL_TEXTURE_2D, fbo_2_tex_c);
 
         glBindVertexArray(fsq_vertex_array_object);
 
@@ -804,6 +805,7 @@ void Renderer::render_v2(){
         glPolygonMode(GL_FRONT_AND_BACK, GL_POLYGON);
 
         glUniform2f (win_size_loc_edgedetectionpass, win->getWindowWidth(), win->getWindowHeight());
+        glUniform1i (frame_switch_loc_edgedetectionpass, frame_switch);
 
         glDrawArrays(GL_TRIANGLES, 0, triangle_count*3);
 
@@ -1771,157 +1773,14 @@ void Renderer::render_v2(){
         glDepthMask (GL_TRUE);
         glDisable (GL_BLEND);
 
+
+        frame_switch += 1;
+        if(frame_switch > 1){
+            frame_switch = 0;
+        }
+
     }//end of objectworld
 
-
-
-    /*
-
-
-        if((renderMode & PolygonModeWireframe) == PolygonModeWireframe){
-
-            glUseProgram (DR_DebugPassProgramIdId);
-
-            glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-
-            glClear(GL_DEPTH_BUFFER_BIT);
-
-
-            //the color we want to render in...
-            glUniform3f (color_loc_debugpass, 1.0, 1.0, 1.0);
-
-
-            //copy the lists so we can itterate through them
-            QList<QList<Mesh*> > mesh_model_list = mdllib->getMeshModelList();
-            QList<QList<Model*> > model_mesh_list = mdllib->getModelMeshList();
-            //QList<QList<Light*> > light_mesh_list = mdllib->getLightMeshList();
-            QList<Material*> material_mesh_list = mdllib->getMaterialMeshList();
-
-
-
-            //loop trough the material_mesh_list
-            for(int index = 0; index < material_mesh_list.size(); index++){
-
-                if(mesh_model_list[index].size()>0){
-
-
-                    Mesh * mesh = mesh_model_list[index].at(0);
-
-                    //VAO
-
-                    glBindVertexArray(mesh->get_vertex_array_object());
-
-                    //VBOs
-                    glBindBuffer(GL_ARRAY_BUFFER, mesh->get_vertex_vbo());
-                    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, 0);
-                    glEnableVertexAttribArray(0);
-
-
-                    //draw
-
-                    for(int mdl_index = 0; mdl_index < model_mesh_list[index].size(); mdl_index++){
-                        Model * mdl =  model_mesh_list[index].at(mdl_index);
-
-                        Positation * posi = mdl->getParentCompositeObject()->getPositation();
-
-                        if(true){
-                            m_m = posi->get_model_matrix();
-
-                            pvm_m = p_m * v_m * m_m;
-
-                            for (int f = 0; f < 4; f++) {
-                                for (int g = 0; g < 4; g++) {
-                                    pvm_mat[f * 4 + g] = (GLfloat) (pvm_m[f*4+g]);
-                                }
-                            }
-
-
-                            glUniformMatrix4fv(pvm_mat_loc_debugpass, 1, GL_FALSE, pvm_mat);
-
-                            //draw
-                            glDrawArrays(GL_TRIANGLES, 0, mesh->get_triangle_count()*3);
-                        }
-                    }
-                }
-            }
-        }//end of PolygonModeWirframe
-
-
-
-
-
-
-
-
-        if((renderMode & PolygonModeVertex) == PolygonModeVertex){
-
-            glUseProgram (DR_DebugPassProgramIdId);
-
-            glPolygonMode(GL_FRONT_AND_BACK, GL_POINT);
-
-            glClear(GL_DEPTH_BUFFER_BIT);
-
-
-            //the color we want to render in...
-            glUniform3f (color_loc_debugpass, 1.0, 0.0, 0.0);
-
-
-            //copy the lists so we can itterate through them
-            QList<QList<Mesh*> > mesh_model_list = mdllib->getMeshModelList();
-            QList<QList<Model*> > model_mesh_list = mdllib->getModelMeshList();
-            //QList<QList<Light*> > light_mesh_list = mdllib->getLightMeshList();
-            QList<Material*> material_mesh_list = mdllib->getMaterialMeshList();
-
-
-
-            //loop trough the material_mesh_list
-            for(int index = 0; index < material_mesh_list.size(); index++){
-
-                if(mesh_model_list[index].size()>0){
-
-
-                    Mesh * mesh = mesh_model_list[index].at(0);
-
-                    //VAO
-
-                    glBindVertexArray(mesh->get_vertex_array_object());
-
-                    //VBOs
-                    glBindBuffer(GL_ARRAY_BUFFER, mesh->get_vertex_vbo());
-                    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, 0);
-                    glEnableVertexAttribArray(0);
-
-                    //draw
-
-                    for(int mdl_index = 0; mdl_index < model_mesh_list[index].size(); mdl_index++){
-                        Model * mdl =  model_mesh_list[index].at(mdl_index);
-
-                        Positation * posi = mdl->getParentCompositeObject()->getPositation();
-
-                        if(true){
-
-                            m_m = posi->get_model_matrix();
-
-                            pvm_m = p_m * v_m * m_m;
-
-                            for (int f = 0; f < 4; f++) {
-                                for (int g = 0; g < 4; g++) {
-                                    pvm_mat[f * 4 + g] = (GLfloat) (pvm_m[f*4+g]);
-                                }
-                            }
-
-
-                            glUniformMatrix4fv(pvm_mat_loc_debugpass, 1, GL_FALSE, pvm_mat);
-
-                            //draw
-                            glDrawArrays(GL_TRIANGLES, 0, mesh->get_triangle_count()*3);
-                        }
-                    }
-                }
-            }
-        }//end of PolygonModeVertex
-
-        */
 }
 
 
@@ -3338,9 +3197,11 @@ bool Renderer::createShaders(){
     }
 
     win_size_loc_edgedetectionpass = glGetUniformLocation(DR_EdgeDetectionPassProgramIdId, "win_size");
+    frame_switch_loc_edgedetectionpass = glGetUniformLocation(DR_EdgeDetectionPassProgramIdId, "frame_switch");
 
 
     glUniform1i(glGetUniformLocation(DR_EdgeDetectionPassProgramIdId, "l_tex"), 0);
+
 
 
     //EDGE DETECTION PASS pass end
@@ -3497,8 +3358,8 @@ bool Renderer::createBuffers(){
 
 
     //position texture
-    glGenTextures (1, &fbo_2_tex_c1);
-    glBindTexture (GL_TEXTURE_2D, fbo_2_tex_c1);
+    glGenTextures (1, &fbo_2_tex_c);
+    glBindTexture (GL_TEXTURE_2D, fbo_2_tex_c);
     glTexImage2D (
       GL_TEXTURE_2D,
       0,
@@ -3516,32 +3377,12 @@ bool Renderer::createBuffers(){
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 
 
-    //normal texture
-    glGenTextures (1, &fbo_2_tex_c2);
-    glBindTexture (GL_TEXTURE_2D, fbo_2_tex_c2);
-    glTexImage2D (
-      GL_TEXTURE_2D,
-      0,
-      GL_RGB16F,
-      600,
-      400,
-      0,
-      GL_BGR,
-      GL_UNSIGNED_BYTE,
-      NULL
-    );
-    glTexParameteri (GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-    glTexParameteri (GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 
 
     glFramebufferTexture2D (
-      GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, fbo_2_tex_c1, 0
+      GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, fbo_2_tex_c, 0
     );
-    glFramebufferTexture2D (
-      GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT1, GL_TEXTURE_2D, fbo_2_tex_c2, 0
-    );
+
 
 
 
@@ -3557,12 +3398,12 @@ bool Renderer::createBuffers(){
       GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, rb2
     );
 
-    GLenum draw_bufs2[] = { GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1};
-    glDrawBuffers (2, draw_bufs2);
+    GLenum draw_bufs2[] = { GL_COLOR_ATTACHMENT0};
+    glDrawBuffers (1, draw_bufs2);
 
     // Always check that our framebuffer is ok
     if(glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE){
-        debugMessage("framebuffer error in first fbo!");
+        debugMessage("framebuffer error in second fbo!");
         return false;
     }
 
@@ -3739,26 +3580,7 @@ void Renderer::resizeBuffers(int x, int y){
         //FBO2
 
         //color texture 1
-        glBindTexture (GL_TEXTURE_2D, fbo_2_tex_c1);
-        glTexImage2D (
-          GL_TEXTURE_2D,
-          0,
-          GL_RGB16F,
-          x,
-          y,
-          0,
-          GL_BGR,
-          GL_UNSIGNED_BYTE,
-          NULL
-        );
-        glTexParameteri (GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-        glTexParameteri (GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-
-
-        //color texture 2
-        glBindTexture (GL_TEXTURE_2D, fbo_2_tex_c2);
+        glBindTexture (GL_TEXTURE_2D, fbo_2_tex_c);
         glTexImage2D (
           GL_TEXTURE_2D,
           0,

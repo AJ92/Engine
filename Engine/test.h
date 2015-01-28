@@ -30,6 +30,9 @@ private:
     double mPosX;
     double mPosY;
 
+    double mSpeedX;
+    double mSpeedY;
+
     void eventCall();
 
     int level_loaded;

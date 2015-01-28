@@ -40,6 +40,9 @@ Test::Test() :
 
     mPosX = 0;
     mPosY = 0;
+
+    mSpeedX = 0.0;
+    mSpeedY = 0.0;
 }
 
 
@@ -47,9 +50,40 @@ void Test::mouseFunction(){
     double temp_x = m->posX();
     double temp_y = m->posY();
 
+
+    double min_speed = 0.2;
+    double max_speed = 1.5;
+
+
     if(m->isPressed(0)){
-        getCamera()->add_rotation_local((mPosX - temp_x)/3.0 *getTimeStep(),0.0,1.0,0.0);
-        getCamera()->add_rotation_local((mPosY - temp_y)/3.0 *getTimeStep(),1.0,0.0,0.0);
+
+        if(abs(mPosX - temp_x)>0.0 || abs(mPosY - temp_y)>0.0){
+            if(mSpeedX < max_speed){
+                mSpeedX += 0.1;
+            }
+            if(mSpeedY < max_speed){
+                mSpeedY += 0.1;
+            }
+        }
+
+        mSpeedX -= 0.09;
+        if(mSpeedX < min_speed){
+            mSpeedX = min_speed;
+        }
+        mSpeedY -= 0.09;
+        if(mSpeedY < min_speed){
+            mSpeedY = min_speed;
+        }
+
+
+
+
+        getCamera()->add_rotation_local((mPosX - temp_x)/4.0 *getTimeStep()*mSpeedX,0.0,1.0,0.0);
+        getCamera()->add_rotation_local((mPosY - temp_y)/4.0 *getTimeStep()*mSpeedY,1.0,0.0,0.0);
+    }
+    else{
+        mSpeedX = min_speed;
+        mSpeedY = min_speed;
     }
 
     mPosX = temp_x;
@@ -215,7 +249,7 @@ void Test::keyFunction(){
             for(int i = 0; i < compositeobjecttest.size(); i++){
                 SP<CompositeObject> coTest = compositeobjecttest.at(i);
                 coTest->getPositation()->set_position(  (double)((rand() & 2000)-1000),
-                                                        700.0,
+                                                        (double)((rand() & 2000)-1000),
                                                         (double)((rand() & 2000)-1000));
 
 
@@ -230,11 +264,8 @@ void Test::keyFunction(){
                     coTest->getPositation()->set_rotation((double) (rand() & 360), 0, 0, 1);
                 }
 
-                coTest->getPositation()->set_scale(5.0,5.0,5.0);
+                coTest->getPositation()->set_scale(0.2,0.2,0.2);
 
-                if(coTest->getPositation()->get_scale()[0] < 4.0){
-                    qDebug("wow");
-                }
             }
         }
     }

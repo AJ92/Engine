@@ -11,7 +11,7 @@ OctTree::OctTree(int max_amount_objects)
     this->is_subdivided = false;
     this->pos = Vector3(2.0,2.0,2.0);
     //temporary limit...
-    this->node_size = 9999999.0;
+    this->node_size = 99999999.0;
     mdllib = SP<ModelLibrary_v2>(new ModelLibrary_v2(max_amount_objects,max_amount_objects));
     mdllib->initialize();
     id_compositeobject_hash.reserve(max_amount_objects);

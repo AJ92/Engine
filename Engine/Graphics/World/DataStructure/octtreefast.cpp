@@ -451,7 +451,7 @@ void OctTreeFast::eventRecieved(Event e){
             //obj->removeListener(me_eventListener);
             tree_root->addCompositeObject(obj);
         }
-        else if((rand() & 100) < 10){  //try by random to remove and add the model again ...
+        else if((rand() & 100) < 30){  //try by random to remove and add the model again ...
             removeCompositeObject(obj);
             tree_root->addCompositeObject(obj);
         }

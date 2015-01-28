@@ -9,7 +9,7 @@ layout( location = 0 ) out vec4 def_e;
 
 
 //the spread of the edge detection algorithm
-const float fScale = 3.0f;
+const float fScale = 2.5f;
 
 float GetColorLuminance( vec3 i_vColor )
 {

@@ -441,14 +441,14 @@ debug/moc_engine.cpp: ../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/QtCore/QObj
 		../Engine/Graphics/glew/include/GL/glew.h \
 		../Engine/Graphics/glfw/include/GLFW/glfw3.h \
 		../Engine/Graphics/Renderer/renderer.h \
-		../Engine/Graphics/Camera/camera.h \
-		../Engine/Math/include/mathematics.h \
 		../Engine/Math/include/Vector/vector3.h \
-		../Engine/Math/include/mathematics_global.h \
+		../Engine/Math/include/mathematics.h \
 		../Engine/Math/include/Vector/vector4.h \
+		../Engine/Math/include/mathematics_global.h \
 		../Engine/Math/include/Matrix/matrix3x3.h \
 		../Engine/Math/include/Matrix/Matrix4x4.h \
 		../Engine/Math/include/Matrix/matrix4x4.h \
+		../Engine/Graphics/Camera/camera.h \
 		../Engine/Graphics/Window/window.h \
 		../Engine/Input/keyboard.h \
 		../Engine/Input/mouse.h \
@@ -475,6 +475,7 @@ debug/moc_engine.cpp: ../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/QtCore/QObj
 		../Engine/Graphics/Shader/shader.h \
 		../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/QtCore/QByteArray \
 		../Engine/Graphics/Camera/frustum.h \
+		../Engine/Math/include/Geometry/plane.h \
 		../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/QtWidgets/QApplication \
 		../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/QtWidgets/qapplication.h \
 		../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/QtCore/qcoreapplication.h \
@@ -486,6 +487,9 @@ debug/moc_engine.cpp: ../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/QtCore/QObj
 		../Engine/Graphics/World/objectworld.h \
 		../Engine/Graphics/World/DataStructure/octtree.h \
 		../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/QtCore/QHash \
+		../Engine/Math/include/Intersections/intersections.h \
+		../Engine/Math/include/Geometry/aabb.h \
+		../Engine/Math/include/Geometry/sphere.h \
 		../Engine/Graphics/World/DataStructure/octtreefast.h \
 		../Engine/Graphics/Model/light.h \
 		../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/QtCore/QElapsedTimer \
@@ -681,6 +685,13 @@ debug/moc_streamToDisk.cpp: ../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/QtCor
 		../Engine/Graphics/Model/model.h \
 		../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/QtCore/QList \
 		../Engine/Graphics/Model/Parser/Format_obj/loader_obj.h \
+		../Engine/Math/include/Vector/vector3.h \
+		../Engine/Math/include/mathematics.h \
+		../Engine/Math/include/Vector/vector4.h \
+		../Engine/Math/include/mathematics_global.h \
+		../Engine/Math/include/Matrix/matrix3x3.h \
+		../Engine/Math/include/Matrix/Matrix4x4.h \
+		../Engine/Math/include/Matrix/matrix4x4.h \
 		../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/QtCore/QMap \
 		../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/QtCore/QVector \
 		../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/QtCore/QFile \
@@ -787,6 +798,13 @@ debug/moc_streamer.cpp: ../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/QtCore/QO
 		../Engine/Graphics/Model/Parser/loader.h \
 		../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/QtCore/QStringList \
 		../Engine/Graphics/Model/Parser/Format_obj/loader_obj.h \
+		../Engine/Math/include/Vector/vector3.h \
+		../Engine/Math/include/mathematics.h \
+		../Engine/Math/include/Vector/vector4.h \
+		../Engine/Math/include/mathematics_global.h \
+		../Engine/Math/include/Matrix/matrix3x3.h \
+		../Engine/Math/include/Matrix/Matrix4x4.h \
+		../Engine/Math/include/Matrix/matrix4x4.h \
 		../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/QtCore/QMap \
 		../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/QtCore/QVector \
 		../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/QtCore/QFile \
@@ -1171,14 +1189,14 @@ debug/main.o: ../Engine/main.cpp ../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/
 		../Engine/Graphics/glew/include/GL/glew.h \
 		../Engine/Graphics/glfw/include/GLFW/glfw3.h \
 		../Engine/Graphics/Renderer/renderer.h \
-		../Engine/Graphics/Camera/camera.h \
-		../Engine/Math/include/mathematics.h \
 		../Engine/Math/include/Vector/vector3.h \
-		../Engine/Math/include/mathematics_global.h \
+		../Engine/Math/include/mathematics.h \
 		../Engine/Math/include/Vector/vector4.h \
+		../Engine/Math/include/mathematics_global.h \
 		../Engine/Math/include/Matrix/matrix3x3.h \
 		../Engine/Math/include/Matrix/Matrix4x4.h \
 		../Engine/Math/include/Matrix/matrix4x4.h \
+		../Engine/Graphics/Camera/camera.h \
 		../Engine/Graphics/Window/window.h \
 		../Engine/Input/keyboard.h \
 		../Engine/Input/mouse.h \
@@ -1205,10 +1223,14 @@ debug/main.o: ../Engine/main.cpp ../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/
 		../Engine/Graphics/Shader/shader.h \
 		../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/QtCore/QByteArray \
 		../Engine/Graphics/Camera/frustum.h \
+		../Engine/Math/include/Geometry/plane.h \
 		../Engine/Graphics/Model/modelloader.h \
 		../Engine/Graphics/World/objectworld.h \
 		../Engine/Graphics/World/DataStructure/octtree.h \
 		../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/QtCore/QHash \
+		../Engine/Math/include/Intersections/intersections.h \
+		../Engine/Math/include/Geometry/aabb.h \
+		../Engine/Math/include/Geometry/sphere.h \
 		../Engine/Graphics/World/DataStructure/octtreefast.h \
 		../Engine/Graphics/Model/light.h \
 		../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/QtCore/QElapsedTimer \
@@ -1650,14 +1672,14 @@ debug/engine.o: ../Engine/engine.cpp ../Engine/engine.h \
 		../Engine/Graphics/glew/include/GL/glew.h \
 		../Engine/Graphics/glfw/include/GLFW/glfw3.h \
 		../Engine/Graphics/Renderer/renderer.h \
-		../Engine/Graphics/Camera/camera.h \
-		../Engine/Math/include/mathematics.h \
 		../Engine/Math/include/Vector/vector3.h \
-		../Engine/Math/include/mathematics_global.h \
+		../Engine/Math/include/mathematics.h \
 		../Engine/Math/include/Vector/vector4.h \
+		../Engine/Math/include/mathematics_global.h \
 		../Engine/Math/include/Matrix/matrix3x3.h \
 		../Engine/Math/include/Matrix/Matrix4x4.h \
 		../Engine/Math/include/Matrix/matrix4x4.h \
+		../Engine/Graphics/Camera/camera.h \
 		../Engine/Graphics/Window/window.h \
 		../Engine/Input/keyboard.h \
 		../Engine/Input/mouse.h \
@@ -1684,6 +1706,7 @@ debug/engine.o: ../Engine/engine.cpp ../Engine/engine.h \
 		../Engine/Graphics/Shader/shader.h \
 		../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/QtCore/QByteArray \
 		../Engine/Graphics/Camera/frustum.h \
+		../Engine/Math/include/Geometry/plane.h \
 		../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/QtWidgets/QApplication \
 		../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/QtWidgets/qapplication.h \
 		../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/QtCore/qcoreapplication.h \
@@ -1695,6 +1718,9 @@ debug/engine.o: ../Engine/engine.cpp ../Engine/engine.h \
 		../Engine/Graphics/World/objectworld.h \
 		../Engine/Graphics/World/DataStructure/octtree.h \
 		../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/QtCore/QHash \
+		../Engine/Math/include/Intersections/intersections.h \
+		../Engine/Math/include/Geometry/aabb.h \
+		../Engine/Math/include/Geometry/sphere.h \
 		../Engine/Graphics/World/DataStructure/octtreefast.h \
 		../Engine/Graphics/Model/light.h \
 		../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/QtCore/QElapsedTimer \
@@ -2353,14 +2379,14 @@ debug/renderer.o: ../Engine/Graphics/Renderer/renderer.cpp ../Engine/Graphics/Re
 		../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/QtCore/qpoint.h \
 		../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/QtCore/qset.h \
 		../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/QtCore/qcontiguouscache.h \
-		../Engine/Graphics/Camera/camera.h \
-		../Engine/Math/include/mathematics.h \
 		../Engine/Math/include/Vector/vector3.h \
-		../Engine/Math/include/mathematics_global.h \
+		../Engine/Math/include/mathematics.h \
 		../Engine/Math/include/Vector/vector4.h \
+		../Engine/Math/include/mathematics_global.h \
 		../Engine/Math/include/Matrix/matrix3x3.h \
 		../Engine/Math/include/Matrix/Matrix4x4.h \
 		../Engine/Math/include/Matrix/matrix4x4.h \
+		../Engine/Graphics/Camera/camera.h \
 		../Engine/Graphics/Window/window.h \
 		../Engine/Input/keyboard.h \
 		../Engine/Input/mouse.h \
@@ -2399,6 +2425,7 @@ debug/renderer.o: ../Engine/Graphics/Renderer/renderer.cpp ../Engine/Graphics/Re
 		../Engine/Graphics/Shader/shader.h \
 		../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/QtCore/QByteArray \
 		../Engine/Graphics/Camera/frustum.h \
+		../Engine/Math/include/Geometry/plane.h \
 		../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/QtWidgets/QApplication \
 		../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/QtWidgets/qapplication.h \
 		../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/QtCore/qcoreapplication.h \
@@ -2443,6 +2470,9 @@ debug/renderer.o: ../Engine/Graphics/Renderer/renderer.cpp ../Engine/Graphics/Re
 		../Engine/Graphics/Model/Components/mesh.h \
 		../Engine/Graphics/Model/light.h \
 		../Engine/Object/positation.h \
+		../Engine/Math/include/Intersections/intersections.h \
+		../Engine/Math/include/Geometry/aabb.h \
+		../Engine/Math/include/Geometry/sphere.h \
 		../Engine/Object/compositeobject.h \
 		../Engine/Graphics/World/objectworld.h \
 		../Engine/Graphics/Model/modelloader.h \
@@ -2531,6 +2561,13 @@ debug/model.o: ../Engine/Graphics/Model/model.cpp ../Engine/Graphics/Model/model
 		../Engine/Graphics/OpenGL/OpenGL.h \
 		../Engine/Graphics/glew/include/GL/glew.h \
 		../Engine/Graphics/glfw/include/GLFW/glfw3.h \
+		../Engine/Math/include/mathematics.h \
+		../Engine/Math/include/Vector/vector3.h \
+		../Engine/Math/include/mathematics_global.h \
+		../Engine/Math/include/Vector/vector4.h \
+		../Engine/Math/include/Matrix/matrix3x3.h \
+		../Engine/Math/include/Matrix/Matrix4x4.h \
+		../Engine/Math/include/Matrix/matrix4x4.h \
 		../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/QtCore/QStringList \
 		../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/QtGui/QImage \
 		../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/QtGui/qimage.h \
@@ -2601,33 +2638,50 @@ debug/mesh.o: ../Engine/Graphics/Model/Components/mesh.cpp ../Engine/Graphics/Mo
 		../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/QtCore/qarraydata.h \
 		../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/QtCore/qstringbuilder.h \
 		../Engine/Math/include/vector \
-		../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/QtCore/QStringList \
-		../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/QtCore/qstringlist.h \
+		../Engine/Math/include/mathematics.h \
+		../Engine/Math/include/Vector/vector3.h \
+		../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/QtCore/QDebug \
+		../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/QtCore/qdebug.h \
 		../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/QtCore/qalgorithms.h \
-		../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/QtCore/qdatastream.h \
-		../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/QtCore/qscopedpointer.h \
+		../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/QtCore/qhash.h \
+		../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/QtCore/qiterator.h \
+		../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/QtCore/qlist.h \
+		../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/QtCore/qpair.h \
+		../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/QtCore/qmap.h \
+		../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/QtCore/qtextstream.h \
 		../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/QtCore/qiodevice.h \
 		../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/QtCore/qobject.h \
 		../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/QtCore/qobjectdefs.h \
 		../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/QtCore/qobjectdefs_impl.h \
-		../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/QtCore/qlist.h \
-		../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/QtCore/qiterator.h \
 		../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/QtCore/qcoreevent.h \
+		../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/QtCore/qscopedpointer.h \
 		../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/QtCore/qmetatype.h \
 		../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/QtCore/qvarlengtharray.h \
 		../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/QtCore/qcontainerfwd.h \
 		../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/QtCore/qisenum.h \
 		../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/QtCore/qobject_impl.h \
-		../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/QtCore/qpair.h \
+		../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/QtCore/qlocale.h \
+		../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/QtCore/qvariant.h \
+		../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/QtCore/qstringlist.h \
+		../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/QtCore/qdatastream.h \
 		../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/QtCore/qregexp.h \
 		../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/QtCore/qstringmatcher.h \
+		../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/QtCore/qshareddata.h \
+		../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/QtCore/qvector.h \
+		../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/QtCore/qpoint.h \
+		../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/QtCore/qset.h \
+		../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/QtCore/qcontiguouscache.h \
+		../Engine/Math/include/mathematics_global.h \
+		../Engine/Math/include/Vector/vector4.h \
+		../Engine/Math/include/Matrix/matrix3x3.h \
+		../Engine/Math/include/Matrix/Matrix4x4.h \
+		../Engine/Math/include/Matrix/matrix4x4.h \
+		../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/QtCore/QStringList \
 		../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/QtGui/QImage \
 		../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/QtGui/qimage.h \
 		../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/QtGui/qtransform.h \
 		../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/QtGui/qmatrix.h \
 		../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/QtGui/qpolygon.h \
-		../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/QtCore/qvector.h \
-		../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/QtCore/qpoint.h \
 		../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/QtCore/qrect.h \
 		../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/QtCore/qmargins.h \
 		../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/QtCore/qsize.h \
@@ -2686,33 +2740,50 @@ debug/material.o: ../Engine/Graphics/Model/Components/material.cpp ../Engine/Gra
 		../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/QtCore/qarraydata.h \
 		../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/QtCore/qstringbuilder.h \
 		../Engine/Math/include/vector \
-		../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/QtCore/QStringList \
-		../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/QtCore/qstringlist.h \
+		../Engine/Math/include/mathematics.h \
+		../Engine/Math/include/Vector/vector3.h \
+		../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/QtCore/QDebug \
+		../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/QtCore/qdebug.h \
 		../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/QtCore/qalgorithms.h \
-		../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/QtCore/qdatastream.h \
-		../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/QtCore/qscopedpointer.h \
+		../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/QtCore/qhash.h \
+		../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/QtCore/qiterator.h \
+		../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/QtCore/qlist.h \
+		../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/QtCore/qpair.h \
+		../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/QtCore/qmap.h \
+		../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/QtCore/qtextstream.h \
 		../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/QtCore/qiodevice.h \
 		../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/QtCore/qobject.h \
 		../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/QtCore/qobjectdefs.h \
 		../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/QtCore/qobjectdefs_impl.h \
-		../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/QtCore/qlist.h \
-		../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/QtCore/qiterator.h \
 		../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/QtCore/qcoreevent.h \
+		../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/QtCore/qscopedpointer.h \
 		../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/QtCore/qmetatype.h \
 		../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/QtCore/qvarlengtharray.h \
 		../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/QtCore/qcontainerfwd.h \
 		../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/QtCore/qisenum.h \
 		../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/QtCore/qobject_impl.h \
-		../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/QtCore/qpair.h \
+		../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/QtCore/qlocale.h \
+		../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/QtCore/qvariant.h \
+		../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/QtCore/qstringlist.h \
+		../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/QtCore/qdatastream.h \
 		../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/QtCore/qregexp.h \
 		../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/QtCore/qstringmatcher.h \
+		../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/QtCore/qshareddata.h \
+		../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/QtCore/qvector.h \
+		../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/QtCore/qpoint.h \
+		../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/QtCore/qset.h \
+		../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/QtCore/qcontiguouscache.h \
+		../Engine/Math/include/mathematics_global.h \
+		../Engine/Math/include/Vector/vector4.h \
+		../Engine/Math/include/Matrix/matrix3x3.h \
+		../Engine/Math/include/Matrix/Matrix4x4.h \
+		../Engine/Math/include/Matrix/matrix4x4.h \
+		../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/QtCore/QStringList \
 		../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/QtGui/QImage \
 		../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/QtGui/qimage.h \
 		../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/QtGui/qtransform.h \
 		../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/QtGui/qmatrix.h \
 		../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/QtGui/qpolygon.h \
-		../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/QtCore/qvector.h \
-		../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/QtCore/qpoint.h \
 		../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/QtCore/qrect.h \
 		../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/QtCore/qmargins.h \
 		../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/QtCore/qsize.h \
@@ -2807,6 +2878,13 @@ debug/loader.o: ../Engine/Graphics/Model/Parser/loader.cpp ../Engine/Graphics/Mo
 		../Engine/Graphics/OpenGL/OpenGL.h \
 		../Engine/Graphics/glew/include/GL/glew.h \
 		../Engine/Graphics/glfw/include/GLFW/glfw3.h \
+		../Engine/Math/include/Vector/vector3.h \
+		../Engine/Math/include/mathematics.h \
+		../Engine/Math/include/Vector/vector4.h \
+		../Engine/Math/include/mathematics_global.h \
+		../Engine/Math/include/Matrix/matrix3x3.h \
+		../Engine/Math/include/Matrix/Matrix4x4.h \
+		../Engine/Math/include/Matrix/matrix4x4.h \
 		../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/QtCore/QMap \
 		../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/QtCore/QVector \
 		../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/QtCore/QFile \
@@ -2819,9 +2897,10 @@ debug/loader_obj.o: ../Engine/Graphics/Model/Parser/Format_obj/loader_obj.cpp ..
 		../Engine/Graphics/OpenGL/OpenGL.h \
 		../Engine/Graphics/glew/include/GL/glew.h \
 		../Engine/Graphics/glfw/include/GLFW/glfw3.h \
-		../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/QtCore/QMap \
-		../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/QtCore/qmap.h \
-		../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/QtCore/qiterator.h \
+		../Engine/Math/include/Vector/vector3.h \
+		../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/QtCore/QDebug \
+		../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/QtCore/qdebug.h \
+		../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/QtCore/qalgorithms.h \
 		../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/QtCore/qglobal.h \
 		../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/QtCore/qconfig.h \
 		../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/QtCore/qfeatures.h \
@@ -2850,13 +2929,13 @@ debug/loader_obj.o: ../Engine/Graphics/Model/Parser/Format_obj/loader_obj.cpp ..
 		../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/QtCore/qglobalstatic.h \
 		../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/QtCore/qmutex.h \
 		../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/QtCore/qnumeric.h \
-		../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/QtCore/qlist.h \
-		../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/QtCore/qalgorithms.h \
-		../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/QtCore/qrefcount.h \
-		../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/QtCore/qpair.h \
-		../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/QtCore/qdebug.h \
 		../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/QtCore/qhash.h \
 		../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/QtCore/qchar.h \
+		../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/QtCore/qiterator.h \
+		../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/QtCore/qlist.h \
+		../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/QtCore/qrefcount.h \
+		../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/QtCore/qpair.h \
+		../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/QtCore/qmap.h \
 		../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/QtCore/qtextstream.h \
 		../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/QtCore/qiodevice.h \
 		../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/QtCore/qobject.h \
@@ -2886,6 +2965,13 @@ debug/loader_obj.o: ../Engine/Graphics/Model/Parser/Format_obj/loader_obj.cpp ..
 		../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/QtCore/qpoint.h \
 		../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/QtCore/qset.h \
 		../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/QtCore/qcontiguouscache.h \
+		../Engine/Math/include/mathematics.h \
+		../Engine/Math/include/Vector/vector4.h \
+		../Engine/Math/include/mathematics_global.h \
+		../Engine/Math/include/Matrix/matrix3x3.h \
+		../Engine/Math/include/Matrix/Matrix4x4.h \
+		../Engine/Math/include/Matrix/matrix4x4.h \
+		../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/QtCore/QMap \
 		../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/QtCore/QVector \
 		../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/QtCore/QString \
 		../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/QtCore/QStringList \
@@ -2901,7 +2987,6 @@ debug/loader_obj.o: ../Engine/Graphics/Model/Parser/Format_obj/loader_obj.cpp ..
 		../Engine/Object/SmartPointer/sp.h \
 		../Engine/Object/SmartPointer/sp.cpp \
 		../Engine/Object/SmartPointer/referencecounter.h \
-		../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/QtCore/QDebug \
 		../Engine/Graphics/Model/Components/material.h \
 		../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/QtGui/QImage \
 		../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/QtGui/qimage.h \
@@ -3178,6 +3263,13 @@ debug/modellibrary.o: ../Engine/Graphics/Model/modellibrary.cpp ../Engine/Graphi
 		../Engine/Graphics/Model/Parser/loader.h \
 		../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/QtCore/QStringList \
 		../Engine/Graphics/Model/Parser/Format_obj/loader_obj.h \
+		../Engine/Math/include/Vector/vector3.h \
+		../Engine/Math/include/mathematics.h \
+		../Engine/Math/include/Vector/vector4.h \
+		../Engine/Math/include/mathematics_global.h \
+		../Engine/Math/include/Matrix/matrix3x3.h \
+		../Engine/Math/include/Matrix/Matrix4x4.h \
+		../Engine/Math/include/Matrix/matrix4x4.h \
 		../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/QtCore/QMap \
 		../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/QtCore/QVector \
 		../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/QtCore/QFile \
@@ -3336,6 +3428,13 @@ debug/streamToDisk.o: ../Engine/Graphics/Model/Streamer/streamToDisk.cpp ../Engi
 		../Engine/Graphics/Model/model.h \
 		../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/QtCore/QList \
 		../Engine/Graphics/Model/Parser/Format_obj/loader_obj.h \
+		../Engine/Math/include/Vector/vector3.h \
+		../Engine/Math/include/mathematics.h \
+		../Engine/Math/include/Vector/vector4.h \
+		../Engine/Math/include/mathematics_global.h \
+		../Engine/Math/include/Matrix/matrix3x3.h \
+		../Engine/Math/include/Matrix/Matrix4x4.h \
+		../Engine/Math/include/Matrix/matrix4x4.h \
 		../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/QtCore/QMap \
 		../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/QtCore/QVector \
 		../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/QtCore/QFile \
@@ -3442,6 +3541,13 @@ debug/streamer.o: ../Engine/Graphics/Model/Streamer/streamer.cpp ../Engine/Graph
 		../Engine/Graphics/Model/Parser/loader.h \
 		../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/QtCore/QStringList \
 		../Engine/Graphics/Model/Parser/Format_obj/loader_obj.h \
+		../Engine/Math/include/Vector/vector3.h \
+		../Engine/Math/include/mathematics.h \
+		../Engine/Math/include/Vector/vector4.h \
+		../Engine/Math/include/mathematics_global.h \
+		../Engine/Math/include/Matrix/matrix3x3.h \
+		../Engine/Math/include/Matrix/Matrix4x4.h \
+		../Engine/Math/include/Matrix/matrix4x4.h \
 		../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/QtCore/QMap \
 		../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/QtCore/QVector \
 		../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/QtCore/QFile \
@@ -4121,7 +4227,46 @@ debug/frustum.o: ../Engine/Graphics/Camera/frustum.cpp ../Engine/Graphics/Camera
 		../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/QtCore/qnamespace.h \
 		../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/QtCore/qarraydata.h \
 		../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/QtCore/qstringbuilder.h \
-		../Engine/Math/include/vector
+		../Engine/Math/include/vector \
+		../Engine/Math/include/mathematics.h \
+		../Engine/Math/include/Vector/vector3.h \
+		../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/QtCore/QDebug \
+		../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/QtCore/qdebug.h \
+		../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/QtCore/qalgorithms.h \
+		../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/QtCore/qhash.h \
+		../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/QtCore/qiterator.h \
+		../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/QtCore/qlist.h \
+		../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/QtCore/qpair.h \
+		../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/QtCore/qmap.h \
+		../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/QtCore/qtextstream.h \
+		../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/QtCore/qiodevice.h \
+		../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/QtCore/qobject.h \
+		../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/QtCore/qobjectdefs.h \
+		../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/QtCore/qobjectdefs_impl.h \
+		../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/QtCore/qcoreevent.h \
+		../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/QtCore/qscopedpointer.h \
+		../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/QtCore/qmetatype.h \
+		../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/QtCore/qvarlengtharray.h \
+		../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/QtCore/qcontainerfwd.h \
+		../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/QtCore/qisenum.h \
+		../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/QtCore/qobject_impl.h \
+		../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/QtCore/qlocale.h \
+		../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/QtCore/qvariant.h \
+		../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/QtCore/qstringlist.h \
+		../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/QtCore/qdatastream.h \
+		../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/QtCore/qregexp.h \
+		../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/QtCore/qstringmatcher.h \
+		../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/QtCore/qshareddata.h \
+		../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/QtCore/qvector.h \
+		../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/QtCore/qpoint.h \
+		../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/QtCore/qset.h \
+		../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/QtCore/qcontiguouscache.h \
+		../Engine/Math/include/mathematics_global.h \
+		../Engine/Math/include/Vector/vector4.h \
+		../Engine/Math/include/Matrix/matrix3x3.h \
+		../Engine/Math/include/Matrix/Matrix4x4.h \
+		../Engine/Math/include/Matrix/matrix4x4.h \
+		../Engine/Math/include/Geometry/plane.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o debug\frustum.o ..\Engine\Graphics\Camera\frustum.cpp
 
 debug/test.o: ../Engine/test.cpp ../Engine/test.h \
@@ -4259,14 +4404,14 @@ debug/test.o: ../Engine/test.cpp ../Engine/test.h \
 		../Engine/Graphics/glew/include/GL/glew.h \
 		../Engine/Graphics/glfw/include/GLFW/glfw3.h \
 		../Engine/Graphics/Renderer/renderer.h \
-		../Engine/Graphics/Camera/camera.h \
-		../Engine/Math/include/mathematics.h \
 		../Engine/Math/include/Vector/vector3.h \
-		../Engine/Math/include/mathematics_global.h \
+		../Engine/Math/include/mathematics.h \
 		../Engine/Math/include/Vector/vector4.h \
+		../Engine/Math/include/mathematics_global.h \
 		../Engine/Math/include/Matrix/matrix3x3.h \
 		../Engine/Math/include/Matrix/Matrix4x4.h \
 		../Engine/Math/include/Matrix/matrix4x4.h \
+		../Engine/Graphics/Camera/camera.h \
 		../Engine/Graphics/Window/window.h \
 		../Engine/Input/keyboard.h \
 		../Engine/Input/mouse.h \
@@ -4293,6 +4438,7 @@ debug/test.o: ../Engine/test.cpp ../Engine/test.h \
 		../Engine/Graphics/Shader/shader.h \
 		../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/QtCore/QByteArray \
 		../Engine/Graphics/Camera/frustum.h \
+		../Engine/Math/include/Geometry/plane.h \
 		../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/QtWidgets/QApplication \
 		../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/QtWidgets/qapplication.h \
 		../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/QtCore/qcoreapplication.h \
@@ -4304,6 +4450,9 @@ debug/test.o: ../Engine/test.cpp ../Engine/test.h \
 		../Engine/Graphics/World/objectworld.h \
 		../Engine/Graphics/World/DataStructure/octtree.h \
 		../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/QtCore/QHash \
+		../Engine/Math/include/Intersections/intersections.h \
+		../Engine/Math/include/Geometry/aabb.h \
+		../Engine/Math/include/Geometry/sphere.h \
 		../Engine/Graphics/World/DataStructure/octtreefast.h \
 		../Engine/Graphics/Model/light.h \
 		../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/QtCore/QElapsedTimer \
@@ -4485,6 +4634,13 @@ debug/objectworld.o: ../Engine/Graphics/World/objectworld.cpp ../Engine/Graphics
 		../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/QtCore/qpoint.h \
 		../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/QtCore/qset.h \
 		../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/QtCore/qcontiguouscache.h \
+		../Engine/Math/include/mathematics.h \
+		../Engine/Math/include/Vector/vector3.h \
+		../Engine/Math/include/mathematics_global.h \
+		../Engine/Math/include/Vector/vector4.h \
+		../Engine/Math/include/Matrix/matrix3x3.h \
+		../Engine/Math/include/Matrix/Matrix4x4.h \
+		../Engine/Math/include/Matrix/matrix4x4.h \
 		../Engine/Threading/threadaccountant.h \
 		../Engine/Graphics/Model/modelloader.h \
 		../Engine/Graphics/Model/Streamer/streamer.h \
@@ -4523,18 +4679,15 @@ debug/objectworld.o: ../Engine/Graphics/World/objectworld.cpp ../Engine/Graphics
 		../Engine/Graphics/World/DataStructure/octtree.h \
 		../Engine/Graphics/Model/modellibrary.h \
 		../Engine/Graphics/Camera/frustum.h \
+		../Engine/Math/include/Geometry/plane.h \
 		../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/QtCore/QHash \
+		../Engine/Math/include/Intersections/intersections.h \
+		../Engine/Math/include/Geometry/aabb.h \
+		../Engine/Math/include/Geometry/sphere.h \
 		../Engine/Graphics/World/DataStructure/octtreefast.h \
 		../Engine/Object/compositeobject.h \
 		../Engine/Object/positation.h \
-		../Engine/Graphics/Model/light.h \
-		../Engine/Math/include/mathematics.h \
-		../Engine/Math/include/Vector/vector3.h \
-		../Engine/Math/include/mathematics_global.h \
-		../Engine/Math/include/Vector/vector4.h \
-		../Engine/Math/include/Matrix/matrix3x3.h \
-		../Engine/Math/include/Matrix/Matrix4x4.h \
-		../Engine/Math/include/Matrix/matrix4x4.h
+		../Engine/Graphics/Model/light.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o debug\objectworld.o ..\Engine\Graphics\World\objectworld.cpp
 
 debug/octtree.o: ../Engine/Graphics/World/DataStructure/octtree.cpp ../Engine/Graphics/World/DataStructure/octtree.h \
@@ -4612,6 +4765,13 @@ debug/octtree.o: ../Engine/Graphics/World/DataStructure/octtree.cpp ../Engine/Gr
 		../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/QtCore/qpoint.h \
 		../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/QtCore/qset.h \
 		../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/QtCore/qcontiguouscache.h \
+		../Engine/Math/include/mathematics.h \
+		../Engine/Math/include/Vector/vector3.h \
+		../Engine/Math/include/mathematics_global.h \
+		../Engine/Math/include/Vector/vector4.h \
+		../Engine/Math/include/Matrix/matrix3x3.h \
+		../Engine/Math/include/Matrix/Matrix4x4.h \
+		../Engine/Math/include/Matrix/matrix4x4.h \
 		../Engine/Graphics/Model/modellibrary.h \
 		../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/QtCore/QList \
 		../Engine/Graphics/Model/Streamer/streamer.h \
@@ -4648,7 +4808,11 @@ debug/octtree.o: ../Engine/Graphics/World/DataStructure/octtree.cpp ../Engine/Gr
 		../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/QtCore/qbasictimer.h \
 		../Engine/Threading/threadaccountant.h \
 		../Engine/Graphics/Camera/frustum.h \
+		../Engine/Math/include/Geometry/plane.h \
 		../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/QtCore/QHash \
+		../Engine/Math/include/Intersections/intersections.h \
+		../Engine/Math/include/Geometry/aabb.h \
+		../Engine/Math/include/Geometry/sphere.h \
 		../Engine/Object/compositeobject.h \
 		../Engine/Object/positation.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o debug\octtree.o ..\Engine\Graphics\World\DataStructure\octtree.cpp
@@ -4752,6 +4916,13 @@ debug/modelloader.o: ../Engine/Graphics/Model/modelloader.cpp ../Engine/Graphics
 		../Engine/Graphics/Model/Parser/loader.h \
 		../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/QtCore/QStringList \
 		../Engine/Graphics/Model/Parser/Format_obj/loader_obj.h \
+		../Engine/Math/include/Vector/vector3.h \
+		../Engine/Math/include/mathematics.h \
+		../Engine/Math/include/Vector/vector4.h \
+		../Engine/Math/include/mathematics_global.h \
+		../Engine/Math/include/Matrix/matrix3x3.h \
+		../Engine/Math/include/Matrix/Matrix4x4.h \
+		../Engine/Math/include/Matrix/matrix4x4.h \
 		../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/QtCore/QMap \
 		../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/QtCore/QVector \
 		../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/QtCore/QFile \
@@ -4935,7 +5106,10 @@ debug/compositeobject.o: ../Engine/Object/compositeobject.cpp ../Engine/Object/c
 		../Engine/Math/include/Matrix/matrix3x3.h \
 		../Engine/Math/include/Matrix/Matrix4x4.h \
 		../Engine/Math/include/Matrix/matrix4x4.h \
-		../Engine/Object/positation.h
+		../Engine/Object/positation.h \
+		../Engine/Math/include/Intersections/intersections.h \
+		../Engine/Math/include/Geometry/aabb.h \
+		../Engine/Math/include/Geometry/sphere.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o debug\compositeobject.o ..\Engine\Object\compositeobject.cpp
 
 debug/positation.o: ../Engine/Object/positation.cpp ../Engine/Object/positation.h \
@@ -4977,11 +5151,8 @@ debug/positation.o: ../Engine/Object/positation.cpp ../Engine/Object/positation.
 		../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/QtCore/qarraydata.h \
 		../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/QtCore/qstringbuilder.h \
 		../Engine/Math/include/vector \
-		../Engine/Event/eventtransmitter.h \
-		../Engine/Object/SmartPointer/smartpointer.h \
-		../Engine/Object/SmartPointer/sp.h \
-		../Engine/Object/SmartPointer/sp.cpp \
-		../Engine/Object/SmartPointer/referencecounter.h \
+		../Engine/Math/include/mathematics.h \
+		../Engine/Math/include/Vector/vector3.h \
 		../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/QtCore/QDebug \
 		../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/QtCore/qdebug.h \
 		../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/QtCore/qalgorithms.h \
@@ -5013,6 +5184,19 @@ debug/positation.o: ../Engine/Object/positation.cpp ../Engine/Object/positation.
 		../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/QtCore/qpoint.h \
 		../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/QtCore/qset.h \
 		../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/QtCore/qcontiguouscache.h \
+		../Engine/Math/include/mathematics_global.h \
+		../Engine/Math/include/Vector/vector4.h \
+		../Engine/Math/include/Matrix/matrix3x3.h \
+		../Engine/Math/include/Matrix/Matrix4x4.h \
+		../Engine/Math/include/Matrix/matrix4x4.h \
+		../Engine/Event/eventtransmitter.h \
+		../Engine/Object/SmartPointer/smartpointer.h \
+		../Engine/Object/SmartPointer/sp.h \
+		../Engine/Object/SmartPointer/sp.cpp \
+		../Engine/Object/SmartPointer/referencecounter.h \
+		../Engine/Math/include/Intersections/intersections.h \
+		../Engine/Math/include/Geometry/aabb.h \
+		../Engine/Math/include/Geometry/sphere.h \
 		../Engine/Event/event.h \
 		../Engine/Event/Events/eventdebugger.h \
 		../Engine/Event/Events/eventstreamer.h \
@@ -5309,8 +5493,19 @@ debug/octtreefast.o: ../Engine/Graphics/World/DataStructure/octtreefast.cpp ../E
 		../Engine/Event/Events/eventwindow.h \
 		../Engine/Event/Events/eventmodel.h \
 		../Engine/Event/Events/eventcompositeobject.h \
+		../Engine/Math/include/mathematics.h \
+		../Engine/Math/include/Vector/vector3.h \
+		../Engine/Math/include/mathematics_global.h \
+		../Engine/Math/include/Vector/vector4.h \
+		../Engine/Math/include/Matrix/matrix3x3.h \
+		../Engine/Math/include/Matrix/Matrix4x4.h \
+		../Engine/Math/include/Matrix/matrix4x4.h \
 		../Engine/Graphics/Camera/frustum.h \
+		../Engine/Math/include/Geometry/plane.h \
 		../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/QtCore/QHash \
+		../Engine/Math/include/Intersections/intersections.h \
+		../Engine/Math/include/Geometry/aabb.h \
+		../Engine/Math/include/Geometry/sphere.h \
 		../Engine/Object/compositeobject.h \
 		../Engine/Object/positation.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o debug\octtreefast.o ..\Engine\Graphics\World\DataStructure\octtreefast.cpp

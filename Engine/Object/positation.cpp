@@ -191,7 +191,7 @@ void Positation::set_matrix_scl(){
 
 void Positation::build_model_matrix(){
     if(matrix_changed){
-        mat_m =  mat_pos * mat_rot * mat_scl;
+        mat_m =  mat_pos * mat_scl * mat_rot;
         matrix_changed = false;
     }
 }

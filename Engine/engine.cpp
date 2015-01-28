@@ -200,7 +200,7 @@ void Engine::initialize(int argc, char *argv[]){
     window->registerMouse(m);
 
 
-    //init eenderer
+    //init renderer
     r->initialize();
     r->setPolygonMode(Renderer::PolygonModeStandard);
     r->setCamera(cam);

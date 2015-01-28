@@ -14,11 +14,6 @@ INPUT(
 ./release\material.o
 ./release\loader.o
 ./release\loader_obj.o
-./release\vector4.o
-./release\vector3.o
-./release\matrix4x4.o
-./release\matrix3x3.o
-./release\plane.o
 ./release\shader.o
 ./release\camera.o
 ./release\modellibrary.o
@@ -46,9 +41,6 @@ INPUT(
 ./release\customgraph.o
 ./release\octtreefast.o
 ./release\referencecounter.o
-./release\intersections.o
-./release\aabb.o
-./release\sphere.o
 ./release\moc_debugwindow.o
 ./release\moc_engine.o
 ./release\moc_streamToDisk.o

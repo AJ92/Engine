@@ -34,7 +34,7 @@ Test::Test() :
     //key J, is the plane created yet ?
     level_loaded = 0;
 
-    test_amount = 50;
+    test_amount = 5;
 
     lvl_loaded = false;
 
@@ -126,9 +126,19 @@ void Test::keyFunction(){
                               (double)((rand() & 2000)-1000),
                               (double)((rand() & 2000)-1000));
 
-            posi->set_scale(17.0,17.0,17.0);
+            int rand_rot = (rand() & 2);
+            if(rand_rot == 0){
+                posi->set_rotation((double) (rand() & 360), 1, 0, 0);
+            }
+            else if(rand_rot == 1){
+                posi->set_rotation((double) (rand() & 360), 0, 1, 0);
+            }
+            else if(rand_rot == 2){
+                posi->set_rotation((double) (rand() & 360), 0, 0, 1);
+            }
+
+            posi->set_scale(0.5,0.5,0.5);
             SP<CompositeObject> coTest = loadModelObject("tree", getApplicationDir() + "//box.obj", posi);
-            coTest->getPositation()->set_rotation((double) (rand() & 360), rand() & 1, rand() & 1, rand() & 1);
         }
         /*
         model_library->setModelsPerThread(1);
@@ -205,10 +215,26 @@ void Test::keyFunction(){
             for(int i = 0; i < compositeobjecttest.size(); i++){
                 SP<CompositeObject> coTest = compositeobjecttest.at(i);
                 coTest->getPositation()->set_position(  (double)((rand() & 2000)-1000),
-                                                        (double)((rand() & 2000)-1000),
+                                                        700.0,
                                                         (double)((rand() & 2000)-1000));
 
-                coTest->getPositation()->set_rotation((double) (rand() & 360), rand() & 1, rand() & 1, rand() & 1);
+
+                int rand_rot = (rand() & 2);
+                if(rand_rot == 0){
+                    coTest->getPositation()->set_rotation((double) (rand() & 360), 1, 0, 0);
+                }
+                else if(rand_rot == 1){
+                    coTest->getPositation()->set_rotation((double) (rand() & 360), 0, 1, 0);
+                }
+                else if(rand_rot == 2){
+                    coTest->getPositation()->set_rotation((double) (rand() & 360), 0, 0, 1);
+                }
+
+                coTest->getPositation()->set_scale(5.0,5.0,5.0);
+
+                if(coTest->getPositation()->get_scale()[0] < 4.0){
+                    qDebug("wow");
+                }
             }
         }
     }

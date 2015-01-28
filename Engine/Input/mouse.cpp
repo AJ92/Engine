@@ -125,7 +125,7 @@ void Mouse::mouseScrolled (double x, double y) {
 }
 
 void Mouse::mouseMoved (double x, double y) {
-    //debugMessage("mouseMove: " + QString::number(x) + "  "  + QString::number(y));
+    debugMessage("mouseMove: " + QString::number(x) + "  "  + QString::number(y));
     xpos = x;
     ypos = y;
 }

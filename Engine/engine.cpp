@@ -130,7 +130,7 @@ Engine::Engine(QObject *parent) :
 
     frameTime = 0;
     time = 0;
-    //deltatime in ns :  1s / 60 frames = ns per frame
+    //deltatime in ns (16 ms)
     deltaTime = 1000000000/60;
     accumulator = 0;
     timestep = 1.0f;

@@ -89,13 +89,32 @@ void Window::initialize(){
     keyboard = 0;
     mouse = 0;
 
+
+
     window = glfwCreateWindow(window_width, window_height, window_title.toUtf8().constData(), NULL, NULL);
+
+    //window = glfwCreateWindow(window_width, window_height, window_title.toUtf8().constData(), glfwGetPrimaryMonitor(), NULL);
+
+/*
+    GLFWmonitor* monitor = glfwGetPrimaryMonitor();
+
+    const GLFWvidmode* mode = glfwGetVideoMode(monitor);
+    glfwWindowHint(GLFW_RED_BITS, mode->redBits);
+    glfwWindowHint(GLFW_GREEN_BITS, mode->greenBits);
+    glfwWindowHint(GLFW_BLUE_BITS, mode->blueBits);
+    glfwWindowHint(GLFW_REFRESH_RATE, mode->refreshRate);
+
+    window = glfwCreateWindow(mode->width, mode->height, window_title.toUtf8().constData(), monitor, NULL);
+*/
+
+
     glfwSetWindowSizeCallback(window,&resize_callback);
     glfwSetWindowFocusCallback(window,&focus_callback);
     glfwMakeContextCurrent (window);
 
-
     created = true;
+
+
     debugMessage("window initialized.");
 }
 
@@ -109,9 +128,20 @@ void Window::setWindowTitle(QString title){
 
 void Window::setWindowSize(int width, int height){
     if(created){
-        glfwSetWindowSize(window,width, height);
+        glfwSetWindowSize(window, width, height);
     }
 }
+
+void setWindowFullscreen(bool windowed){
+    /*
+    if(created){
+        if(windowed){
+
+        }
+    }
+    */
+}
+
 
 int Window::getWindowWidth(){
     return window_width;

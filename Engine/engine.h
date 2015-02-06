@@ -117,6 +117,8 @@ private:
 
     //window settings
     EventTransmitter * windowTransmitter;
+
+public:
     Window * window;
 
 protected:

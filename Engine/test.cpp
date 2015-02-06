@@ -374,6 +374,10 @@ void Test::keyFunction(){
                                   cam_pos.y() - cam_dir[1] * getTimeStep()* speed_up,
                                   cam_pos.z() - cam_dir[2] * getTimeStep()* speed_up);
     }
+
+    if(k->isPressed(45)){
+        window->setWindowSize(1920,1080);
+    }
 }
 
 void Test::eventCall(){

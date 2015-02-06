@@ -23,6 +23,9 @@ public:
 
     void setWindowTitle(QString title);
     void setWindowSize(int width, int height);
+
+    void setWindowFullscreen(bool windowed);
+
     int getWindowWidth();
     int getWindowHeight();
 

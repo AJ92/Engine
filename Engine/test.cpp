@@ -4,6 +4,12 @@
 #include "Object/positation.h"
 
 
+//assimp test
+#include <assimp/Importer.hpp>      // C++ importer interface
+#include <assimp/scene.h>           // Output data structure
+#include <assimp/postprocess.h>     // Post processing flags
+
+
 Test::Test() :
     Engine()
 {
@@ -29,6 +35,11 @@ Test::Test() :
     //physics test
     //btDefaultCollisionConfiguration * collisionConfiguration = new btDefaultCollisionConfiguration();
 
+
+    //assimp test
+    Assimp::Importer importer;
+
+
     qDebug("Test constructed...");
 
     //key J, is the plane created yet ?
@@ -43,6 +54,12 @@ Test::Test() :
 
     mSpeedX = 0.0;
     mSpeedY = 0.0;
+
+
+
+
+
+
 }
 
 
@@ -171,8 +188,8 @@ void Test::keyFunction(){
                 posi->set_rotation((double) (rand() & 360), 0, 0, 1);
             }
 
-            posi->set_scale(15.5,15.5,15.5);
-            SP<CompositeObject> coTest = loadModelObject("tree", getApplicationDir() + "//box.obj", posi);
+            posi->set_scale(0.5,0.5,0.5);
+            SP<CompositeObject> coTest = loadModelObject("box", getApplicationDir() + "//box.obj", posi);
         }
         /*
         model_library->setModelsPerThread(1);

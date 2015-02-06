@@ -162,6 +162,13 @@ windows: {
     CONFIG(debug, debug|release): LIBS += -lglew32
 
 
+    #ASSIMP
+    INCLUDEPATH += Graphics/assimp/include
+    DEPENDPATH += Graphics/assimp/include
+
+    LIBS += -L$$_PRO_FILE_PWD_/Graphics/assimp/lib
+    CONFIG(release, debug|release): LIBS += -lassimp
+    CONFIG(debug, debug|release): LIBS += -lassimp
 
 
 

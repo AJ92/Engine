@@ -44,6 +44,8 @@ public:
     CompositeObject();
     CompositeObject(QString name, ObjectMovementType movementType);
 
+    virtual ~CompositeObject();
+
     void setModel(SP<Model> model);
     void setLight(SP<Light> light);
     void setPositation(SP<Positation> positation);

@@ -13,6 +13,7 @@ public:
     //construct empty Model
     Light();
 
+    virtual ~Light();
 
     //light properties
     void setDiffuseColor(double r, double g, double b);

@@ -15,6 +15,10 @@ Streamer::Streamer(SP<ThreadAccountant> ta, QObject *parent) :
 
 }
 
+Streamer::~Streamer(){
+
+}
+
 
 void Streamer::initialize(){
     debugMessage("streamer initializing...");

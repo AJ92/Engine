@@ -20,6 +20,7 @@ class ModelLibrary : virtual public EventListener, virtual public EventTransmitt
 {
 public:
     ModelLibrary(SP<ThreadAccountant> ta);
+    virtual ~ModelLibrary();
 
     void initialize();
 
@@ -80,6 +81,8 @@ class ModelLibrary_v2 : virtual public EventListener, virtual public EventTransm
 public:
     ModelLibrary_v2();
     ModelLibrary_v2(int reserve_unique, int reserve_all);
+
+    virtual ~ModelLibrary_v2();
 
     void initialize();
 

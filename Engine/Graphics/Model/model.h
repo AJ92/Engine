@@ -24,7 +24,7 @@ public:
     //construct empty Model
     Model();
 
-    ~Model();
+    virtual ~Model();
 
     //override
     void set_data(const Model &mdl);

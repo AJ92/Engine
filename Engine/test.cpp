@@ -171,7 +171,7 @@ void Test::keyFunction(){
                 posi->set_rotation((double) (rand() & 360), 0, 0, 1);
             }
 
-            posi->set_scale(0.5,0.5,0.5);
+            posi->set_scale(15.5,15.5,15.5);
             SP<CompositeObject> coTest = loadModelObject("tree", getApplicationDir() + "//box.obj", posi);
         }
         /*

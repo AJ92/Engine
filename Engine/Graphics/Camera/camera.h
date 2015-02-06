@@ -8,7 +8,7 @@ class Camera : public Object
 {
 public:
     Camera();
-    ~Camera();
+    virtual ~Camera();
 
     // local - cam rotates
     void rotate_local_post_x(double angle);    // no gimbal lock

@@ -16,7 +16,7 @@ class Material : public Object
 {
 public:
     Material(QString name, QString path);
-    ~Material();
+    virtual ~Material();
 
     //load the bitmaps, and creates openGL textures
     //first set the paths...

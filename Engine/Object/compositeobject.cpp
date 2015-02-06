@@ -31,6 +31,9 @@ CompositeObject::CompositeObject(QString name, ObjectMovementType movementType) 
     me_eventListener_ = SP<EventListener>(this);
 }
 
+CompositeObject::~CompositeObject(){
+
+}
 
 
 void CompositeObject::setModel(SP<Model> model){

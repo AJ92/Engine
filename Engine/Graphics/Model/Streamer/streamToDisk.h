@@ -21,7 +21,7 @@ class StreamToDisk : public QObject
     Q_OBJECT
 public:
     StreamToDisk(QList<Model*> model_list_for_thread);
-    ~StreamToDisk();
+    virtual ~StreamToDisk();
 
 public slots:
     void stream();

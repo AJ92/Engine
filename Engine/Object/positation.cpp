@@ -14,6 +14,10 @@ Positation::Positation() :
     matrix_changed = true;
 }
 
+Positation::~Positation(){
+
+}
+
 void Positation::set_data(const Positation &positation){
     this->pos = positation.pos;
     this->rot = positation.rot;

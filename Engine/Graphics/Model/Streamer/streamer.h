@@ -26,6 +26,8 @@ class Streamer : public QObject, virtual public EventListener, virtual public Ev
 public:
     explicit Streamer(SP<ThreadAccountant> ta, QObject *parent = 0);
 
+    virtual ~Streamer();
+
     void initialize();
 
     void streamModelToDisk(SP<Model> m);

@@ -7,6 +7,7 @@ class ThreadAccountant : public Object
 {
 public:
     ThreadAccountant(int maxThreads);
+    virtual ~ThreadAccountant();
 
     bool addThread();
     bool removeThread();

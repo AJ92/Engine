@@ -19,7 +19,7 @@ class Mesh : public Object
 public:
     Mesh(QString name,int triangle_count,GLfloat vertices[],GLfloat texcoords[],GLfloat normals[],
          SP<Material> material);
-    ~Mesh();
+    virtual ~Mesh();
 
     QString get_name();
 

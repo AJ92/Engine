@@ -12,7 +12,7 @@ class Frustum : public Object
 {
 public:
     Frustum();
-    ~Frustum();
+    virtual ~Frustum();
 
     enum IntersectionType {
         Inside      = 0x0000,

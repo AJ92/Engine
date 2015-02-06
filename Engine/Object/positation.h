@@ -17,6 +17,8 @@ class Positation : virtual public EventTransmitter
 public:
     Positation();
 
+    virtual ~Positation();
+
     void set_data(const Positation &Positation);
 
     Vector3 getPosition();

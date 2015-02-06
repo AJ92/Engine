@@ -18,7 +18,7 @@ class Event : public Object
 public:
 
     Event();
-    ~Event();
+    virtual ~Event();
 
     void destroy();
 

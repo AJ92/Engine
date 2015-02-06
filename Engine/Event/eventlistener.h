@@ -13,7 +13,7 @@ class EventListener : public Object
 {
 public:
     EventListener();
-    ~EventListener();
+    virtual ~EventListener();
     virtual void eventRecieved(Event e);
     Event getNextEvent();
     int getEventAmount();

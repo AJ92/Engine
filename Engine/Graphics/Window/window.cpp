@@ -44,6 +44,10 @@ Window::Window() :
     //window_handle = 0;
 }
 
+Window::~Window(){
+
+}
+
 void Window::initialize(){
     debugMessage("window initializing...");
     /*

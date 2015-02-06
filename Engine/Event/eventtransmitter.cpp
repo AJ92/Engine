@@ -17,6 +17,10 @@ EventTransmitter::EventTransmitter(int reserved_space) :
     listeners.reserve(reserved_space);
 }
 
+EventTransmitter::~EventTransmitter(){
+
+}
+
 void EventTransmitter::addListener(SP<EventListener> el){
     if(!containsListener(el)){
         listeners.push_back(el);

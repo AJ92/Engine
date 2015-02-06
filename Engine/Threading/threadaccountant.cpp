@@ -14,6 +14,9 @@ ThreadAccountant::ThreadAccountant(int maxThreads) :
         this->maxThreads = maxThreads;
     }
 }
+ThreadAccountant::~ThreadAccountant(){
+
+}
 
 bool ThreadAccountant::addThread(){
     if(threadsInUse < maxThreads){

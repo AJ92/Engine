@@ -16,6 +16,11 @@ ModelLibrary::ModelLibrary(SP<ThreadAccountant> ta) :
     streamer = SP<Streamer>(new Streamer(ta));
 }
 
+ModelLibrary::~ModelLibrary(){
+
+}
+
+
 void ModelLibrary::initialize(){
     debugMessage("modellibrary initializing...");
 
@@ -282,6 +287,10 @@ ModelLibrary_v2::ModelLibrary_v2(int reserve_unique, int reserve_all) :
 {
     this->reserve_unique = reserve_unique;
     this->reserve_all = reserve_all;
+}
+
+ModelLibrary_v2::~ModelLibrary_v2(){
+
 }
 
 void ModelLibrary_v2::initialize(){

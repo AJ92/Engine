@@ -20,6 +20,10 @@ Light::Light() :
     //set some vars as default
 }
 
+Light::~Light(){
+
+}
+
 
 void Light::setDiffuseColor(double r, double g, double b){
     diffuse_c = Vector3(r,g,b);

@@ -12,6 +12,7 @@ EventListener::~EventListener(){
     //qDebug("EventListener::~EventListener");
 }
 
+
 //inherit from this class and implement the eventRecieved
 //function as override or use getEvent function to check for events.
 void EventListener::eventRecieved(Event e){

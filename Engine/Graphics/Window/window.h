@@ -17,6 +17,8 @@ class Window : public EventTransmitter
 public:
     Window();
 
+    virtual ~Window();
+
     void initialize();
 
     void setWindowTitle(QString title);

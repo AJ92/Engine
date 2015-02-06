@@ -25,6 +25,8 @@ public:
     EventTransmitter();
     EventTransmitter(int reserved_space);
 
+    virtual ~EventTransmitter();
+
     //WE USE POINTER FOR PROPPER INHERITANCE
     virtual void addListener(SP<EventListener> el);
     virtual bool containsListener(SP<EventListener> el);

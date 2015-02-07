@@ -360,39 +360,14 @@ void Engine::render()
     */
     timestep = (double)frameTime/(double)deltaTime;
 
-
-    //render every model
-    /*
-    if(model_library->modelCount() > 0){
-        QList<Model *> model_list = model_library->getModels();
-        QList<Model *>::iterator i;
-        for (i = model_list.begin(); i != model_list.end(); ++i){
-            Model * m = *i;
-            r->render(m);
-        }
-    }
-    */
-
     if(!glfwWindowShouldClose(window->getGLFWwindow()))
     {
-
-        //render the mdllib
-        //forget about the next 2...
-        //r->setModelLibrary(model_library);
-        //r->setLightLibrary(light_library);
-
         //set the objectworld
         r->setObjectWorld(object_world);
-
         r->render_v2();
-
-        //glutSwapBuffers();
-        //glutPostRedisplay();
 
         glfwSwapBuffers(window->getGLFWwindow());
         glfwPollEvents();
-
-
     }
     else{
         //window gets closed
@@ -418,8 +393,8 @@ void Engine::eventCall(){
 
 //SLOTS
 void Engine::eventLoop(){
-    eventCall();
     render();
+    eventCall();   
 }
 
 //dynamic light

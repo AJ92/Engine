@@ -10,14 +10,15 @@ Model * Loader::import_model(QString path){
     QStringList pathlist = path.split(".");
     QString suffix = pathlist.last();
 
-    if(suffix.compare("fbx")==0){
-        return import_model_format_fbx(path);
-    }
-    else if(suffix.compare("bin")==0){
+    if(suffix.compare("bin")==0){
         return import_model_format_bin(path);
     }
+
     else if(suffix.compare("obj")==0){
         return import_model_format_obj(path);
+    }
+    else{
+        return import_model_with_assimp(path);
     }
     qDebug("no suitable format detected...");
     return new Model();
@@ -28,13 +29,13 @@ bool Loader::export_model_bin(QString path, Model * mdl){
     return true;
 }
 
-//static
-Model * Loader::import_model_format_bin(QString path){
-    return new Model();
-}
+
+
+
+
 
 //static
-Model * Loader::import_model_format_fbx(QString path){
+Model * Loader::import_model_format_bin(QString path){
     return new Model();
 }
 
@@ -45,7 +46,20 @@ Model * Loader::import_model_format_obj(QString path){
     Loader_obj loader_obj;
 
     if(!loader_obj.load_model_data(*mdl,path)){
-        qDebug("  import of obj mdl FAILED.");
+        qDebug("  import of deprecated obj mdl FAILED.");
     }
     return mdl;
+}
+
+//static
+Model * Loader::import_model_with_assimp(QString path){
+    Model * mdl = new Model();
+
+    Loader_assimp loader_assimp;
+
+    if(!loader_assimp.load_model_data(*mdl,path)){
+        qDebug("  import of mdl with assimp FAILED.");
+    }
+    return mdl;
+
 }

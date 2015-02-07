@@ -4,10 +4,6 @@
 #include "Object/positation.h"
 
 
-//assimp test
-#include <assimp/Importer.hpp>      // C++ importer interface
-#include <assimp/scene.h>           // Output data structure
-#include <assimp/postprocess.h>     // Post processing flags
 
 
 Test::Test() :
@@ -35,9 +31,6 @@ Test::Test() :
     //physics test
     //btDefaultCollisionConfiguration * collisionConfiguration = new btDefaultCollisionConfiguration();
 
-
-    //assimp test
-    Assimp::Importer importer;
 
 
     qDebug("Test constructed...");
@@ -91,8 +84,6 @@ void Test::mouseFunction(){
         if(mSpeedY < min_speed){
             mSpeedY = min_speed;
         }
-
-
 
 
         getCamera()->add_rotation_local((mPosX - temp_x)/4.0 *getTimeStep()*mSpeedX,0.0,1.0,0.0);
@@ -330,66 +321,71 @@ void Test::keyFunction(){
     getCamera()->add_rotation_local(y_angle,Vector3(1.0,0.0,0.0));
     */
 
-    double speed_up = 1.0;
+    double speed_up = 2.0;
     if(k->isPressed(42)){
-        speed_up = 10.0;
+        speed_up = 155.0;
     }
 
+
+
     //Q W E A S D
+
+    double accel = getTimeStep() * speed_up;
+
 
     //W
     if(k->isPressed(17)){
         Vector3 cam_pos = getCamera()->getPosition();
         Vector3 cam_dir = getCamera()->getDirForward();
 
-        getCamera()->set_position(cam_pos.x() - cam_dir[0] * getTimeStep()* speed_up,
-                                  cam_pos.y() - cam_dir[1] * getTimeStep()* speed_up,
-                                  cam_pos.z() - cam_dir[2] * getTimeStep()* speed_up);
+        getCamera()->set_position(cam_pos.x() - cam_dir[0] * accel,
+                                  cam_pos.y() - cam_dir[1] * accel,
+                                  cam_pos.z() - cam_dir[2] * accel);
     }
     //A
     if(k->isPressed(30)){
         Vector3 cam_pos = getCamera()->getPosition();
         Vector3 cam_dir = getCamera()->getDirRight();
 
-        getCamera()->set_position(cam_pos.x() - cam_dir[0] * getTimeStep()* speed_up,
-                                  cam_pos.y() - cam_dir[1] * getTimeStep()* speed_up,
-                                  cam_pos.z() - cam_dir[2] * getTimeStep()* speed_up);
+        getCamera()->set_position(cam_pos.x() - cam_dir[0] * accel,
+                                  cam_pos.y() - cam_dir[1] * accel,
+                                  cam_pos.z() - cam_dir[2] * accel);
     }
     //S
     if(k->isPressed(31)){
         Vector3 cam_pos = getCamera()->getPosition();
         Vector3 cam_dir = getCamera()->getDirForward();
 
-        getCamera()->set_position(cam_pos.x() + cam_dir[0] * getTimeStep()* speed_up,
-                                  cam_pos.y() + cam_dir[1] * getTimeStep()* speed_up,
-                                  cam_pos.z() + cam_dir[2] * getTimeStep()* speed_up);
+        getCamera()->set_position(cam_pos.x() + cam_dir[0] * accel,
+                                  cam_pos.y() + cam_dir[1] * accel,
+                                  cam_pos.z() + cam_dir[2] * accel);
     }
     //D
     if(k->isPressed(32)){
         Vector3 cam_pos = getCamera()->getPosition();
         Vector3 cam_dir = getCamera()->getDirRight();
 
-        getCamera()->set_position(cam_pos.x() + cam_dir[0] * getTimeStep()* speed_up,
-                                  cam_pos.y() + cam_dir[1] * getTimeStep()* speed_up,
-                                  cam_pos.z() + cam_dir[2] * getTimeStep()* speed_up);
+        getCamera()->set_position(cam_pos.x() + cam_dir[0] * accel,
+                                  cam_pos.y() + cam_dir[1] * accel,
+                                  cam_pos.z() + cam_dir[2] * accel);
     }
     //Q
     if(k->isPressed(16)){
         Vector3 cam_pos = getCamera()->getPosition();
         Vector3 cam_dir = getCamera()->getDirUp();
 
-        getCamera()->set_position(cam_pos.x() + cam_dir[0] * getTimeStep()* speed_up,
-                                  cam_pos.y() + cam_dir[1] * getTimeStep()* speed_up,
-                                  cam_pos.z() + cam_dir[2] * getTimeStep()* speed_up);
+        getCamera()->set_position(cam_pos.x() + cam_dir[0] * accel,
+                                  cam_pos.y() + cam_dir[1] * accel,
+                                  cam_pos.z() + cam_dir[2] * accel);
     }
     //Y
     if(k->isPressed(44)){
         Vector3 cam_pos = getCamera()->getPosition();
         Vector3 cam_dir = getCamera()->getDirUp();
 
-        getCamera()->set_position(cam_pos.x() - cam_dir[0] * getTimeStep()* speed_up,
-                                  cam_pos.y() - cam_dir[1] * getTimeStep()* speed_up,
-                                  cam_pos.z() - cam_dir[2] * getTimeStep()* speed_up);
+        getCamera()->set_position(cam_pos.x() - cam_dir[0] * accel,
+                                  cam_pos.y() - cam_dir[1] * accel,
+                                  cam_pos.z() - cam_dir[2] * accel);
     }
 
     if(k->isPressed(45)){

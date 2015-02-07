@@ -36,7 +36,7 @@ void KeyBoard::initialize(){
 }
 
 void KeyBoard::key(int key, int scancode, int action, int mods){
-    debugMessage("key: " + QString::number(scancode));
+    //debugMessage("key: " + QString::number(scancode));
     if(action == GLFW_PRESS || action == GLFW_REPEAT){
         keyStates[scancode] = true;
     }

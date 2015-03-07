@@ -58,7 +58,7 @@ SOURCES += main.cpp\
     Graphics/World/DataStructure/octtreefast.cpp \
     Object/SmartPointer/sp.cpp \
     Object/SmartPointer/referencecounter.cpp \
-    Graphics/Model/Parser/Format_obj/loader_assimp.cpp
+    Graphics/Model/Parser/Format_assimp/loader_assimp.cpp
 
 
 
@@ -108,7 +108,7 @@ HEADERS  += \
     Object/SmartPointer/sp.h \
     Object/SmartPointer/referencecounter.h \
     Object/SmartPointer/smartpointer.h \
-    Graphics/Model/Parser/Format_obj/loader_assimp.h
+    Graphics/Model/Parser/Format_assimp/loader_assimp.h
 
 
 

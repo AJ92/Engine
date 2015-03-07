@@ -7,7 +7,7 @@
 
 
 Test::Test() :
-    Engine()
+    Quark::Engine()
 {
     x_angle = 0.0;
     y_angle = 0.0;
@@ -18,7 +18,8 @@ Test::Test() :
     showDebugWindow();
     initialize(0, 0);
 
-    setWindowTitle("Engine v0.01a");
+
+    setWindowTitle("Engine v0.1a");
     setWindowSize(800,600);
 
 

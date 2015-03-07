@@ -52,141 +52,144 @@
 class Event;
 class Positation;
 
-class Engine : public QObject, virtual public EventListener, virtual public EventTransmitter
+namespace Quark
 {
+    class Engine : public QObject, virtual public EventListener, virtual public EventTransmitter
+    {
 
-    Q_OBJECT
+        Q_OBJECT
 
-public:
-    explicit Engine(QObject *parent = 0);
-    ~Engine();
-    void initialize(int argc, char *argv[]);
-
-
-    //WINDOW
-    void setWindowTitle(QString title);
-    void setWindowSize(int width, int height);
-    int getWindowWidth();
-    int getWindowHeight();
-
-    bool isRunning();
-
-    void showDebugWindow();
-    void hideDebugWindow();
-
-    int getFps();
+    public:
+        explicit Engine(QObject *parent = 0);
+        ~Engine();
+        void initialize(int argc, char *argv[]);
 
 
+        //WINDOW
+        void setWindowTitle(QString title);
+        void setWindowSize(int width, int height);
+        int getWindowWidth();
+        int getWindowHeight();
 
+        bool isRunning();
 
-    //RENDER
+        void showDebugWindow();
+        void hideDebugWindow();
 
-    //callbacks
-    void render();
-    void error(int error, const char* description);
-
-    //some functions
-    void setClearColor(float r, float g, float b, float a);
-
-
-    //KEYBOARD (override if needed)
-    //void keyFunction();
-
-    SP<CompositeObject> loadLightObject(QString name);
-    SP<CompositeObject> loadModelObject(QString name, QString path);
-    SP<CompositeObject> loadModelObject(QString name, QString path, SP<Positation> posi);
-
-    void setCamera(Camera * cam);
-
-    QString getApplicationDir();
-
-    Camera* getCamera();
-    double getTimeStep();
-
-
-private:
-
-    //test values
-    Camera * cam;
-    //test values end
-
-    bool running;
-
-    //APP stuff
-    QString app_dir;
-
-    //window settings
-    EventTransmitter * windowTransmitter;
-
-public:
-    Window * window;
-
-protected:
-    //renderer
-    Renderer *r;
-
-    //keyboard
-    KeyBoard *k;
-
-    //Mouse
-    Mouse *m;
-
-    //model loader and threads.
-    //ModelLibrary * model_library;
-
-    //light loader and threads.
-    //LightLibrary * light_library;
+        int getFps();
 
 
 
 
-    ModelLoader * model_loader;
-    //holds all objects ... soooooon...
-    SP<ObjectWorld> object_world;
+        //RENDER
+
+        //callbacks
+        void render();
+        void error(int error, const char* description);
+
+        //some functions
+        void setClearColor(float r, float g, float b, float a);
 
 
-private:
+        //KEYBOARD (override if needed)
+        //void keyFunction();
+
+        SP<CompositeObject> loadLightObject(QString name);
+        SP<CompositeObject> loadModelObject(QString name, QString path);
+        SP<CompositeObject> loadModelObject(QString name, QString path, SP<Positation> posi);
+
+        void setCamera(Camera * cam);
+
+        QString getApplicationDir();
+
+        Camera* getCamera();
+        double getTimeStep();
 
 
-    //FPS settings
-    int frame_count;
-    int fps;
+    private:
 
-    //timesteps
-    double timestep;
-    qint64 frameTime;
-    qint64 time;
-    qint64 deltaTime;
-    qint64 accumulator;
+        //test values
+        Camera * cam;
+        //test values end
 
-    QElapsedTimer elapseTimer;
+        bool running;
+
+        //APP stuff
+        QString app_dir;
+
+        //window settings
+        EventTransmitter * windowTransmitter;
+
+    public:
+        Window * window;
+
+    protected:
+        //renderer
+        Renderer *r;
+
+        //keyboard
+        KeyBoard *k;
+
+        //Mouse
+        Mouse *m;
+
+        //model loader and threads.
+        //ModelLibrary * model_library;
+
+        //light loader and threads.
+        //LightLibrary * light_library;
 
 
-    //Timer for glut event loop
-    QTimer * t;
-    QTimer * fps_timer;
 
 
-    //Debug settings
-    //this is actually a Debug window but hidden behind an EventListener
-    EventListener * debuggerListener;
-    Debugger * debugger;
-    bool debug_visible;
+        ModelLoader * model_loader;
+        //holds all objects ... soooooon...
+        SP<ObjectWorld> object_world;
+
+
+    private:
+
+
+        //FPS settings
+        int frame_count;
+        int fps;
+
+        //timesteps
+        double timestep;
+        qint64 frameTime;
+        qint64 time;
+        qint64 deltaTime;
+        qint64 accumulator;
+
+        QElapsedTimer elapseTimer;
+
+
+        //Timer for glut event loop
+        QTimer * t;
+        QTimer * fps_timer;
+
+
+        //Debug settings
+        //this is actually a Debug window but hidden behind an EventListener
+        EventListener * debuggerListener;
+        Debugger * debugger;
+        bool debug_visible;
 
 
 
-    int idealThreadCount;
-    ThreadAccountant * threadAccountant;
+        int idealThreadCount;
+        ThreadAccountant * threadAccountant;
 
 
-    //called during the main loop
-    virtual void eventCall();
+        //called during the main loop
+        virtual void eventCall();
 
 
-public slots:
-    void eventLoop();
-    void timer();
+    public slots:
+        void eventLoop();
+        void timer();
 
-};
+    };
+}
 
 #endif // ENGINE_H

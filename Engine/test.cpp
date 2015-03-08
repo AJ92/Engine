@@ -48,12 +48,6 @@ Test::Test() :
 
     mSpeedX = 0.0;
     mSpeedY = 0.0;
-
-
-
-
-
-
 }
 
 
@@ -204,6 +198,18 @@ void Test::keyFunction(){
         */
 
         //debugMessage(ot->debug_string());
+    }
+
+
+    //OE
+    if(k->isPressed(39))
+    {
+        SP<Positation> posi(new Positation());
+        posi->set_position((double)((rand() & 2000)-1000),
+                          (double)((rand() & 2000)-1000),
+                          (double)((rand() & 2000)-1000));
+        posi->set_scale(0.5,0.5,0.5);
+        SP<CompositeObject> coTest = loadModelObject("box", getApplicationDir() + "//box.obj", posi);
     }
 
     //c

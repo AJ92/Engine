@@ -7,7 +7,7 @@
 
 #include "Graphics/Model/model.h"
 #include "Graphics/Model/Parser/Format_obj/loader_obj.h"
-#include "Graphics/Model/Parser/Format_obj/loader_assimp.h"
+#include "Graphics/Model/Parser/Format_assimp/loader_assimp.h"
 
 
 class Model;

@@ -13,13 +13,15 @@ Model * Loader::import_model(QString path){
     if(suffix.compare("bin")==0){
         return import_model_format_bin(path);
     }
-
+    /*
     else if(suffix.compare("obj")==0){
         return import_model_format_obj(path);
     }
+    */
     else{
         return import_model_with_assimp(path);
     }
+
     qDebug("no suitable format detected...");
     return new Model();
 }

@@ -9,9 +9,8 @@
   */
 
 
-QString version_string          = "0.11";
-unsigned int version_major      = 0;
-unsigned int version_minor      = 1;
+QString version_string   = "1.0";
+unsigned int version     = 1000000;
 
 // C part (CALLBACKS AND GLOBAL POINTER)
 Quark::Engine * ptr_global_engine_instance = NULL;

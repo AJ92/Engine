@@ -24,6 +24,8 @@ Material::~Material(){
 void Material::loadData(){
     //load data, GL not involved
 
+    qDebug("loading material data");
+
     if(load_map_rgba(mtl_ambient_map_path, mtl_ambient_img)){
         mtl_ambient_loaded = true;
     }
@@ -270,6 +272,8 @@ void Material::set_bump_map_path(QString map_path){
 
 
 bool Material::load_map_rgba(QString path, QImage &image){
+    qDebug("    loading image...");
+
     image = QImage(path);
 
     //If QImage failed loading the image...

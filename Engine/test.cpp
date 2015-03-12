@@ -19,7 +19,7 @@ Test::Test() :
     initialize(0, 0);
 
 
-    setWindowTitle("Quark v1.0a");
+    setWindowTitle("Quark v1.0b");
     setWindowSize(800,600);
 
 

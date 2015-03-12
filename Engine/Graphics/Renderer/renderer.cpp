@@ -2,6 +2,7 @@
 #include "Graphics/Model/model.h"
 #include "Graphics/Model/Components/material.h"
 #include "Graphics/Model/Components/mesh.h"
+#include "Graphics/Model/Components/texturemap.h"
 #include "Graphics/Model/light.h"
 
 #include "Event/event.h"
@@ -304,7 +305,8 @@ void Renderer::render_v2(){
 
                         //tex
                         glActiveTexture (GL_TEXTURE0+firstTextureIndex);
-                        glBindTexture(GL_TEXTURE_2D, material_mesh_list[index]->get_diffuse_map_texture());
+                        SP<TextureMap> texmap = material_mesh_list[index]->getTextureMap(Material::Diffuse);
+                        glBindTexture(GL_TEXTURE_2D, texmap->getGLTextureMap());
                         glUniform1i(glGetUniformLocation(DR_FirstPassProgramIdId, "sampler1"), firstTextureIndex);
 
                         texBindsPerFrameCount += 1;
@@ -416,8 +418,9 @@ void Renderer::render_v2(){
                         //now set up the material and mesh
 
                         //tex
-                        glActiveTexture (GL_TEXTURE0+firstTextureIndex);
-                        glBindTexture(GL_TEXTURE_2D, mesh->get_material()->get_diffuse_map_texture());
+                        glActiveTexture (GL_TEXTURE0+firstTextureIndex);              
+                        SP<TextureMap> texmap = mesh->get_material()->getTextureMap(Material::Diffuse);
+                        glBindTexture(GL_TEXTURE_2D, texmap->getGLTextureMap());
                         glUniform1i(glGetUniformLocation(DR_FirstPassProgramIdId, "sampler1"), firstTextureIndex);
 
                         texBindsPerFrameCount += 1;

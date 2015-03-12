@@ -19,7 +19,7 @@ Test::Test() :
     initialize(0, 0);
 
 
-    setWindowTitle("Engine v0.1a");
+    setWindowTitle("Quark v1.0a");
     setWindowSize(800,600);
 
 
@@ -174,7 +174,7 @@ void Test::keyFunction(){
                 posi->set_rotation((double) (rand() & 360), 0, 0, 1);
             }
 
-            posi->set_scale(0.5,0.5,0.5);
+            posi->set_scale(5.5,5.5,5.5);
             SP<CompositeObject> coTest = loadModelObject("box", getApplicationDir() + "//box.obj", posi);
         }
         /*

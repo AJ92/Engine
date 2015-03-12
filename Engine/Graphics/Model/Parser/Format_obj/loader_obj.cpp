@@ -24,6 +24,8 @@ GLfloat Loader_obj::max_value(GLfloat x, GLfloat y){
 }
 
 bool Loader_obj::load_model_data(Model& mdl, QString path){
+
+    /*
     QStringList pathlist = path.split("/",QString::KeepEmptyParts); //KeepEmptyParts
     QString model_name = pathlist.last();
 
@@ -213,15 +215,6 @@ bool Loader_obj::load_model_data(Model& mdl, QString path){
         mtl->set_illumination(mtl_illumination[mtl_names.value(i)]);
 
         //init texture maps
-
-        //as this function gets called in a thread we need to do this in main...
-        /*
-        mtl->load_ambient_map(tex_path + mtl_ambient_map[mtl_names.value(i)]);
-        mtl->load_diffuse_map(tex_path + mtl_diffuse_map[mtl_names.value(i)]);
-        mtl->load_specular_map(tex_path + mtl_specular_map[mtl_names.value(i)]);
-        mtl->load_bump_map(tex_path + mtl_bump_map[mtl_names.value(i)]);
-        */
-
         mtl->set_ambient_map_path(tex_path + mtl_ambient_map[mtl_names.value(i)]);
         mtl->set_diffuse_map_path(tex_path + mtl_diffuse_map[mtl_names.value(i)]);
         mtl->set_specular_map_path(tex_path + mtl_specular_map[mtl_names.value(i)]);
@@ -229,12 +222,6 @@ bool Loader_obj::load_model_data(Model& mdl, QString path){
 
         mtl->loadData();
 
-        /*
-        qDebug("        MTL ambient m:   " + mtl->get_ambient_map_name().toUtf8());
-        qDebug("        MTL diffuse m:   " + mtl->get_diffuse_map_name().toUtf8());
-        qDebug("        MTL specular m:  " + mtl->get_specular_map_name().toUtf8());
-        qDebug("        MTL bump m:      " + mtl->get_bump_map_name().toUtf8());
-        */
 
         mtln_mtl[mtl_names.value(i)] = mtl;
     }
@@ -392,5 +379,6 @@ bool Loader_obj::load_model_data(Model& mdl, QString path){
     }
 
     mdl.set_path(path);
+    */
     return true;
 }

@@ -6,7 +6,7 @@ Loader::Loader()
 }
 
 //static
-Model * Loader::import_model(QString path){
+SP<Model> Loader::import_model(QString path){
     QStringList pathlist = path.split(".");
     QString suffix = pathlist.last();
 
@@ -27,7 +27,7 @@ Model * Loader::import_model(QString path){
 }
 
 //static
-bool Loader::export_model_bin(QString path, Model * mdl){
+bool Loader::export_model_bin(QString path, SP<Model> mdl){
     return true;
 }
 
@@ -37,13 +37,13 @@ bool Loader::export_model_bin(QString path, Model * mdl){
 
 
 //static
-Model * Loader::import_model_format_bin(QString path){
+SP<Model> Loader::import_model_format_bin(QString path){
     return new Model();
 }
 
 //static
-Model * Loader::import_model_format_obj(QString path){
-    Model * mdl = new Model();
+SP<Model> Loader::import_model_format_obj(QString path){
+    SP<Model> mdl = new Model();
 
     Loader_obj loader_obj;
 
@@ -54,8 +54,8 @@ Model * Loader::import_model_format_obj(QString path){
 }
 
 //static
-Model * Loader::import_model_with_assimp(QString path){
-    Model * mdl = new Model();
+SP<Model> Loader::import_model_with_assimp(QString path){
+    SP<Model> mdl = new Model();
 
     Loader_assimp loader_assimp;
 

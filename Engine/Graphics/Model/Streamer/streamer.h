@@ -39,7 +39,7 @@ public:
 private:
     int models_per_thread;
 
-    void assignModelListToThread(QList<Model *> model_list);
+    void assignModelListToThread(QList<SP<Model> > model_list);
 
     SP<ThreadAccountant> ta;
 
@@ -61,8 +61,8 @@ public slots:
     //called by timer to assign model to a thread
     void assignModeltoThread();
 
-    void streamModelToDiskFinished(Model* m, unsigned long long id);
-    void streamModelFromDiskFinished(Model* m, unsigned long long id);
+    void streamModelToDiskFinished(SP<Model> m, unsigned long long id);
+    void streamModelFromDiskFinished(SPModel m, unsigned long long id);
 
     void streamThreadFinished();
     

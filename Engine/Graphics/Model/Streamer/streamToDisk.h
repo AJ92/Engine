@@ -16,25 +16,27 @@
 
 #include <QList>
 
+typedef SP<Model> SPModel;
+
 class StreamToDisk : public QObject
 {
     Q_OBJECT
 public:
-    StreamToDisk(QList<Model*> model_list_for_thread);
+    StreamToDisk(QList<SP<Model> > model_list_for_thread);
     virtual ~StreamToDisk();
 
 public slots:
     void stream();
 
 signals:
-    void loaded(Model* m, unsigned long long id);
+    void loaded(SPModel, unsigned long long);
     void finished();
     void error(QString error);
 
 private:
     //internal data storage starts from here...
     Loader model_loader;
-    QList<Model*> model_list;
+    QList<SP<Model> > model_list;
     QList<unsigned long long> model_id_list;
 };
 

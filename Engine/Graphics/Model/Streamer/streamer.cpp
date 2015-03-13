@@ -13,6 +13,8 @@ Streamer::Streamer(SP<ThreadAccountant> ta, QObject *parent) :
     ta(ta)
 {
 
+    qRegisterMetaType<SPModel>("SPModel");
+
 }
 
 Streamer::~Streamer(){
@@ -72,9 +74,9 @@ void Streamer::assignModeltoThread(){
 
         if(ta->addThread()){
             while(model_list.size() >= models_per_thread){
-                QList<Model* > model_list_for_thread;
+                QList<SP<Model> > model_list_for_thread;
                 for(int i = 0; i < models_per_thread; i++){
-                    Model * m = model_list.first();
+                    SP<Model> m = model_list.first();
                     id_model_map[m->id()] = m; //map id and model
                     model_list_for_thread.append(m);
                     model_list.pop_front();
@@ -117,7 +119,7 @@ void Streamer::assignModeltoThread(){
     }
 }
 
-void Streamer::assignModelListToThread(QList<Model * > model_list){
+void Streamer::assignModelListToThread(QList<SP<Model> > model_list){
     qDebug() << "Creating new thread...";
     QThread* thread = new QThread();
 
@@ -134,8 +136,8 @@ void Streamer::assignModelListToThread(QList<Model * > model_list){
     QObject::connect(worker, SIGNAL(error(QString)), this, SLOT(debugMessage(QString)), Qt::QueuedConnection);
     QObject::connect(thread, SIGNAL(started()), worker, SLOT(stream()), Qt::QueuedConnection);
     //here we need a slot for returning the model or so...
-    QObject::connect(worker, SIGNAL(loaded(Model* , unsigned long long)),
-            this, SLOT(streamModelFromDiskFinished(Model* , unsigned long long)), Qt::QueuedConnection);
+    QObject::connect(worker, SIGNAL(loaded(SPModel , unsigned long long)),
+            this, SLOT(streamModelFromDiskFinished(SPModel , unsigned long long)), Qt::QueuedConnection);
     QObject::connect(worker, SIGNAL(finished()),this, SLOT(streamThreadFinished()), Qt::QueuedConnection);
     QObject::connect(worker, SIGNAL(finished()),thread, SLOT(quit()), Qt::QueuedConnection);
     QObject::connect(worker, SIGNAL(finished()),worker, SLOT(deleteLater()), Qt::QueuedConnection);
@@ -144,11 +146,11 @@ void Streamer::assignModelListToThread(QList<Model * > model_list){
 }
 
 
-void Streamer::streamModelToDiskFinished(Model *m, unsigned long long id){
+void Streamer::streamModelToDiskFinished(SP<Model> m, unsigned long long id){
     //now set the pointer right...
 }
 
-void Streamer::streamModelFromDiskFinished(Model *m, unsigned long long id){
+void Streamer::streamModelFromDiskFinished(SPModel m, unsigned long long id){
 
     SP<Model> stored_m = id_model_map[id];
     //set the data of old model to the new loaded model...

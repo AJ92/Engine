@@ -45,7 +45,9 @@ void TextureMap::loadGLdata(){
     qDebug("loading texmap for openGL");
 
     if(texmap_loaded){
-        load_gl_map(texmap_img);
+        if(!load_gl_map()){
+            loaded = false;
+        }
     }
 
     qDebug("loaded texmap for openGL!");
@@ -53,18 +55,18 @@ void TextureMap::loadGLdata(){
 }
 
 
-bool TextureMap::load_gl_map(QImage &image){
+bool TextureMap::load_gl_map(){
     glBindTexture(GL_TEXTURE_2D, gl_texmap);
     /*
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, image.width(), image.height(), 0,
                  GL_RGBA, GL_UNSIGNED_BYTE, tex_data);
     */
 
-    GLint width = image.width();
-    GLint height = image.height();
+    GLint width = texmap_img.width();
+    GLint height = texmap_img.height();
 
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, width, height, 0,
-                 GL_BGRA, GL_UNSIGNED_BYTE, (GLuint*)image.bits());
+                 GL_BGRA, GL_UNSIGNED_BYTE, (GLuint*)texmap_img.bits());
 
     qDebug("tex loaded...");
 
@@ -73,7 +75,7 @@ bool TextureMap::load_gl_map(QImage &image){
     GLint num_mipmaps = 16;
 
     glTexStorage2D(GL_TEXTURE_2D, num_mipmaps, GL_RGBA8, width, height);
-    glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, width, height, GL_BGRA, GL_UNSIGNED_BYTE, (GLuint*)image.bits());
+    //glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, width, height, GL_BGRA, GL_UNSIGNED_BYTE, (GLuint*)texmap_img.bits());
     glGenerateMipmap(GL_TEXTURE_2D);  //Generate num_mipmaps number of mipmaps here.
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
@@ -95,10 +97,11 @@ bool TextureMap::load_gl_map(QImage &image){
     //glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
     //glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 
-    qDebug("mipmap generated...");
+    qDebug("mipmaps generated...");
 
 
-    image.~QImage();
+    //delete the textures....
+    //image.~QImage();
     return true;
 }
 
@@ -110,12 +113,13 @@ QString TextureMap::get_name(){
 
 bool TextureMap::load_map_rgba(QString path, QImage &image){
     qDebug("    loading image...");
+    qDebug("    " + path.toUtf8());
 
     image = QImage(path);
 
     //If QImage failed loading the image...
     if(image.isNull()){
-        qDebug("image could not be loaded...");
+        qDebug("    image could not be loaded...");
         return false;
     }
     //setting the QImage bits by hand... ARGB to BGRA

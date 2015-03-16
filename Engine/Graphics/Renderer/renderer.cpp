@@ -3,6 +3,7 @@
 #include "Graphics/Model/Components/material.h"
 #include "Graphics/Model/Components/mesh.h"
 #include "Graphics/Model/Components/texturemap.h"
+#include "Graphics/Model/Components/texturemapcube.h"
 #include "Graphics/Model/light.h"
 
 #include "Event/event.h"
@@ -10,6 +11,8 @@
 #include "Object/positation.h"
 #include "Object/compositeobject.h"
 #include "Graphics/World/objectworld.h"
+
+#include <QApplication>
 
 Renderer::Renderer() :
     EventTransmitter()
@@ -35,117 +38,8 @@ void Renderer::initialize(){
     //default render mode
     renderMode = PolygonModeStandard;
 
-    //init fsq
-    triangle_count = 2;
-
-    fsq_vertices = new GLfloat[18];
-    fsq_texcoords = new GLfloat[18];
-    fsq_normals = new GLfloat[18];
-
-    //vertices
-    fsq_vertices[0] = -1.0f;
-    fsq_vertices[1] = -1.0f;
-    fsq_vertices[2] = 0.5f;
-
-    fsq_vertices[3] = 1.0f;
-    fsq_vertices[4] = -1.0f;
-    fsq_vertices[5] = 0.5f;
-
-    fsq_vertices[6] = -1.0f;
-    fsq_vertices[7] = 1.0f;
-    fsq_vertices[8] = 0.5f;
-
-    fsq_vertices[9] = -1.0f;
-    fsq_vertices[10] = 1.0f;
-    fsq_vertices[11] = 0.5f;
-
-    fsq_vertices[12] = 1.0f;
-    fsq_vertices[13] = -1.0f;
-    fsq_vertices[14] = 0.5f;
-
-    fsq_vertices[15] = 1.0f;
-    fsq_vertices[16] = 1.0f;
-    fsq_vertices[17] = 0.5f;
-
-    //texcoords
-    fsq_texcoords[0] = 0.0f;
-    fsq_texcoords[1] = 0.0f;
-    fsq_texcoords[2] = 1.0f;
-
-    fsq_texcoords[3] = 1.0f;
-    fsq_texcoords[4] = 0.0f;
-    fsq_texcoords[5] = 1.0f;
-
-    fsq_texcoords[6] = 0.0f;
-    fsq_texcoords[7] = 1.0f;
-    fsq_texcoords[8] = 1.0f;
-
-    fsq_texcoords[9] = 0.0f;
-    fsq_texcoords[10] = 1.0f;
-    fsq_texcoords[11] = 1.0f;
-
-    fsq_texcoords[12] = 1.0f;
-    fsq_texcoords[13] = 0.0f;
-    fsq_texcoords[14] = 1.0f;
-
-    fsq_texcoords[15] = 1.0f;
-    fsq_texcoords[16] = 1.0f;
-    fsq_texcoords[17] = 1.0f;
-
-    //normals
-    fsq_normals[0] = 0.0f;
-    fsq_normals[1] = 0.0f;
-    fsq_normals[2] = 1.0f;
-
-    fsq_normals[3] = 0.0f;
-    fsq_normals[4] = 0.0f;
-    fsq_normals[5] = 1.0f;
-
-    fsq_normals[6] = 0.0f;
-    fsq_normals[7] = 0.0f;
-    fsq_normals[8] = 1.0f;
-
-    fsq_normals[9] = 0.0f;
-    fsq_normals[10] = 0.0f;
-    fsq_normals[11] = 1.0f;
-
-    fsq_normals[12] = 0.0f;
-    fsq_normals[13] = 0.0f;
-    fsq_normals[14] = 1.0f;
-
-    fsq_normals[15] = 0.0f;
-    fsq_normals[16] = 0.0f;
-    fsq_normals[17] = 1.0f;
-
-    //////////////////////////////
-    // FULLSCREEN QUAD VAO and VBOs
-    debugMessage("creating fullscreenquad");
-
-    glGenVertexArrays(1, &fsq_vertex_array_object);
-
-    glBindVertexArray(fsq_vertex_array_object);
-
-    glGenBuffers(1, &fsq_vertex_vbo);
-    glBindBuffer(GL_ARRAY_BUFFER, fsq_vertex_vbo);
-    glBufferData(GL_ARRAY_BUFFER, triangle_count * 3* 3 * sizeof(GLfloat), fsq_vertices, GL_STATIC_DRAW);
-
-
-
-    glGenBuffers(1, &fsq_texcoord_vbo);
-    glBindBuffer(GL_ARRAY_BUFFER, fsq_texcoord_vbo);
-    glBufferData(GL_ARRAY_BUFFER, triangle_count * 3 * 3 * sizeof(GLfloat), fsq_texcoords, GL_STATIC_DRAW);
-
-
-
-    glGenBuffers(1, &fsq_normal_vbo);
-    glBindBuffer(GL_ARRAY_BUFFER, fsq_normal_vbo);
-    glBufferData(GL_ARRAY_BUFFER, triangle_count * 3 * 3 * sizeof(GLfloat), fsq_normals, GL_STATIC_DRAW);
-
-
-    debugMessage("created fullscreenquad!");
-    //
-    //////////////////////////////
-
+    createFullScreenQuad();
+    createSkyBox();
 
     if(createShaders() && createBuffers()){
         shadersAndBuffersCreated = true;
@@ -281,6 +175,73 @@ void Renderer::render_v2(){
             glClear (GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 
+
+
+
+
+
+
+            ///////////////////////////////////////////////////////////////////////////////
+            //SKYBOX
+
+            glUseProgram(DR_SkyBoxPassProgramIdId);
+
+            glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+            glDepthMask (GL_FALSE);
+
+
+            glActiveTexture (GL_TEXTURE0+firstTextureIndex);
+            glBindTexture(GL_TEXTURE_CUBE_MAP, sb_texmap->getGLTextureMap());
+            glUniform1i(glGetUniformLocation(DR_SkyBoxPassProgramIdId, "sampler1"), firstTextureIndex);
+
+
+
+            glBindVertexArray(sb_vertex_array_object);
+
+            //VBOs
+            glBindBuffer(GL_ARRAY_BUFFER, sb_vertex_vbo);
+            glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, 0);
+            glEnableVertexAttribArray(0);
+
+
+            //TODO: improve this crap....
+            Matrix4x4 trans;
+            trans.scale(214.0,214.0,214.0);
+            trans.translate(cam->getPosition());
+
+
+
+            vm_m = v_m * trans;
+
+
+            //TRANSPOSE
+            for (int f = 0; f < 4; f++) {
+                for (int g = 0; g < 4; g++) {
+                    p_mat[f * 4 + g] = (GLfloat) (p_m[f*4+g]);
+                    v_mat[f * 4 + g] = (GLfloat) (v_m[f*4+g]);
+                    m_mat[f * 4 + g] = (GLfloat) (trans[f*4+g]);
+                    vm_mat[f * 4 + g] = (GLfloat) (vm_m[f*4+g]);
+                }
+            }
+
+            glUniformMatrix4fv(p_mat_loc_skyboxpass, 1, GL_FALSE, p_mat);
+            glUniformMatrix4fv(v_mat_loc_skyboxpass, 1, GL_FALSE, v_mat);
+            glUniformMatrix4fv(m_mat_loc_skyboxpass, 1, GL_FALSE, m_mat);
+            glUniformMatrix4fv(vm_mat_loc_skyboxpass, 1, GL_FALSE, vm_mat);
+
+            //draw
+            glDrawArrays(GL_TRIANGLES, 0, sb_triangle_count*3);
+            meshPerFrameCount +=1;
+            trianglesPerFrameCount += sb_triangle_count;
+            texBindsPerFrameCount += 1;
+            glDepthMask (GL_TRUE);
+            //SKYBOX END
+            ///////////////////////////////////////////////////////////////////////////////
+
+
+
+
+
             glUseProgram(DR_FirstPassProgramIdId);
 
             glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
@@ -376,10 +337,10 @@ void Renderer::render_v2(){
 
 
 
-                                glUniformMatrix4fv(p_mat_loc_firtpass, 1, GL_FALSE, p_mat);
-                                glUniformMatrix4fv(v_mat_loc_firtpass, 1, GL_FALSE, v_mat);
-                                glUniformMatrix4fv(m_mat_loc_firtpass, 1, GL_FALSE, m_mat);
-                                glUniformMatrix4fv(vm_mat_loc_firtpass, 1, GL_FALSE, vm_mat);
+                                glUniformMatrix4fv(p_mat_loc_firstpass, 1, GL_FALSE, p_mat);
+                                glUniformMatrix4fv(v_mat_loc_firstpass, 1, GL_FALSE, v_mat);
+                                glUniformMatrix4fv(m_mat_loc_firstpass, 1, GL_FALSE, m_mat);
+                                glUniformMatrix4fv(vm_mat_loc_firstpass, 1, GL_FALSE, vm_mat);
 
 
 
@@ -478,10 +439,10 @@ void Renderer::render_v2(){
 
 
 
-                        glUniformMatrix4fv(p_mat_loc_firtpass, 1, GL_FALSE, p_mat);
-                        glUniformMatrix4fv(v_mat_loc_firtpass, 1, GL_FALSE, v_mat);
-                        glUniformMatrix4fv(m_mat_loc_firtpass, 1, GL_FALSE, m_mat);
-                        glUniformMatrix4fv(vm_mat_loc_firtpass, 1, GL_FALSE, vm_mat);
+                        glUniformMatrix4fv(p_mat_loc_firstpass, 1, GL_FALSE, p_mat);
+                        glUniformMatrix4fv(v_mat_loc_firstpass, 1, GL_FALSE, v_mat);
+                        glUniformMatrix4fv(m_mat_loc_firstpass, 1, GL_FALSE, m_mat);
+                        glUniformMatrix4fv(vm_mat_loc_firstpass, 1, GL_FALSE, vm_mat);
 
 
 
@@ -536,7 +497,7 @@ void Renderer::render_v2(){
 
 
 
-            //DYNAMIC MODELS
+            //DYNAMIC lights
             for(int i = 0; i < ot_dynamic_lights_nodes.size(); i++){
                 //render one node...
 
@@ -699,12 +660,12 @@ void Renderer::render_v2(){
         glUniform2f (win_size_loc_ambientpass, win->getWindowWidth(), win->getWindowHeight());
 
         glUniform3f (color_loc_ambientpass,
-                     0.010,
-                     0.010,
-                     0.008); // ambient color
+                     0.210,
+                     0.210,
+                     0.208); // ambient color
 
         //glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
-        glDrawArrays(GL_TRIANGLES, 0, triangle_count*3);
+        glDrawArrays(GL_TRIANGLES, 0, fsq_triangle_count*3);
 
 
 
@@ -745,9 +706,9 @@ void Renderer::render_v2(){
                      0.5); // ambient light direction
 
         glUniform3f (color_loc_directionalambientpass,
-                     0.130,
-                     0.110,
-                     0.100); // ambient color
+                     0.530,
+                     0.510,
+                     0.550); // ambient color
 
 
         for (int f = 0; f < 4; f++) {
@@ -760,7 +721,7 @@ void Renderer::render_v2(){
         glUniformMatrix4fv(v_mat_loc_directionalambientpass, 1, GL_FALSE, v_mat);
 
         //glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
-        glDrawArrays(GL_TRIANGLES, 0, triangle_count*3);
+        glDrawArrays(GL_TRIANGLES, 0, fsq_triangle_count*3);
 
 
         //
@@ -811,7 +772,7 @@ void Renderer::render_v2(){
         glUniform2f (win_size_loc_edgedetectionpass, win->getWindowWidth(), win->getWindowHeight());
         glUniform1i (frame_switch_loc_edgedetectionpass, frame_switch);
 
-        glDrawArrays(GL_TRIANGLES, 0, triangle_count*3);
+        glDrawArrays(GL_TRIANGLES, 0, fsq_triangle_count*3);
 
         //
         ////////////////////////////////////////////////////////////
@@ -2513,6 +2474,325 @@ int Renderer::getTexBindsPerFrameCount(){
     return texBindsPerFrameCount;
 }
 
+bool Renderer::createFullScreenQuad(){
+    //init fsq
+    fsq_triangle_count = 2;
+
+    fsq_vertices = new GLfloat[18];
+    fsq_texcoords = new GLfloat[18];
+    fsq_normals = new GLfloat[18];
+
+    //vertices
+    fsq_vertices[0] = -1.0f;
+    fsq_vertices[1] = -1.0f;
+    fsq_vertices[2] = 0.5f;
+
+    fsq_vertices[3] = 1.0f;
+    fsq_vertices[4] = -1.0f;
+    fsq_vertices[5] = 0.5f;
+
+    fsq_vertices[6] = -1.0f;
+    fsq_vertices[7] = 1.0f;
+    fsq_vertices[8] = 0.5f;
+
+    fsq_vertices[9] = -1.0f;
+    fsq_vertices[10] = 1.0f;
+    fsq_vertices[11] = 0.5f;
+
+    fsq_vertices[12] = 1.0f;
+    fsq_vertices[13] = -1.0f;
+    fsq_vertices[14] = 0.5f;
+
+    fsq_vertices[15] = 1.0f;
+    fsq_vertices[16] = 1.0f;
+    fsq_vertices[17] = 0.5f;
+
+    //texcoords
+    fsq_texcoords[0] = 0.0f;
+    fsq_texcoords[1] = 0.0f;
+    fsq_texcoords[2] = 1.0f;
+
+    fsq_texcoords[3] = 1.0f;
+    fsq_texcoords[4] = 0.0f;
+    fsq_texcoords[5] = 1.0f;
+
+    fsq_texcoords[6] = 0.0f;
+    fsq_texcoords[7] = 1.0f;
+    fsq_texcoords[8] = 1.0f;
+
+    fsq_texcoords[9] = 0.0f;
+    fsq_texcoords[10] = 1.0f;
+    fsq_texcoords[11] = 1.0f;
+
+    fsq_texcoords[12] = 1.0f;
+    fsq_texcoords[13] = 0.0f;
+    fsq_texcoords[14] = 1.0f;
+
+    fsq_texcoords[15] = 1.0f;
+    fsq_texcoords[16] = 1.0f;
+    fsq_texcoords[17] = 1.0f;
+
+    //normals
+    fsq_normals[0] = 0.0f;
+    fsq_normals[1] = 0.0f;
+    fsq_normals[2] = 1.0f;
+
+    fsq_normals[3] = 0.0f;
+    fsq_normals[4] = 0.0f;
+    fsq_normals[5] = 1.0f;
+
+    fsq_normals[6] = 0.0f;
+    fsq_normals[7] = 0.0f;
+    fsq_normals[8] = 1.0f;
+
+    fsq_normals[9] = 0.0f;
+    fsq_normals[10] = 0.0f;
+    fsq_normals[11] = 1.0f;
+
+    fsq_normals[12] = 0.0f;
+    fsq_normals[13] = 0.0f;
+    fsq_normals[14] = 1.0f;
+
+    fsq_normals[15] = 0.0f;
+    fsq_normals[16] = 0.0f;
+    fsq_normals[17] = 1.0f;
+
+    //////////////////////////////
+    // FULLSCREEN QUAD VAO and VBOs
+    debugMessage("creating fullscreenquad");
+
+    glGenVertexArrays(1, &fsq_vertex_array_object);
+
+    glBindVertexArray(fsq_vertex_array_object);
+
+    glGenBuffers(1, &fsq_vertex_vbo);
+    glBindBuffer(GL_ARRAY_BUFFER, fsq_vertex_vbo);
+    glBufferData(GL_ARRAY_BUFFER, fsq_triangle_count * 3* 3 * sizeof(GLfloat), fsq_vertices, GL_STATIC_DRAW);
+
+
+
+    glGenBuffers(1, &fsq_texcoord_vbo);
+    glBindBuffer(GL_ARRAY_BUFFER, fsq_texcoord_vbo);
+    glBufferData(GL_ARRAY_BUFFER, fsq_triangle_count * 3 * 3 * sizeof(GLfloat), fsq_texcoords, GL_STATIC_DRAW);
+
+
+
+    glGenBuffers(1, &fsq_normal_vbo);
+    glBindBuffer(GL_ARRAY_BUFFER, fsq_normal_vbo);
+    glBufferData(GL_ARRAY_BUFFER, fsq_triangle_count * 3 * 3 * sizeof(GLfloat), fsq_normals, GL_STATIC_DRAW);
+
+
+    debugMessage("created fullscreenquad!");
+    //
+    //////////////////////////////
+
+    return true;
+}
+
+bool Renderer::createSkyBox(){
+    //sky box
+
+
+
+    //init sb
+    sb_triangle_count = 12;
+
+
+    sb_vertices = new GLfloat[108]{
+      -10.0f,  10.0f, -10.0f,
+      -10.0f, -10.0f, -10.0f,
+       10.0f, -10.0f, -10.0f,
+       10.0f, -10.0f, -10.0f,
+       10.0f,  10.0f, -10.0f,
+      -10.0f,  10.0f, -10.0f,
+
+      -10.0f, -10.0f,  10.0f,
+      -10.0f, -10.0f, -10.0f,
+      -10.0f,  10.0f, -10.0f,
+      -10.0f,  10.0f, -10.0f,
+      -10.0f,  10.0f,  10.0f,
+      -10.0f, -10.0f,  10.0f,
+
+       10.0f, -10.0f, -10.0f,
+       10.0f, -10.0f,  10.0f,
+       10.0f,  10.0f,  10.0f,
+       10.0f,  10.0f,  10.0f,
+       10.0f,  10.0f, -10.0f,
+       10.0f, -10.0f, -10.0f,
+
+      -10.0f, -10.0f,  10.0f,
+      -10.0f,  10.0f,  10.0f,
+       10.0f,  10.0f,  10.0f,
+       10.0f,  10.0f,  10.0f,
+       10.0f, -10.0f,  10.0f,
+      -10.0f, -10.0f,  10.0f,
+
+      -10.0f,  10.0f, -10.0f,
+       10.0f,  10.0f, -10.0f,
+       10.0f,  10.0f,  10.0f,
+       10.0f,  10.0f,  10.0f,
+      -10.0f,  10.0f,  10.0f,
+      -10.0f,  10.0f, -10.0f,
+
+      -10.0f, -10.0f, -10.0f,
+      -10.0f, -10.0f,  10.0f,
+       10.0f, -10.0f, -10.0f,
+       10.0f, -10.0f, -10.0f,
+      -10.0f, -10.0f,  10.0f,
+       10.0f, -10.0f,  10.0f
+    };
+
+    /*
+    sb_vertices = new GLfloat[108];
+
+    sb_vertices[0] = -10.0f;
+    sb_vertices[1] =  10.0f;
+    sb_vertices[2] = -10.0f;
+    sb_vertices[3] =  10.0f;
+    sb_vertices[4] = -10.0f;
+    sb_vertices[5] = -10.0f;
+    sb_vertices[6] =  10.0f;
+    sb_vertices[7] = -10.0f;
+    sb_vertices[8] = -10.0f;
+    sb_vertices[9] =  10.0f;
+    sb_vertices[10] = -10.0f;
+    sb_vertices[11] = -10.0f;
+    sb_vertices[12] =  10.0f;
+    sb_vertices[13] =  10.0f;
+    sb_vertices[14] = -10.0f;
+    sb_vertices[15] = -10.0f;
+    sb_vertices[16] =  10.0f;
+    sb_vertices[17] = -10.0f;
+    sb_vertices[18] = -10.0f;
+    sb_vertices[19] = -10.0f;
+    sb_vertices[20] =  10.0f;
+    sb_vertices[21] = -10.0f;
+    sb_vertices[22] = -10.0f;
+    sb_vertices[23] = -10.0f;
+    sb_vertices[24] = -10.0f;
+    sb_vertices[25] =  10.0f;
+    sb_vertices[26] = -10.0f;
+    sb_vertices[27] = -10.0f;
+    sb_vertices[28] =  10.0f;
+    sb_vertices[29] = -10.0f;
+    sb_vertices[30] = -10.0f;
+    sb_vertices[31] =  10.0f;
+    sb_vertices[32] =  10.0f;
+    sb_vertices[33] = -10.0f;
+    sb_vertices[34] = -10.0f;
+    sb_vertices[35] =  10.0f;
+    sb_vertices[36] =  10.0f;
+    sb_vertices[37] = -10.0f;
+    sb_vertices[38] = -10.0f;
+    sb_vertices[39] =  10.0f;
+    sb_vertices[40] = -10.0f;
+    sb_vertices[41] =  10.0f;
+    sb_vertices[42] =  10.0f;
+    sb_vertices[43] =  10.0f;
+    sb_vertices[44] =  10.0f;
+    sb_vertices[45] =  10.0f;
+    sb_vertices[46] =  10.0f;
+    sb_vertices[47] =  10.0f;
+    sb_vertices[48] =  10.0f;
+    sb_vertices[49] =  10.0f;
+    sb_vertices[50] = -10.0f;
+    sb_vertices[51] =  10.0f;
+    sb_vertices[52] = -10.0f;
+    sb_vertices[53] = -10.0f;
+    sb_vertices[54] = -10.0f;
+    sb_vertices[55] = -10.0f;
+    sb_vertices[56] =  10.0f;
+    sb_vertices[57] = -10.0f;
+    sb_vertices[58] =  10.0f;
+    sb_vertices[59] =  10.0f;
+    sb_vertices[60] =  10.0f;
+    sb_vertices[61] =  10.0f;
+    sb_vertices[62] =  10.0f;
+    sb_vertices[63] =  10.0f;
+    sb_vertices[64] =  10.0f;
+    sb_vertices[65] =  10.0f;
+    sb_vertices[66] =  10.0f;
+    sb_vertices[67] = -10.0f;
+    sb_vertices[68] =  10.0f;
+    sb_vertices[69] = -10.0f;
+    sb_vertices[70] = -10.0f;
+    sb_vertices[71] =  10.0f;
+    sb_vertices[72] = -10.0f;
+    sb_vertices[73] =  10.0f;
+    sb_vertices[74] = -10.0f;
+    sb_vertices[75] =  10.0f;
+    sb_vertices[76] =  10.0f;
+    sb_vertices[77] = -10.0f;
+    sb_vertices[78] =  10.0f;
+    sb_vertices[79] =  10.0f;
+    sb_vertices[80] =  10.0f;
+    sb_vertices[81] =  10.0f;
+    sb_vertices[82] =  10.0f;
+    sb_vertices[83] =  10.0f;
+    sb_vertices[84] = -10.0f;
+    sb_vertices[85] =  10.0f;
+    sb_vertices[86] =  10.0f;
+    sb_vertices[87] = -10.0f;
+    sb_vertices[88] =  10.0f;
+    sb_vertices[89] = -10.0f;
+    sb_vertices[90] = -10.0f;
+    sb_vertices[91] = -10.0f;
+    sb_vertices[92] = -10.0f;
+    sb_vertices[93] = -10.0f;
+    sb_vertices[94] = -10.0f;
+    sb_vertices[95] =  10.0f;
+    sb_vertices[96] =  10.0f;
+    sb_vertices[97] = -10.0f;
+    sb_vertices[98] = -10.0f;
+    sb_vertices[99] =  10.0f;
+    sb_vertices[100] = -10.0f;
+    sb_vertices[101] = -10.0f;
+    sb_vertices[102] = -10.0f;
+    sb_vertices[103] = -10.0f;
+    sb_vertices[104] =  10.0f;
+    sb_vertices[105] =  10.0f;
+    sb_vertices[106] = -10.0f;
+    sb_vertices[107] =  10.0f;
+
+    */
+
+
+
+
+    //////////////////////////////
+    // SKYBOX VAO and VBO
+    debugMessage("creating skybox");
+
+    glGenVertexArrays(1, &sb_vertex_array_object);
+
+    glBindVertexArray(sb_vertex_array_object);
+
+    glGenBuffers(1, &sb_vertex_vbo);
+    glBindBuffer(GL_ARRAY_BUFFER, sb_vertex_vbo);
+    glBufferData(GL_ARRAY_BUFFER, sb_triangle_count * 3* 3 * sizeof(GLfloat), sb_vertices, GL_STATIC_DRAW);
+
+
+
+    //SKYBOX TEXMAP... atm hardcoded...
+    sb_texmap = new TextureMapCube(
+                "purple_sky_box",
+                QApplication::applicationDirPath() + "/Purple_Nebula_SkyBox/front.png",
+                QApplication::applicationDirPath() + "/Purple_Nebula_SkyBox/back.png",
+                QApplication::applicationDirPath() + "/Purple_Nebula_SkyBox/top.png",
+                QApplication::applicationDirPath() + "/Purple_Nebula_SkyBox/bottom.png",
+                QApplication::applicationDirPath() + "/Purple_Nebula_SkyBox/left.png",
+                QApplication::applicationDirPath() + "/Purple_Nebula_SkyBox/right.png"
+                );
+    sb_texmap->loadData();
+    sb_texmap->loadGLdata();
+
+
+    debugMessage("created skybox!");
+    //
+    //////////////////////////////
+
+    return true;
+}
 
 bool Renderer::createShaders(){
     debugMessage("creating shaders...");
@@ -2631,9 +2911,121 @@ bool Renderer::createShaders(){
     //NEW DR STUFF
     //
 
+
+
+
+
+
+
+    ////////////////////////////////////////////////////////////////////////////////
+    //SKYBOX SHADER
+    GLenum ErrorCheckValue = glGetError();
+
+    //vertex shader
+
+    QString dr_vertex_skyboxpass_path(QApplication::applicationDirPath() +
+                                     "/shaders/deferred_renderer_skybox_pass.vsh");
+    Shader dr_vertex_skyboxpass(dr_vertex_skyboxpass_path,
+                               GL_VERTEX_SHADER);
+    if(dr_vertex_skyboxpass.isCreated()){
+        DR_SkyBoxPassVertexShaderId = dr_vertex_skyboxpass.getShaderId();
+        debugMessage("Deferred Renderer skybox pass vertex shader compiled successful.");
+        debugMessage("path:  " + dr_vertex_skyboxpass_path);
+    }
+    else{
+        debugMessage("Deferred Renderer skybox pass vertex shader compiled failed!");
+        debugMessage("path:  " + dr_vertex_skyboxpass_path);
+        debugMessage(dr_vertex_skyboxpass.getError());
+        debugMessage(QString(dr_vertex_skyboxpass.getShaderSource()));
+        return false;
+    }
+
+    //fragment shader
+    Shader dr_fragment_skyboxpass(QApplication::applicationDirPath() +
+                               "/shaders/deferred_renderer_skybox_pass.fsh",
+                               GL_FRAGMENT_SHADER);
+    if(dr_fragment_skyboxpass.isCreated()){
+        DR_SkyBoxPassFragmentShaderId = dr_fragment_skyboxpass.getShaderId();
+        debugMessage("Deferred Renderer skybox pass fragment shader compiled successful.");
+    }
+    else{
+        debugMessage("Deferred Renderer skybox pass fragment shader compiled failed!");
+        debugMessage(dr_fragment_skyboxpass.getError());
+        return false;
+    }
+
+
+    //create program, link it and bind locs
+    DR_SkyBoxPassProgramIdId = glCreateProgram();
+    glAttachShader(DR_SkyBoxPassProgramIdId, DR_SkyBoxPassVertexShaderId);
+    glAttachShader(DR_SkyBoxPassProgramIdId, DR_SkyBoxPassFragmentShaderId);
+
+
+    // Bind the custom vertex attributes
+    glBindAttribLocation(DR_SkyBoxPassProgramIdId, 0, "vp");
+    glBindAttribLocation(DR_SkyBoxPassProgramIdId, 1, "vt");
+    glBindAttribLocation(DR_SkyBoxPassProgramIdId, 2, "vn");
+
+
+    glLinkProgram(DR_SkyBoxPassProgramIdId);
+
+    GLint linked;
+    glGetProgramiv(DR_SkyBoxPassProgramIdId, GL_LINK_STATUS, &linked);
+    if (linked){
+        debugMessage("deferred renderer program pass skybox linked");
+    }
+    else{
+        debugMessage("deferred renderer program pass skybox linking failed!!!");
+        char messages[256];
+        glGetProgramInfoLog(DR_SkyBoxPassProgramIdId, sizeof(messages), 0, &messages[0]);
+        debugMessage(QString(messages));
+        return false;
+    }
+
+    glUseProgram(DR_SkyBoxPassProgramIdId);
+
+    ErrorCheckValue = glGetError();
+    if (ErrorCheckValue != GL_NO_ERROR)
+    {
+        debugMessage("ERROR(3): Could not create the shaders: " + QString((char*) gluErrorString(ErrorCheckValue)));
+        //exit(EXIT_FAILURE);
+        return false;
+    }
+
+    glEnableVertexAttribArray(0);
+    //glEnableVertexAttribArray(1);
+    //glEnableVertexAttribArray(2);
+
+    p_mat_loc_skyboxpass = glGetUniformLocation(DR_SkyBoxPassProgramIdId, "P");
+    v_mat_loc_skyboxpass = glGetUniformLocation(DR_SkyBoxPassProgramIdId, "V");
+    m_mat_loc_skyboxpass = glGetUniformLocation(DR_SkyBoxPassProgramIdId, "M");
+    vm_mat_loc_skyboxpass = glGetUniformLocation(DR_SkyBoxPassProgramIdId, "VM");
+
+    glUniform1i(glGetUniformLocation(DR_SkyBoxPassProgramIdId, "sampler1"), 0);
+
+
+    ErrorCheckValue = glGetError();
+    if (ErrorCheckValue != GL_NO_ERROR)
+    {
+        debugMessage("ERROR: after Shader: " + QString((char*) gluErrorString(ErrorCheckValue)));
+        //exit(EXIT_FAILURE);
+        return false;
+    }
+    //skybox pass end
+    ////////////////////////////////////////////////////////////////////////////////////////////
+
+
+
+
+
+
+
+
+
+
+
     ////////////////////////////////////////////////////////////////////////////////
     //FIRST SHADER
-    GLenum ErrorCheckValue = glGetError();
 
     //vertex shader
 
@@ -2683,7 +3075,7 @@ bool Renderer::createShaders(){
 
     glLinkProgram(DR_FirstPassProgramIdId);
 
-    GLint linked;
+    //GLint linked;
     glGetProgramiv(DR_FirstPassProgramIdId, GL_LINK_STATUS, &linked);
     if (linked){
         debugMessage("deferred renderer program pass one linked");
@@ -2710,10 +3102,10 @@ bool Renderer::createShaders(){
     glEnableVertexAttribArray(1);
     glEnableVertexAttribArray(2);
 
-    p_mat_loc_firtpass = glGetUniformLocation(DR_FirstPassProgramIdId, "P");
-    v_mat_loc_firtpass = glGetUniformLocation(DR_FirstPassProgramIdId, "V");
-    m_mat_loc_firtpass = glGetUniformLocation(DR_FirstPassProgramIdId, "M");
-    vm_mat_loc_firtpass = glGetUniformLocation(DR_FirstPassProgramIdId, "VM");
+    p_mat_loc_firstpass = glGetUniformLocation(DR_FirstPassProgramIdId, "P");
+    v_mat_loc_firstpass = glGetUniformLocation(DR_FirstPassProgramIdId, "V");
+    m_mat_loc_firstpass = glGetUniformLocation(DR_FirstPassProgramIdId, "M");
+    vm_mat_loc_firstpass = glGetUniformLocation(DR_FirstPassProgramIdId, "VM");
 
     glUniform1i(glGetUniformLocation(DR_FirstPassProgramIdId, "sampler1"), 0);
 

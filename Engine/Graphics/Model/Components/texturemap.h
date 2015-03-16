@@ -21,8 +21,8 @@ public:
     TextureMap(QString name, QString path);
     virtual ~TextureMap();
 
-    void loadData();
-    void loadGLdata();
+    virtual void loadData();
+    virtual void loadGLdata();
 
     GLuint getGLTextureMap();
 
@@ -30,7 +30,7 @@ public:
 
     QString get_name();
 
-private:
+protected:
 
     QString texmap_name;
     QString texmap_path;
@@ -41,7 +41,7 @@ private:
     GLuint  gl_texmap;
 
     //load textures...
-    bool load_gl_map(QImage &image);
+    virtual bool load_gl_map();
     bool load_map_rgba(QString path, QImage &image);
     bool loaded;
 

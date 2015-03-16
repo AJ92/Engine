@@ -27,7 +27,8 @@ public:
         Ambient         = 0x0002,   // Ambient      map defined
         Diffuse         = 0x0004,   // Diffuse      map defined
         Specular        = 0x0008,   // Specular     map defined
-        Bump            = 0x0010    // Bump         map defined
+        Bump            = 0x0010,   // Bump         map defined
+        Cube            = 0x0020    // Cube         map defined
     };
 
     //load the bitmaps, and creates openGL textures

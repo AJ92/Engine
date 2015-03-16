@@ -29,6 +29,8 @@
 class Light;
 class Model;
 class Material;
+class TextureMap;
+class TextureMapCube;
 class Mesh;
 class Event;
 class Positation;
@@ -93,20 +95,28 @@ private:
     GLuint ProgramId;
 
 
-    //fsq = full screen quad (actually 2 triangles)
+    //fsq = full screen quad (actually 2 triangles)  
+    GLuint fsq_triangle_count;
     //pointer to float arrays
-    GLuint triangle_count;
-
     GLfloat* fsq_vertices;
     GLfloat* fsq_texcoords;
     GLfloat* fsq_normals;
-
     //vertex buffer objects (vertices, texcoords and normals)
     GLuint fsq_vertex_vbo;
     GLuint fsq_texcoord_vbo;
     GLuint fsq_normal_vbo;
-
     GLuint fsq_vertex_array_object;
+
+
+    //sky box
+    GLuint sb_triangle_count;
+    //pointer to float arrays
+    GLfloat* sb_vertices;
+    //vertex buffer object (vertices)
+    GLuint sb_vertex_vbo;
+    GLuint sb_vertex_array_object;
+    SP<TextureMapCube> sb_texmap;
+
 
 
 
@@ -145,15 +155,28 @@ private:
     GLfloat vm_mat[16];
     GLfloat pvm_mat[16];
 
+
+    //SIMPLE SKYBOX PASS (aka first color only pass...)
+    GLuint DR_SkyBoxPassVertexShaderId;
+    GLuint DR_SkyBoxPassFragmentShaderId;
+    GLuint DR_SkyBoxPassProgramIdId;
+
+    GLuint p_mat_loc_skyboxpass;
+    GLuint v_mat_loc_skyboxpass;
+    GLuint m_mat_loc_skyboxpass;
+    GLuint vm_mat_loc_skyboxpass;
+
+
+
     //COLOR PASS
     GLuint DR_FirstPassVertexShaderId;
     GLuint DR_FirstPassFragmentShaderId;
     GLuint DR_FirstPassProgramIdId;
 
-    GLuint p_mat_loc_firtpass;
-    GLuint v_mat_loc_firtpass;
-    GLuint m_mat_loc_firtpass;
-    GLuint vm_mat_loc_firtpass;
+    GLuint p_mat_loc_firstpass;
+    GLuint v_mat_loc_firstpass;
+    GLuint m_mat_loc_firstpass;
+    GLuint vm_mat_loc_firstpass;
 
 
 
@@ -216,6 +239,8 @@ private:
 
 
 
+
+
 //FIRST PASS FBO
 
     //framebuffer textures
@@ -254,6 +279,8 @@ private:
     SP<Window> win;
 
 
+    bool createFullScreenQuad();
+    bool createSkyBox();
 
     bool createShaders();
     void destroyShaders();

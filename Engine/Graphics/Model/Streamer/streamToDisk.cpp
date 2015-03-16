@@ -17,6 +17,8 @@ StreamToDisk::~StreamToDisk(){
 
 
 //SLOTS
+
+//loads a model and then sends it to the main thread
 void StreamToDisk::stream(){
     for (int i = 0; i < model_list.size(); ++i){
         SP<Model> m = model_list.at(i);
@@ -28,15 +30,4 @@ void StreamToDisk::stream(){
 }
 
 
-//SIGNALS
-void loaded(SPModel m, unsigned long long id){
 
-}
-
-void finished(){
-
-}
-
-void error(QString error){
-
-}

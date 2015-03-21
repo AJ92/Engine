@@ -177,71 +177,6 @@ void Renderer::render_v2(){
 
 
 
-
-
-
-
-            ///////////////////////////////////////////////////////////////////////////////
-            //SKYBOX
-
-            glUseProgram(DR_SkyBoxPassProgramIdId);
-
-            glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-            glDepthMask (GL_FALSE);
-
-
-            glActiveTexture (GL_TEXTURE0+firstTextureIndex);
-            glBindTexture(GL_TEXTURE_CUBE_MAP, sb_texmap->getGLTextureMap());
-            glUniform1i(glGetUniformLocation(DR_SkyBoxPassProgramIdId, "sampler1"), firstTextureIndex);
-
-
-
-            glBindVertexArray(sb_vertex_array_object);
-
-            //VBOs
-            glBindBuffer(GL_ARRAY_BUFFER, sb_vertex_vbo);
-            glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, 0);
-            glEnableVertexAttribArray(0);
-
-
-            //TODO: improve this crap....
-            Matrix4x4 trans;
-            trans.scale(214.0,214.0,214.0);
-            trans.translate(cam->getPosition());
-
-
-
-            vm_m = v_m * trans;
-
-
-            //TRANSPOSE
-            for (int f = 0; f < 4; f++) {
-                for (int g = 0; g < 4; g++) {
-                    p_mat[f * 4 + g] = (GLfloat) (p_m[f*4+g]);
-                    v_mat[f * 4 + g] = (GLfloat) (v_m[f*4+g]);
-                    m_mat[f * 4 + g] = (GLfloat) (trans[f*4+g]);
-                    vm_mat[f * 4 + g] = (GLfloat) (vm_m[f*4+g]);
-                }
-            }
-
-            glUniformMatrix4fv(p_mat_loc_skyboxpass, 1, GL_FALSE, p_mat);
-            glUniformMatrix4fv(v_mat_loc_skyboxpass, 1, GL_FALSE, v_mat);
-            glUniformMatrix4fv(m_mat_loc_skyboxpass, 1, GL_FALSE, m_mat);
-            glUniformMatrix4fv(vm_mat_loc_skyboxpass, 1, GL_FALSE, vm_mat);
-
-            //draw
-            glDrawArrays(GL_TRIANGLES, 0, sb_triangle_count*3);
-            meshPerFrameCount +=1;
-            trianglesPerFrameCount += sb_triangle_count;
-            texBindsPerFrameCount += 1;
-            glDepthMask (GL_TRUE);
-            //SKYBOX END
-            ///////////////////////////////////////////////////////////////////////////////
-
-
-
-
-
             glUseProgram(DR_FirstPassProgramIdId);
 
             glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
@@ -732,6 +667,128 @@ void Renderer::render_v2(){
 
 
 
+        ///////////////////////////////////////////////////////////////////////////////
+        //SKYBOX
+        //
+
+        glBindFramebuffer(GL_FRAMEBUFFER, fbo_3);
+        //glDrawBuffer(GL_BACK);
+
+        glDisable (GL_BLEND);
+
+        glClearColor(0,1,0,0);
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+        glUseProgram(DR_SkyBoxPassProgramIdId);
+
+        glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+        glDepthMask (GL_FALSE);
+
+        glActiveTexture (GL_TEXTURE0+firstTextureIndex);
+        glBindTexture(GL_TEXTURE_CUBE_MAP, sb_texmap->getGLTextureMap());
+        glUniform1i(glGetUniformLocation(DR_SkyBoxPassProgramIdId, "sampler1"), firstTextureIndex);
+
+        glBindVertexArray(sb_vertex_array_object);
+
+        //VBOs
+        glBindBuffer(GL_ARRAY_BUFFER, sb_vertex_vbo);
+        glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, 0);
+        glEnableVertexAttribArray(0);
+
+        //TODO: improve this crap....
+        Matrix4x4 trans;
+        trans.scale(214.0,214.0,214.0);
+        trans.translate(cam->getPosition());
+
+        vm_m = v_m * trans;
+
+        //TRANSPOSE
+        for (int f = 0; f < 4; f++) {
+            for (int g = 0; g < 4; g++) {
+                p_mat[f * 4 + g] = (GLfloat) (p_m[f*4+g]);
+                v_mat[f * 4 + g] = (GLfloat) (v_m[f*4+g]);
+                m_mat[f * 4 + g] = (GLfloat) (trans[f*4+g]);
+                vm_mat[f * 4 + g] = (GLfloat) (vm_m[f*4+g]);
+            }
+        }
+
+        glUniformMatrix4fv(p_mat_loc_skyboxpass, 1, GL_FALSE, p_mat);
+        glUniformMatrix4fv(v_mat_loc_skyboxpass, 1, GL_FALSE, v_mat);
+        glUniformMatrix4fv(m_mat_loc_skyboxpass, 1, GL_FALSE, m_mat);
+        glUniformMatrix4fv(vm_mat_loc_skyboxpass, 1, GL_FALSE, vm_mat);
+
+        //draw
+        glDrawArrays(GL_TRIANGLES, 0, sb_triangle_count*3);
+        meshPerFrameCount +=1;
+        trianglesPerFrameCount += sb_triangle_count;
+        texBindsPerFrameCount += 1;
+        glDepthMask (GL_TRUE);
+        //SKYBOX END
+        ///////////////////////////////////////////////////////////////////////////////
+
+
+
+
+
+
+
+
+
+        /////////////////////////////////////////////////////////////////////////////////
+        ///
+        /// BUFFERCOPY PASS (copy the lit framebuffer onto the skybox)
+        ///
+        ///
+
+        glBindVertexArray(fsq_vertex_array_object);
+
+        //VBOs
+        glBindBuffer(GL_ARRAY_BUFFER, fsq_vertex_vbo);
+        glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, 0);
+        glEnableVertexAttribArray(0);
+
+        //tex coords actually not needed!!!
+        /*
+        glBindBuffer(GL_ARRAY_BUFFER, fsq_texcoord_vbo);
+        glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 0, 0);
+        glEnableVertexAttribArray(1);
+        */
+
+        //normal not needed...
+        /*
+        glBindBuffer(GL_ARRAY_BUFFER, fsq_normal_vbo);
+        glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, 0, 0);
+        glEnableVertexAttribArray(2);
+        */
+
+
+        glActiveTexture (GL_TEXTURE0);
+        glBindTexture (GL_TEXTURE_2D, fbo_1_tex_p);
+
+        //previously the normal was on tex1 and color on tex2...
+        glActiveTexture (GL_TEXTURE1);
+        glBindTexture (GL_TEXTURE_2D, fbo_2_tex_c);
+
+
+
+        glUseProgram (DR_BufferCopyPassProgramIdId);
+
+        glPolygonMode(GL_FRONT_AND_BACK, GL_POLYGON);
+
+        glUniform2f (win_size_loc_buffercopypass, win->getWindowWidth(), win->getWindowHeight());
+
+        //glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
+        glDrawArrays(GL_TRIANGLES, 0, fsq_triangle_count*3);
+
+
+
+
+
+
+
+
+
+
         ////////////////////////////////////////////////////////////
         //  POST PROCESSING EDGE DETECTION SHADER
         //
@@ -747,7 +804,7 @@ void Renderer::render_v2(){
 
         //switch texture slot... color to 0
         glActiveTexture (GL_TEXTURE0);
-        glBindTexture (GL_TEXTURE_2D, fbo_2_tex_c);
+        glBindTexture (GL_TEXTURE_2D, fbo_3_tex_c);
 
         glBindVertexArray(fsq_vertex_array_object);
 
@@ -2963,9 +3020,6 @@ bool Renderer::createShaders(){
 
     // Bind the custom vertex attributes
     glBindAttribLocation(DR_SkyBoxPassProgramIdId, 0, "vp");
-    glBindAttribLocation(DR_SkyBoxPassProgramIdId, 1, "vt");
-    glBindAttribLocation(DR_SkyBoxPassProgramIdId, 2, "vn");
-
 
     glLinkProgram(DR_SkyBoxPassProgramIdId);
 
@@ -3013,6 +3067,99 @@ bool Renderer::createShaders(){
     }
     //skybox pass end
     ////////////////////////////////////////////////////////////////////////////////////////////
+
+
+
+
+
+
+
+
+
+    /////////////////////////////////////////////////////////////////////////////////////
+    //BUFFER COPY PASS
+
+
+    //vertex shader
+    Shader dr_vertex_buffercopypass(QApplication::applicationDirPath() +
+                               "/shaders/deferred_renderer_buffercopy_pass.vsh",
+                               GL_VERTEX_SHADER);
+    if(dr_vertex_buffercopypass.isCreated()){
+        DR_BufferCopyPassVertexShaderId = dr_vertex_buffercopypass.getShaderId();
+        debugMessage("Deferred Renderer buffercopy pass vertex shader compiled successful.");
+    }
+    else{
+        debugMessage("Deferred Renderer buffercopy pass vertex shader compiled failed!");
+        debugMessage(dr_vertex_buffercopypass.getError());
+        return false;
+    }
+
+
+    //fragment shader
+    Shader dr_fragment_buffercopypass(QApplication::applicationDirPath() +
+                               "/shaders/deferred_renderer_buffercopy_pass.fsh",
+                               GL_FRAGMENT_SHADER);
+    if(dr_fragment_buffercopypass.isCreated()){
+        DR_BufferCopyPassFragmentShaderId = dr_fragment_buffercopypass.getShaderId();
+        debugMessage("Deferred Renderer buffercopy pass fragment shader compiled successful.");
+    }
+    else{
+        debugMessage("Deferred Renderer buffercopy pass fragment shader compiled failed!");
+        debugMessage(dr_fragment_buffercopypass.getError());
+        return false;
+    }
+
+
+
+
+
+    //create program, link it and bind locs
+    DR_BufferCopyPassProgramIdId = glCreateProgram();
+    glAttachShader(DR_BufferCopyPassProgramIdId, DR_BufferCopyPassVertexShaderId);
+    glAttachShader(DR_BufferCopyPassProgramIdId, DR_BufferCopyPassFragmentShaderId);
+
+
+    glLinkProgram(DR_BufferCopyPassProgramIdId);
+
+    //GLint linked;
+    glGetProgramiv(DR_BufferCopyPassProgramIdId, GL_LINK_STATUS, &linked);
+    if (linked){
+        debugMessage("deferred renderer program pass buffercopy linked");
+    }
+    else{
+        debugMessage("deferred renderer program pass buffercopy linking failed!!!");
+        char messages[256];
+        glGetProgramInfoLog(DR_BufferCopyPassProgramIdId, sizeof(messages), 0, &messages[0]);
+        debugMessage(QString(messages));
+        return false;
+    }
+
+    glUseProgram(DR_BufferCopyPassProgramIdId);
+
+    ErrorCheckValue = glGetError();
+    if (ErrorCheckValue != GL_NO_ERROR)
+    {
+        debugMessage("ERROR(3): Could not create the shaders: " + QString((char*) gluErrorString(ErrorCheckValue)));
+        //exit(EXIT_FAILURE);
+        return false;
+    }
+
+
+    win_size_loc_buffercopypass = glGetUniformLocation(DR_BufferCopyPassProgramIdId, "win_size");
+
+
+    glUniform1i(glGetUniformLocation(DR_BufferCopyPassProgramIdId, "p_tex"), 0);
+    glUniform1i(glGetUniformLocation(DR_BufferCopyPassProgramIdId, "c_tex"), 1);
+    //buffer copy pass end
+    /////////////////////////////////////////////////////////////////////////////////////
+
+
+
+
+
+
+
+
 
 
 
@@ -3807,6 +3954,67 @@ bool Renderer::createBuffers(){
 
 
 
+    debugMessage("fbo 3");
+    fbo_3 = 0;
+    glGenFramebuffers (1, &fbo_3);
+    glBindFramebuffer (GL_FRAMEBUFFER, fbo_3);
+
+
+    //position texture
+    glGenTextures (1, &fbo_3_tex_c);
+    glBindTexture (GL_TEXTURE_2D, fbo_3_tex_c);
+    glTexImage2D (
+      GL_TEXTURE_2D,
+      0,
+      GL_RGB16F,
+      600,
+      400,
+      0,
+      GL_BGR,
+      GL_UNSIGNED_BYTE,
+      NULL
+    );
+    glTexParameteri (GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+    glTexParameteri (GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+
+
+
+
+    glFramebufferTexture2D (
+      GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, fbo_3_tex_c, 0
+    );
+
+
+
+
+
+
+    rb3 = 0;
+    glGenRenderbuffers (1, &rb3);
+    glBindRenderbuffer (GL_RENDERBUFFER, rb3);
+    glRenderbufferStorage (
+      GL_RENDERBUFFER, GL_DEPTH_COMPONENT, 600, 400
+    );
+    glFramebufferRenderbuffer (
+      GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, rb3
+    );
+
+    GLenum draw_bufs3[] = { GL_COLOR_ATTACHMENT0};
+    glDrawBuffers (1, draw_bufs3);
+
+    // Always check that our framebuffer is ok
+    if(glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE){
+        debugMessage("framebuffer error in third fbo!");
+        return false;
+    }
+
+
+
+
+
+
     debugMessage("created buffers.");
     return true;
 }
@@ -3817,6 +4025,8 @@ void Renderer::destroyShaders(){
 
     glUseProgram(0);
 
+    //old shader stuff
+    /*
     glDetachShader(ProgramId, VertexShaderId);
     glDetachShader(ProgramId, FragmentShaderId);
 
@@ -3824,6 +4034,87 @@ void Renderer::destroyShaders(){
     glDeleteShader(VertexShaderId);
 
     glDeleteProgram(ProgramId);
+    */
+
+    //skybox pass
+    glDetachShader(DR_SkyBoxPassProgramIdId, DR_SkyBoxPassVertexShaderId);
+    glDetachShader(DR_SkyBoxPassProgramIdId, DR_SkyBoxPassFragmentShaderId);
+
+    glDeleteShader(DR_SkyBoxPassFragmentShaderId);
+    glDeleteShader(DR_SkyBoxPassVertexShaderId);
+
+    glDeleteProgram(DR_SkyBoxPassProgramIdId);
+
+
+    //buffercopy pass
+    glDetachShader(DR_BufferCopyPassProgramIdId, DR_BufferCopyPassVertexShaderId);
+    glDetachShader(DR_BufferCopyPassProgramIdId, DR_BufferCopyPassFragmentShaderId);
+
+    glDeleteShader(DR_BufferCopyPassFragmentShaderId);
+    glDeleteShader(DR_BufferCopyPassVertexShaderId);
+
+    glDeleteProgram(DR_BufferCopyPassProgramIdId);
+
+
+    //color pass (first pass)
+    glDetachShader(DR_FirstPassProgramIdId, DR_FirstPassVertexShaderId);
+    glDetachShader(DR_FirstPassProgramIdId, DR_FirstPassFragmentShaderId);
+
+    glDeleteShader(DR_FirstPassFragmentShaderId);
+    glDeleteShader(DR_FirstPassVertexShaderId);
+
+    glDeleteProgram(DR_FirstPassProgramIdId);
+
+
+    //DEFERRED LIGHTING PASS
+    glDetachShader(DR_SecondPassProgramIdId, DR_SecondPassVertexShaderId);
+    glDetachShader(DR_SecondPassProgramIdId, DR_SecondPassFragmentShaderId);
+
+    glDeleteShader(DR_SecondPassFragmentShaderId);
+    glDeleteShader(DR_SecondPassVertexShaderId);
+
+    glDeleteProgram(DR_SecondPassProgramIdId);
+
+
+    //DEFERRED AMBIENT PASS
+    glDetachShader(DR_AmbientPassProgramIdId, DR_AmbientPassVertexShaderId);
+    glDetachShader(DR_AmbientPassProgramIdId, DR_AmbientPassFragmentShaderId);
+
+    glDeleteShader(DR_AmbientPassFragmentShaderId);
+    glDeleteShader(DR_AmbientPassVertexShaderId);
+
+    glDeleteProgram(DR_AmbientPassProgramIdId);
+
+
+    //DEFERRED DIRECTIONALAMBIENT PASS
+    glDetachShader(DR_DirectionalAmbientPassProgramIdId, DR_DirectionalAmbientPassVertexShaderId);
+    glDetachShader(DR_DirectionalAmbientPassProgramIdId, DR_DirectionalAmbientPassFragmentShaderId);
+
+    glDeleteShader(DR_DirectionalAmbientPassFragmentShaderId);
+    glDeleteShader(DR_DirectionalAmbientPassVertexShaderId);
+
+    glDeleteProgram(DR_DirectionalAmbientPassProgramIdId);
+
+
+    //DEFERRED DEBUG PASS
+    glDetachShader(DR_DebugPassProgramIdId, DR_DebugPassVertexShaderId);
+    glDetachShader(DR_DebugPassProgramIdId, DR_DebugPassFragmentShaderId);
+
+    glDeleteShader(DR_DebugPassFragmentShaderId);
+    glDeleteShader(DR_DebugPassVertexShaderId);
+
+    glDeleteProgram(DR_DebugPassProgramIdId);
+
+
+    //DEFERRED edge detection pass
+    glDetachShader(DR_EdgeDetectionPassProgramIdId, DR_EdgeDetectionPassVertexShaderId);
+    glDetachShader(DR_EdgeDetectionPassProgramIdId, DR_EdgeDetectionPassFragmentShaderId);
+
+    glDeleteShader(DR_EdgeDetectionPassFragmentShaderId);
+    glDeleteShader(DR_EdgeDetectionPassVertexShaderId);
+
+    glDeleteProgram(DR_EdgeDetectionPassProgramIdId);
+
 
     ErrorCheckValue = glGetError();
     if (ErrorCheckValue != GL_NO_ERROR)
@@ -4002,6 +4293,44 @@ void Renderer::resizeBuffers(int x, int y){
         );
         glFramebufferRenderbuffer (
           GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, rb2
+        );
+
+
+
+
+
+
+
+
+        //FBO3
+
+        //color texture 1
+        glBindTexture (GL_TEXTURE_2D, fbo_3_tex_c);
+        glTexImage2D (
+          GL_TEXTURE_2D,
+          0,
+          GL_RGB16F,
+          x,
+          y,
+          0,
+          GL_BGR,
+          GL_UNSIGNED_BYTE,
+          NULL
+        );
+        glTexParameteri (GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+        glTexParameteri (GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+
+
+
+
+        glBindRenderbuffer (GL_RENDERBUFFER, rb3);
+        glRenderbufferStorage (
+          GL_RENDERBUFFER, GL_DEPTH_COMPONENT, x, y
+        );
+        glFramebufferRenderbuffer (
+          GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, rb3
         );
     }
 }

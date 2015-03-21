@@ -9,7 +9,8 @@ layout( location = 0 ) out vec4 def_e;
 
 
 //the spread of the edge detection algorithm
-const float fScale = 2.5f;
+//2.5 works well
+const float fScale = 2.6f;
 
 float GetColorLuminance( vec3 i_vColor )
 {
@@ -64,7 +65,9 @@ void main () {
   float vector1 = 0.0;
   float vector2 = 0.0;
 
-  if(frame_switch > 0){
+
+  //if(frame_switch > 0){
+  if(frame_switch < 3){
     float topHeight = GetColorLuminance( texture( l_tex, st + upOffset).rgb );
     float bottomHeight = GetColorLuminance( texture( l_tex, st - upOffset).rgb );
     float rightHeight = GetColorLuminance( texture( l_tex, st + rightOffset).rgb );
@@ -103,7 +106,9 @@ void main () {
   
 
   vec3 Scene0 = texture( l_tex, st ).rgb;
-
+  if((Scene0.r +Scene0.g + Scene0.b) < 0.00001){
+    discard;
+  }
 
 
 
@@ -119,7 +124,12 @@ void main () {
 
 
   //Final color smoothed
-  def_e.rgb = (Scene0 + Scene1 + Scene2 + Scene3 + Scene4) * 0.2;
+  vec3 out_c = (Scene0 + Scene1 + Scene2 + Scene3 + Scene4) * 0.2;
+//  if((out_c.r +out_c.g + out_c.b) < 0.00001){
+//    discard;
+//  }
+
+  def_e.rgb = out_c;
   //show the normals of the smooth pixels
   //def_e.rgb = normalize( vec3(Normal.x, Normal.y , 1.0f ) * 0.5f + 0.5f);
   //show  pixels where the smoothing is applied to

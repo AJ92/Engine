@@ -168,6 +168,15 @@ private:
 
 
 
+    //SIMPLE BUFFERCOPY PASS (copies one buffer to another)
+    GLuint DR_BufferCopyPassVertexShaderId;
+    GLuint DR_BufferCopyPassFragmentShaderId;
+    GLuint DR_BufferCopyPassProgramIdId;
+
+    GLuint win_size_loc_buffercopypass;
+
+
+
     //COLOR PASS
     GLuint DR_FirstPassVertexShaderId;
     GLuint DR_FirstPassFragmentShaderId;
@@ -196,6 +205,8 @@ private:
 
     GLuint win_size_loc_secondpass;
 
+
+
     //DEFERRED AMBIENT PASS
     GLuint DR_AmbientPassVertexShaderId;
     GLuint DR_AmbientPassFragmentShaderId;
@@ -203,6 +214,7 @@ private:
 
     GLuint color_loc_ambientpass;
     GLuint win_size_loc_ambientpass;
+
 
 
     //DEFERRED DIRECTIONALAMBIENT PASS
@@ -215,6 +227,7 @@ private:
     GLuint dir_loc_directionalambientpass;
     GLuint color_loc_directionalambientpass;
     GLuint win_size_loc_directionalambientpass;
+
 
 
     //DEFERRED DEBUG PASS
@@ -241,7 +254,7 @@ private:
 
 
 
-//FIRST PASS FBO
+//FIRST FBO
 
     //framebuffer textures
     GLuint fbo_1;
@@ -254,7 +267,7 @@ private:
     GLuint rb1;
 
 
-//SECOND PASS FBO
+//SECOND FBO
 
     //framebuffer textures
     GLuint fbo_2;
@@ -263,6 +276,15 @@ private:
     //renderbuffer
     GLuint rb2;
 
+
+//THIRD FBO
+
+    //framebuffer textures
+    GLuint fbo_3;
+    GLuint fbo_3_tex_c;    //color1
+
+    //renderbuffer
+    GLuint rb3;
 
     int frame_switch;
 

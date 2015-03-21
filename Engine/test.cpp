@@ -24,6 +24,7 @@ Test::Test() :
 
 
     Camera * camera = new Camera();
+    camera->setFOV(45.0);
     camera->setZFAR(15000.0);
     camera->set_position(0.0,-1200.0,650.0);
     camera->set_rotation_local(-50.0,1.0,0.0,0.0);

@@ -241,13 +241,14 @@ private:
 
 
 
-    //DEFERRED edge detection pass
+    //DEFERRED POST PROCESSING pass
     GLuint DR_EdgeDetectionPassVertexShaderId;
     GLuint DR_EdgeDetectionPassFragmentShaderId;
     GLuint DR_EdgeDetectionPassProgramIdId;
 
     GLuint win_size_loc_edgedetectionpass;
     GLuint frame_switch_loc_edgedetectionpass;
+    GLuint function_loc_edgedetectionpass;
 
 
 

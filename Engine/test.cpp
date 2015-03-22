@@ -257,7 +257,8 @@ void Test::keyFunction(){
             for(int i = 0; i < test_amount; i++){
                 compositeobjecttest.append(loadModelObject("betty",
                                                            getApplicationDir() +
-                                                           "//betty.obj"));
+                                                           "//betty.obj")); 
+
             }
             level_loaded += 1;
         }
@@ -280,9 +281,25 @@ void Test::keyFunction(){
                     coTest->getPositation()->set_rotation((double) (rand() & 360), 0, 0, 1);
                 }
 
-                coTest->getPositation()->set_scale(0.2,0.2,0.2);
+                coTest->getPositation()->set_scale(0.9,0.9,0.9);
+
 
             }
+        }
+    }
+
+    //g
+    if(k->isPressed(34)){
+        if(!lvl_loaded){
+            SP<Positation> posi(new Positation());
+            posi->set_position(0.0f, 0.0f, 0.0f);
+
+            posi->set_scale(1.0,1.0,1.0);
+            posi->set_rotation(90.0f,1.0f,0.0f,0.0f);
+            SP<CompositeObject> coTest = loadModelObject("f16model", getApplicationDir() + "//f16//f16.obj", posi);
+            //SP<CompositeObject> coTest = loadModelObject("city", getApplicationDir() + "//city2//Organodron City.obj", posi);
+            //SP<CompositeObject> coTest = loadModelObject("city", getApplicationDir() + "//sponza//sponzalvl.obj", posi);
+            lvl_loaded = true;
         }
     }
 

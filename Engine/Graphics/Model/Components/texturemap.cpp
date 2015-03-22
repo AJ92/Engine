@@ -65,7 +65,8 @@ bool TextureMap::load_gl_map(){
     GLint width = texmap_img.width();
     GLint height = texmap_img.height();
 
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, width, height, 0,
+    //SRGB correction
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_SRGB8_ALPHA8/*GL_RGBA8*/, width, height, 0,
                  GL_BGRA, GL_UNSIGNED_BYTE, (GLuint*)texmap_img.bits());
 
     qDebug("tex loaded...");

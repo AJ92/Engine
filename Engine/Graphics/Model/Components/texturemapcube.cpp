@@ -90,32 +90,32 @@ bool TextureMapCube::load_gl_map(){
     GLint height = texmap_front_img.height();
 
 
-    glTexImage2D(GL_TEXTURE_CUBE_MAP_NEGATIVE_Z, 0, GL_RGBA8,
+    glTexImage2D(GL_TEXTURE_CUBE_MAP_NEGATIVE_Z, 0, GL_SRGB8_ALPHA8/*GL_RGBA8*/,
                  (GLint) texmap_front_img.width(),
                  (GLint) texmap_front_img.height(),
                  0, GL_BGRA, GL_UNSIGNED_BYTE, (GLuint*)texmap_front_img.bits());
 
-    glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_Z, 0, GL_RGBA8,
+    glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_Z, 0, GL_SRGB8_ALPHA8/*GL_RGBA8*/,
                  (GLint) texmap_back_img.width(),
                  (GLint) texmap_back_img.height(),
                  0, GL_BGRA, GL_UNSIGNED_BYTE, (GLuint*)texmap_back_img.bits());
 
-    glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_Y, 0, GL_RGBA8,
+    glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_Y, 0, GL_SRGB8_ALPHA8/*GL_RGBA8*/,
                  (GLint) texmap_top_img.width(),
                  (GLint) texmap_top_img.height(),
                  0, GL_BGRA, GL_UNSIGNED_BYTE, (GLuint*)texmap_top_img.bits());
 
-    glTexImage2D(GL_TEXTURE_CUBE_MAP_NEGATIVE_Y, 0, GL_RGBA8,
+    glTexImage2D(GL_TEXTURE_CUBE_MAP_NEGATIVE_Y, 0, GL_SRGB8_ALPHA8/*GL_RGBA8*/,
                  (GLint) texmap_bottom_img.width(),
                  (GLint) texmap_bottom_img.height(),
                  0, GL_BGRA, GL_UNSIGNED_BYTE, (GLuint*)texmap_bottom_img.bits());
 
-    glTexImage2D(GL_TEXTURE_CUBE_MAP_NEGATIVE_X, 0, GL_RGBA8,
+    glTexImage2D(GL_TEXTURE_CUBE_MAP_NEGATIVE_X, 0, GL_SRGB8_ALPHA8/*GL_RGBA8*/,
                  (GLint) texmap_left_img.width(),
                  (GLint) texmap_left_img.height(),
                  0, GL_BGRA, GL_UNSIGNED_BYTE, (GLuint*)texmap_left_img.bits());
 
-    glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X, 0, GL_RGBA8,
+    glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X, 0, GL_SRGB8_ALPHA8/*GL_RGBA8*/,
                  (GLint) texmap_right_img.width(),
                  (GLint) texmap_right_img.height(),
                  0, GL_BGRA, GL_UNSIGNED_BYTE, (GLuint*)texmap_right_img.bits());

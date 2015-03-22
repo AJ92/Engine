@@ -39,6 +39,7 @@ private:
     bool lvl_loaded;
     int test_amount;
     QList<SP<CompositeObject> > compositeobjecttest;
+
 };
 
 #endif // TEST_H

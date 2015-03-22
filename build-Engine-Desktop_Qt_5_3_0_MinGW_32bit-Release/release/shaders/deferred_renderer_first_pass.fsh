@@ -10,12 +10,12 @@ void main () {
 
 	//cheack alpha test...
    	vec4 c_eye = texture2D(sampler1, t_eye.st);
-   	if(c_eye.a > 0.01){
+   	//if(c_eye.a > 0.01){
    		def_p = p_eye;
    		def_n = n_eye;
    		def_c = c_eye.rgb;
-   	}
-   	else{
-   		discard;
-   	}
+   	//}
+   	//else{
+   	//	discard;
+   	//}
 }

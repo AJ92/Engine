@@ -44,6 +44,9 @@ INPUT(
 ./debug\loader_assimp.o
 ./debug\texturemap.o
 ./debug\texturemapcube.o
+./debug\component.o
+./debug\entity.o
+./debug\entitymanager.o
 ./debug\moc_debugwindow.o
 ./debug\moc_engine.o
 ./debug\moc_streamToDisk.o

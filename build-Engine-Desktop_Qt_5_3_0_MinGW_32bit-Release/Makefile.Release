@@ -13,7 +13,7 @@ CC            = gcc
 CXX           = g++
 DEFINES       = -DUNICODE -DQT_NO_DEBUG -DQT_OPENGL_LIB -DQT_WIDGETS_LIB -DQT_GUI_LIB -DQT_CORE_LIB -DQT_NEEDS_QMAIN
 CFLAGS        = -pipe -fno-keep-inline-dllexport -O2 -Wall -Wextra $(DEFINES)
-CXXFLAGS      = -pipe -fno-keep-inline-dllexport -O2 -frtti -Wall -Wextra -fexceptions -mthreads $(DEFINES)
+CXXFLAGS      = -pipe -fno-keep-inline-dllexport -std=c++0x -O2 -frtti -Wall -Wextra -fexceptions -mthreads $(DEFINES)
 INCPATH       = -I..\Engine -I"..\Engine\Math" -I"..\Engine\Math\include" -I"..\Engine\Graphics\glfw\include" -I"..\Engine\Graphics\glew\include" -I"..\Engine\Graphics\assimp\include" -I"..\Engine\Physics\bullet-2.82-r2704\src" -I"..\..\..\..\Qt\Qt5.3.0\5.3\mingw482_32\include" -I"..\..\..\..\Qt\Qt5.3.0\5.3\mingw482_32\include\QtOpenGL" -I"..\..\..\..\Qt\Qt5.3.0\5.3\mingw482_32\include\QtWidgets" -I"..\..\..\..\Qt\Qt5.3.0\5.3\mingw482_32\include\QtGui" -I"..\..\..\..\Qt\Qt5.3.0\5.3\mingw482_32\include\QtCore" -I"release" -I"." -I"." -I"..\..\..\..\Qt\Qt5.3.0\5.3\mingw482_32\mkspecs\win32-g++"
 LINKER      =        g++
 LFLAGS        =        -Wl,-s -Wl,-subsystem,windows -mthreads
@@ -87,7 +87,10 @@ SOURCES       = ..\Engine\main.cpp \
 		..\Engine\Object\SmartPointer\referencecounter.cpp \
 		..\Engine\Graphics\Model\Parser\Format_assimp\loader_assimp.cpp \
 		..\Engine\Graphics\Model\Components\texturemap.cpp \
-		..\Engine\Graphics\Model\Components\texturemapcube.cpp release\moc_debugwindow.cpp \
+		..\Engine\Graphics\Model\Components\texturemapcube.cpp \
+		..\Engine\Object\component.cpp \
+		..\Engine\Object\entity.cpp \
+		..\Engine\Object\entitymanager.cpp release\moc_debugwindow.cpp \
 		release\moc_engine.cpp \
 		release\moc_streamToDisk.cpp \
 		release\moc_streamer.cpp \
@@ -137,6 +140,9 @@ OBJECTS       = release/main.o \
 		release/loader_assimp.o \
 		release/texturemap.o \
 		release/texturemapcube.o \
+		release/component.o \
+		release/entity.o \
+		release/entitymanager.o \
 		release/moc_debugwindow.o \
 		release/moc_engine.o \
 		release/moc_streamToDisk.o \
@@ -182,7 +188,7 @@ dist:
 	$(ZIP) Engine.zip $(SOURCES) $(DIST) ..\Engine\Engine.pro ..\..\..\..\Qt\Qt5.3.0\5.3\mingw482_32\mkspecs\features\spec_pre.prf ..\..\..\..\Qt\Qt5.3.0\5.3\mingw482_32\mkspecs\qdevice.pri ..\..\..\..\Qt\Qt5.3.0\5.3\mingw482_32\mkspecs\features\device_config.prf ..\..\..\..\Qt\Qt5.3.0\5.3\mingw482_32\mkspecs\common\shell-win32.conf ..\..\..\..\Qt\Qt5.3.0\5.3\mingw482_32\mkspecs\qconfig.pri ..\..\..\..\Qt\Qt5.3.0\5.3\mingw482_32\mkspecs\modules\qt_lib_axbase.pri ..\..\..\..\Qt\Qt5.3.0\5.3\mingw482_32\mkspecs\modules\qt_lib_axbase_private.pri ..\..\..\..\Qt\Qt5.3.0\5.3\mingw482_32\mkspecs\modules\qt_lib_axcontainer.pri ..\..\..\..\Qt\Qt5.3.0\5.3\mingw482_32\mkspecs\modules\qt_lib_axcontainer_private.pri ..\..\..\..\Qt\Qt5.3.0\5.3\mingw482_32\mkspecs\modules\qt_lib_axserver.pri ..\..\..\..\Qt\Qt5.3.0\5.3\mingw482_32\mkspecs\modules\qt_lib_axserver_private.pri ..\..\..\..\Qt\Qt5.3.0\5.3\mingw482_32\mkspecs\modules\qt_lib_bluetooth.pri ..\..\..\..\Qt\Qt5.3.0\5.3\mingw482_32\mkspecs\modules\qt_lib_bluetooth_private.pri ..\..\..\..\Qt\Qt5.3.0\5.3\mingw482_32\mkspecs\modules\qt_lib_bootstrap_private.pri ..\..\..\..\Qt\Qt5.3.0\5.3\mingw482_32\mkspecs\modules\qt_lib_clucene_private.pri ..\..\..\..\Qt\Qt5.3.0\5.3\mingw482_32\mkspecs\modules\qt_lib_concurrent.pri ..\..\..\..\Qt\Qt5.3.0\5.3\mingw482_32\mkspecs\modules\qt_lib_concurrent_private.pri ..\..\..\..\Qt\Qt5.3.0\5.3\mingw482_32\mkspecs\modules\qt_lib_core.pri ..\..\..\..\Qt\Qt5.3.0\5.3\mingw482_32\mkspecs\modules\qt_lib_core_private.pri ..\..\..\..\Qt\Qt5.3.0\5.3\mingw482_32\mkspecs\modules\qt_lib_declarative.pri ..\..\..\..\Qt\Qt5.3.0\5.3\mingw482_32\mkspecs\modules\qt_lib_declarative_private.pri ..\..\..\..\Qt\Qt5.3.0\5.3\mingw482_32\mkspecs\modules\qt_lib_designer.pri ..\..\..\..\Qt\Qt5.3.0\5.3\mingw482_32\mkspecs\modules\qt_lib_designer_private.pri ..\..\..\..\Qt\Qt5.3.0\5.3\mingw482_32\mkspecs\modules\qt_lib_designercomponents_private.pri ..\..\..\..\Qt\Qt5.3.0\5.3\mingw482_32\mkspecs\modules\qt_lib_enginio.pri ..\..\..\..\Qt\Qt5.3.0\5.3\mingw482_32\mkspecs\modules\qt_lib_enginio_private.pri ..\..\..\..\Qt\Qt5.3.0\5.3\mingw482_32\mkspecs\modules\qt_lib_gui.pri ..\..\..\..\Qt\Qt5.3.0\5.3\mingw482_32\mkspecs\modules\qt_lib_gui_private.pri ..\..\..\..\Qt\Qt5.3.0\5.3\mingw482_32\mkspecs\modules\qt_lib_help.pri ..\..\..\..\Qt\Qt5.3.0\5.3\mingw482_32\mkspecs\modules\qt_lib_help_private.pri ..\..\..\..\Qt\Qt5.3.0\5.3\mingw482_32\mkspecs\modules\qt_lib_multimedia.pri ..\..\..\..\Qt\Qt5.3.0\5.3\mingw482_32\mkspecs\modules\qt_lib_multimedia_private.pri ..\..\..\..\Qt\Qt5.3.0\5.3\mingw482_32\mkspecs\modules\qt_lib_multimediawidgets.pri ..\..\..\..\Qt\Qt5.3.0\5.3\mingw482_32\mkspecs\modules\qt_lib_multimediawidgets_private.pri ..\..\..\..\Qt\Qt5.3.0\5.3\mingw482_32\mkspecs\modules\qt_lib_network.pri ..\..\..\..\Qt\Qt5.3.0\5.3\mingw482_32\mkspecs\modules\qt_lib_network_private.pri ..\..\..\..\Qt\Qt5.3.0\5.3\mingw482_32\mkspecs\modules\qt_lib_nfc.pri ..\..\..\..\Qt\Qt5.3.0\5.3\mingw482_32\mkspecs\modules\qt_lib_nfc_private.pri ..\..\..\..\Qt\Qt5.3.0\5.3\mingw482_32\mkspecs\modules\qt_lib_opengl.pri ..\..\..\..\Qt\Qt5.3.0\5.3\mingw482_32\mkspecs\modules\qt_lib_opengl_private.pri ..\..\..\..\Qt\Qt5.3.0\5.3\mingw482_32\mkspecs\modules\qt_lib_openglextensions.pri ..\..\..\..\Qt\Qt5.3.0\5.3\mingw482_32\mkspecs\modules\qt_lib_openglextensions_private.pri ..\..\..\..\Qt\Qt5.3.0\5.3\mingw482_32\mkspecs\modules\qt_lib_platformsupport_private.pri ..\..\..\..\Qt\Qt5.3.0\5.3\mingw482_32\mkspecs\modules\qt_lib_positioning.pri ..\..\..\..\Qt\Qt5.3.0\5.3\mingw482_32\mkspecs\modules\qt_lib_positioning_private.pri ..\..\..\..\Qt\Qt5.3.0\5.3\mingw482_32\mkspecs\modules\qt_lib_printsupport.pri ..\..\..\..\Qt\Qt5.3.0\5.3\mingw482_32\mkspecs\modules\qt_lib_printsupport_private.pri ..\..\..\..\Qt\Qt5.3.0\5.3\mingw482_32\mkspecs\modules\qt_lib_qml.pri ..\..\..\..\Qt\Qt5.3.0\5.3\mingw482_32\mkspecs\modules\qt_lib_qml_private.pri ..\..\..\..\Qt\Qt5.3.0\5.3\mingw482_32\mkspecs\modules\qt_lib_qmldevtools_private.pri ..\..\..\..\Qt\Qt5.3.0\5.3\mingw482_32\mkspecs\modules\qt_lib_qmltest.pri ..\..\..\..\Qt\Qt5.3.0\5.3\mingw482_32\mkspecs\modules\qt_lib_qmltest_private.pri ..\..\..\..\Qt\Qt5.3.0\5.3\mingw482_32\mkspecs\modules\qt_lib_qtmultimediaquicktools_private.pri ..\..\..\..\Qt\Qt5.3.0\5.3\mingw482_32\mkspecs\modules\qt_lib_quick.pri ..\..\..\..\Qt\Qt5.3.0\5.3\mingw482_32\mkspecs\modules\qt_lib_quick_private.pri ..\..\..\..\Qt\Qt5.3.0\5.3\mingw482_32\mkspecs\modules\qt_lib_quickparticles_private.pri ..\..\..\..\Qt\Qt5.3.0\5.3\mingw482_32\mkspecs\modules\qt_lib_quickwidgets.pri ..\..\..\..\Qt\Qt5.3.0\5.3\mingw482_32\mkspecs\modules\qt_lib_quickwidgets_private.pri ..\..\..\..\Qt\Qt5.3.0\5.3\mingw482_32\mkspecs\modules\qt_lib_script.pri ..\..\..\..\Qt\Qt5.3.0\5.3\mingw482_32\mkspecs\modules\qt_lib_script_private.pri ..\..\..\..\Qt\Qt5.3.0\5.3\mingw482_32\mkspecs\modules\qt_lib_scripttools.pri ..\..\..\..\Qt\Qt5.3.0\5.3\mingw482_32\mkspecs\modules\qt_lib_scripttools_private.pri ..\..\..\..\Qt\Qt5.3.0\5.3\mingw482_32\mkspecs\modules\qt_lib_sensors.pri ..\..\..\..\Qt\Qt5.3.0\5.3\mingw482_32\mkspecs\modules\qt_lib_sensors_private.pri ..\..\..\..\Qt\Qt5.3.0\5.3\mingw482_32\mkspecs\modules\qt_lib_serialport.pri ..\..\..\..\Qt\Qt5.3.0\5.3\mingw482_32\mkspecs\modules\qt_lib_serialport_private.pri ..\..\..\..\Qt\Qt5.3.0\5.3\mingw482_32\mkspecs\modules\qt_lib_sql.pri ..\..\..\..\Qt\Qt5.3.0\5.3\mingw482_32\mkspecs\modules\qt_lib_sql_private.pri ..\..\..\..\Qt\Qt5.3.0\5.3\mingw482_32\mkspecs\modules\qt_lib_svg.pri ..\..\..\..\Qt\Qt5.3.0\5.3\mingw482_32\mkspecs\modules\qt_lib_svg_private.pri ..\..\..\..\Qt\Qt5.3.0\5.3\mingw482_32\mkspecs\modules\qt_lib_testlib.pri ..\..\..\..\Qt\Qt5.3.0\5.3\mingw482_32\mkspecs\modules\qt_lib_testlib_private.pri ..\..\..\..\Qt\Qt5.3.0\5.3\mingw482_32\mkspecs\modules\qt_lib_uitools.pri ..\..\..\..\Qt\Qt5.3.0\5.3\mingw482_32\mkspecs\modules\qt_lib_uitools_private.pri ..\..\..\..\Qt\Qt5.3.0\5.3\mingw482_32\mkspecs\modules\qt_lib_webkit.pri ..\..\..\..\Qt\Qt5.3.0\5.3\mingw482_32\mkspecs\modules\qt_lib_webkit_private.pri ..\..\..\..\Qt\Qt5.3.0\5.3\mingw482_32\mkspecs\modules\qt_lib_webkitwidgets.pri ..\..\..\..\Qt\Qt5.3.0\5.3\mingw482_32\mkspecs\modules\qt_lib_webkitwidgets_private.pri ..\..\..\..\Qt\Qt5.3.0\5.3\mingw482_32\mkspecs\modules\qt_lib_websockets.pri ..\..\..\..\Qt\Qt5.3.0\5.3\mingw482_32\mkspecs\modules\qt_lib_websockets_private.pri ..\..\..\..\Qt\Qt5.3.0\5.3\mingw482_32\mkspecs\modules\qt_lib_widgets.pri ..\..\..\..\Qt\Qt5.3.0\5.3\mingw482_32\mkspecs\modules\qt_lib_widgets_private.pri ..\..\..\..\Qt\Qt5.3.0\5.3\mingw482_32\mkspecs\modules\qt_lib_winextras.pri ..\..\..\..\Qt\Qt5.3.0\5.3\mingw482_32\mkspecs\modules\qt_lib_winextras_private.pri ..\..\..\..\Qt\Qt5.3.0\5.3\mingw482_32\mkspecs\modules\qt_lib_xml.pri ..\..\..\..\Qt\Qt5.3.0\5.3\mingw482_32\mkspecs\modules\qt_lib_xml_private.pri ..\..\..\..\Qt\Qt5.3.0\5.3\mingw482_32\mkspecs\modules\qt_lib_xmlpatterns.pri ..\..\..\..\Qt\Qt5.3.0\5.3\mingw482_32\mkspecs\modules\qt_lib_xmlpatterns_private.pri ..\..\..\..\Qt\Qt5.3.0\5.3\mingw482_32\mkspecs\features\qt_functions.prf ..\..\..\..\Qt\Qt5.3.0\5.3\mingw482_32\mkspecs\features\qt_config.prf ..\..\..\..\Qt\Qt5.3.0\5.3\mingw482_32\mkspecs\features\win32\qt_config.prf ..\..\..\..\Qt\Qt5.3.0\5.3\mingw482_32\mkspecs\win32-g++\qmake.conf ..\..\..\..\Qt\Qt5.3.0\5.3\mingw482_32\mkspecs\features\spec_post.prf ..\..\..\..\Qt\Qt5.3.0\5.3\mingw482_32\mkspecs\features\exclusive_builds.prf ..\..\..\..\Qt\Qt5.3.0\5.3\mingw482_32\mkspecs\features\default_pre.prf ..\..\..\..\Qt\Qt5.3.0\5.3\mingw482_32\mkspecs\features\win32\default_pre.prf ..\..\..\..\Qt\Qt5.3.0\5.3\mingw482_32\mkspecs\features\resolve_config.prf ..\..\..\..\Qt\Qt5.3.0\5.3\mingw482_32\mkspecs\features\exclusive_builds_post.prf ..\..\..\..\Qt\Qt5.3.0\5.3\mingw482_32\mkspecs\features\default_post.prf ..\..\..\..\Qt\Qt5.3.0\5.3\mingw482_32\mkspecs\features\build_pass.prf ..\..\..\..\Qt\Qt5.3.0\5.3\mingw482_32\mkspecs\features\win32\rtti.prf ..\..\..\..\Qt\Qt5.3.0\5.3\mingw482_32\mkspecs\features\precompile_header.prf ..\..\..\..\Qt\Qt5.3.0\5.3\mingw482_32\mkspecs\features\warn_on.prf ..\..\..\..\Qt\Qt5.3.0\5.3\mingw482_32\mkspecs\features\qt.prf ..\..\..\..\Qt\Qt5.3.0\5.3\mingw482_32\mkspecs\features\resources.prf ..\..\..\..\Qt\Qt5.3.0\5.3\mingw482_32\mkspecs\features\moc.prf ..\..\..\..\Qt\Qt5.3.0\5.3\mingw482_32\mkspecs\features\win32\opengl.prf ..\..\..\..\Qt\Qt5.3.0\5.3\mingw482_32\mkspecs\features\uic.prf ..\..\..\..\Qt\Qt5.3.0\5.3\mingw482_32\mkspecs\features\win32\windows.prf ..\..\..\..\Qt\Qt5.3.0\5.3\mingw482_32\mkspecs\features\testcase_targets.prf ..\..\..\..\Qt\Qt5.3.0\5.3\mingw482_32\mkspecs\features\exceptions.prf ..\..\..\..\Qt\Qt5.3.0\5.3\mingw482_32\mkspecs\features\yacc.prf ..\..\..\..\Qt\Qt5.3.0\5.3\mingw482_32\mkspecs\features\lex.prf ..\Engine\Engine.pro C:/Qt/Qt5.3.0/5.3/mingw482_32/lib/Qt5OpenGL.prl C:/Qt/Qt5.3.0/5.3/mingw482_32/lib/Qt5Widgets.prl C:/Qt/Qt5.3.0/5.3/mingw482_32/lib/Qt5Gui.prl C:/Qt/Qt5.3.0/5.3/mingw482_32/lib/Qt5Core.prl  NO_PCH_SOURCES RESOURCES HEADERS SOURCES OBJECTIVE_SOURCES FORMS YACCSOURCES YACCSOURCES LEXSOURCES 
 
 clean: compiler_clean 
-	-$(DEL_FILE) release\main.o release\object.o release\debugwindow.o release\engine.o release\event.o release\eventlistener.o release\eventtransmitter.o release\debugger.o release\window.o release\renderer.o release\model.o release\mesh.o release\material.o release\loader.o release\loader_obj.o release\shader.o release\camera.o release\modellibrary.o release\eventdebugger.o release\streamToDisk.o release\streamer.o release\threadaccountant.o release\planet.o release\planetlod.o release\planetgenerator.o release\eventstreamer.o release\keyboard.o release\mouse.o release\light.o release\eventwindow.o release\frustum.o release\test.o release\objectworld.o release\octtree.o release\modelloader.o release\eventmodel.o release\compositeobject.o release\positation.o release\eventcompositeobject.o release\customgraph.o release\octtreefast.o release\referencecounter.o release\loader_assimp.o release\texturemap.o release\texturemapcube.o release\moc_debugwindow.o release\moc_engine.o release\moc_streamToDisk.o release\moc_streamer.o release\moc_customgraph.o
+	-$(DEL_FILE) release\main.o release\object.o release\debugwindow.o release\engine.o release\event.o release\eventlistener.o release\eventtransmitter.o release\debugger.o release\window.o release\renderer.o release\model.o release\mesh.o release\material.o release\loader.o release\loader_obj.o release\shader.o release\camera.o release\modellibrary.o release\eventdebugger.o release\streamToDisk.o release\streamer.o release\threadaccountant.o release\planet.o release\planetlod.o release\planetgenerator.o release\eventstreamer.o release\keyboard.o release\mouse.o release\light.o release\eventwindow.o release\frustum.o release\test.o release\objectworld.o release\octtree.o release\modelloader.o release\eventmodel.o release\compositeobject.o release\positation.o release\eventcompositeobject.o release\customgraph.o release\octtreefast.o release\referencecounter.o release\loader_assimp.o release\texturemap.o release\texturemapcube.o release\component.o release\entity.o release\entitymanager.o release\moc_debugwindow.o release\moc_engine.o release\moc_streamToDisk.o release\moc_streamer.o release\moc_customgraph.o
 
 distclean: clean 
 	-$(DEL_FILE) $(DESTDIR_TARGET)
@@ -2655,6 +2661,7 @@ release/renderer.o: ../Engine/Graphics/Renderer/renderer.cpp ../Engine/Graphics/
 		../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/QtGui/QImage \
 		../Engine/Graphics/Model/Components/texturemap.h \
 		../Engine/Graphics/Model/Components/mesh.h \
+		../Engine/Graphics/Model/Components/texturemapcube.h \
 		../Engine/Graphics/Model/light.h \
 		../Engine/Object/positation.h \
 		../Engine/Math/include/Intersections/intersections.h \
@@ -6054,6 +6061,138 @@ release/texturemapcube.o: ../Engine/Graphics/Model/Components/texturemapcube.cpp
 		../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/QtGui/qpaintdevice.h \
 		../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/QtGui/qrgb.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o release\texturemapcube.o ..\Engine\Graphics\Model\Components\texturemapcube.cpp
+
+release/component.o: ../Engine/Object/component.cpp ../Engine/Object/component.h \
+		../Engine/Object/object.h \
+		../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/QtCore/QString \
+		../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/QtCore/qstring.h \
+		../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/QtCore/qchar.h \
+		../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/QtCore/qglobal.h \
+		../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/QtCore/qconfig.h \
+		../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/QtCore/qfeatures.h \
+		../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/QtCore/qsystemdetection.h \
+		../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/QtCore/qprocessordetection.h \
+		../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/QtCore/qcompilerdetection.h \
+		../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/QtCore/qtypeinfo.h \
+		../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/QtCore/qtypetraits.h \
+		../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/QtCore/qsysinfo.h \
+		../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/QtCore/qlogging.h \
+		../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/QtCore/qflags.h \
+		../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/QtCore/qatomic.h \
+		../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/QtCore/qbasicatomic.h \
+		../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/QtCore/qatomic_bootstrap.h \
+		../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/QtCore/qgenericatomic.h \
+		../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/QtCore/qatomic_msvc.h \
+		../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/QtCore/qatomic_armv7.h \
+		../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/QtCore/qatomic_armv6.h \
+		../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/QtCore/qatomic_armv5.h \
+		../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/QtCore/qatomic_ia64.h \
+		../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/QtCore/qatomic_mips.h \
+		../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/QtCore/qatomic_x86.h \
+		../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/QtCore/qatomic_cxx11.h \
+		../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/QtCore/qatomic_gcc.h \
+		../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/QtCore/qatomic_unix.h \
+		../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/QtCore/qglobalstatic.h \
+		../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/QtCore/qmutex.h \
+		../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/QtCore/qnumeric.h \
+		../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/QtCore/qbytearray.h \
+		../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/QtCore/qrefcount.h \
+		../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/QtCore/qnamespace.h \
+		../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/QtCore/qarraydata.h \
+		../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/QtCore/qstringbuilder.h \
+		../Engine/Math/include/vector \
+		../Engine/Object/entity.h \
+		../Engine/Object/entitymanager.h \
+		../Engine/Object/CompositionHelper.h
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o release\component.o ..\Engine\Object\component.cpp
+
+release/entity.o: ../Engine/Object/entity.cpp ../Engine/Object/entity.h \
+		../Engine/Object/object.h \
+		../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/QtCore/QString \
+		../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/QtCore/qstring.h \
+		../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/QtCore/qchar.h \
+		../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/QtCore/qglobal.h \
+		../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/QtCore/qconfig.h \
+		../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/QtCore/qfeatures.h \
+		../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/QtCore/qsystemdetection.h \
+		../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/QtCore/qprocessordetection.h \
+		../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/QtCore/qcompilerdetection.h \
+		../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/QtCore/qtypeinfo.h \
+		../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/QtCore/qtypetraits.h \
+		../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/QtCore/qsysinfo.h \
+		../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/QtCore/qlogging.h \
+		../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/QtCore/qflags.h \
+		../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/QtCore/qatomic.h \
+		../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/QtCore/qbasicatomic.h \
+		../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/QtCore/qatomic_bootstrap.h \
+		../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/QtCore/qgenericatomic.h \
+		../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/QtCore/qatomic_msvc.h \
+		../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/QtCore/qatomic_armv7.h \
+		../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/QtCore/qatomic_armv6.h \
+		../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/QtCore/qatomic_armv5.h \
+		../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/QtCore/qatomic_ia64.h \
+		../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/QtCore/qatomic_mips.h \
+		../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/QtCore/qatomic_x86.h \
+		../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/QtCore/qatomic_cxx11.h \
+		../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/QtCore/qatomic_gcc.h \
+		../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/QtCore/qatomic_unix.h \
+		../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/QtCore/qglobalstatic.h \
+		../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/QtCore/qmutex.h \
+		../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/QtCore/qnumeric.h \
+		../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/QtCore/qbytearray.h \
+		../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/QtCore/qrefcount.h \
+		../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/QtCore/qnamespace.h \
+		../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/QtCore/qarraydata.h \
+		../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/QtCore/qstringbuilder.h \
+		../Engine/Math/include/vector \
+		../Engine/Object/component.h \
+		../Engine/Object/CompositionHelper.h \
+		../Engine/Object/entitymanager.h
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o release\entity.o ..\Engine\Object\entity.cpp
+
+release/entitymanager.o: ../Engine/Object/entitymanager.cpp ../Engine/Object/entitymanager.h \
+		../Engine/Object/object.h \
+		../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/QtCore/QString \
+		../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/QtCore/qstring.h \
+		../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/QtCore/qchar.h \
+		../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/QtCore/qglobal.h \
+		../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/QtCore/qconfig.h \
+		../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/QtCore/qfeatures.h \
+		../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/QtCore/qsystemdetection.h \
+		../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/QtCore/qprocessordetection.h \
+		../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/QtCore/qcompilerdetection.h \
+		../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/QtCore/qtypeinfo.h \
+		../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/QtCore/qtypetraits.h \
+		../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/QtCore/qsysinfo.h \
+		../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/QtCore/qlogging.h \
+		../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/QtCore/qflags.h \
+		../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/QtCore/qatomic.h \
+		../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/QtCore/qbasicatomic.h \
+		../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/QtCore/qatomic_bootstrap.h \
+		../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/QtCore/qgenericatomic.h \
+		../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/QtCore/qatomic_msvc.h \
+		../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/QtCore/qatomic_armv7.h \
+		../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/QtCore/qatomic_armv6.h \
+		../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/QtCore/qatomic_armv5.h \
+		../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/QtCore/qatomic_ia64.h \
+		../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/QtCore/qatomic_mips.h \
+		../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/QtCore/qatomic_x86.h \
+		../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/QtCore/qatomic_cxx11.h \
+		../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/QtCore/qatomic_gcc.h \
+		../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/QtCore/qatomic_unix.h \
+		../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/QtCore/qglobalstatic.h \
+		../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/QtCore/qmutex.h \
+		../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/QtCore/qnumeric.h \
+		../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/QtCore/qbytearray.h \
+		../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/QtCore/qrefcount.h \
+		../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/QtCore/qnamespace.h \
+		../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/QtCore/qarraydata.h \
+		../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/QtCore/qstringbuilder.h \
+		../Engine/Math/include/vector \
+		../Engine/Object/entity.h \
+		../Engine/Object/component.h \
+		../Engine/Object/CompositionHelper.h
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o release\entitymanager.o ..\Engine\Object\entitymanager.cpp
 
 release/moc_debugwindow.o: release/moc_debugwindow.cpp 
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o release\moc_debugwindow.o release\moc_debugwindow.cpp

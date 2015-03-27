@@ -44,6 +44,9 @@ INPUT(
 ./release\loader_assimp.o
 ./release\texturemap.o
 ./release\texturemapcube.o
+./release\component.o
+./release\entity.o
+./release\entitymanager.o
 ./release\moc_debugwindow.o
 ./release\moc_engine.o
 ./release\moc_streamToDisk.o

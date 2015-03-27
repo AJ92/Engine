@@ -13,6 +13,9 @@ greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 TARGET = Engine
 TEMPLATE = app
 
+#----------C++11------------
+QMAKE_CXXFLAGS += -std=c++0x
+
 INCLUDEPATH += Math
 
 SOURCES += main.cpp\
@@ -60,7 +63,10 @@ SOURCES += main.cpp\
     Object/SmartPointer/referencecounter.cpp \
     Graphics/Model/Parser/Format_assimp/loader_assimp.cpp \
     Graphics/Model/Components/texturemap.cpp \
-    Graphics/Model/Components/texturemapcube.cpp
+    Graphics/Model/Components/texturemapcube.cpp \
+    Object/component.cpp \
+    Object/entity.cpp \
+    Object/entitymanager.cpp
 
 
 
@@ -112,7 +118,11 @@ HEADERS  += \
     Object/SmartPointer/smartpointer.h \
     Graphics/Model/Parser/Format_assimp/loader_assimp.h \
     Graphics/Model/Components/texturemap.h \
-    Graphics/Model/Components/texturemapcube.h
+    Graphics/Model/Components/texturemapcube.h \
+    Object/component.h \
+    Object/entity.h \
+    Object/entitymanager.h \
+    Object/CompositionHelper.h
 
 
 

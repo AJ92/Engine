@@ -2,12 +2,10 @@
 #define MODEL_H
 
 #include "Object/object.h"
-
 #include "Event/eventtransmitter.h"
-
 #include <QList>
-
 #include "Object/SmartPointer/smartpointer.h"
+#include "Object/component.h"
 
 
 class Mesh;
@@ -16,7 +14,10 @@ class Event;
 
 class CompositeObject;
 
-class Model : virtual public EventTransmitter
+//we are not reimplementing the update function of Component,
+//cause the model usually does not get updated every update cycle...
+
+class Model : virtual public Component, virtual public EventTransmitter
 {
 public:
     //create a copy from mdl...
@@ -64,6 +65,7 @@ private:
     //spherical bounding sphere
     double size;
 
+//TODO: REMOVE
     //a pointer to its compositeObject if it has one..
     //used by the renderer to get to the location data...
     SP<CompositeObject> parent_co;

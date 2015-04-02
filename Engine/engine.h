@@ -49,8 +49,12 @@
 #include "Object/positation.h"
 
 
+
+
 class Event;
 class Positation;
+class Entity;
+class EntityManager;
 
 namespace Quark
 {
@@ -84,7 +88,8 @@ namespace Quark
         //RENDER
 
         //callbacks
-        void render();
+        //called to update the timer and stuff...
+        void update();
         void error(int error, const char* description);
 
         //some functions
@@ -97,6 +102,13 @@ namespace Quark
         SP<CompositeObject> loadLightObject(QString name);
         SP<CompositeObject> loadModelObject(QString name, QString path);
         SP<CompositeObject> loadModelObject(QString name, QString path, SP<Positation> posi);
+
+
+        Entity & loadLightObjectE(QString name);
+        Entity & loadModelObjectE(QString name, QString path);
+        Entity & loadModelObjectE(QString name, QString path, SP<Positation> posi);
+
+
 
         void setCamera(Camera * cam);
 
@@ -126,10 +138,8 @@ namespace Quark
     protected:
         //renderer
         Renderer *r;
-
         //keyboard
         KeyBoard *k;
-
         //Mouse
         Mouse *m;
 
@@ -140,7 +150,7 @@ namespace Quark
         //LightLibrary * light_library;
 
 
-
+        EntityManager * entityManager;
 
         ModelLoader * model_loader;
         //holds all objects ... soooooon...
@@ -156,10 +166,13 @@ namespace Quark
 
         //timesteps
         double timestep;
+        double framestep;
         qint64 frameTime;
         qint64 time;
         qint64 deltaTime;
-        qint64 accumulator;
+        double accumulator;
+        double frameSlice;
+
 
         QElapsedTimer elapseTimer;
 
@@ -182,7 +195,11 @@ namespace Quark
 
 
         //called during the main loop
-        virtual void eventCall();
+        virtual void eventCall(double fs);
+
+
+        //renders a frame
+        void render();
 
 
     public slots:

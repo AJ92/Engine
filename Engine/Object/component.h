@@ -2,7 +2,7 @@
 #define COMPONENT_H
 
 #include "Object/object.h"
-#include "Object/entity.h"
+//#include "Object/entity.h"
 #include "Object/CompositionHelper.h"
 
 class Entity;

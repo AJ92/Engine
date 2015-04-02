@@ -5,7 +5,9 @@
 #include "Graphics/Model/model.h"
 #include "mathematics.h"
 
-class Light : public Object
+#include "Object/component.h"
+
+class Light : public Component//public Object
 {
 public:
     //create a copy from mdl...

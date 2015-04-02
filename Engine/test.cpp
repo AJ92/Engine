@@ -47,47 +47,17 @@ Test::Test() :
     mPosX = 0;
     mPosY = 0;
 
-    mSpeedX = 0.0;
-    mSpeedY = 0.0;
 }
 
 
-void Test::mouseFunction(){
+void Test::mouseFunction(double fs){
     double temp_x = m->posX();
     double temp_y = m->posY();
 
 
-    double min_speed = 0.2;
-    double max_speed = 1.5;
-
-
     if(m->isPressed(0)){
-
-        if(abs(mPosX - temp_x)>0.0 || abs(mPosY - temp_y)>0.0){
-            if(mSpeedX < max_speed){
-                mSpeedX += 0.1;
-            }
-            if(mSpeedY < max_speed){
-                mSpeedY += 0.1;
-            }
-        }
-
-        mSpeedX -= 0.09;
-        if(mSpeedX < min_speed){
-            mSpeedX = min_speed;
-        }
-        mSpeedY -= 0.09;
-        if(mSpeedY < min_speed){
-            mSpeedY = min_speed;
-        }
-
-
-        getCamera()->add_rotation_local((mPosX - temp_x)/4.0 *getTimeStep()*mSpeedX,0.0,1.0,0.0);
-        getCamera()->add_rotation_local((mPosY - temp_y)/4.0 *getTimeStep()*mSpeedY,1.0,0.0,0.0);
-    }
-    else{
-        mSpeedX = min_speed;
-        mSpeedY = min_speed;
+        getCamera()->add_rotation_local((mPosX - temp_x)*0.1*fs ,0.0,1.0,0.0);
+        getCamera()->add_rotation_local((mPosY - temp_y)*0.1*fs ,1.0,0.0,0.0);
     }
 
     mPosX = temp_x;
@@ -95,7 +65,7 @@ void Test::mouseFunction(){
 }
 
 
-void Test::keyFunction(){
+void Test::keyFunction(double fs){
     //ESC
     if(k->isPressed(1)){
         exit(EXIT_SUCCESS);
@@ -233,13 +203,21 @@ void Test::keyFunction(){
             coTest->getPositation()->set_position((double)((rand() & 2000)-1000),
                                                 (double)((rand() & 2000)-1000),
                                                 (double)((rand() & 2000)-1000));
-            coTest->getPositation()->set_scale(31.12f,31.12f,31.12f);
+            coTest->getPositation()->set_scale(61.12f,61.12f,61.12f);
 
 
             SP<Light> l= coTest->getLight();
+
             double red = ((double)(rand() & 200))* 0.011;
             double green = ((double)(rand() & 200))* 0.011;
             double blue = ((double)(rand() & 200))* 0.011;
+
+
+            /*
+            double red = 0.5;
+            double green = 0.5;
+            double blue = 0.5;
+            */
 
             l->setDiffuseColor(red,
                                green,
@@ -247,6 +225,8 @@ void Test::keyFunction(){
             l->setSpecularColor(red,
                                 green,
                                 blue);
+
+            lights.append(coTest);
         }
     }
 
@@ -355,7 +335,7 @@ void Test::keyFunction(){
 
     //Q W E A S D
 
-    double accel = getTimeStep() * speed_up;
+    double accel =  speed_up * fs;
 
 
     //W
@@ -413,23 +393,24 @@ void Test::keyFunction(){
                                   cam_pos.z() - cam_dir[2] * accel);
     }
 
+    //X
     if(k->isPressed(45)){
         window->setWindowSize(1920,1080);
     }
 }
 
-void Test::eventCall(){
-    keyFunction();
-    mouseFunction();
-    /*
+void Test::eventCall(double fs){
+    keyFunction(fs);
+    mouseFunction(fs);
+
     for(int i = 0; i < lights.size(); i++){
-        Model *m = lights[i]->getModel();
-        m->set_position(m->getPosition().x()+sin(lighttime)*5.0,
-                        m->getPosition().y()+cos(lighttime)*5.0,
-                        m->getPosition().z());
+        lights[i]->getPositation()->set_position(
+                    lights[i]->getPositation()->getPosition().x()+sin(lighttime)*1.0,
+                    lights[i]->getPositation()->getPosition().y()+cos(lighttime)*1.0,
+                    lights[i]->getPositation()->getPosition().z());
     }
 
-    lighttime += 0.022 * getTimeStep();
-    */
+    lighttime += 0.005 * fs;
+
 
 }

@@ -209,6 +209,14 @@ void Renderer::render_v2(){
 
                         texBindsPerFrameCount += 1;
 
+                        //tex
+                        glActiveTexture (GL_TEXTURE0+secondTextureIndex);
+                        SP<TextureMap> bump = material_mesh_list[index]->getTextureMap(Material::Bump);
+                        glBindTexture(GL_TEXTURE_2D, bump->getGLTextureMap());
+                        glUniform1i(glGetUniformLocation(DR_FirstPassProgramIdId, "sampler2"), secondTextureIndex);
+
+                        texBindsPerFrameCount += 1;
+
 
                         ///////////////////////////////////////////////////////////////////////////////////
                         ///
@@ -239,6 +247,14 @@ void Renderer::render_v2(){
                             glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, 0, 0);
                             glEnableVertexAttribArray(2);
 
+                            glBindBuffer(GL_ARRAY_BUFFER, mesh->get_tangent_vbo());
+                            glVertexAttribPointer(3, 3, GL_FLOAT, GL_FALSE, 0, 0);
+                            glEnableVertexAttribArray(3);
+
+                            glBindBuffer(GL_ARRAY_BUFFER, mesh->get_bitangent_vbo());
+                            glVertexAttribPointer(4, 3, GL_FLOAT, GL_FALSE, 0, 0);
+                            glEnableVertexAttribArray(4);
+
                             //now lets draw for every model it's meshs
 
                             //draw
@@ -257,6 +273,7 @@ void Renderer::render_v2(){
                                 m_m = posi->get_model_matrix();
                                 vm_m = v_m * m_m;
                                 pvm_m = p_m * v_m * m_m;
+
 
 
                                 // don't need to check every mesh now if it is in the frustum yay....
@@ -278,6 +295,7 @@ void Renderer::render_v2(){
                                 glUniformMatrix4fv(v_mat_loc_firstpass, 1, GL_FALSE, v_mat);
                                 glUniformMatrix4fv(m_mat_loc_firstpass, 1, GL_FALSE, m_mat);
                                 glUniformMatrix4fv(vm_mat_loc_firstpass, 1, GL_FALSE, vm_mat);
+
 
 
 
@@ -320,6 +338,14 @@ void Renderer::render_v2(){
                         SP<TextureMap> texmap = mesh->get_material()->getTextureMap(Material::Diffuse);
                         glBindTexture(GL_TEXTURE_2D, texmap->getGLTextureMap());
                         glUniform1i(glGetUniformLocation(DR_FirstPassProgramIdId, "sampler1"), firstTextureIndex);
+
+                        texBindsPerFrameCount += 1;
+
+                        //tex
+                        glActiveTexture (GL_TEXTURE0+secondTextureIndex);
+                        SP<TextureMap> bump = mesh->get_material()->getTextureMap(Material::Bump);
+                        glBindTexture(GL_TEXTURE_2D, bump->getGLTextureMap());
+                        glUniform1i(glGetUniformLocation(DR_FirstPassProgramIdId, "sampler2"), secondTextureIndex);
 
                         texBindsPerFrameCount += 1;
 
@@ -396,6 +422,9 @@ void Renderer::render_v2(){
 
 
             glActiveTexture(GL_TEXTURE0);
+            glBindTexture(GL_TEXTURE_2D, 0);
+
+            glActiveTexture(GL_TEXTURE1);
             glBindTexture(GL_TEXTURE_2D, 0);
 
 
@@ -597,9 +626,9 @@ void Renderer::render_v2(){
         glUniform2f (win_size_loc_ambientpass, win->getWindowWidth(), win->getWindowHeight());
 
         glUniform3f (color_loc_ambientpass,
-                     0.210,
-                     0.110,
-                     0.208); // ambient color
+                     0.0040,
+                     0.0040,
+                     0.0038); // ambient color
 
         //glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
         glDrawArrays(GL_TRIANGLES, 0, fsq_triangle_count*3);
@@ -639,14 +668,15 @@ void Renderer::render_v2(){
         glUniform2f (win_size_loc_directionalambientpass, win->getWindowWidth(), win->getWindowHeight());
 
         glUniform3f (dir_loc_directionalambientpass,
-                      0.7,
-                      0.2,
-                      0.9); // ambient light direction
+                      0.0,
+                      1.0,
+                      0.0); // ambient light direction
 
         glUniform3f (color_loc_directionalambientpass,
-                     0.630,
-                     0.610,
-                     0.950); // ambient color
+                     0.5,//0.330,
+                     0.5,//0.310,
+                     0.5//0.350
+                     ); // ambient color
 
 
         for (int f = 0; f < 4; f++) {
@@ -843,7 +873,7 @@ void Renderer::render_v2(){
         //  POST PROCESSING noise second
         //      use fbo_2_tex_c as input   fbo_3 as output
 
-        glDisable (GL_BLEND);
+        //glDisable (GL_BLEND);
 
         //bind framebuffer so we can draw to the edge texture....
         //glBindFramebuffer(GL_FRAMEBUFFER, fb);
@@ -859,20 +889,20 @@ void Renderer::render_v2(){
         glActiveTexture (GL_TEXTURE1);
         glBindTexture (GL_TEXTURE_2D, fbo_1_tex_p);
 
-        glBindVertexArray(fsq_vertex_array_object);
+        //glBindVertexArray(fsq_vertex_array_object);
 
         //VBOs
-        glBindBuffer(GL_ARRAY_BUFFER, fsq_vertex_vbo);
-        glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, 0);
-        glEnableVertexAttribArray(0);
+        //glBindBuffer(GL_ARRAY_BUFFER, fsq_vertex_vbo);
+        //glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, 0);
+        //glEnableVertexAttribArray(0);
 
 
-        glUseProgram (DR_EdgeDetectionPassProgramIdId);
+        //glUseProgram (DR_EdgeDetectionPassProgramIdId);
 
-        glPolygonMode(GL_FRONT_AND_BACK, GL_POLYGON);
+        //glPolygonMode(GL_FRONT_AND_BACK, GL_POLYGON);
 
-        glUniform2f (win_size_loc_edgedetectionpass, win->getWindowWidth(), win->getWindowHeight());
-        glUniform1i (frame_switch_loc_edgedetectionpass, frame_switch);
+        //glUniform2f (win_size_loc_edgedetectionpass, win->getWindowWidth(), win->getWindowHeight());
+        //glUniform1i (frame_switch_loc_edgedetectionpass, frame_switch);
         glUniform1i (function_loc_edgedetectionpass, 1);
 
         glDrawArrays(GL_TRIANGLES, 0, fsq_triangle_count*3);
@@ -905,20 +935,20 @@ void Renderer::render_v2(){
         glActiveTexture (GL_TEXTURE1);
         glBindTexture (GL_TEXTURE_2D, fbo_1_tex_p);
 
-        glBindVertexArray(fsq_vertex_array_object);
+        //glBindVertexArray(fsq_vertex_array_object);
 
         //VBOs
-        glBindBuffer(GL_ARRAY_BUFFER, fsq_vertex_vbo);
-        glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, 0);
-        glEnableVertexAttribArray(0);
+        //glBindBuffer(GL_ARRAY_BUFFER, fsq_vertex_vbo);
+        //glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, 0);
+        //glEnableVertexAttribArray(0);
 
 
-        glUseProgram (DR_EdgeDetectionPassProgramIdId);
+        //glUseProgram (DR_EdgeDetectionPassProgramIdId);
 
-        glPolygonMode(GL_FRONT_AND_BACK, GL_POLYGON);
+        //glPolygonMode(GL_FRONT_AND_BACK, GL_POLYGON);
 
-        glUniform2f (win_size_loc_edgedetectionpass, win->getWindowWidth(), win->getWindowHeight());
-        glUniform1i (frame_switch_loc_edgedetectionpass, frame_switch);
+        //glUniform2f (win_size_loc_edgedetectionpass, win->getWindowWidth(), win->getWindowHeight());
+        //glUniform1i (frame_switch_loc_edgedetectionpass, frame_switch);
         glUniform1i (function_loc_edgedetectionpass, 2);
 
         glDrawArrays(GL_TRIANGLES, 0, fsq_triangle_count*3);
@@ -4021,7 +4051,7 @@ bool Renderer::createBuffers(){
     glTexImage2D (
       GL_TEXTURE_2D,
       0,
-      GL_RGB32F,
+      GL_RGB16F,
       600,
       400,
       0,

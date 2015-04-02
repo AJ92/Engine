@@ -10,10 +10,11 @@
 #include <memory>
 
 
-class Component;
-class EntityManager;
 
-class Entity : public Object
+class EntityManager;
+//class Component;
+
+class Entity : public Component
 {
 
 public:

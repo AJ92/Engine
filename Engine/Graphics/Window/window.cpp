@@ -115,6 +115,8 @@ void Window::initialize(){
     glfwSetWindowFocusCallback(window,&focus_callback);
     glfwMakeContextCurrent (window);
 
+    //glfwSwapInterval(-1);
+
     created = true;
 
 

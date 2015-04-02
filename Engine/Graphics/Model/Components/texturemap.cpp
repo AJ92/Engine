@@ -31,13 +31,27 @@ bool TextureMap::isLoaded(){
 
 void TextureMap::loadData(){
     //load data, GL not involved
-    qDebug("loading texmap data");
+    qDebug("loading texmap data: " + texmap_name.toUtf8());
     if(texmap_path.compare("")!=0){
         if(load_map_rgba(texmap_path, texmap_img)){
             texmap_loaded = true;
         }
     }
 
+}
+
+void TextureMap::loadGLdataGammaCorrected(){
+    glGenTextures(1, &gl_texmap);
+    qDebug("loading texmap for openGL");
+
+    if(texmap_loaded){
+        if(!load_gl_map_gamme_corrected()){
+            loaded = false;
+        }
+    }
+
+    qDebug("loaded texmap for openGL!");
+    loaded = true;
 }
 
 void TextureMap::loadGLdata(){
@@ -55,7 +69,7 @@ void TextureMap::loadGLdata(){
 }
 
 
-bool TextureMap::load_gl_map(){
+bool TextureMap::load_gl_map_gamme_corrected(){
     glBindTexture(GL_TEXTURE_2D, gl_texmap);
     /*
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, image.width(), image.height(), 0,
@@ -67,6 +81,57 @@ bool TextureMap::load_gl_map(){
 
     //SRGB correction
     glTexImage2D(GL_TEXTURE_2D, 0, GL_SRGB8_ALPHA8/*GL_RGBA8*/, width, height, 0,
+                 GL_BGRA, GL_UNSIGNED_BYTE, (GLuint*)texmap_img.bits());
+
+    qDebug("tex loaded...");
+
+
+    //gen mipmaps
+    GLint num_mipmaps = 16;
+
+    glTexStorage2D(GL_TEXTURE_2D, num_mipmaps, GL_RGBA8, width, height);
+    //glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, width, height, GL_BGRA, GL_UNSIGNED_BYTE, (GLuint*)texmap_img.bits());
+    glGenerateMipmap(GL_TEXTURE_2D);  //Generate num_mipmaps number of mipmaps here.
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+
+    //for mipmaps smooth
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+
+    //mipmaps pixelated
+    //glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+    //glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST_MIPMAP_NEAREST);
+
+
+    //smooth
+    //glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    //glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+    //pixelated
+    //glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+    //glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+
+    qDebug("mipmaps generated...");
+
+
+    //delete the textures....
+    //image.~QImage();
+    return true;
+}
+
+bool TextureMap::load_gl_map(){
+    glBindTexture(GL_TEXTURE_2D, gl_texmap);
+    /*
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, image.width(), image.height(), 0,
+                 GL_RGBA, GL_UNSIGNED_BYTE, tex_data);
+    */
+
+    GLint width = texmap_img.width();
+    GLint height = texmap_img.height();
+
+    //SRGB correction
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, width, height, 0,
                  GL_BGRA, GL_UNSIGNED_BYTE, (GLuint*)texmap_img.bits());
 
     qDebug("tex loaded...");

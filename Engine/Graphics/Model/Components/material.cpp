@@ -14,30 +14,34 @@ Material::~Material(){
 
 void Material::loadData(){
     if((loaded_texmaps & Ambient) == Ambient){
+        qDebug("Material: loading Ambient map");
         ambient_textureMap->loadData();
     }
-    else if((loaded_texmaps & Diffuse) == Diffuse){
+    if((loaded_texmaps & Diffuse) == Diffuse){
+        qDebug("Material: loading Diffuse map");
         diffuse_textureMap->loadData();
     }
-    else if((loaded_texmaps & Specular) == Specular){
+    if((loaded_texmaps & Specular) == Specular){
+        qDebug("Material: loading Specular map");
         specular_textureMap->loadData();
     }
-    else if((loaded_texmaps & Bump) == Bump){
+    if((loaded_texmaps & Bump) == Bump){
+        qDebug("Material: loading Bump map");
         bump_textureMap->loadData();
     }
 }
 
 void Material::loadGLdata(){
     if((loaded_texmaps & Ambient) == Ambient){
-        ambient_textureMap->loadGLdata();
+        ambient_textureMap->loadGLdataGammaCorrected();
     }
-    else if((loaded_texmaps & Diffuse) == Diffuse){
-        diffuse_textureMap->loadGLdata();
+    if((loaded_texmaps & Diffuse) == Diffuse){
+        diffuse_textureMap->loadGLdataGammaCorrected();
     }
-    else if((loaded_texmaps & Specular) == Specular){
-        specular_textureMap->loadGLdata();
+    if((loaded_texmaps & Specular) == Specular){
+        specular_textureMap->loadGLdataGammaCorrected();
     }
-    else if((loaded_texmaps & Bump) == Bump){
+    if((loaded_texmaps & Bump) == Bump){
         bump_textureMap->loadGLdata();
     }
     loaded = true;

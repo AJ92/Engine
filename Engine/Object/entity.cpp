@@ -1,7 +1,7 @@
 #include "entity.h"
 
 Entity::Entity(EntityManager& mManager) :
-    Object(),
+    Component(),
     manager(mManager)
 {
 }

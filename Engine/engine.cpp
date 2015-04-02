@@ -1,4 +1,6 @@
 #include "engine.h"
+#include "Object/entity.h"
+#include "Object/entitymanager.h"
 
 /*!
   Main class.
@@ -23,7 +25,7 @@ void error_callback(int error, const char* description);
 
 
 void render_callback(void){
-    ptr_global_engine_instance->render();
+    ptr_global_engine_instance->update();
 }
 
 void error_callback(int error, const char* description){
@@ -59,7 +61,7 @@ Quark::Engine::Engine(QObject *parent) :
     frame_count = 0;
     fps = 0;
 
-    //lighttime = 0;
+
 
     idealThreadCount = 1;
 
@@ -91,6 +93,12 @@ Quark::Engine::Engine(QObject *parent) :
     if(QElapsedTimer::clockType() == QElapsedTimer::PerformanceCounter){
         debugMessage("PerformanceTimer in use");
     }
+
+
+
+    //create a manager for enitities
+    entityManager = new EntityManager();
+
 
 
 
@@ -127,19 +135,24 @@ Quark::Engine::Engine(QObject *parent) :
     //1000 ms / 60 fps = 16.6 ms/second
     //16 makes some high cpu usage
     //17 is just fina actually but only 59 fps
-    t->setInterval(16);
+    t->setInterval(1000/60);
 
     frameTime = 0;
     time = 0;
     //deltatime in ns :  1s / 60 frames = ns per frame
     deltaTime = 1000000000/60;
     accumulator = 0;
-    timestep = 1.0f;
+    frameSlice = 1.0;
+    timestep = 1.0;
+
+    framestep = 1.0;
+
+
 
 
 
     fps_timer = new QTimer(this);
-    fps_timer->setInterval(1000);
+    fps_timer->setInterval(200);
 }
 
 Quark::Engine::~Engine(){
@@ -332,7 +345,7 @@ void Quark::Engine::timer(){
 }
 
 
-void Quark::Engine::render()
+void Quark::Engine::update()
 {
     frame_count++;
 
@@ -344,23 +357,25 @@ void Quark::Engine::render()
 
     //max frame time to avoid spiral of death
     //all values in nanosecs (1 ms = 1 000 000 ns)
-    if(frameTime > 100000000){
-        frameTime = 100000000;
+    if(frameTime > 150000000){
+        frameTime = 150000000;
     }
-    if(frameTime < 10000000){
+    if(frameTime < 5000000){
         frameTime = 10000000;
     }
-    /*
-    accumulator += frameTime;
-    time = 0;
-    while (accumulator >= deltaTime){
-        time += deltaTime;
-        accumulator -= deltaTime;
-        //simulation here...
-    }
-    */
-    timestep = (double)frameTime/(double)deltaTime;
 
+    timestep = (double)frameTime/(double)deltaTime;
+    accumulator += timestep;
+    while (accumulator >= frameSlice){
+        accumulator -= frameSlice;
+        //simulation here...
+        eventCall(framestep);
+    }
+
+
+}
+
+void Quark::Engine::render(){
     if(!glfwWindowShouldClose(window->getGLFWwindow()))
     {
         //set the objectworld
@@ -376,8 +391,8 @@ void Quark::Engine::render()
         glfwTerminate();
         exit(EXIT_SUCCESS);
     }
-
 }
+
 
 void Quark::Engine::error(int error, const char* description){
     debugMessage("GLWF Error (" + QString::number(error) + "): " + QString(description));
@@ -388,14 +403,14 @@ void Quark::Engine::setClearColor(float r, float g, float b, float a){
     glClearColor(r,g,b,a);
 }
 
-void Quark::Engine::eventCall(){
+void Quark::Engine::eventCall(double fs){
 
 }
 
 //SLOTS
 void Quark::Engine::eventLoop(){
+    update();
     render();
-    eventCall();   
 }
 
 //dynamic light
@@ -412,6 +427,28 @@ SP<CompositeObject> Quark::Engine::loadModelObject(QString name, QString path){
 SP<CompositeObject> Quark::Engine::loadModelObject(QString name, QString path, SP<Positation> posi){
     return object_world->loadModelobject(name, path, posi);
 }
+
+
+//new antity manager style loading functions...
+Entity & Quark::Engine::loadLightObjectE(QString name){
+    auto& entity(entityManager->addEntity());
+
+    return entity;
+}
+
+Entity & Quark::Engine::loadModelObjectE(QString name, QString path){
+    auto& entity(entityManager->addEntity());
+
+    return entity;
+}
+
+Entity & Quark::Engine::loadModelObjectE(QString name, QString path, SP<Positation> posi){
+    auto& entity(entityManager->addEntity());
+
+    return entity;
+}
+
+
 
 void Quark::Engine::setCamera(Camera * cam){
     this->cam = cam;

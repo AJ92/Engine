@@ -46,7 +46,6 @@ SP<T>::~SP(){
     }
     if(refC_rel == 0)
     {
-
         delete pData;
         delete refCount;
     }

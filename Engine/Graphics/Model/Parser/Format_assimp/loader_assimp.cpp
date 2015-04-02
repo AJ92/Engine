@@ -5,6 +5,8 @@
 #include "Graphics/Model/Components/mesh.h"
 #include "Graphics/Model/Components/texturemap.h"
 
+#include <QApplication>
+
 Loader_assimp::Loader_assimp()
 {
 }
@@ -54,30 +56,74 @@ bool Loader_assimp::load_model_data(Model& mdl, QString path){
     //build the materials
     for(unsigned int i = 0; i < scene->mNumMaterials; i++)
     {
+        qDebug("Material");
         aiMaterial* mtl = scene->mMaterials[i];
         int texIndex = 0;
-        aiString tex_map_path;
-        aiReturn texFound = mtl->GetTexture(aiTextureType_DIFFUSE, texIndex, &tex_map_path);
-        while(texFound == AI_SUCCESS){
-            qDebug(QString(tex_map_path.C_Str()).toUtf8());
+
+
+
+        //TODO: find a better texname otherwise it might get "instanced" even if not desired
+        SP<Material> material_done = new Material(path + "_[" + QString::number(i) + "]");
+
+
+        //new texture fetching procedure...
+        if(mtl->GetTextureCount(aiTextureType_DIFFUSE) > 0){
+            aiString tex_map_diffuse_path;
+            aiReturn texFound = mtl->GetTexture(aiTextureType_DIFFUSE, texIndex, &tex_map_diffuse_path);
+            if(texFound == AI_SUCCESS){
+                qDebug(QString(tex_map_diffuse_path.C_Str()).toUtf8());
+
+                //we found a diffuse tex lets use the first one for now...
+                //creating a material
+
+                QString tex_name_with_path(tex_map_diffuse_path.C_Str());
+                QString tex_name = tex_name_with_path.split("\\",QString::SkipEmptyParts).last().toUtf8();
+
+
+                SP<TextureMap> diffuse_tex_map = new TextureMap(tex_path + tex_name,tex_path + tex_name);
+                material_done->addTextureMap(diffuse_tex_map, Material::Diffuse);
+            }
+
+
+            //go ahead and add more texture maps if available...
             texFound = AI_FAILURE;
+            aiString tex_map_bump_path;
+            texFound = mtl->GetTexture(aiTextureType_HEIGHT, texIndex, &tex_map_bump_path);
+            if(texFound == AI_SUCCESS){
+                qDebug(QString(tex_map_bump_path.C_Str()).toUtf8());
 
-            //we found a diffuse tex lets use the first one for now...
-            //creating a material
+                //we found a bump tex lets use the first one for now...
+                //creating a material
 
-            QString tex_name_with_path(tex_map_path.C_Str());
-            QString tex_name = tex_name_with_path.split("\\",QString::SkipEmptyParts).last().toUtf8();
+                QString tex_name_with_path(tex_map_bump_path.C_Str());
+                QString tex_name = tex_name_with_path.split("\\",QString::SkipEmptyParts).last().toUtf8();
 
-            //TODO: find a better texname otherwise it might get "instanced" even if not desired
-            SP<Material> material_done = new Material(tex_name);
-            SP<TextureMap> diffuse_tex_map = new TextureMap(tex_path + tex_name,tex_path + tex_name);
-            material_done->addTextureMap(diffuse_tex_map, Material::Diffuse);
-            materials.append(material_done);
+                SP<TextureMap> bump_tex_map = new TextureMap(tex_path + tex_name,tex_path + tex_name);
+                material_done->addTextureMap(bump_tex_map, Material::Bump);
 
-            // more textures?
-            //texIndex++;
-            //texFound = mtl->GetTexture(aiTextureType_DIFFUSE, texIndex, &tex_map_path);
+                qDebug("found height map");
+            }
+            else{
+                //load default heightmap...
+                QString appdir = QApplication::applicationDirPath();
+                SP<TextureMap> bump_tex_map = new TextureMap(appdir + "//empty_normal_map.png", appdir + "//empty_normal_map.png");
+                material_done->addTextureMap(bump_tex_map, Material::Bump);
+            }
+
         }
+        else{
+            //construct a default mtl... we want atleast a diffuse map in our rendering pipeline...
+            QString appdir = QApplication::applicationDirPath();
+            SP<TextureMap> diffuse_tex_map = new TextureMap(appdir + "//empty.png", appdir + "//empty.png");
+            SP<TextureMap> bump_tex_map = new TextureMap(appdir + "//empty_normal_map.png", appdir + "//empty_normal_map.png");
+            material_done->addTextureMap(diffuse_tex_map, Material::Diffuse);
+            material_done->addTextureMap(bump_tex_map, Material::Bump);
+            qDebug("added default map...");
+        }
+
+        materials.append(material_done);
+        qDebug("");
+
     }
 
     //init all materials
@@ -96,7 +142,9 @@ bool Loader_assimp::load_model_data(Model& mdl, QString path){
         //TODO: make sure the meshes are deleting those arrays!
         float * vertexArray     = new float[numFaces*3*3];
         float * normalArray     = new float[numFaces*3*3];
-        float * uvwArray         = new float[numFaces*3*3];
+        float * tangentArray    = new float[numFaces*3*3];
+        float * bitangentArray  = new float[numFaces*3*3];
+        float * uvwArray        = new float[numFaces*3*3];
 
         //bounding stuff...
         float v_min_x = 0.0f;
@@ -128,6 +176,15 @@ bool Loader_assimp::load_model_data(Model& mdl, QString path){
                 memcpy(normalArray,&normal,sizeof(float)*3);
                 normalArray+=3;
 
+                aiVector3D tangent = mesh->mTangents[face.mIndices[k]];
+                memcpy(tangentArray,&tangent,sizeof(float)*3);
+                tangentArray+=3;
+
+                aiVector3D bitangent = mesh->mBitangents[face.mIndices[k]];
+                memcpy(bitangentArray,&bitangent,sizeof(float)*3);
+                bitangentArray+=3;
+
+
                 //we are only copying u and v coord and not w !!!
                 //so w coordinate might be anything....
                 aiVector3D uvw = mesh->mTextureCoords[0][face.mIndices[k]];
@@ -139,9 +196,11 @@ bool Loader_assimp::load_model_data(Model& mdl, QString path){
         }
 
         //set the pointer start back to it's start xD
-        normalArray -= numFaces*3*3;
-        vertexArray -= numFaces*3*3;
-        uvwArray    -= numFaces*3*3;
+        normalArray     -= numFaces*3*3;
+        vertexArray     -= numFaces*3*3;
+        tangentArray    -= numFaces*3*3;
+        bitangentArray  -= numFaces*3*3;
+        uvwArray        -= numFaces*3*3;
 
 
         //create a mesh
@@ -154,25 +213,31 @@ bool Loader_assimp::load_model_data(Model& mdl, QString path){
 
         //get the proper material
 
-        unsigned int mtl_index = mesh->mMaterialIndex - 1;
+        unsigned int mtl_index = mesh->mMaterialIndex;
 
+        qDebug("Total amount of materials for mesh [" + QString::number(i).toUtf8() + "]: " + QString::number(materials.length()).toUtf8());
 
         if(materials.length() > mtl_index){
             //load the right material
-            SP<Mesh> mesh_done = new Mesh("mesh_name" + QString::number(rand() & 2000), numFaces, vertexArray, uvwArray, normalArray, materials[mtl_index]);
+            SP<Mesh> mesh_done = new Mesh(path + QString::number(i), numFaces, vertexArray, uvwArray, normalArray, tangentArray, bitangentArray, materials[mtl_index]);
             mesh_done->setBoundingSpherePos(bounding_sphere_pos);
             mesh_done->setBoundingSphereRadius(bounding_sphere_radius);
             mdl.add_mesh(mesh_done);
         }
         else{
             //construct a default material, that atleast has a diffuse map...
+            QString appdir = QApplication::applicationDirPath();
             SP<Material> material_default = new Material("empty_default_material");
-            SP<TextureMap> diffuse_tex_map = new TextureMap("empty.png","empty.png");
+            SP<TextureMap> diffuse_tex_map = new TextureMap(appdir + "//empty.png", appdir + "//empty.png");
+            SP<TextureMap> bump_tex_map = new TextureMap(appdir + "//empty_normal_map.png", appdir + "//empty_normal_map.png");
             material_default->addTextureMap(diffuse_tex_map, Material::Diffuse);
-            SP<Mesh> mesh_done = new Mesh("mesh_name" + QString::number(rand() & 2000), numFaces, vertexArray, uvwArray, normalArray, material_default);
+            material_default->addTextureMap(bump_tex_map, Material::Bump);
+            SP<Mesh> mesh_done = new Mesh(path + QString::number(i), numFaces, vertexArray, uvwArray, normalArray, tangentArray, bitangentArray, material_default);
             mesh_done->setBoundingSpherePos(bounding_sphere_pos);
             mesh_done->setBoundingSphereRadius(bounding_sphere_radius);
             mdl.add_mesh(mesh_done);
+
+            qDebug("constructed default mat because there is a problem with materials...");
         }
 
         //TODO: change to proper mat

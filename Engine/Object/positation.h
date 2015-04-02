@@ -9,10 +9,12 @@
 
 #include "Intersections/intersections.h"
 
+#include "Object/component.h"
+
 class Event;
 
 
-class Positation : virtual public EventTransmitter
+class Positation : virtual public Component, virtual public EventTransmitter
 {
 public:
     Positation();

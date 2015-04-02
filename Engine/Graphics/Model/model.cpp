@@ -145,7 +145,7 @@ SP<CompositeObject> Model::getParentCompositeObject(){
 
 
 bool Model::equal(const Model &mdl) const{
-    if(this->path.compare(mdl.get_path())==0 && this->id() == mdl.id()){
+    if(this->path.compare(mdl.get_path())==0 && this->Component::id() == mdl.Component::id()){
         return true;
     }
     return false;

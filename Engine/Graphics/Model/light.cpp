@@ -1,7 +1,7 @@
 #include "light.h"
 
-Light::Light(const Light &light) :
-    Object()
+Light::Light(const Light &light)/* :
+    Object() */
 {
     isReady = false;
     diffuse_c = Vector3(1.0,1.0,1.0);
@@ -11,8 +11,8 @@ Light::Light(const Light &light) :
 }
 
 
-Light::Light() :
-    Object()
+Light::Light()/* :
+    Object() */
 {
     diffuse_c = Vector3(1.0,1.0,1.0);
     specular_c = Vector3(0.3,0.4,0.5);

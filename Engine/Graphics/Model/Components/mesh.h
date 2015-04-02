@@ -17,7 +17,9 @@ class Material;
 class Mesh : public Object
 {
 public:
-    Mesh(QString name,int triangle_count,GLfloat vertices[],GLfloat texcoords[],GLfloat normals[],
+    Mesh(QString name, int triangle_count,
+         GLfloat vertices[], GLfloat texcoords[],
+         GLfloat normals[], GLfloat tangents[], GLfloat bitangents[],
          SP<Material> material);
     virtual ~Mesh();
 
@@ -32,9 +34,16 @@ public:
     GLfloat* get_texcoords();
     GLfloat* get_normals();
 
+    GLfloat* get_tangents();
+    GLfloat* get_bitangents();
+
+
     GLuint get_vertex_vbo();
     GLuint get_texcoord_vbo();
     GLuint get_normal_vbo();
+
+    GLuint get_tangent_vbo();
+    GLuint get_bitangent_vbo();
 
     GLuint get_vertex_array_object();
 
@@ -66,10 +75,16 @@ private:
     GLfloat* texcoords;
     GLfloat* normals;
 
+    GLfloat* tangents;
+    GLfloat* bitangents;
+
     //vertex buffer objects (vertices, texcoords and normals)
     GLuint vertex_vbo;
     GLuint texcoord_vbo;
     GLuint normal_vbo;
+
+    GLuint tangent_vbo;
+    GLuint bitangent_vbo;
 
     GLuint vertex_array_object;
 

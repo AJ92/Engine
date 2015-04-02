@@ -6,7 +6,7 @@
 #include <memory>
 #include <array>
 
-#include "Object/component.h"
+//#include "Object/component.h"
 
 class Component;
 

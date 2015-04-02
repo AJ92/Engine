@@ -23,6 +23,7 @@ public:
 
     virtual void loadData();
     virtual void loadGLdata();
+    virtual void loadGLdataGammaCorrected();
 
     GLuint getGLTextureMap();
 
@@ -42,6 +43,8 @@ protected:
 
     //load textures...
     virtual bool load_gl_map();
+    virtual bool load_gl_map_gamme_corrected();
+
     bool load_map_rgba(QString path, QImage &image);
     bool loaded;
 

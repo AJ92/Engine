@@ -2,8 +2,9 @@
 #define ENTITYMANAGER_H
 
 #include "Object/object.h"
-#include "Object/entity.h"
 #include "Object/CompositionHelper.h"
+//#include "Object/entity.h"
+
 
 #include <vector>
 #include <bitset>

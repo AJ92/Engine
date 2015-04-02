@@ -186,6 +186,7 @@ private:
     GLuint v_mat_loc_firstpass;
     GLuint m_mat_loc_firstpass;
     GLuint vm_mat_loc_firstpass;
+    GLuint norm_mat_loc_firstpass;
 
 
 

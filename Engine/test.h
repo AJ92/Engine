@@ -21,19 +21,16 @@ private:
     double x_angle;
     double y_angle;
 
-    QList<Light*> lights;
+    QList<SP<CompositeObject> > lights;
     double lighttime;
 
-    void keyFunction();
-    void mouseFunction();
+    void keyFunction(double fs);
+    void mouseFunction(double fs);
 
     double mPosX;
     double mPosY;
 
-    double mSpeedX;
-    double mSpeedY;
-
-    void eventCall();
+    void eventCall(double fs);
 
     int level_loaded;
     bool lvl_loaded;

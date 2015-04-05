@@ -25,7 +25,8 @@ Test::Test() :
 
     Camera * camera = new Camera();
     camera->setFOV(45.0);
-    camera->setZFAR(15000.0);
+    camera->setZNEAR(1.0);
+    camera->setZFAR(100000000.0);
     camera->set_position(0.0,-1200.0,650.0);
     camera->set_rotation_local(-50.0,1.0,0.0,0.0);
     setCamera(camera);
@@ -121,6 +122,38 @@ void Test::keyFunction(double fs){
     if(k->isPressed(11)){
         r->setPolygonMode(Renderer::PolygonModeStandard | Renderer::PolygonModeOctTreeVertex);
     }
+
+
+    //F1(59) turn off all PP modes
+    if(k->isPressed(59)){
+        r->setPostProcessingMode(Renderer::PostProcessingModeNone);
+    }
+    //F2(60) turn on PostProcessingModeFXAA
+    if(k->isPressed(60)){
+        r->setPostProcessingMode(Renderer::PostProcessingModeFXAA |
+                                 r->getPostProcessingMode());
+    }
+    //F3(61) turn on PostProcessingModeSharpen
+    if(k->isPressed(61)){
+        r->setPostProcessingMode(Renderer::PostProcessingModeSharpen |
+                                 r->getPostProcessingMode());
+    }
+    //F4(62) turn on PostProcessingModeSSAO
+    if(k->isPressed(62)){
+        r->setPostProcessingMode(Renderer::PostProcessingModeSSAO |
+                                 r->getPostProcessingMode());
+    }
+    //F5(63) turn on PostProcessingModeBlurH
+    if(k->isPressed(63)){
+        r->setPostProcessingMode(Renderer::PostProcessingModeBlurH |
+                                 r->getPostProcessingMode());
+    }
+    //F6(64) turn on PostProcessingModeBlurV
+    if(k->isPressed(64)){
+        r->setPostProcessingMode(Renderer::PostProcessingModeBlurV |
+                                 r->getPostProcessingMode());
+    }
+
 
 
     //L
@@ -327,8 +360,13 @@ void Test::keyFunction(double fs){
     */
 
     double speed_up = 2.0;
+    //left shift
     if(k->isPressed(42)){
-        speed_up = 155.0;
+        speed_up = 60.0;
+    }
+    //left ctrl
+    if(k->isPressed(29)){
+        speed_up = 0.02;
     }
 
 

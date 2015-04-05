@@ -54,6 +54,19 @@ public:
         PolygonModeOctTreeWireframe = 0x0040
     };
 
+    enum PostProcessingModes {
+        PostProcessingModeNone      = 0x0001,
+
+        PostProcessingModeFXAA      = 0x0002,
+        PostProcessingModeSharpen   = 0x0004,
+        PostProcessingModeSSAO      = 0x0008,
+        PostProcessingModeGrain     = 0x0010,
+        PostProcessingModeBlurH     = 0x0020,
+        PostProcessingModeBlurV     = 0x0040,
+
+        PostProcessingModeMax       = 0x0080
+    };
+
     Renderer();
     ~Renderer();
 
@@ -77,6 +90,8 @@ public:
     void setWindow(SP<Window> win);
 
     void setPolygonMode(int polygonMode);
+    void setPostProcessingMode(int postProcessingMode);
+    int getPostProcessingMode();
 
     Vector3 touch_to_space(int x,int y);
 
@@ -140,6 +155,7 @@ private:
 
 
     int renderMode;
+    int postProcessingMode;
 
 
     //new DR stuff
@@ -263,6 +279,7 @@ private:
     GLuint fbo_1_tex_p;    //position
     GLuint fbo_1_tex_n;    //normal
     GLuint fbo_1_tex_c;    //color
+    GLuint fbo_1_tex_d;    //depth
 
 
     //renderbuffer

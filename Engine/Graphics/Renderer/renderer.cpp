@@ -29,6 +29,11 @@ Renderer::Renderer() :
     trianglesPerFrameCount = 0;
     texBindsPerFrameCount = 0;
     frame_switch = 1;
+
+    postProcessingMode =
+            PostProcessingModeFXAA | PostProcessingModeSharpen |
+            PostProcessingModeSSAO;
+
 }
 
 void Renderer::initialize(){
@@ -626,9 +631,9 @@ void Renderer::render_v2(){
         glUniform2f (win_size_loc_ambientpass, win->getWindowWidth(), win->getWindowHeight());
 
         glUniform3f (color_loc_ambientpass,
-                     0.0040,
-                     0.0040,
-                     0.0038); // ambient color
+                     0.0240,
+                     0.0240,
+                     0.0238); // ambient color
 
         //glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
         glDrawArrays(GL_TRIANGLES, 0, fsq_triangle_count*3);
@@ -669,13 +674,13 @@ void Renderer::render_v2(){
 
         glUniform3f (dir_loc_directionalambientpass,
                       0.0,
-                      1.0,
-                      0.0); // ambient light direction
+                      0.0,
+                      -1.0); // ambient light direction
 
         glUniform3f (color_loc_directionalambientpass,
                      0.5,//0.330,
-                     0.5,//0.310,
-                     0.5//0.350
+                     0.45,//0.310,
+                     0.4//0.350
                      ); // ambient color
 
 
@@ -816,62 +821,341 @@ void Renderer::render_v2(){
 
 
 
+//////////////////////////////////////////////////////////////////////////////////////////
+//POST PROCESSING EFFECTS and FILTERS
+
+        //used to swap around buffers for post processing stuff...
+        GLuint input_frame = fbo_3_tex_c;
+        GLuint output_frame = fbo_2;
+        GLuint temp_swap;
 
 
+        glDisable (GL_BLEND);
+        glBindVertexArray(fsq_vertex_array_object);
+        //VBOs
+        //glBindBuffer(GL_ARRAY_BUFFER, fsq_vertex_vbo);
+        //glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, 0);
+        //glEnableVertexAttribArray(0);
+        glUseProgram (DR_EdgeDetectionPassProgramIdId);
+        glPolygonMode(GL_FRONT_AND_BACK, GL_POLYGON);
+        glUniform2f (win_size_loc_edgedetectionpass, win->getWindowWidth(), win->getWindowHeight());
+        glUniform1i (frame_switch_loc_edgedetectionpass, frame_switch);
+
+
+        ////////////////////////////////////////////////////////////
+        //  POST PROCESSING SSAO first
+        //      use fbo_3_tex_c as input   fbo_2 as output
+
+        if((postProcessingMode & PostProcessingModeSSAO) == PostProcessingModeSSAO){
+            glBindFramebuffer(GL_FRAMEBUFFER, output_frame);
+            //glDrawBuffer(GL_BACK);
+
+            //switch texture slot... color to 0
+            glActiveTexture (GL_TEXTURE0);
+            glBindTexture (GL_TEXTURE_2D, input_frame); //color from light pass
+
+            glActiveTexture (GL_TEXTURE1);
+            glBindTexture (GL_TEXTURE_2D, fbo_1_tex_d); //depth from first pass
+
+            glActiveTexture (GL_TEXTURE2);
+            glBindTexture (GL_TEXTURE_2D, fbo_1_tex_n); //normal from first pass
+
+            glActiveTexture (GL_TEXTURE3);
+            glBindTexture (GL_TEXTURE_2D, fbo_1_tex_p); //normal from first pass
+
+            glBindVertexArray(fsq_vertex_array_object);
+
+            //VBOs
+            //glBindBuffer(GL_ARRAY_BUFFER, fsq_vertex_vbo);
+            //glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, 0);
+            //glEnableVertexAttribArray(0);
+
+
+            glUseProgram (DR_EdgeDetectionPassProgramIdId);
+
+            glPolygonMode(GL_FRONT_AND_BACK, GL_POLYGON);
+
+            glUniform2f (win_size_loc_edgedetectionpass, win->getWindowWidth(), win->getWindowHeight());
+            glUniform1i (frame_switch_loc_edgedetectionpass, frame_switch);
+            glUniform1i (function_loc_edgedetectionpass, 8); //7 is fastSSAO  8 is quality SSAO
+
+            glDrawArrays(GL_TRIANGLES, 0, fsq_triangle_count*3);
+
+            //
+            ////////////////////////////////////////////////////////////
+
+            //swap
+            //input_frame = fbo_3_tex_c;
+            //output_frame = fbo_2;
+
+            //input_frame = fbo_2_tex_c;
+            //output_frame = fbo_3;
+
+            if(input_frame == fbo_3_tex_c){
+                input_frame = fbo_2_tex_c;
+                output_frame = fbo_3;
+            }
+            else{
+                input_frame = fbo_3_tex_c;
+                output_frame = fbo_2;
+            }
+
+
+
+        }
 
 
 
 
         ////////////////////////////////////////////////////////////
         //  POST PROCESSING fxaa first
-        //      use fbo_3_tex_c as input   fbo_2 as output
+        //      use fbo_2_tex_c as input   fbo_3 as output
 
-        glDisable (GL_BLEND);
+        if((postProcessingMode & PostProcessingModeFXAA) == PostProcessingModeFXAA){
 
-        //bind framebuffer so we can draw to the edge texture....
-        //glBindFramebuffer(GL_FRAMEBUFFER, fb);
-
-
-        glBindFramebuffer(GL_FRAMEBUFFER, fbo_2);
-        //glDrawBuffer(GL_BACK);
-
-        //switch texture slot... color to 0
-        glActiveTexture (GL_TEXTURE0);
-        glBindTexture (GL_TEXTURE_2D, fbo_3_tex_c);
-
-        glActiveTexture (GL_TEXTURE1);
-        glBindTexture (GL_TEXTURE_2D, fbo_1_tex_p);
-
-        glBindVertexArray(fsq_vertex_array_object);
-
-        //VBOs
-        glBindBuffer(GL_ARRAY_BUFFER, fsq_vertex_vbo);
-        glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, 0);
-        glEnableVertexAttribArray(0);
+            //bind framebuffer so we can draw to the edge texture....
+            //glBindFramebuffer(GL_FRAMEBUFFER, fb);
 
 
-        glUseProgram (DR_EdgeDetectionPassProgramIdId);
+            glBindFramebuffer(GL_FRAMEBUFFER, output_frame);
+            //glDrawBuffer(GL_BACK);
 
-        glPolygonMode(GL_FRONT_AND_BACK, GL_POLYGON);
+            //switch texture slot... color to 0
+            glActiveTexture (GL_TEXTURE0);
+            glBindTexture (GL_TEXTURE_2D, input_frame);
 
-        glUniform2f (win_size_loc_edgedetectionpass, win->getWindowWidth(), win->getWindowHeight());
-        glUniform1i (frame_switch_loc_edgedetectionpass, frame_switch);
-        glUniform1i (function_loc_edgedetectionpass, 0);
+            //glActiveTexture (GL_TEXTURE1);
+            //glBindTexture (GL_TEXTURE_2D, fbo_1_tex_p);
 
-        glDrawArrays(GL_TRIANGLES, 0, fsq_triangle_count*3);
+            //glBindVertexArray(fsq_vertex_array_object);
 
-        //
+            //VBOs
+            //glBindBuffer(GL_ARRAY_BUFFER, fsq_vertex_vbo);
+            //glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, 0);
+            //glEnableVertexAttribArray(0);
+
+
+            //glUseProgram (DR_EdgeDetectionPassProgramIdId);
+
+            //glPolygonMode(GL_FRONT_AND_BACK, GL_POLYGON);
+
+            glUniform2f (win_size_loc_edgedetectionpass, win->getWindowWidth(), win->getWindowHeight());
+            glUniform1i (frame_switch_loc_edgedetectionpass, frame_switch);
+            glUniform1i (function_loc_edgedetectionpass, 0);
+
+            glDrawArrays(GL_TRIANGLES, 0, fsq_triangle_count*3);
+
+            //
+            ////////////////////////////////////////////////////////////
+
+            //swap
+            //input_frame = fbo_3_tex_c;
+            //output_frame = fbo_2;
+
+            //input_frame = fbo_2_tex_c;
+            //output_frame = fbo_3;
+
+            if(input_frame == fbo_3_tex_c){
+                input_frame = fbo_2_tex_c;
+                output_frame = fbo_3;
+            }
+            else{
+                input_frame = fbo_3_tex_c;
+                output_frame = fbo_2;
+            }
+
+        }
+
+
+
         ////////////////////////////////////////////////////////////
+        //  POST PROCESSING sharpening third
+        if((postProcessingMode & PostProcessingModeSharpen) == PostProcessingModeSharpen){
+
+            //glDisable (GL_BLEND);
+
+            //bind framebuffer so we can draw to the edge texture....
+            //glBindFramebuffer(GL_FRAMEBUFFER, fb);
+
+
+            glBindFramebuffer(GL_FRAMEBUFFER, output_frame);
+            glDrawBuffer(GL_BACK);
+
+            //switch texture slot... color to 0
+            glActiveTexture (GL_TEXTURE0);
+            glBindTexture (GL_TEXTURE_2D, input_frame);
+
+            //glActiveTexture (GL_TEXTURE1);
+            //glBindTexture (GL_TEXTURE_2D, fbo_1_tex_p);
+
+            //glBindVertexArray(fsq_vertex_array_object);
+
+            //VBOs
+            //glBindBuffer(GL_ARRAY_BUFFER, fsq_vertex_vbo);
+            //glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, 0);
+            //glEnableVertexAttribArray(0);
+
+
+            //glUseProgram (DR_EdgeDetectionPassProgramIdId);
+
+            //glPolygonMode(GL_FRONT_AND_BACK, GL_POLYGON);
+
+            //glUniform2f (win_size_loc_edgedetectionpass, win->getWindowWidth(), win->getWindowHeight());
+            //glUniform1i (frame_switch_loc_edgedetectionpass, frame_switch);
+            glUniform1i (function_loc_edgedetectionpass, 2);
+
+            glDrawArrays(GL_TRIANGLES, 0, fsq_triangle_count*3);
+
+            //
+            ////////////////////////////////////////////////////////////
+
+            //swap
+            //input_frame = fbo_3_tex_c;
+            //output_frame = fbo_2;
+
+            //input_frame = fbo_2_tex_c;
+            //output_frame = fbo_3;
+
+            if(input_frame == fbo_3_tex_c){
+                input_frame = fbo_2_tex_c;
+                output_frame = fbo_3;
+            }
+            else{
+                input_frame = fbo_3_tex_c;
+                output_frame = fbo_2;
+            }
+
+        }
 
 
 
+
+
+
+        ////////////////////////////////////////////////////////////
+        //  POST PROCESSING h blur fourth
+        //      use fbo_2_tex_c as input   fbo_3 as output
+        if((postProcessingMode & PostProcessingModeBlurH) == PostProcessingModeBlurH){
+
+            //glDisable (GL_BLEND);
+
+            //bind framebuffer so we can draw to the edge texture....
+            //glBindFramebuffer(GL_FRAMEBUFFER, fb);
+
+
+            glBindFramebuffer(GL_FRAMEBUFFER, output_frame);
+            //glDrawBuffer(GL_BACK);
+
+            //switch texture slot... color to 0
+            glActiveTexture (GL_TEXTURE0);
+            glBindTexture (GL_TEXTURE_2D, input_frame);
+
+
+            //glBindVertexArray(fsq_vertex_array_object);
+
+            //VBOs
+            //glBindBuffer(GL_ARRAY_BUFFER, fsq_vertex_vbo);
+            //glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, 0);
+            //glEnableVertexAttribArray(0);
+
+
+            //glUseProgram (DR_EdgeDetectionPassProgramIdId);
+
+            //glPolygonMode(GL_FRONT_AND_BACK, GL_POLYGON);
+
+            //glUniform2f (win_size_loc_edgedetectionpass, win->getWindowWidth(), win->getWindowHeight());
+            //glUniform1i (frame_switch_loc_edgedetectionpass, frame_switch);
+            glUniform1i (function_loc_edgedetectionpass, 3);
+
+            glDrawArrays(GL_TRIANGLES, 0, fsq_triangle_count*3);
+
+            //
+            ////////////////////////////////////////////////////////////
+
+            //swap
+            //input_frame = fbo_3_tex_c;
+            //output_frame = fbo_2;
+
+            //input_frame = fbo_2_tex_c;
+            //output_frame = fbo_3;
+
+            if(input_frame == fbo_3_tex_c){
+                input_frame = fbo_2_tex_c;
+                output_frame = fbo_3;
+            }
+            else{
+                input_frame = fbo_3_tex_c;
+                output_frame = fbo_2;
+            }
+
+        }
+
+
+
+        ////////////////////////////////////////////////////////////
+        //  POST PROCESSING v blur fourth
+        //      use fbo_3_tex_c as input   fbo_2 as output
+        if((postProcessingMode & PostProcessingModeBlurV) == PostProcessingModeBlurV){
+
+            //glDisable (GL_BLEND);
+
+            //bind framebuffer so we can draw to the edge texture....
+            //glBindFramebuffer(GL_FRAMEBUFFER, fb);
+
+
+            glBindFramebuffer(GL_FRAMEBUFFER, output_frame);
+            //glDrawBuffer(GL_BACK);
+
+            //switch texture slot... color to 0
+            glActiveTexture (GL_TEXTURE0);
+            glBindTexture (GL_TEXTURE_2D, input_frame);
+
+
+            //glBindVertexArray(fsq_vertex_array_object);
+
+            //VBOs
+            //glBindBuffer(GL_ARRAY_BUFFER, fsq_vertex_vbo);
+            //glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, 0);
+            //glEnableVertexAttribArray(0);
+
+
+            //glUseProgram (DR_EdgeDetectionPassProgramIdId);
+
+            //glPolygonMode(GL_FRONT_AND_BACK, GL_POLYGON);
+
+            //glUniform2f (win_size_loc_edgedetectionpass, win->getWindowWidth(), win->getWindowHeight());
+            //glUniform1i (frame_switch_loc_edgedetectionpass, frame_switch);
+            glUniform1i (function_loc_edgedetectionpass, 4);
+
+            glDrawArrays(GL_TRIANGLES, 0, fsq_triangle_count*3);
+
+            //
+            ////////////////////////////////////////////////////////////
+
+            //swap
+            //input_frame = fbo_3_tex_c;
+            //output_frame = fbo_2;
+
+            //input_frame = fbo_2_tex_c;
+            //output_frame = fbo_3;
+
+            if(input_frame == fbo_3_tex_c){
+                input_frame = fbo_2_tex_c;
+                output_frame = fbo_3;
+            }
+            else{
+                input_frame = fbo_3_tex_c;
+                output_frame = fbo_2;
+            }
+
+        }
 
 
 
 
         ////////////////////////////////////////////////////////////
         //  POST PROCESSING noise second
-        //      use fbo_2_tex_c as input   fbo_3 as output
+        //      use fbo_3_tex_c as input   fbo_2 as output
 
         //glDisable (GL_BLEND);
 
@@ -879,15 +1163,15 @@ void Renderer::render_v2(){
         //glBindFramebuffer(GL_FRAMEBUFFER, fb);
 
 
-        glBindFramebuffer(GL_FRAMEBUFFER, fbo_3);
+        glBindFramebuffer(GL_FRAMEBUFFER, 0);
         //glDrawBuffer(GL_BACK);
 
         //switch texture slot... color to 0
         glActiveTexture (GL_TEXTURE0);
-        glBindTexture (GL_TEXTURE_2D, fbo_2_tex_c);
+        glBindTexture (GL_TEXTURE_2D, input_frame);
 
-        glActiveTexture (GL_TEXTURE1);
-        glBindTexture (GL_TEXTURE_2D, fbo_1_tex_p);
+        //glActiveTexture (GL_TEXTURE1);
+        //glBindTexture (GL_TEXTURE_2D, fbo_1_tex_p);
 
         //glBindVertexArray(fsq_vertex_array_object);
 
@@ -911,141 +1195,6 @@ void Renderer::render_v2(){
         ////////////////////////////////////////////////////////////
 
 
-
-
-
-
-        ////////////////////////////////////////////////////////////
-        //  POST PROCESSING sharpening third
-        //      use fbo_3_tex_c as input   fbo_2 as output
-
-        glDisable (GL_BLEND);
-
-        //bind framebuffer so we can draw to the edge texture....
-        //glBindFramebuffer(GL_FRAMEBUFFER, fb);
-
-
-        glBindFramebuffer(GL_FRAMEBUFFER, 0);
-        glDrawBuffer(GL_BACK);
-
-        //switch texture slot... color to 0
-        glActiveTexture (GL_TEXTURE0);
-        glBindTexture (GL_TEXTURE_2D, fbo_3_tex_c);
-
-        glActiveTexture (GL_TEXTURE1);
-        glBindTexture (GL_TEXTURE_2D, fbo_1_tex_p);
-
-        //glBindVertexArray(fsq_vertex_array_object);
-
-        //VBOs
-        //glBindBuffer(GL_ARRAY_BUFFER, fsq_vertex_vbo);
-        //glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, 0);
-        //glEnableVertexAttribArray(0);
-
-
-        //glUseProgram (DR_EdgeDetectionPassProgramIdId);
-
-        //glPolygonMode(GL_FRONT_AND_BACK, GL_POLYGON);
-
-        //glUniform2f (win_size_loc_edgedetectionpass, win->getWindowWidth(), win->getWindowHeight());
-        //glUniform1i (frame_switch_loc_edgedetectionpass, frame_switch);
-        glUniform1i (function_loc_edgedetectionpass, 2);
-
-        glDrawArrays(GL_TRIANGLES, 0, fsq_triangle_count*3);
-
-        //
-        ////////////////////////////////////////////////////////////
-
-
-
-        /*
-
-        ////////////////////////////////////////////////////////////
-        //  POST PROCESSING h blur fourth
-        //      use fbo_2_tex_c as input   fbo_3 as output
-
-        glDisable (GL_BLEND);
-
-        //bind framebuffer so we can draw to the edge texture....
-        //glBindFramebuffer(GL_FRAMEBUFFER, fb);
-
-
-        glBindFramebuffer(GL_FRAMEBUFFER, fbo_2);
-        //glDrawBuffer(GL_BACK);
-
-        //switch texture slot... color to 0
-        glActiveTexture (GL_TEXTURE0);
-        glBindTexture (GL_TEXTURE_2D, fbo_2_tex_c);
-
-        glActiveTexture (GL_TEXTURE1);
-        glBindTexture (GL_TEXTURE_2D, fbo_1_tex_p);
-
-        glBindVertexArray(fsq_vertex_array_object);
-
-        //VBOs
-        glBindBuffer(GL_ARRAY_BUFFER, fsq_vertex_vbo);
-        glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, 0);
-        glEnableVertexAttribArray(0);
-
-
-        glUseProgram (DR_EdgeDetectionPassProgramIdId);
-
-        glPolygonMode(GL_FRONT_AND_BACK, GL_POLYGON);
-
-        glUniform2f (win_size_loc_edgedetectionpass, win->getWindowWidth(), win->getWindowHeight());
-        glUniform1i (frame_switch_loc_edgedetectionpass, frame_switch);
-        glUniform1i (function_loc_edgedetectionpass, 3);
-
-        glDrawArrays(GL_TRIANGLES, 0, fsq_triangle_count*3);
-
-        //
-        ////////////////////////////////////////////////////////////
-
-
-
-
-        ////////////////////////////////////////////////////////////
-        //  POST PROCESSING v blur fourth
-        //      use fbo_3_tex_c as input   fbo_2 as output
-
-        glDisable (GL_BLEND);
-
-        //bind framebuffer so we can draw to the edge texture....
-        //glBindFramebuffer(GL_FRAMEBUFFER, fb);
-
-
-        glBindFramebuffer(GL_FRAMEBUFFER, 0);
-        glDrawBuffer(GL_BACK);
-
-        //switch texture slot... color to 0
-        glActiveTexture (GL_TEXTURE0);
-        glBindTexture (GL_TEXTURE_2D, fbo_3_tex_c);
-
-        glActiveTexture (GL_TEXTURE1);
-        glBindTexture (GL_TEXTURE_2D, fbo_1_tex_p);
-
-        glBindVertexArray(fsq_vertex_array_object);
-
-        //VBOs
-        glBindBuffer(GL_ARRAY_BUFFER, fsq_vertex_vbo);
-        glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, 0);
-        glEnableVertexAttribArray(0);
-
-
-        glUseProgram (DR_EdgeDetectionPassProgramIdId);
-
-        glPolygonMode(GL_FRONT_AND_BACK, GL_POLYGON);
-
-        glUniform2f (win_size_loc_edgedetectionpass, win->getWindowWidth(), win->getWindowHeight());
-        glUniform1i (frame_switch_loc_edgedetectionpass, frame_switch);
-        glUniform1i (function_loc_edgedetectionpass, 4);
-
-        glDrawArrays(GL_TRIANGLES, 0, fsq_triangle_count*3);
-
-        //
-        ////////////////////////////////////////////////////////////
-
-        */
 
         /*
 
@@ -2755,6 +2904,14 @@ void Renderer::setPolygonMode(int polygonMode){
     renderMode = polygonMode;
 }
 
+void Renderer::setPostProcessingMode(int postProcessingModeBits){
+    postProcessingMode = postProcessingModeBits;
+}
+
+int Renderer::getPostProcessingMode(){
+    return postProcessingMode;
+}
+
 Vector3 Renderer::touch_to_space(int x,int y){
     Matrix4x4 M_projection;
     M_projection.perspective(cam->getFOV(),float(win->getWindowWidth()) / float(win->getWindowHeight()),cam->getZNEAR(),cam->getZFAR());
@@ -3995,8 +4152,9 @@ bool Renderer::createShaders(){
     function_loc_edgedetectionpass = glGetUniformLocation(DR_EdgeDetectionPassProgramIdId, "function");
 
     glUniform1i(glGetUniformLocation(DR_EdgeDetectionPassProgramIdId, "l_tex"), 0);
-    glUniform1i(glGetUniformLocation(DR_EdgeDetectionPassProgramIdId, "p_tex"), 1);
-
+    glUniform1i(glGetUniformLocation(DR_EdgeDetectionPassProgramIdId, "d_tex"), 1);
+    glUniform1i(glGetUniformLocation(DR_EdgeDetectionPassProgramIdId, "n_tex"), 2);
+    glUniform1i(glGetUniformLocation(DR_EdgeDetectionPassProgramIdId, "p_tex"), 3);
 
 
     //EDGE DETECTION PASS pass end
@@ -4105,6 +4263,28 @@ bool Renderer::createBuffers(){
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 
 
+    //depth texture
+    glGenTextures (1, &fbo_1_tex_d);
+    glBindTexture (GL_TEXTURE_2D, fbo_1_tex_d);
+    glTexImage2D (
+                GL_TEXTURE_2D,
+                0,
+                GL_RGB16F,
+                600,
+                400,
+                0,
+                GL_BGR,
+                GL_UNSIGNED_BYTE,
+                NULL
+                );
+    glTexParameteri (GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+    glTexParameteri (GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+
+
+
+
 
     glFramebufferTexture2D (
       GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, fbo_1_tex_p, 0
@@ -4114,6 +4294,9 @@ bool Renderer::createBuffers(){
     );
     glFramebufferTexture2D (
       GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT2, GL_TEXTURE_2D, fbo_1_tex_c, 0
+    );
+    glFramebufferTexture2D (
+      GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT3, GL_TEXTURE_2D, fbo_1_tex_d, 0
     );
 
 
@@ -4129,8 +4312,8 @@ bool Renderer::createBuffers(){
       GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, rb1
     );
 
-    GLenum draw_bufs[] = { GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1, GL_COLOR_ATTACHMENT2};
-    glDrawBuffers (3, draw_bufs);
+    GLenum draw_bufs[] = { GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1, GL_COLOR_ATTACHMENT2, GL_COLOR_ATTACHMENT3};
+    glDrawBuffers (4, draw_bufs);
 
     // Always check that our framebuffer is ok
     if(glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE){
@@ -4483,6 +4666,25 @@ void Renderer::resizeBuffers(int x, int y){
 
         //color texture
         glBindTexture (GL_TEXTURE_2D, fbo_1_tex_c);
+        glTexImage2D (
+                    GL_TEXTURE_2D,
+                    0,
+                    GL_RGB16F,
+                    x,
+                    y,
+                    0,
+                    GL_BGR,
+                    GL_UNSIGNED_BYTE,
+                    NULL
+                    );
+        glTexParameteri (GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+        glTexParameteri (GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+
+
+        //depth texture
+        glBindTexture (GL_TEXTURE_2D, fbo_1_tex_d);
         glTexImage2D (
                     GL_TEXTURE_2D,
                     0,

@@ -78,6 +78,7 @@ void Window::initialize(){
     //SRGB COLOR CORRECTED OUTPUT!!!
     glfwWindowHint(GLFW_SRGB_CAPABLE, true);
 
+    glfwWindowHint(GLFW_DEPTH_BITS, 32);
 
 
     //use 3.3 context

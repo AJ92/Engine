@@ -1,9 +1,14 @@
 #version 400
 uniform sampler2D l_tex;
+uniform sampler2D d_tex;
+uniform sampler2D n_tex;
 uniform sampler2D p_tex;
 uniform vec2 win_size;
 uniform int frame_switch;
-uniform int function;   //0 = fxaa; 1 = noise; 2 = sharpening; 4 = h_blur; 5 = v_blur; 5 = h_blur_lumin; 6 = v_blur_lumin;
+uniform int function;
+//0 = fxaa; 1 = noise; 2 = sharpening;
+//3 = h_blur; 4 = v_blur; 5 = h_blur_lumin; 6 = v_blur_lumin;
+//7 = fastSSAO; 8 = qualitySSAO;
 
 
 //the edge texture
@@ -261,20 +266,20 @@ vec4 fastGaussianBlurHorizontal(sampler2D tex, vec2 fragCoord, vec2 resolution){
   //horizontal blur
   vec2 h_blurTexCoords[14];
 
-  h_blurTexCoords[ 0] = fragCoord + vec2(-13.5 * step_w, 0.0);
-  h_blurTexCoords[ 1] = fragCoord + vec2(-11.5 * step_w, 0.0);
-  h_blurTexCoords[ 2] = fragCoord + vec2(-9.5 * step_w, 0.0);
-  h_blurTexCoords[ 3] = fragCoord + vec2(-7.5 * step_w, 0.0);
-  h_blurTexCoords[ 4] = fragCoord + vec2(-5.5 * step_w, 0.0);
-  h_blurTexCoords[ 5] = fragCoord + vec2(-3.5 * step_w, 0.0);
-  h_blurTexCoords[ 6] = fragCoord + vec2(-1.5 * step_w, 0.0);
-  h_blurTexCoords[ 7] = fragCoord + vec2( 1.5 * step_w, 0.0);
-  h_blurTexCoords[ 8] = fragCoord + vec2( 3.5 * step_w, 0.0);
-  h_blurTexCoords[ 9] = fragCoord + vec2( 5.5 * step_w, 0.0);
-  h_blurTexCoords[10] = fragCoord + vec2( 7.5 * step_w, 0.0);
-  h_blurTexCoords[11] = fragCoord + vec2( 9.5 * step_w, 0.0);
-  h_blurTexCoords[12] = fragCoord + vec2( 11.5 * step_w, 0.0);
-  h_blurTexCoords[13] = fragCoord + vec2( 13.5 * step_w, 0.0);
+  h_blurTexCoords[ 0] = fragCoord + vec2(-7 * step_w, 0.0);
+  h_blurTexCoords[ 1] = fragCoord + vec2(-6 * step_w, 0.0);
+  h_blurTexCoords[ 2] = fragCoord + vec2(-5 * step_w, 0.0);
+  h_blurTexCoords[ 3] = fragCoord + vec2(-4 * step_w, 0.0);
+  h_blurTexCoords[ 4] = fragCoord + vec2(-3 * step_w, 0.0);
+  h_blurTexCoords[ 5] = fragCoord + vec2(-2 * step_w, 0.0);
+  h_blurTexCoords[ 6] = fragCoord + vec2(-1 * step_w, 0.0);
+  h_blurTexCoords[ 7] = fragCoord + vec2( 1 * step_w, 0.0);
+  h_blurTexCoords[ 8] = fragCoord + vec2( 2 * step_w, 0.0);
+  h_blurTexCoords[ 9] = fragCoord + vec2( 3 * step_w, 0.0);
+  h_blurTexCoords[10] = fragCoord + vec2( 4 * step_w, 0.0);
+  h_blurTexCoords[11] = fragCoord + vec2( 5 * step_w, 0.0);
+  h_blurTexCoords[12] = fragCoord + vec2( 6 * step_w, 0.0);
+  h_blurTexCoords[13] = fragCoord + vec2( 7 * step_w, 0.0);
 
   vec4 h_blur = vec4(0.0);
   h_blur += texture2D(tex, h_blurTexCoords[ 0]) *0.0044299121055113265;
@@ -312,20 +317,20 @@ vec4 fastGaussianBlurVertical(sampler2D tex, vec2 fragCoord, vec2 resolution){
   //vertical blur
   vec2 v_blurTexCoords[14];
 
-  v_blurTexCoords[ 0] = fragCoord + vec2(0.0, -13.5 * step_h);
-  v_blurTexCoords[ 1] = fragCoord + vec2(0.0, -11.5 * step_h);
-  v_blurTexCoords[ 2] = fragCoord + vec2(0.0, -9.5 * step_h);
-  v_blurTexCoords[ 3] = fragCoord + vec2(0.0, -7.5 * step_h);
-  v_blurTexCoords[ 4] = fragCoord + vec2(0.0, -5.5 * step_h);
-  v_blurTexCoords[ 5] = fragCoord + vec2(0.0, -3.5 * step_h);
-  v_blurTexCoords[ 6] = fragCoord + vec2(0.0, -1.5 * step_h);
-  v_blurTexCoords[ 7] = fragCoord + vec2(0.0,  1.5 * step_h);
-  v_blurTexCoords[ 8] = fragCoord + vec2(0.0,  3.5 * step_h);
-  v_blurTexCoords[ 9] = fragCoord + vec2(0.0,  5.5 * step_h);
-  v_blurTexCoords[10] = fragCoord + vec2(0.0,  7.5 * step_h);
-  v_blurTexCoords[11] = fragCoord + vec2(0.0,  9.5 * step_h);
-  v_blurTexCoords[12] = fragCoord + vec2(0.0,  11.5 * step_h);
-  v_blurTexCoords[13] = fragCoord + vec2(0.0,  13.5 * step_h);
+  v_blurTexCoords[ 0] = fragCoord + vec2(0.0, -7 * step_h);
+  v_blurTexCoords[ 1] = fragCoord + vec2(0.0, -6 * step_h);
+  v_blurTexCoords[ 2] = fragCoord + vec2(0.0, -5 * step_h);
+  v_blurTexCoords[ 3] = fragCoord + vec2(0.0, -4 * step_h);
+  v_blurTexCoords[ 4] = fragCoord + vec2(0.0, -3 * step_h);
+  v_blurTexCoords[ 5] = fragCoord + vec2(0.0, -2 * step_h);
+  v_blurTexCoords[ 6] = fragCoord + vec2(0.0, -1 * step_h);
+  v_blurTexCoords[ 7] = fragCoord + vec2(0.0,  1 * step_h);
+  v_blurTexCoords[ 8] = fragCoord + vec2(0.0,  2 * step_h);
+  v_blurTexCoords[ 9] = fragCoord + vec2(0.0,  3 * step_h);
+  v_blurTexCoords[10] = fragCoord + vec2(0.0,  4 * step_h);
+  v_blurTexCoords[11] = fragCoord + vec2(0.0,  5 * step_h);
+  v_blurTexCoords[12] = fragCoord + vec2(0.0,  6 * step_h);
+  v_blurTexCoords[13] = fragCoord + vec2(0.0,  7 * step_h);
 
 
   vec4 v_blur = vec4(0.0);
@@ -348,6 +353,130 @@ vec4 fastGaussianBlurVertical(sampler2D tex, vec2 fragCoord, vec2 resolution){
   color = v_blur;
 
   return color;
+}
+
+
+vec4 fastSSAO(sampler2D tex, sampler2D depth, vec2 fragCoord, vec2 resolution){
+  // sample zbuffer (in linear eye space) at the current shading point  
+  //float zr = 1.0-texture2D( depth,  fragCoord).r;
+  float zr = texture2D( depth,  fragCoord).r;
+
+  // sample neighbor pixels
+  float ao = 0.0;
+  //if(zr < 1.0){
+    for( int i=0; i<8; i++ )
+    {
+      /*
+      // get a random 2D offset vector
+      vec2 off = -1.0 + 2.0*texture2D( iChannel1, (fragCoord.xy + 23.71*float(i))/iChannelResolution[1].xy ).xz;  
+      */
+
+      //new calc for random 2D offset vector
+      float noise1 = clamp(rand(vec2(frame_switch * fragCoord.s, frame_switch * fragCoord.t)),0.0,1.0);
+      float noise2 = clamp(rand(vec2((frame_switch + 5) * fragCoord.s, (frame_switch + 15) * fragCoord.t)),0.0,1.0);
+      vec2 off = -1.0 + 2.0* vec2(
+        noise1,
+        noise2
+        );
+
+      // sample the zbuffer at a neightbor pixel (in a 16 pixel radious)            
+      //float z = 1.0-texture2D( depth, (fragCoord + floor(off*16.0)/resolution) ).r;
+      float z = texture2D( depth, (fragCoord + floor(off*32.0)/resolution) ).r;
+
+
+      // accumulate occlusion if difference is less than 0.1 units    
+      ao += clamp( (z - zr)/0.06, 0.0, 1.0);
+
+
+    }
+    // average down the occlusion 
+    ao = clamp( 1.0 - ao / 8.0, 0.0, 1.0 );
+  //}
+  //else{
+  //  ao = 1.0;
+  //}
+  
+  vec3 col = vec3(ao);
+  vec4 tex_color = texture2D( tex, fragCoord);
+  return vec4(tex_color.rgb * col, tex_color.a);
+  //return vec4(ao);
+}
+
+
+const float distanceThreshold = 5.0;
+const vec2 filterRadius = vec2(10.0);
+ 
+const int sample_count = 16;
+const vec2 poisson16[] = vec2[](    // These are the Poisson Disk Samples
+                                vec2( -0.94201624,  -0.39906216 ),
+                                vec2(  0.94558609,  -0.76890725 ),
+                                vec2( -0.094184101, -0.92938870 ),
+                                vec2(  0.34495938,   0.29387760 ),
+                                vec2( -0.91588581,   0.45771432 ),
+                                vec2( -0.81544232,  -0.87912464 ),
+                                vec2( -0.38277543,   0.27676845 ),
+                                vec2(  0.97484398,   0.75648379 ),
+                                vec2(  0.44323325,  -0.97511554 ),
+                                vec2(  0.53742981,  -0.47373420 ),
+                                vec2( -0.26496911,  -0.41893023 ),
+                                vec2(  0.79197514,   0.19090188 ),
+                                vec2( -0.24188840,   0.99706507 ),
+                                vec2( -0.81409955,   0.91437590 ),
+                                vec2(  0.19984126,   0.78641367 ),
+                                vec2(  0.14383161,  -0.14100790 )
+                               );
+//we dont need decoding cause we have stored our values non encoded as floats anyways...
+/*
+vec3 decodeNormal(in vec2 normal)
+{
+    // restore normal
+    return restoredNormal;
+}
+ 
+vec3 calulatePosition(in vec2 coord, in float depth)
+{
+    // restore position
+    return restoredDepth;
+}
+*/
+ 
+vec4 qualitySSAO(sampler2D tex, sampler2D depth, sampler2D normal, sampler2D position, vec2 fragCoord, vec2 resolution){
+  //float depth = texture2D(depth, fragCoord).r;
+  vec3 viewPos = texture2D(position, fragCoord).rgb;
+  vec3 viewNormal = normalize(texture2D(normal, fragCoord).rgb);
+
+  vec2 screenFilterRadius = filterRadius / resolution;
+
+  float ambientOcclusion = 0.0;
+  // perform AO
+  for (int i = 0; i < sample_count; ++i)
+  {
+      // sample at an offset specified by the current Poisson-Disk sample and scale it by a radius (has to be in Texture-Space)
+      vec2 sampleTexCoord = fragCoord + (poisson16[i] * (screenFilterRadius));
+      float sampleDepth = texture2D(depth, sampleTexCoord).r;
+      vec3 samplePos = texture2D(position, sampleTexCoord).rgb;
+      vec3 sampleDir = normalize(samplePos - viewPos);
+
+      // angle between SURFACE-NORMAL and SAMPLE-DIRECTION (vector from SURFACE-POSITION to SAMPLE-POSITION)
+      float NdotS = max(dot(viewNormal, sampleDir), 0);
+      // distance between SURFACE-POSITION and SAMPLE-POSITION
+      float VPdistSP = distance(viewPos, samplePos);
+
+      // a = distance function
+      float a = 1.0 - smoothstep(distanceThreshold, distanceThreshold * 2, VPdistSP);
+      // b = dot-Product
+      float b = NdotS;
+
+      ambientOcclusion += (a * b);
+  }
+
+  //return vec4(1.0 - (ambientOcclusion / sample_count));
+
+  
+  vec3 col = vec3(1.0 - (ambientOcclusion / sample_count));
+  vec4 tex_color = texture2D( tex, fragCoord);
+  return vec4(tex_color.rgb * col, tex_color.a);
+  
 }
 
 
@@ -446,7 +575,7 @@ void main () {
 
     ///////////////////////////////////////////
     //LUMINANCE
-    float lumin = clamp(vec3(GetColorLuminance(tex_c)),0.0,1.0);
+    float lumin = clamp(GetColorLuminance(tex_c),0.0,1.0);
     ///////////////////////////////////////////
 
 
@@ -465,7 +594,7 @@ void main () {
   if(function == 2){
     ///////////////////////////////////////////
     //SHARPEN
-    def_e.rgb =  sharpen(l_tex, st, win_size, 0.2).rgb;
+    def_e.rgb =  sharpen(l_tex, st, win_size, 0.7).rgb;
     //SHARPEN END
     //////////////////////////////////////////
     def_e.a = 1.0f;
@@ -487,12 +616,29 @@ void main () {
 
     ///////////////////////////////////////////
     //LUMINANCE
-    float lumin = clamp(vec3(GetColorLuminance(tex_c)),0.0,1.0);
+    float lumin = clamp(GetColorLuminance(tex_c),0.0,1.0);
     ///////////////////////////////////////////
 
 
     vec3 blur = fastGaussianBlurHorizontal(l_tex, st, win_size).rgb;
     def_e.rgb = blur;
+    def_e.a = 1.0f;
+  }
+
+  //6 is reserved
+
+
+  //fastSSAO
+  if(function == 7){
+    vec3 ssao = fastSSAO(l_tex, d_tex, st, win_size).rgb;
+    def_e.rgb = ssao;
+    def_e.a = 1.0f;
+  }
+
+  //qualitySSAO
+  if(function == 8){
+    vec3 ssao = qualitySSAO(l_tex, d_tex, n_tex, p_tex, st, win_size).rgb;
+    def_e.rgb = ssao;
     def_e.a = 1.0f;
   }
 

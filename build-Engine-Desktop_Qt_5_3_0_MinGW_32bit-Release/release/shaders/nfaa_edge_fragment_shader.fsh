@@ -594,7 +594,7 @@ void main () {
   if(function == 2){
     ///////////////////////////////////////////
     //SHARPEN
-    def_e.rgb =  sharpen(l_tex, st, win_size, 0.7).rgb;
+    def_e.rgb =  sharpen(l_tex, st, win_size, 0.4).rgb;
     //SHARPEN END
     //////////////////////////////////////////
     def_e.a = 1.0f;

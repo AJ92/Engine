@@ -14,10 +14,10 @@ CXX           = g++
 DEFINES       = -DUNICODE -DQT_OPENGL_LIB -DQT_WIDGETS_LIB -DQT_GUI_LIB -DQT_CORE_LIB -DQT_NEEDS_QMAIN
 CFLAGS        = -pipe -fno-keep-inline-dllexport -g -Wall -Wextra $(DEFINES)
 CXXFLAGS      = -pipe -fno-keep-inline-dllexport -std=c++0x -g -frtti -Wall -Wextra -fexceptions -mthreads $(DEFINES)
-INCPATH       = -I..\Engine -I"..\Engine\Math" -I"..\Engine\Math\include" -I"..\Engine\Graphics\glfw\include" -I"..\Engine\Graphics\glew\include" -I"..\Engine\Graphics\assimp\include" -I"..\Engine\Physics\bullet-2.82-r2704\src" -I"..\..\..\..\Qt\Qt5.3.0\5.3\mingw482_32\include" -I"..\..\..\..\Qt\Qt5.3.0\5.3\mingw482_32\include\QtOpenGL" -I"..\..\..\..\Qt\Qt5.3.0\5.3\mingw482_32\include\QtWidgets" -I"..\..\..\..\Qt\Qt5.3.0\5.3\mingw482_32\include\QtGui" -I"..\..\..\..\Qt\Qt5.3.0\5.3\mingw482_32\include\QtCore" -I"debug" -I"." -I"." -I"..\..\..\..\Qt\Qt5.3.0\5.3\mingw482_32\mkspecs\win32-g++"
+INCPATH       = -I..\Engine -I"..\Engine\Math" -I"..\Engine\Math\include" -I"..\Engine\Graphics\glfw\include" -I"..\Engine\Graphics\glew\include" -I"..\Engine\Graphics\assimp\include" -I"..\Engine\Physics\bullet-2.82-r2704\src" -I"..\..\..\..\Python34\include" -I"..\..\..\..\Qt\Qt5.3.0\5.3\mingw482_32\include" -I"..\..\..\..\Qt\Qt5.3.0\5.3\mingw482_32\include\QtOpenGL" -I"..\..\..\..\Qt\Qt5.3.0\5.3\mingw482_32\include\QtWidgets" -I"..\..\..\..\Qt\Qt5.3.0\5.3\mingw482_32\include\QtGui" -I"..\..\..\..\Qt\Qt5.3.0\5.3\mingw482_32\include\QtCore" -I"debug" -I"." -I"." -I"..\..\..\..\Qt\Qt5.3.0\5.3\mingw482_32\mkspecs\win32-g++"
 LINKER      =        g++
 LFLAGS        =        -Wl,-subsystem,windows -mthreads
-LIBS        =        -lglu32 -lgdi32 -luser32 -lmingw32 -lqtmaind -LC:/Code/QtProjects/Engine/Engine/Math/lib -lMathematics -LC:/Code/QtProjects/Engine/Engine/Graphics/glfw/lib-mingw -lglfw3dll -lopengl32 -LC:/Code/QtProjects/Engine/Engine/Graphics/glew/lib -lglew32 -LC:/Code/QtProjects/Engine/Engine/Graphics/assimp/lib -lassimp -LC:/Code/QtProjects/Engine/Engine/Physics/bullet-2.82-r2704/lib -lBulletCollision_Debug -lBulletDynamics_Debug -lBulletSoftBody_Debug -lLinearMath_Debug -LC:/Qt/Qt5.3.0/5.3/mingw482_32/lib -lQt5OpenGLd -lQt5Widgetsd -lQt5Guid -lQt5Cored 
+LIBS        =        -lglu32 -lgdi32 -luser32 -lmingw32 -lqtmaind -LC:/Code/QtProjects/Engine/Engine/Math/lib -lMathematics -LC:/Code/QtProjects/Engine/Engine/Graphics/glfw/lib-mingw -lglfw3dll -lopengl32 -LC:/Code/QtProjects/Engine/Engine/Graphics/glew/lib -lglew32 -LC:/Code/QtProjects/Engine/Engine/Graphics/assimp/lib -lassimp -LC:/Code/QtProjects/Engine/Engine/Physics/bullet-2.82-r2704/lib -lBulletCollision_Debug -lBulletDynamics_Debug -lBulletSoftBody_Debug -lLinearMath_Debug -LC:/Python34/libs -lpython34 -LC:/Qt/Qt5.3.0/5.3/mingw482_32/lib -lQt5OpenGLd -lQt5Widgetsd -lQt5Guid -lQt5Cored 
 QMAKE         = C:\Qt\Qt5.3.0\5.3\mingw482_32\bin\qmake.exe
 IDC           = idc
 IDL           = midl
@@ -318,7 +318,7 @@ debug/moc_debugwindow.cpp: ../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/QtWidg
 		../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/QtGui/qtextoption.h \
 		../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/QtCore/QString \
 		../Engine/Debug/Ui/debugwindow.h
-	C:\Qt\Qt5.3.0\5.3\mingw482_32\bin\moc.exe $(DEFINES) -D__GNUC__ -DWIN32 -IC:/Qt/Qt5.3.0/5.3/mingw482_32/mkspecs/win32-g++ -IC:/Code/QtProjects/Engine/Engine -IC:/Code/QtProjects/Engine/Engine/Math -IC:/Code/QtProjects/Engine/Engine/Math/include -IC:/Code/QtProjects/Engine/Engine/Graphics/glfw/include -IC:/Code/QtProjects/Engine/Engine/Graphics/glew/include -IC:/Code/QtProjects/Engine/Engine/Graphics/assimp/include -IC:/Code/QtProjects/Engine/Engine/Physics/bullet-2.82-r2704/src -IC:/Qt/Qt5.3.0/5.3/mingw482_32/include -IC:/Qt/Qt5.3.0/5.3/mingw482_32/include/QtOpenGL -IC:/Qt/Qt5.3.0/5.3/mingw482_32/include/QtWidgets -IC:/Qt/Qt5.3.0/5.3/mingw482_32/include/QtGui -IC:/Qt/Qt5.3.0/5.3/mingw482_32/include/QtCore -I. ..\Engine\Debug\Ui\debugwindow.h -o debug\moc_debugwindow.cpp
+	C:\Qt\Qt5.3.0\5.3\mingw482_32\bin\moc.exe $(DEFINES) -D__GNUC__ -DWIN32 -IC:/Qt/Qt5.3.0/5.3/mingw482_32/mkspecs/win32-g++ -IC:/Code/QtProjects/Engine/Engine -IC:/Code/QtProjects/Engine/Engine/Math -IC:/Code/QtProjects/Engine/Engine/Math/include -IC:/Code/QtProjects/Engine/Engine/Graphics/glfw/include -IC:/Code/QtProjects/Engine/Engine/Graphics/glew/include -IC:/Code/QtProjects/Engine/Engine/Graphics/assimp/include -IC:/Code/QtProjects/Engine/Engine/Physics/bullet-2.82-r2704/src -IC:/Python34/include -IC:/Qt/Qt5.3.0/5.3/mingw482_32/include -IC:/Qt/Qt5.3.0/5.3/mingw482_32/include/QtOpenGL -IC:/Qt/Qt5.3.0/5.3/mingw482_32/include/QtWidgets -IC:/Qt/Qt5.3.0/5.3/mingw482_32/include/QtGui -IC:/Qt/Qt5.3.0/5.3/mingw482_32/include/QtCore -I. ..\Engine\Debug\Ui\debugwindow.h -o debug\moc_debugwindow.cpp
 
 debug/moc_engine.cpp: ../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/QtCore/QObject \
 		../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/QtCore/qobject.h \
@@ -446,6 +446,8 @@ debug/moc_engine.cpp: ../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/QtCore/QObj
 		../Engine/Event/Events/eventdebugger.h \
 		../Engine/Event/Events/eventstreamer.h \
 		../Engine/Graphics/Model/model.h \
+		../Engine/Object/component.h \
+		../Engine/Object/CompositionHelper.h \
 		../Engine/Event/Events/eventwindow.h \
 		../Engine/Event/Events/eventmodel.h \
 		../Engine/Event/Events/eventcompositeobject.h \
@@ -637,7 +639,7 @@ debug/moc_engine.cpp: ../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/QtCore/QObj
 		../Engine/Object/compositeobject.h \
 		../Engine/Object/positation.h \
 		../Engine/engine.h
-	C:\Qt\Qt5.3.0\5.3\mingw482_32\bin\moc.exe $(DEFINES) -D__GNUC__ -DWIN32 -IC:/Qt/Qt5.3.0/5.3/mingw482_32/mkspecs/win32-g++ -IC:/Code/QtProjects/Engine/Engine -IC:/Code/QtProjects/Engine/Engine/Math -IC:/Code/QtProjects/Engine/Engine/Math/include -IC:/Code/QtProjects/Engine/Engine/Graphics/glfw/include -IC:/Code/QtProjects/Engine/Engine/Graphics/glew/include -IC:/Code/QtProjects/Engine/Engine/Graphics/assimp/include -IC:/Code/QtProjects/Engine/Engine/Physics/bullet-2.82-r2704/src -IC:/Qt/Qt5.3.0/5.3/mingw482_32/include -IC:/Qt/Qt5.3.0/5.3/mingw482_32/include/QtOpenGL -IC:/Qt/Qt5.3.0/5.3/mingw482_32/include/QtWidgets -IC:/Qt/Qt5.3.0/5.3/mingw482_32/include/QtGui -IC:/Qt/Qt5.3.0/5.3/mingw482_32/include/QtCore -I. ..\Engine\engine.h -o debug\moc_engine.cpp
+	C:\Qt\Qt5.3.0\5.3\mingw482_32\bin\moc.exe $(DEFINES) -D__GNUC__ -DWIN32 -IC:/Qt/Qt5.3.0/5.3/mingw482_32/mkspecs/win32-g++ -IC:/Code/QtProjects/Engine/Engine -IC:/Code/QtProjects/Engine/Engine/Math -IC:/Code/QtProjects/Engine/Engine/Math/include -IC:/Code/QtProjects/Engine/Engine/Graphics/glfw/include -IC:/Code/QtProjects/Engine/Engine/Graphics/glew/include -IC:/Code/QtProjects/Engine/Engine/Graphics/assimp/include -IC:/Code/QtProjects/Engine/Engine/Physics/bullet-2.82-r2704/src -IC:/Python34/include -IC:/Qt/Qt5.3.0/5.3/mingw482_32/include -IC:/Qt/Qt5.3.0/5.3/mingw482_32/include/QtOpenGL -IC:/Qt/Qt5.3.0/5.3/mingw482_32/include/QtWidgets -IC:/Qt/Qt5.3.0/5.3/mingw482_32/include/QtGui -IC:/Qt/Qt5.3.0/5.3/mingw482_32/include/QtCore -I. ..\Engine\engine.h -o debug\moc_engine.cpp
 
 debug/moc_streamToDisk.cpp: ../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/QtCore/QThread \
 		../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/QtCore/qthread.h \
@@ -726,6 +728,8 @@ debug/moc_streamToDisk.cpp: ../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/QtCor
 		../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/QtCore/QStringList \
 		../Engine/Graphics/Model/model.h \
 		../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/QtCore/QList \
+		../Engine/Object/component.h \
+		../Engine/Object/CompositionHelper.h \
 		../Engine/Graphics/Model/Parser/Format_obj/loader_obj.h \
 		../Engine/Math/include/Vector/vector3.h \
 		../Engine/Math/include/mathematics.h \
@@ -771,7 +775,7 @@ debug/moc_streamToDisk.cpp: ../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/QtCor
 		../Engine/Graphics/assimp/include/assimp/Compiler/pstdint.h \
 		../Engine/Graphics/assimp/include/assimp/postprocess.h \
 		../Engine/Graphics/Model/Streamer/streamToDisk.h
-	C:\Qt\Qt5.3.0\5.3\mingw482_32\bin\moc.exe $(DEFINES) -D__GNUC__ -DWIN32 -IC:/Qt/Qt5.3.0/5.3/mingw482_32/mkspecs/win32-g++ -IC:/Code/QtProjects/Engine/Engine -IC:/Code/QtProjects/Engine/Engine/Math -IC:/Code/QtProjects/Engine/Engine/Math/include -IC:/Code/QtProjects/Engine/Engine/Graphics/glfw/include -IC:/Code/QtProjects/Engine/Engine/Graphics/glew/include -IC:/Code/QtProjects/Engine/Engine/Graphics/assimp/include -IC:/Code/QtProjects/Engine/Engine/Physics/bullet-2.82-r2704/src -IC:/Qt/Qt5.3.0/5.3/mingw482_32/include -IC:/Qt/Qt5.3.0/5.3/mingw482_32/include/QtOpenGL -IC:/Qt/Qt5.3.0/5.3/mingw482_32/include/QtWidgets -IC:/Qt/Qt5.3.0/5.3/mingw482_32/include/QtGui -IC:/Qt/Qt5.3.0/5.3/mingw482_32/include/QtCore -I. ..\Engine\Graphics\Model\Streamer\streamToDisk.h -o debug\moc_streamToDisk.cpp
+	C:\Qt\Qt5.3.0\5.3\mingw482_32\bin\moc.exe $(DEFINES) -D__GNUC__ -DWIN32 -IC:/Qt/Qt5.3.0/5.3/mingw482_32/mkspecs/win32-g++ -IC:/Code/QtProjects/Engine/Engine -IC:/Code/QtProjects/Engine/Engine/Math -IC:/Code/QtProjects/Engine/Engine/Math/include -IC:/Code/QtProjects/Engine/Engine/Graphics/glfw/include -IC:/Code/QtProjects/Engine/Engine/Graphics/glew/include -IC:/Code/QtProjects/Engine/Engine/Graphics/assimp/include -IC:/Code/QtProjects/Engine/Engine/Physics/bullet-2.82-r2704/src -IC:/Python34/include -IC:/Qt/Qt5.3.0/5.3/mingw482_32/include -IC:/Qt/Qt5.3.0/5.3/mingw482_32/include/QtOpenGL -IC:/Qt/Qt5.3.0/5.3/mingw482_32/include/QtWidgets -IC:/Qt/Qt5.3.0/5.3/mingw482_32/include/QtGui -IC:/Qt/Qt5.3.0/5.3/mingw482_32/include/QtCore -I. ..\Engine\Graphics\Model\Streamer\streamToDisk.h -o debug\moc_streamToDisk.cpp
 
 debug/moc_streamer.cpp: ../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/QtCore/QObject \
 		../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/QtCore/qobject.h \
@@ -856,6 +860,8 @@ debug/moc_streamer.cpp: ../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/QtCore/QO
 		../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/QtCore/qset.h \
 		../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/QtCore/qcontiguouscache.h \
 		../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/QtCore/QList \
+		../Engine/Object/component.h \
+		../Engine/Object/CompositionHelper.h \
 		../Engine/Event/Events/eventwindow.h \
 		../Engine/Event/Events/eventmodel.h \
 		../Engine/Event/Events/eventcompositeobject.h \
@@ -918,7 +924,7 @@ debug/moc_streamer.cpp: ../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/QtCore/QO
 		../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/QtCore/qbasictimer.h \
 		../Engine/Threading/threadaccountant.h \
 		../Engine/Graphics/Model/Streamer/streamer.h
-	C:\Qt\Qt5.3.0\5.3\mingw482_32\bin\moc.exe $(DEFINES) -D__GNUC__ -DWIN32 -IC:/Qt/Qt5.3.0/5.3/mingw482_32/mkspecs/win32-g++ -IC:/Code/QtProjects/Engine/Engine -IC:/Code/QtProjects/Engine/Engine/Math -IC:/Code/QtProjects/Engine/Engine/Math/include -IC:/Code/QtProjects/Engine/Engine/Graphics/glfw/include -IC:/Code/QtProjects/Engine/Engine/Graphics/glew/include -IC:/Code/QtProjects/Engine/Engine/Graphics/assimp/include -IC:/Code/QtProjects/Engine/Engine/Physics/bullet-2.82-r2704/src -IC:/Qt/Qt5.3.0/5.3/mingw482_32/include -IC:/Qt/Qt5.3.0/5.3/mingw482_32/include/QtOpenGL -IC:/Qt/Qt5.3.0/5.3/mingw482_32/include/QtWidgets -IC:/Qt/Qt5.3.0/5.3/mingw482_32/include/QtGui -IC:/Qt/Qt5.3.0/5.3/mingw482_32/include/QtCore -I. ..\Engine\Graphics\Model\Streamer\streamer.h -o debug\moc_streamer.cpp
+	C:\Qt\Qt5.3.0\5.3\mingw482_32\bin\moc.exe $(DEFINES) -D__GNUC__ -DWIN32 -IC:/Qt/Qt5.3.0/5.3/mingw482_32/mkspecs/win32-g++ -IC:/Code/QtProjects/Engine/Engine -IC:/Code/QtProjects/Engine/Engine/Math -IC:/Code/QtProjects/Engine/Engine/Math/include -IC:/Code/QtProjects/Engine/Engine/Graphics/glfw/include -IC:/Code/QtProjects/Engine/Engine/Graphics/glew/include -IC:/Code/QtProjects/Engine/Engine/Graphics/assimp/include -IC:/Code/QtProjects/Engine/Engine/Physics/bullet-2.82-r2704/src -IC:/Python34/include -IC:/Qt/Qt5.3.0/5.3/mingw482_32/include -IC:/Qt/Qt5.3.0/5.3/mingw482_32/include/QtOpenGL -IC:/Qt/Qt5.3.0/5.3/mingw482_32/include/QtWidgets -IC:/Qt/Qt5.3.0/5.3/mingw482_32/include/QtGui -IC:/Qt/Qt5.3.0/5.3/mingw482_32/include/QtCore -I. ..\Engine\Graphics\Model\Streamer\streamer.h -o debug\moc_streamer.cpp
 
 debug/moc_customgraph.cpp: ../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/QtWidgets/QWidget \
 		../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/QtWidgets/qwidget.h \
@@ -1024,7 +1030,7 @@ debug/moc_customgraph.cpp: ../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/QtWidg
 		../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/QtCore/QString \
 		../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/QtCore/QList \
 		../Engine/Debug/Ui/customgraph.h
-	C:\Qt\Qt5.3.0\5.3\mingw482_32\bin\moc.exe $(DEFINES) -D__GNUC__ -DWIN32 -IC:/Qt/Qt5.3.0/5.3/mingw482_32/mkspecs/win32-g++ -IC:/Code/QtProjects/Engine/Engine -IC:/Code/QtProjects/Engine/Engine/Math -IC:/Code/QtProjects/Engine/Engine/Math/include -IC:/Code/QtProjects/Engine/Engine/Graphics/glfw/include -IC:/Code/QtProjects/Engine/Engine/Graphics/glew/include -IC:/Code/QtProjects/Engine/Engine/Graphics/assimp/include -IC:/Code/QtProjects/Engine/Engine/Physics/bullet-2.82-r2704/src -IC:/Qt/Qt5.3.0/5.3/mingw482_32/include -IC:/Qt/Qt5.3.0/5.3/mingw482_32/include/QtOpenGL -IC:/Qt/Qt5.3.0/5.3/mingw482_32/include/QtWidgets -IC:/Qt/Qt5.3.0/5.3/mingw482_32/include/QtGui -IC:/Qt/Qt5.3.0/5.3/mingw482_32/include/QtCore -I. ..\Engine\Debug\Ui\customgraph.h -o debug\moc_customgraph.cpp
+	C:\Qt\Qt5.3.0\5.3\mingw482_32\bin\moc.exe $(DEFINES) -D__GNUC__ -DWIN32 -IC:/Qt/Qt5.3.0/5.3/mingw482_32/mkspecs/win32-g++ -IC:/Code/QtProjects/Engine/Engine -IC:/Code/QtProjects/Engine/Engine/Math -IC:/Code/QtProjects/Engine/Engine/Math/include -IC:/Code/QtProjects/Engine/Engine/Graphics/glfw/include -IC:/Code/QtProjects/Engine/Engine/Graphics/glew/include -IC:/Code/QtProjects/Engine/Engine/Graphics/assimp/include -IC:/Code/QtProjects/Engine/Engine/Physics/bullet-2.82-r2704/src -IC:/Python34/include -IC:/Qt/Qt5.3.0/5.3/mingw482_32/include -IC:/Qt/Qt5.3.0/5.3/mingw482_32/include/QtOpenGL -IC:/Qt/Qt5.3.0/5.3/mingw482_32/include/QtWidgets -IC:/Qt/Qt5.3.0/5.3/mingw482_32/include/QtGui -IC:/Qt/Qt5.3.0/5.3/mingw482_32/include/QtCore -I. ..\Engine\Debug\Ui\customgraph.h -o debug\moc_customgraph.cpp
 
 compiler_moc_source_make_all:
 compiler_moc_source_clean:
@@ -1150,7 +1156,75 @@ compiler_clean: compiler_moc_header_clean compiler_uic_clean
 
 ####### Compile
 
-debug/main.o: ../Engine/main.cpp ../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/QtWidgets/QApplication \
+debug/main.o: ../Engine/main.cpp ../../../../Python34/include/Python.h \
+		../../../../Python34/include/patchlevel.h \
+		../../../../Python34/include/pyconfig.h \
+		../../../../Python34/include/pymacconfig.h \
+		../../../../Python34/include/pyport.h \
+		../../../../Python34/include/pymacro.h \
+		../../../../Python34/include/pyatomic.h \
+		../../../../Python34/include/dynamic_annotations.h \
+		../../../../Python34/include/pymath.h \
+		../../../../Python34/include/pytime.h \
+		../../../../Python34/include/object.h \
+		../../../../Python34/include/pymem.h \
+		../../../../Python34/include/objimpl.h \
+		../../../../Python34/include/typeslots.h \
+		../../../../Python34/include/pyhash.h \
+		../../../../Python34/include/pydebug.h \
+		../../../../Python34/include/bytearrayobject.h \
+		../../../../Python34/include/bytesobject.h \
+		../../../../Python34/include/unicodeobject.h \
+		../../../../Python34/include/longobject.h \
+		../../../../Python34/include/longintrepr.h \
+		../../../../Python34/include/boolobject.h \
+		../../../../Python34/include/floatobject.h \
+		../../../../Python34/include/complexobject.h \
+		../../../../Python34/include/rangeobject.h \
+		../../../../Python34/include/memoryobject.h \
+		../../../../Python34/include/tupleobject.h \
+		../../../../Python34/include/listobject.h \
+		../../../../Python34/include/dictobject.h \
+		../../../../Python34/include/enumobject.h \
+		../../../../Python34/include/setobject.h \
+		../../../../Python34/include/methodobject.h \
+		../../../../Python34/include/moduleobject.h \
+		../../../../Python34/include/funcobject.h \
+		../../../../Python34/include/classobject.h \
+		../../../../Python34/include/fileobject.h \
+		../../../../Python34/include/pycapsule.h \
+		../../../../Python34/include/traceback.h \
+		../../../../Python34/include/pystate.h \
+		../../../../Python34/include/sliceobject.h \
+		../../../../Python34/include/cellobject.h \
+		../../../../Python34/include/iterobject.h \
+		../../../../Python34/include/genobject.h \
+		../../../../Python34/include/descrobject.h \
+		../../../../Python34/include/warnings.h \
+		../../../../Python34/include/weakrefobject.h \
+		../../../../Python34/include/structseq.h \
+		../../../../Python34/include/namespaceobject.h \
+		../../../../Python34/include/codecs.h \
+		../../../../Python34/include/pyerrors.h \
+		../../../../Python34/include/pyarena.h \
+		../../../../Python34/include/modsupport.h \
+		../../../../Python34/include/pythonrun.h \
+		../../../../Python34/include/ceval.h \
+		../../../../Python34/include/sysmodule.h \
+		../../../../Python34/include/intrcheck.h \
+		../../../../Python34/include/import.h \
+		../../../../Python34/include/abstract.h \
+		../../../../Python34/include/bltinmodule.h \
+		../../../../Python34/include/compile.h \
+		../../../../Python34/include/code.h \
+		../../../../Python34/include/eval.h \
+		../../../../Python34/include/pyctype.h \
+		../../../../Python34/include/pystrtod.h \
+		../../../../Python34/include/pystrcmp.h \
+		../../../../Python34/include/dtoa.h \
+		../../../../Python34/include/fileutils.h \
+		../../../../Python34/include/pyfpe.h \
+		../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/QtWidgets/QApplication \
 		../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/QtWidgets/qapplication.h \
 		../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/QtCore/qcoreapplication.h \
 		../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/QtCore/qglobal.h \
@@ -1284,6 +1358,8 @@ debug/main.o: ../Engine/main.cpp ../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/
 		../Engine/Event/Events/eventdebugger.h \
 		../Engine/Event/Events/eventstreamer.h \
 		../Engine/Graphics/Model/model.h \
+		../Engine/Object/component.h \
+		../Engine/Object/CompositionHelper.h \
 		../Engine/Event/Events/eventwindow.h \
 		../Engine/Event/Events/eventmodel.h \
 		../Engine/Event/Events/eventcompositeobject.h \
@@ -1470,44 +1546,7 @@ debug/main.o: ../Engine/main.cpp ../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/
 		../Engine/test.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o debug\main.o ..\Engine\main.cpp
 
-debug/object.o: ../Engine/Object/object.cpp ../Engine/Object/object.h \
-		../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/QtCore/QString \
-		../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/QtCore/qstring.h \
-		../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/QtCore/qchar.h \
-		../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/QtCore/qglobal.h \
-		../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/QtCore/qconfig.h \
-		../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/QtCore/qfeatures.h \
-		../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/QtCore/qsystemdetection.h \
-		../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/QtCore/qprocessordetection.h \
-		../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/QtCore/qcompilerdetection.h \
-		../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/QtCore/qtypeinfo.h \
-		../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/QtCore/qtypetraits.h \
-		../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/QtCore/qsysinfo.h \
-		../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/QtCore/qlogging.h \
-		../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/QtCore/qflags.h \
-		../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/QtCore/qatomic.h \
-		../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/QtCore/qbasicatomic.h \
-		../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/QtCore/qatomic_bootstrap.h \
-		../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/QtCore/qgenericatomic.h \
-		../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/QtCore/qatomic_msvc.h \
-		../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/QtCore/qatomic_armv7.h \
-		../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/QtCore/qatomic_armv6.h \
-		../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/QtCore/qatomic_armv5.h \
-		../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/QtCore/qatomic_ia64.h \
-		../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/QtCore/qatomic_mips.h \
-		../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/QtCore/qatomic_x86.h \
-		../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/QtCore/qatomic_cxx11.h \
-		../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/QtCore/qatomic_gcc.h \
-		../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/QtCore/qatomic_unix.h \
-		../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/QtCore/qglobalstatic.h \
-		../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/QtCore/qmutex.h \
-		../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/QtCore/qnumeric.h \
-		../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/QtCore/qbytearray.h \
-		../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/QtCore/qrefcount.h \
-		../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/QtCore/qnamespace.h \
-		../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/QtCore/qarraydata.h \
-		../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/QtCore/qstringbuilder.h \
-		../Engine/Math/include/vector
+debug/object.o: ../Engine/Object/object.cpp ../../../../Python34/include/object.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o debug\object.o ..\Engine\Object\object.cpp
 
 debug/debugwindow.o: ../Engine/Debug/Ui/debugwindow.cpp ../Engine/Debug/Ui/debugwindow.h \
@@ -1797,6 +1836,8 @@ debug/engine.o: ../Engine/engine.cpp ../Engine/engine.h \
 		../Engine/Event/Events/eventdebugger.h \
 		../Engine/Event/Events/eventstreamer.h \
 		../Engine/Graphics/Model/model.h \
+		../Engine/Object/component.h \
+		../Engine/Object/CompositionHelper.h \
 		../Engine/Event/Events/eventwindow.h \
 		../Engine/Event/Events/eventmodel.h \
 		../Engine/Event/Events/eventcompositeobject.h \
@@ -1986,7 +2027,9 @@ debug/engine.o: ../Engine/engine.cpp ../Engine/engine.h \
 		../Engine/Physics/bullet-2.82-r2704/src/BulletDynamics/Vehicle/btWheelInfo.h \
 		../Engine/Physics/bullet-2.82-r2704/src/BulletDynamics/Dynamics/btActionInterface.h \
 		../Engine/Object/compositeobject.h \
-		../Engine/Object/positation.h
+		../Engine/Object/positation.h \
+		../Engine/Object/entity.h \
+		../Engine/Object/entitymanager.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o debug\engine.o ..\Engine\engine.cpp
 
 debug/event.o: ../Engine/Event/event.cpp ../Engine/Event/event.h \
@@ -2068,6 +2111,8 @@ debug/event.o: ../Engine/Event/event.cpp ../Engine/Event/event.h \
 		../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/QtCore/qset.h \
 		../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/QtCore/qcontiguouscache.h \
 		../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/QtCore/QList \
+		../Engine/Object/component.h \
+		../Engine/Object/CompositionHelper.h \
 		../Engine/Event/Events/eventwindow.h \
 		../Engine/Event/Events/eventmodel.h \
 		../Engine/Event/Events/eventcompositeobject.h
@@ -2153,6 +2198,8 @@ debug/eventlistener.o: ../Engine/Event/eventlistener.cpp ../Engine/Event/eventli
 		../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/QtCore/qset.h \
 		../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/QtCore/qcontiguouscache.h \
 		../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/QtCore/QList \
+		../Engine/Object/component.h \
+		../Engine/Object/CompositionHelper.h \
 		../Engine/Event/Events/eventwindow.h \
 		../Engine/Event/Events/eventmodel.h \
 		../Engine/Event/Events/eventcompositeobject.h
@@ -2237,6 +2284,8 @@ debug/eventtransmitter.o: ../Engine/Event/eventtransmitter.cpp ../Engine/Event/e
 		../Engine/Event/Events/eventstreamer.h \
 		../Engine/Graphics/Model/model.h \
 		../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/QtCore/QList \
+		../Engine/Object/component.h \
+		../Engine/Object/CompositionHelper.h \
 		../Engine/Event/Events/eventwindow.h \
 		../Engine/Event/Events/eventmodel.h \
 		../Engine/Event/Events/eventcompositeobject.h \
@@ -2368,6 +2417,8 @@ debug/debugger.o: ../Engine/Debug/debugger.cpp ../Engine/Debug/debugger.h \
 		../Engine/Object/SmartPointer/referencecounter.h \
 		../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/QtCore/QDebug \
 		../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/QtCore/QList \
+		../Engine/Object/component.h \
+		../Engine/Object/CompositionHelper.h \
 		../Engine/Event/Events/eventwindow.h \
 		../Engine/Event/Events/eventmodel.h \
 		../Engine/Event/Events/eventcompositeobject.h
@@ -2458,6 +2509,8 @@ debug/window.o: ../Engine/Graphics/Window/window.cpp ../Engine/Graphics/Window/w
 		../Engine/Event/Events/eventstreamer.h \
 		../Engine/Graphics/Model/model.h \
 		../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/QtCore/QList \
+		../Engine/Object/component.h \
+		../Engine/Object/CompositionHelper.h \
 		../Engine/Event/Events/eventwindow.h \
 		../Engine/Event/Events/eventmodel.h \
 		../Engine/Event/Events/eventcompositeobject.h
@@ -2563,6 +2616,8 @@ debug/renderer.o: ../Engine/Graphics/Renderer/renderer.cpp ../Engine/Graphics/Re
 		../Engine/Event/Events/eventdebugger.h \
 		../Engine/Event/Events/eventstreamer.h \
 		../Engine/Graphics/Model/model.h \
+		../Engine/Object/component.h \
+		../Engine/Object/CompositionHelper.h \
 		../Engine/Event/Events/eventwindow.h \
 		../Engine/Event/Events/eventmodel.h \
 		../Engine/Event/Events/eventcompositeobject.h \
@@ -2751,6 +2806,8 @@ debug/model.o: ../Engine/Graphics/Model/model.cpp ../Engine/Graphics/Model/model
 		../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/QtCore/qset.h \
 		../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/QtCore/qcontiguouscache.h \
 		../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/QtCore/QList \
+		../Engine/Object/component.h \
+		../Engine/Object/CompositionHelper.h \
 		../Engine/Graphics/Model/Components/material.h \
 		../Engine/Graphics/OpenGL/OpenGL.h \
 		../Engine/Graphics/glew/include/GL/glew.h \
@@ -2907,6 +2964,8 @@ debug/loader.o: ../Engine/Graphics/Model/Parser/loader.cpp ../Engine/Graphics/Mo
 		../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/QtCore/qset.h \
 		../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/QtCore/qcontiguouscache.h \
 		../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/QtCore/QList \
+		../Engine/Object/component.h \
+		../Engine/Object/CompositionHelper.h \
 		../Engine/Graphics/Model/Parser/Format_obj/loader_obj.h \
 		../Engine/Graphics/OpenGL/OpenGL.h \
 		../Engine/Graphics/glew/include/GL/glew.h \
@@ -3050,6 +3109,8 @@ debug/loader_obj.o: ../Engine/Graphics/Model/Parser/Format_obj/loader_obj.cpp ..
 		../Engine/Object/SmartPointer/sp.h \
 		../Engine/Object/SmartPointer/sp.cpp \
 		../Engine/Object/SmartPointer/referencecounter.h \
+		../Engine/Object/component.h \
+		../Engine/Object/CompositionHelper.h \
 		../Engine/Graphics/Model/Components/material.h \
 		../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/QtGui/QImage \
 		../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/QtGui/qimage.h \
@@ -3253,6 +3314,8 @@ debug/modellibrary.o: ../Engine/Graphics/Model/modellibrary.cpp ../Engine/Graphi
 		../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/QtCore/qpoint.h \
 		../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/QtCore/qset.h \
 		../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/QtCore/qcontiguouscache.h \
+		../Engine/Object/component.h \
+		../Engine/Object/CompositionHelper.h \
 		../Engine/Event/Events/eventwindow.h \
 		../Engine/Event/Events/eventmodel.h \
 		../Engine/Event/Events/eventcompositeobject.h \
@@ -3462,6 +3525,8 @@ debug/streamToDisk.o: ../Engine/Graphics/Model/Streamer/streamToDisk.cpp ../Engi
 		../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/QtCore/QStringList \
 		../Engine/Graphics/Model/model.h \
 		../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/QtCore/QList \
+		../Engine/Object/component.h \
+		../Engine/Object/CompositionHelper.h \
 		../Engine/Graphics/Model/Parser/Format_obj/loader_obj.h \
 		../Engine/Math/include/Vector/vector3.h \
 		../Engine/Math/include/mathematics.h \
@@ -3592,6 +3657,8 @@ debug/streamer.o: ../Engine/Graphics/Model/Streamer/streamer.cpp ../Engine/Graph
 		../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/QtCore/qset.h \
 		../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/QtCore/qcontiguouscache.h \
 		../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/QtCore/QList \
+		../Engine/Object/component.h \
+		../Engine/Object/CompositionHelper.h \
 		../Engine/Event/Events/eventwindow.h \
 		../Engine/Event/Events/eventmodel.h \
 		../Engine/Event/Events/eventcompositeobject.h \
@@ -3976,7 +4043,9 @@ debug/eventstreamer.o: ../Engine/Event/Events/eventstreamer.cpp ../Engine/Event/
 		../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/QtCore/qpoint.h \
 		../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/QtCore/qset.h \
 		../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/QtCore/qcontiguouscache.h \
-		../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/QtCore/QList
+		../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/QtCore/QList \
+		../Engine/Object/component.h \
+		../Engine/Object/CompositionHelper.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o debug\eventstreamer.o ..\Engine\Event\Events\eventstreamer.cpp
 
 debug/keyboard.o: ../Engine/Input/keyboard.cpp ../Engine/Input/keyboard.h \
@@ -4064,6 +4133,8 @@ debug/keyboard.o: ../Engine/Input/keyboard.cpp ../Engine/Input/keyboard.h \
 		../Engine/Event/Events/eventstreamer.h \
 		../Engine/Graphics/Model/model.h \
 		../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/QtCore/QList \
+		../Engine/Object/component.h \
+		../Engine/Object/CompositionHelper.h \
 		../Engine/Event/Events/eventwindow.h \
 		../Engine/Event/Events/eventmodel.h \
 		../Engine/Event/Events/eventcompositeobject.h
@@ -4154,6 +4225,8 @@ debug/mouse.o: ../Engine/Input/mouse.cpp ../Engine/Input/mouse.h \
 		../Engine/Event/Events/eventstreamer.h \
 		../Engine/Graphics/Model/model.h \
 		../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/QtCore/QList \
+		../Engine/Object/component.h \
+		../Engine/Object/CompositionHelper.h \
 		../Engine/Event/Events/eventwindow.h \
 		../Engine/Event/Events/eventmodel.h \
 		../Engine/Event/Events/eventcompositeobject.h
@@ -4425,6 +4498,8 @@ debug/test.o: ../Engine/test.cpp ../Engine/test.h \
 		../Engine/Event/Events/eventdebugger.h \
 		../Engine/Event/Events/eventstreamer.h \
 		../Engine/Graphics/Model/model.h \
+		../Engine/Object/component.h \
+		../Engine/Object/CompositionHelper.h \
 		../Engine/Event/Events/eventwindow.h \
 		../Engine/Event/Events/eventmodel.h \
 		../Engine/Event/Events/eventcompositeobject.h \
@@ -4711,6 +4786,8 @@ debug/objectworld.o: ../Engine/Graphics/World/objectworld.cpp ../Engine/Graphics
 		../Engine/Event/Events/eventstreamer.h \
 		../Engine/Graphics/Model/model.h \
 		../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/QtCore/QList \
+		../Engine/Object/component.h \
+		../Engine/Object/CompositionHelper.h \
 		../Engine/Event/Events/eventwindow.h \
 		../Engine/Event/Events/eventmodel.h \
 		../Engine/Event/Events/eventcompositeobject.h \
@@ -4871,6 +4948,8 @@ debug/octtree.o: ../Engine/Graphics/World/DataStructure/octtree.cpp ../Engine/Gr
 		../Engine/Event/Events/eventdebugger.h \
 		../Engine/Event/Events/eventstreamer.h \
 		../Engine/Graphics/Model/model.h \
+		../Engine/Object/component.h \
+		../Engine/Object/CompositionHelper.h \
 		../Engine/Event/Events/eventwindow.h \
 		../Engine/Event/Events/eventmodel.h \
 		../Engine/Event/Events/eventcompositeobject.h \
@@ -5020,6 +5099,8 @@ debug/modelloader.o: ../Engine/Graphics/Model/modelloader.cpp ../Engine/Graphics
 		../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/QtCore/qset.h \
 		../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/QtCore/qcontiguouscache.h \
 		../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/QtCore/QList \
+		../Engine/Object/component.h \
+		../Engine/Object/CompositionHelper.h \
 		../Engine/Event/Events/eventwindow.h \
 		../Engine/Event/Events/eventmodel.h \
 		../Engine/Event/Events/eventcompositeobject.h \
@@ -5159,7 +5240,9 @@ debug/eventmodel.o: ../Engine/Event/Events/eventmodel.cpp ../Engine/Event/Events
 		../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/QtCore/qpoint.h \
 		../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/QtCore/qset.h \
 		../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/QtCore/qcontiguouscache.h \
-		../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/QtCore/QList
+		../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/QtCore/QList \
+		../Engine/Object/component.h \
+		../Engine/Object/CompositionHelper.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o debug\eventmodel.o ..\Engine\Event\Events\eventmodel.cpp
 
 debug/compositeobject.o: ../Engine/Object/compositeobject.cpp ../Engine/Object/compositeobject.h \
@@ -5243,6 +5326,8 @@ debug/compositeobject.o: ../Engine/Object/compositeobject.cpp ../Engine/Object/c
 		../Engine/Event/Events/eventstreamer.h \
 		../Engine/Graphics/Model/model.h \
 		../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/QtCore/QList \
+		../Engine/Object/component.h \
+		../Engine/Object/CompositionHelper.h \
 		../Engine/Event/Events/eventwindow.h \
 		../Engine/Event/Events/eventmodel.h \
 		../Engine/Event/Events/eventcompositeobject.h \
@@ -5345,6 +5430,8 @@ debug/positation.o: ../Engine/Object/positation.cpp ../Engine/Object/positation.
 		../Engine/Math/include/Intersections/intersections.h \
 		../Engine/Math/include/Geometry/aabb.h \
 		../Engine/Math/include/Geometry/sphere.h \
+		../Engine/Object/component.h \
+		../Engine/Object/CompositionHelper.h \
 		../Engine/Event/event.h \
 		../Engine/Event/Events/eventdebugger.h \
 		../Engine/Event/Events/eventstreamer.h \
@@ -5437,6 +5524,8 @@ debug/eventcompositeobject.o: ../Engine/Event/Events/eventcompositeobject.cpp ..
 		../Engine/Event/Events/eventstreamer.h \
 		../Engine/Graphics/Model/model.h \
 		../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/QtCore/QList \
+		../Engine/Object/component.h \
+		../Engine/Object/CompositionHelper.h \
 		../Engine/Event/Events/eventwindow.h \
 		../Engine/Event/Events/eventmodel.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o debug\eventcompositeobject.o ..\Engine\Event\Events\eventcompositeobject.cpp
@@ -5638,6 +5727,8 @@ debug/octtreefast.o: ../Engine/Graphics/World/DataStructure/octtreefast.cpp ../E
 		../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/QtCore/qset.h \
 		../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/QtCore/qcontiguouscache.h \
 		../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/QtCore/QList \
+		../Engine/Object/component.h \
+		../Engine/Object/CompositionHelper.h \
 		../Engine/Event/Events/eventwindow.h \
 		../Engine/Event/Events/eventmodel.h \
 		../Engine/Event/Events/eventcompositeobject.h \
@@ -5845,6 +5936,8 @@ debug/loader_assimp.o: ../Engine/Graphics/Model/Parser/Format_assimp/loader_assi
 		../Engine/Object/SmartPointer/sp.cpp \
 		../Engine/Object/SmartPointer/referencecounter.h \
 		../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/QtCore/QList \
+		../Engine/Object/component.h \
+		../Engine/Object/CompositionHelper.h \
 		../Engine/Graphics/Model/Components/material.h \
 		../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/QtGui/QImage \
 		../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/QtGui/qimage.h \
@@ -5862,7 +5955,34 @@ debug/loader_assimp.o: ../Engine/Graphics/Model/Parser/Format_assimp/loader_assi
 		../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/QtGui/qpaintdevice.h \
 		../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/QtGui/qrgb.h \
 		../Engine/Graphics/Model/Components/texturemap.h \
-		../Engine/Graphics/Model/Components/mesh.h
+		../Engine/Graphics/Model/Components/mesh.h \
+		../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/QtWidgets/QApplication \
+		../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/QtWidgets/qapplication.h \
+		../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/QtCore/qcoreapplication.h \
+		../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/QtCore/qeventloop.h \
+		../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/QtGui/qcursor.h \
+		../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/QtWidgets/qdesktopwidget.h \
+		../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/QtWidgets/qwidget.h \
+		../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/QtGui/qpalette.h \
+		../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/QtGui/qcolor.h \
+		../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/QtGui/qbrush.h \
+		../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/QtGui/qpixmap.h \
+		../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/QtCore/qsharedpointer.h \
+		../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/QtCore/qsharedpointer_impl.h \
+		../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/QtGui/qfont.h \
+		../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/QtGui/qfontmetrics.h \
+		../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/QtGui/qfontinfo.h \
+		../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/QtWidgets/qsizepolicy.h \
+		../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/QtGui/qkeysequence.h \
+		../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/QtGui/qevent.h \
+		../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/QtCore/qurl.h \
+		../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/QtCore/qurlquery.h \
+		../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/QtCore/qfile.h \
+		../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/QtCore/qfiledevice.h \
+		../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/QtGui/qvector2d.h \
+		../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/QtGui/qtouchdevice.h \
+		../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/QtGui/qguiapplication.h \
+		../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/QtGui/qinputmethod.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o debug\loader_assimp.o ..\Engine\Graphics\Model\Parser\Format_assimp\loader_assimp.cpp
 
 debug/texturemap.o: ../Engine/Graphics/Model/Components/texturemap.cpp ../Engine/Graphics/Model/Components/texturemap.h \
@@ -6101,8 +6221,6 @@ debug/component.o: ../Engine/Object/component.cpp ../Engine/Object/component.h \
 		../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/QtCore/qarraydata.h \
 		../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/QtCore/qstringbuilder.h \
 		../Engine/Math/include/vector \
-		../Engine/Object/entity.h \
-		../Engine/Object/entitymanager.h \
 		../Engine/Object/CompositionHelper.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o debug\component.o ..\Engine\Object\component.cpp
 
@@ -6189,9 +6307,9 @@ debug/entitymanager.o: ../Engine/Object/entitymanager.cpp ../Engine/Object/entit
 		../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/QtCore/qarraydata.h \
 		../../../../Qt/Qt5.3.0/5.3/mingw482_32/include/QtCore/qstringbuilder.h \
 		../Engine/Math/include/vector \
+		../Engine/Object/CompositionHelper.h \
 		../Engine/Object/entity.h \
-		../Engine/Object/component.h \
-		../Engine/Object/CompositionHelper.h
+		../Engine/Object/component.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o debug\entitymanager.o ..\Engine\Object\entitymanager.cpp
 
 debug/moc_debugwindow.o: debug/moc_debugwindow.cpp 

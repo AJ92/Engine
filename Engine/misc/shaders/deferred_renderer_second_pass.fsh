@@ -34,7 +34,7 @@ vec3 phong (in vec3 p_eye, in vec3 n_eye) {
   // attenuation (fade out to sphere edges)
   float dist_2d = distance (light_position_eye, p_eye);
    //175.0 is the spheres scale...
-  float atten_factor = -log (min (1.0, dist_2d / 175.0));
+  float atten_factor = -log (min (1.0, dist_2d / (175.0 * 2.0)));
   
   return (Id + Is) * atten_factor;
 }
@@ -53,4 +53,5 @@ void main () {
   
   frag_color.rgb = c_texel.rgb * phong (p_texel.rgb, normalize (n_texel).rgb);
   //frag_color.a = 1.0;
+
 }

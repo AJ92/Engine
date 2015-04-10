@@ -20,7 +20,7 @@ void main () {
     discard;
   }
   
-  vec4 n_texel = texture (n_tex, st);
+  //vec4 n_texel = texture (n_tex, st);
   vec4 c_texel = texture (c_tex, st);
   
   

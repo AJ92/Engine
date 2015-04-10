@@ -673,14 +673,14 @@ void Renderer::render_v2(){
         glUniform2f (win_size_loc_directionalambientpass, win->getWindowWidth(), win->getWindowHeight());
 
         glUniform3f (dir_loc_directionalambientpass,
-                      0.0,
-                      0.0,
-                      -1.0); // ambient light direction
+                      1.0,
+                      0.1,
+                      0.1); // ambient light direction
 
         glUniform3f (color_loc_directionalambientpass,
-                     0.5,//0.330,
-                     0.45,//0.310,
-                     0.4//0.350
+                     0.6,//0.330,
+                     0.55,//0.310,
+                     0.5//0.350
                      ); // ambient color
 
 

@@ -197,6 +197,16 @@ windows: {
     CONFIG(debug, debug|release): LIBS += -lBulletCollision_Debug -lBulletDynamics_Debug -lBulletSoftBody_Debug -lLinearMath_Debug
 
 
+
+    #Python 3.4
+    INCLUDEPATH += C:/Python34/include
+    DEPENDPATH += C:/Python34/include
+
+    LIBS += -LC:/Python34/libs
+    CONFIG(release, debug|release): LIBS += -lpython34
+    CONFIG(debug, debug|release): LIBS += -lpython34
+
+
     message($$INCLUDEPATH)
     message($$LIBS)
 }

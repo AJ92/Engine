@@ -1,8 +1,14 @@
+//python test
+#include <cmath>
+#include "Python.h"
+
+
+
+
 #include "test.h"
 
 #include "Event/event.h"
 #include "Object/positation.h"
-
 
 
 
@@ -47,6 +53,15 @@ Test::Test() :
 
     mPosX = 0;
     mPosY = 0;
+
+
+    //python test...
+    Py_SetProgramName(L"python test");  /* optional but recommended */
+    Py_Initialize();
+    PyRun_SimpleString("from time import time,ctime\n"
+                       "print (ctime(time()))\n");
+    Py_Finalize();
+
 
 }
 
@@ -268,9 +283,26 @@ void Test::keyFunction(double fs){
     {
         if(level_loaded < 1){
             for(int i = 0; i < test_amount; i++){
+                //betty
+
                 compositeobjecttest.append(loadModelObject("betty",
                                                            getApplicationDir() +
                                                            "//betty.obj")); 
+
+
+                //HN48-flying
+                /*
+                compositeobjecttest.append(loadModelObject("HN48-flying",
+                                                           getApplicationDir() +
+                                                           "/HN48/HN48-flying.obj"));
+                                                           */
+
+                //sd85
+                /*
+                compositeobjecttest.append(loadModelObject("sd85",
+                                                           getApplicationDir() +
+                                                           "/sd85/sd85.obj"));
+                                                           */
 
             }
             level_loaded += 1;
@@ -283,6 +315,7 @@ void Test::keyFunction(double fs){
                                                         (double)((rand() & 2000)-1000));
 
 
+                /*
                 int rand_rot = (rand() & 2);
                 if(rand_rot == 0){
                     coTest->getPositation()->set_rotation((double) (rand() & 360), 1, 0, 0);
@@ -293,8 +326,9 @@ void Test::keyFunction(double fs){
                 else if(rand_rot == 2){
                     coTest->getPositation()->set_rotation((double) (rand() & 360), 0, 0, 1);
                 }
+                */
 
-                coTest->getPositation()->set_scale(0.9,0.9,0.9);
+                coTest->getPositation()->set_scale(0.3,0.3,0.3);
 
 
             }

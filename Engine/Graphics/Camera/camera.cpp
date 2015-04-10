@@ -1,7 +1,7 @@
 #include "camera.h"
 
 Camera::Camera() :
-    Object()
+    Component()
 {
     M_camera_view.set_to_identity();
     M_camera_rotation_local.set_to_identity();

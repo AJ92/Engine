@@ -16,7 +16,7 @@ QString version_string   = "1.0a";
 unsigned int version     = 1000001;
 
 // C part (CALLBACKS AND GLOBAL POINTER)
-Quark::Engine * ptr_global_engine_instance = NULL;
+QE::Engine * ptr_global_engine_instance = NULL;
 
 void render_callback(void);
 void error_callback(int error, const char* description);
@@ -47,7 +47,7 @@ void keyboard_callback(unsigned char key, int x, int y){
 /*!
   Sets on object creation the pointer for the C callback wrapper.
   */
-Quark::Engine::Engine(QObject *parent) :
+QE::Engine::Engine(QObject *parent) :
     EventListener(),
     EventTransmitter(),
     QObject(parent)
@@ -155,7 +155,7 @@ Quark::Engine::Engine(QObject *parent) :
     fps_timer->setInterval(200);
 }
 
-Quark::Engine::~Engine(){
+QE::Engine::~Engine(){
     running = false;
     glfwTerminate();
     qDebug("engine stopped.");
@@ -166,7 +166,7 @@ Quark::Engine::~Engine(){
 /*!
   If everything is set up, this command starts the engine.
   */
-void Quark::Engine::initialize(int argc, char *argv[]){
+void QE::Engine::initialize(int argc, char *argv[]){
     debugMessage("engine initializing...");
 
     //GLEW
@@ -239,13 +239,8 @@ void Quark::Engine::initialize(int argc, char *argv[]){
     debugMessage("engine initialized.");
 }
 
-void Quark::Engine::setWindowTitle(QString title){
-    if(running){
-        window->setWindowTitle(title);
-    }
-}
 
-void Quark::Engine::showDebugWindow(){
+void QE::Engine::showDebugWindow(){
     qDebug("...");
     if(!debug_visible){
         Event e;
@@ -256,7 +251,7 @@ void Quark::Engine::showDebugWindow(){
     qDebug("... ...");
 }
 
-void Quark::Engine::hideDebugWindow(){
+void QE::Engine::hideDebugWindow(){
     if(debug_visible){
         Event e;
         e.type = Event::EventDebuggerHide;
@@ -265,48 +260,29 @@ void Quark::Engine::hideDebugWindow(){
     }
 }
 
-void Quark::Engine::setWindowSize(int width, int height){
-    if(running){
-        window->setWindowSize(width, height);
-    }
-}
 
-int Quark::Engine::getWindowWidth(){
-    if(running){
-        return window->getWindowWidth();
-    }
-    return -1;
-}
-
-int Quark::Engine::getWindowHeight(){
-    if(running){
-        return window->getWindowHeight();
-    }
-    return -1;
-}
-
-QString Quark::Engine::getApplicationDir(){
+QString QE::Engine::getApplicationDir(){
     return app_dir;
 }
 
-Camera* Quark::Engine::getCamera(){
+Camera* QE::Engine::getCamera(){
     return cam;
 }
 
-double Quark::Engine::getTimeStep(){
+double QE::Engine::getTimeStep(){
     return timestep;
 }
 
-bool Quark::Engine::isRunning(){
+bool QE::Engine::isRunning(){
     return running;
 }
 
-int Quark::Engine::getFps(){
+int QE::Engine::getFps(){
     return fps;
 }
 
 //simple fps calc
-void Quark::Engine::timer(){
+void QE::Engine::timer(){
     //fps = frame_count;
 
     frame_count = 0;
@@ -345,7 +321,7 @@ void Quark::Engine::timer(){
 }
 
 
-void Quark::Engine::update()
+void QE::Engine::update()
 {
     frame_count++;
 
@@ -375,7 +351,7 @@ void Quark::Engine::update()
 
 }
 
-void Quark::Engine::render(){
+void QE::Engine::render(){
     if(!glfwWindowShouldClose(window->getGLFWwindow()))
     {
         //set the objectworld
@@ -394,55 +370,55 @@ void Quark::Engine::render(){
 }
 
 
-void Quark::Engine::error(int error, const char* description){
+void QE::Engine::error(int error, const char* description){
     debugMessage("GLWF Error (" + QString::number(error) + "): " + QString(description));
 }
 
-void Quark::Engine::setClearColor(float r, float g, float b, float a){
+void QE::Engine::setClearColor(float r, float g, float b, float a){
     //dont want to check for good values... user should do it
     glClearColor(r,g,b,a);
 }
 
-void Quark::Engine::eventCall(double fs){
+void QE::Engine::eventCall(double fs){
 
 }
 
 //SLOTS
-void Quark::Engine::eventLoop(){
+void QE::Engine::eventLoop(){
     update();
     render();
 }
 
 //dynamic light
-SP<CompositeObject> Quark::Engine::loadLightObject(QString name){
+SP<CompositeObject> QE::Engine::loadLightObject(QString name){
     return object_world->loadLightobject(name);
 }
 
 //dynamic
-SP<CompositeObject> Quark::Engine::loadModelObject(QString name, QString path){
+SP<CompositeObject> QE::Engine::loadModelObject(QString name, QString path){
     return object_world->loadModelobject(name, path);
 }
 
 //static
-SP<CompositeObject> Quark::Engine::loadModelObject(QString name, QString path, SP<Positation> posi){
+SP<CompositeObject> QE::Engine::loadModelObject(QString name, QString path, SP<Positation> posi){
     return object_world->loadModelobject(name, path, posi);
 }
 
 
 //new antity manager style loading functions...
-Entity & Quark::Engine::loadLightObjectE(QString name){
+Entity & QE::Engine::loadLightObjectE(QString name){
     auto& entity(entityManager->addEntity());
 
     return entity;
 }
 
-Entity & Quark::Engine::loadModelObjectE(QString name, QString path){
+Entity & QE::Engine::loadModelObjectE(QString name, QString path){
     auto& entity(entityManager->addEntity());
 
     return entity;
 }
 
-Entity & Quark::Engine::loadModelObjectE(QString name, QString path, SP<Positation> posi){
+Entity & QE::Engine::loadModelObjectE(QString name, QString path, SP<Positation> posi){
     auto& entity(entityManager->addEntity());
 
     return entity;
@@ -450,7 +426,7 @@ Entity & Quark::Engine::loadModelObjectE(QString name, QString path, SP<Positati
 
 
 
-void Quark::Engine::setCamera(Camera * cam){
+void QE::Engine::setCamera(Camera * cam){
     this->cam = cam;
     r->setCamera(this->cam);
 }

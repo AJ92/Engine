@@ -1,6 +1,7 @@
 #include "frustum.h"
 
-Frustum::Frustum()
+Frustum::Frustum() :
+    Component()
 {
 }
 

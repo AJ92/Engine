@@ -13,7 +13,7 @@
 
 
 Test::Test() :
-    Quark::Engine()
+    QE::Engine()
 {
     x_angle = 0.0;
     y_angle = 0.0;
@@ -25,8 +25,8 @@ Test::Test() :
     initialize(0, 0);
 
 
-    setWindowTitle("Quark v1.0b");
-    setWindowSize(800,600);
+    window->setWindowTitle("Quark v1.0b");
+    window->setWindowSize(800,600);
 
 
     Camera * camera = new Camera();

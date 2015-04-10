@@ -2,9 +2,10 @@
 #define CAMERA_H
 
 #include "Object/object.h"
+#include "Object/component.h"
 #include "mathematics.h"
 
-class Camera : public Object
+class Camera : public Component
 {
 public:
     Camera();

@@ -56,7 +56,7 @@ class Positation;
 class Entity;
 class EntityManager;
 
-namespace Quark
+namespace QE
 {
     class Engine : public QObject, virtual public EventListener, virtual public EventTransmitter
     {
@@ -69,11 +69,6 @@ namespace Quark
         void initialize(int argc, char *argv[]);
 
 
-        //WINDOW
-        void setWindowTitle(QString title);
-        void setWindowSize(int width, int height);
-        int getWindowWidth();
-        int getWindowHeight();
 
         bool isRunning();
 
@@ -132,10 +127,11 @@ namespace Quark
         //window settings
         EventTransmitter * windowTransmitter;
 
-    public:
-        Window * window;
+
 
     protected:
+        //window
+        Window * window;
         //renderer
         Renderer *r;
         //keyboard

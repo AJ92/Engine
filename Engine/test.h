@@ -7,7 +7,7 @@
 
 class Event;
 
-class Test : public Quark::Engine
+class Test : public QE::Engine
 {
 public:
     Test();

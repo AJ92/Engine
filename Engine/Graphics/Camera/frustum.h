@@ -2,13 +2,14 @@
 #define FRUSTUM_H
 
 #include "Object/object.h"
+#include "Object/component.h"
 #include "mathematics.h"
 #include "Geometry/plane.h"
 
 //PI / 180 degree (very good, much precise, such math)
 #define ANG2RAD 3.14159265358979323846/180.0
 
-class Frustum : public Object
+class Frustum : public Component
 {
 public:
     Frustum();

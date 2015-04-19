@@ -26,6 +26,8 @@
 
 #include "Object/SmartPointer/smartpointer.h"
 
+#include "Object/positation.h"
+
 class Light;
 class Model;
 class Material;
@@ -33,7 +35,7 @@ class TextureMap;
 class TextureMapCube;
 class Mesh;
 class Event;
-class Positation;
+
 class CompositeObject;
 class ObjectWorld;
 

@@ -8,6 +8,7 @@
 
 
 Model::Model(const Model &mdl) :
+    Component(),
     EventTransmitter()
 {
     //copy all the stuff to this new object
@@ -40,9 +41,11 @@ Model::Model() :
     size = 0.0;
 }
 
+
 Model::~Model(){
     //qDebug("Model::~Model");
 }
+
 
 double Model::get_size(){
     return size;
@@ -154,6 +157,17 @@ bool Model::equal(const Model &mdl) const{
 //friend
 bool operator==(const Model &mdl1, const Model &mdl2){
     return mdl1.equal(mdl2);
+}
+
+
+
+
+void Model::init(){
+    qDebug() << "Model::init()";
+}
+
+void Model::update(float mFT){
+    //qDebug() << "Model::update(float mFT)";
 }
 
 

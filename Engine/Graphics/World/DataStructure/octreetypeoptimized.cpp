@@ -1,10 +1,10 @@
-#include "octtree.h"
+#include "octreetypeoptimized.h"
 
 #include "Event/event.h"
 #include "Object/compositeobject.h"
 #include "Object/positation.h"
 
-OctTree::OctTree(int max_amount_objects)
+OcTreeTypeOptimized::OcTreeTypeOptimized(int max_amount_objects)
 {
     this->subdivision_level = 0;
     this->max_amount_objects = max_amount_objects;
@@ -16,14 +16,14 @@ OctTree::OctTree(int max_amount_objects)
     mdllib->initialize();
     id_compositeobject_hash.reserve(max_amount_objects);
     amount_objects = 0;
-    type = NodeRoot;
+    nodeType = NodeRoot;
     constructNodePoints();
 
-    me = SP<OctTree>(this);
+    me = SP<OcTreeTypeOptimized>(this);
     me_eventListener = SP<EventListener> (this);
 }
 
-OctTree::OctTree(int subdiv_lvl,Vector3 pos, double node_size, int max_amount_objects)
+OcTreeTypeOptimized::OcTreeTypeOptimized(int subdiv_lvl,Vector3 pos, double node_size, int max_amount_objects)
 {
     this->subdivision_level = subdiv_lvl;
     this->is_subdivided = false;
@@ -34,14 +34,14 @@ OctTree::OctTree(int subdiv_lvl,Vector3 pos, double node_size, int max_amount_ob
     mdllib->initialize();
     id_compositeobject_hash.reserve(max_amount_objects);
     amount_objects = 0;
-    type = NodeLeaf;
+    nodeType = NodeLeaf;
     constructNodePoints();
 
-    me = SP<OctTree>(this);
+    me = SP<OcTreeTypeOptimized>(this);
     me_eventListener = SP<EventListener> (this);
 }
 
-void OctTree::constructNodePoints(){
+void OcTreeTypeOptimized::constructNodePoints(){
     Vector3 p1(pos.x()+node_size,pos.y()+node_size,pos.z()+node_size);
     node_bounds.append(p1);
 
@@ -77,13 +77,13 @@ void OctTree::constructNodePoints(){
 
 }
 
-OctTree::~OctTree(){
+OcTreeTypeOptimized::~OcTreeTypeOptimized(){
     //DESTRUCTOR... soon
     //qDebug("OctTree::~OctTree");
 }
 
-QList<SP<OctTree> > OctTree::getNodesInFrustum(SP<Frustum> f){
-    QList<SP<OctTree> > treeList;
+QList<SP<OcTreeTypeOptimized> > OcTreeTypeOptimized::getNodesInFrustum(SP<Frustum> f){
+    QList<SP<OcTreeTypeOptimized> > treeList;
 
 
     //check if points of the node are inside of the frustum...
@@ -114,15 +114,20 @@ QList<SP<OctTree> > OctTree::getNodesInFrustum(SP<Frustum> f){
     return treeList;
 }
 
-int OctTree::fits(SP<CompositeObject> obj){
+int OcTreeTypeOptimized::fits(SP<Entity> obj){
 
     if(obj == 0){
-        qDebug("[WARNING] OctTree::fits(CompositeObject * obj) : no CompositeObject ...");
+        qDebug("[WARNING] int OcTreeTypeOptimized::fits(SP<Entity> obj) : no Entity ...");
+        return 0;
+    }
+
+    if(!obj->hasComponent<Positation>()){
+        qDebug("[WARNING] int OcTreeTypeOptimized::fits(SP<Entity> obj) : no Positation Component in Entity ...");
         return 0;
     }
 
 
-    Sphere mdl_sphere = obj->getPositation()->getSphere();
+    Sphere mdl_sphere = obj->getComponent<Positation>()->getSphere();
 
     //check if the center of bounding sphere is inside the octree node
     if(Intersections::pointInAABB(mdl_sphere.getPos(),aabb)){
@@ -154,7 +159,7 @@ int OctTree::fits(SP<CompositeObject> obj){
     */
 }
 
-QString OctTree::debug_string(){
+QString OcTreeTypeOptimized::debug_string(){
     QString debug_str = "OctTree lvl: ";
 
     if(amount_objects>=0){
@@ -180,36 +185,40 @@ QString OctTree::debug_string(){
     return debug_str;
 }
 
-Vector3 OctTree::getPosition(){
+int OcTreeTypeOptimized::getObjectCount(){
+    return entityLib.size();
+}
+
+Vector3 OcTreeTypeOptimized::getPosition(){
     return pos;
 }
 
-double OctTree::getSize(){
+double OcTreeTypeOptimized::getSize(){
     return node_size;
 }
 
 
-void OctTree::init(){
+void OcTreeTypeOptimized::init(){
 
 }
 
-void OctTree::update(float mFT){
+void OcTreeTypeOptimized::update(float mFT){
 
 }
 
 
-int OctTree::addModel(SP<CompositeObject> obj){
+int OcTreeTypeOptimized::addEntity(SP<Entity> obj){
 
     //qDebug("adding to octree...");
 
-    if(obj->hasModel()){
-        if(!obj->getModel()->isReadyToRender()){
-            debugMessage("OctTree::addModel(CompositeObject * obj) : model of compositeObject not ready...");
+    if(obj->hasComponent<Model>()){
+        if(!obj->getComponent<Model>()->isReadyToRender()){
+            debugMessage("OctTree::addEntity(SP<Entity> obj) : model of Enitity not ready...");
             qDebug("    model not ready yet...");
         }
     }
     else{
-        debugMessage("OctTree::addModel(CompositeObject * obj) : compositeObject has no fuckin MODEL !!!! ...");
+        debugMessage("OctTree::addEntity(SP<Entity> obj) : Enitity has no MODEL !!!! ...");
         qDebug("    no model...");
     }
 
@@ -240,39 +249,41 @@ int OctTree::addModel(SP<CompositeObject> obj){
         if(fit_count < 2){
             //lets check where it fitted and add it there
             if(f1 == 1){
-                result_added += tree_northwest_high->addModel(obj);
+                result_added += tree_northwest_high->addEntity(obj);
             }
             else if(f2 == 1){
-                result_added += tree_northeast_high->addModel(obj);
+                result_added += tree_northeast_high->addEntity(obj);
             }
             else if(f3 == 1){
-                result_added += tree_southwest_high->addModel(obj);
+                result_added += tree_southwest_high->addEntity(obj);
             }
             else if(f4 == 1){
-                result_added += tree_southeast_high->addModel(obj);
+                result_added += tree_southeast_high->addEntity(obj);
             }
             else if(f5 == 1){
-                result_added += tree_northwest_low->addModel(obj);
+                result_added += tree_northwest_low->addEntity(obj);
             }
             else if(f6 == 1){
-                result_added += tree_northeast_low->addModel(obj);
+                result_added += tree_northeast_low->addEntity(obj);
             }
             else if(f7 == 1){
-                result_added += tree_southwest_low->addModel(obj);
+                result_added += tree_southwest_low->addEntity(obj);
             }
             else if(f8 == 1){
-                result_added += tree_southeast_low->addModel(obj);
+                result_added += tree_southeast_low->addEntity(obj);
             }
         }
         //ok the obj obviously fits into more than one node... lets add it to the parent node...
         else{
             result_added += 1;
+            //if it is has a model...
+            //TODO: adjust the mdllib to load entities...
             //mdllib->addEntity(obj);
         }
 
         //add model to hash if it fitted this node or its child
         if(result_added > 0){
-            id_compositeobject_hash.insert(obj->EventTransmitter::id(),obj);
+            id_compositeobject_hash.insert(obj->id(),obj);
         }
 
         amount_objects += result_added;
@@ -285,8 +296,9 @@ int OctTree::addModel(SP<CompositeObject> obj){
     // if the model fits inside me...
 
 
-    //mdllib->addEntity(obj);
-    id_compositeobject_hash.insert(obj->EventTransmitter::id(),obj);
+    //TODO: fix mdl lib to load entities...
+    //mdllib->addModel(obj);
+    id_compositeobject_hash.insert(obj->id(),obj);
 
     amount_objects += 1;
     if(amount_objects > max_amount_objects){
@@ -298,17 +310,17 @@ int OctTree::addModel(SP<CompositeObject> obj){
 
 }
 
-int OctTree::addModels(SP<ModelLibrary_v2> lib){
+int OcTreeTypeOptimized::addEntities(SP<ModelLibrary_v2> lib){
 
     //qDebug("ADDING LIB to OctTree");
 
     int added_count = 0;
 
-    QList<SP<CompositeObject> > objs = lib->getEntities();
+    QList<SP<Entity> > objs = lib->getEntities();
 
     for(int i = 0; i < objs.size(); i++){
         if(fits(objs.at(i))){
-            int added = addModel(objs.at(i));
+            int added = addEntity(objs.at(i));
             amount_objects += added;
             added_count += added;
         }
@@ -316,12 +328,15 @@ int OctTree::addModels(SP<ModelLibrary_v2> lib){
     return added_count;
 }
 
-SP<ModelLibrary_v2> OctTree::getModelLibrary(){
+SP<ModelLibrary_v2> OcTreeTypeOptimized::getModelLibrary(){
     return mdllib;
 }
 
+QList<SP<Entity> > OcTreeTypeOptimized::getEntities(){
+    return entityLib;
+}
 
-void OctTree::subdivide(){
+void OcTreeTypeOptimized::subdivide(){
 
     SP<ModelLibrary_v2> old_lib = mdllib;
     mdllib = SP<ModelLibrary_v2>(new ModelLibrary_v2(max_amount_objects,max_amount_objects));
@@ -334,7 +349,7 @@ void OctTree::subdivide(){
 
 
 
-    tree_northwest_high = SP<OctTree>(new OctTree(this->subdivision_level+1,
+    tree_northwest_high = SP<OcTreeTypeOptimized>(new OcTreeTypeOptimized(this->subdivision_level+1,
                                       Vector3(this->pos.x()-new_node_pos,
                                               this->pos.y()+new_node_pos,
                                               this->pos.z()+new_node_pos),
@@ -342,7 +357,7 @@ void OctTree::subdivide(){
                                       this->max_amount_objects));
     //amount_objects += tree_northwest_high->addModels(old_lib);
 
-    tree_northeast_high = SP<OctTree>(new OctTree(this->subdivision_level+1,
+    tree_northeast_high = SP<OcTreeTypeOptimized>(new OcTreeTypeOptimized(this->subdivision_level+1,
                                       Vector3(this->pos.x()+new_node_pos,
                                               this->pos.y()+new_node_pos,
                                               this->pos.z()+new_node_pos),
@@ -350,7 +365,7 @@ void OctTree::subdivide(){
                                       this->max_amount_objects));
     //amount_objects += tree_northeast_high->addModels(old_lib);
 
-    tree_southwest_high = SP<OctTree>(new OctTree(this->subdivision_level+1,
+    tree_southwest_high = SP<OcTreeTypeOptimized>(new OcTreeTypeOptimized(this->subdivision_level+1,
                                       Vector3(this->pos.x()-new_node_pos,
                                               this->pos.y()-new_node_pos,
                                               this->pos.z()+new_node_pos),
@@ -358,7 +373,7 @@ void OctTree::subdivide(){
                                       this->max_amount_objects));
     //amount_objects += tree_southwest_high->addModels(old_lib);
 
-    tree_southeast_high = SP<OctTree>(new OctTree(this->subdivision_level+1,
+    tree_southeast_high = SP<OcTreeTypeOptimized>(new OcTreeTypeOptimized(this->subdivision_level+1,
                                       Vector3(this->pos.x()+new_node_pos,
                                               this->pos.y()-new_node_pos,
                                               this->pos.z()+new_node_pos),
@@ -368,7 +383,7 @@ void OctTree::subdivide(){
 
 
 
-    tree_northwest_low = SP<OctTree>(new OctTree(this->subdivision_level+1,
+    tree_northwest_low = SP<OcTreeTypeOptimized>(new OcTreeTypeOptimized(this->subdivision_level+1,
                                      Vector3(this->pos.x()-new_node_pos,
                                              this->pos.y()+new_node_pos,
                                              this->pos.z()-new_node_pos),
@@ -376,7 +391,7 @@ void OctTree::subdivide(){
                                      this->max_amount_objects));
     //amount_objects += tree_northwest_low->addModels(old_lib);
 
-    tree_northeast_low = SP<OctTree>(new OctTree(this->subdivision_level+1,
+    tree_northeast_low = SP<OcTreeTypeOptimized>(new OcTreeTypeOptimized(this->subdivision_level+1,
                                      Vector3(this->pos.x()+new_node_pos,
                                              this->pos.y()+new_node_pos,
                                              this->pos.z()-new_node_pos),
@@ -384,7 +399,7 @@ void OctTree::subdivide(){
                                      this->max_amount_objects));
     //amount_objects += tree_northeast_low->addModels(old_lib);
 
-    tree_southwest_low = SP<OctTree>(new OctTree(this->subdivision_level+1,
+    tree_southwest_low = SP<OcTreeTypeOptimized>(new OcTreeTypeOptimized(this->subdivision_level+1,
                                      Vector3(this->pos.x()-new_node_pos,
                                              this->pos.y()-new_node_pos,
                                              this->pos.z()-new_node_pos),
@@ -392,7 +407,7 @@ void OctTree::subdivide(){
                                      this->max_amount_objects));
     //amount_objects += tree_southwest_low->addModels(old_lib);
 
-    tree_southeast_low = SP<OctTree>(new OctTree(this->subdivision_level+1,
+    tree_southeast_low = SP<OcTreeTypeOptimized>(new OcTreeTypeOptimized(this->subdivision_level+1,
                                      Vector3(this->pos.x()+new_node_pos,
                                              this->pos.y()-new_node_pos,
                                              this->pos.z()-new_node_pos),
@@ -402,11 +417,11 @@ void OctTree::subdivide(){
 
     this->is_subdivided = true;
 
-    if(type != NodeRoot){
-        type = NodeInner;
+    if(nodeType != NodeRoot){
+        nodeType = NodeInner;
     }
 
-    amount_objects += addModels(old_lib);
+    amount_objects += addEntities(old_lib);
     old_lib->clearLib();
 
 
@@ -421,7 +436,7 @@ void OctTree::subdivide(){
 
 //EVENT LISTENER
 //do not invoke the parents method...
-void OctTree::eventRecieved(Event e){
+void OcTreeTypeOptimized::eventRecieved(Event e){
     if(e.type == Event::EventDebuggerMessage){
         //we dont need that type of messages here...
         //we discard it... poor event :(
@@ -430,7 +445,7 @@ void OctTree::eventRecieved(Event e){
 
 }
 
-void OctTree::debugMessage(QString message){
+void OcTreeTypeOptimized::debugMessage(QString message){
     Event e;
     e.type = Event::EventDebuggerMessage;
     e.debugger = SP<EventDebugger> (new EventDebugger(message));

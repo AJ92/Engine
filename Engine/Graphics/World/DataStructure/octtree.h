@@ -27,11 +27,14 @@
 
 #include "Intersections/intersections.h"
 
+#include "Object/component.h"
+
+
 class Event;
 class CompositeObject;
 class Positation;
 
-class OctTree : virtual public EventListener, virtual public EventTransmitter
+class OctTree : public Component, virtual public EventListener, virtual public EventTransmitter
 {
 public:
     //for root node
@@ -66,6 +69,10 @@ public:
 
     Vector3 getPosition();
     double getSize();
+
+
+    virtual void init();
+    virtual void update(float mFT);
 
 private:
 

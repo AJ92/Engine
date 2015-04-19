@@ -4,6 +4,7 @@
 #include "Object/positation.h"
 #include "Graphics/Model/light.h"
 
+
 ObjectWorld::ObjectWorld(SP<ThreadAccountant> ta) :
     EventListener(),
     EventTransmitter()
@@ -22,6 +23,10 @@ ObjectWorld::~ObjectWorld(){
 
 void ObjectWorld::setModelLoader(SP<ModelLoader> ml){
     this->ml = ml;
+}
+
+void ObjectWorld::setEntityManager(SP<EntityManager> em){
+    this->em = em;
 }
 
 void ObjectWorld::setModelsPerThread(int model_count){
@@ -44,10 +49,10 @@ void ObjectWorld::initialize(){
     ml->addListener(me_eventListener);
     ml->initialize();
 
-    ot = SP<OctTree>(new OctTree(64));
+    ot_static_entities = SP<OcTreeTypeOptimized>(new OcTreeTypeOptimized(32));
 
-    ot_dynamic_model = SP<OctTreeFast>(new OctTreeFast(64));
-    ot_dynamic_lights = SP<OctTreeFast>(new OctTreeFast(3));
+    ot_dynamic_model_entities = SP<OcTreeTypeOptimized>(new OcTreeTypeOptimized(16));
+    ot_dynamic_light_entities = SP<OcTreeTypeOptimized>(new OcTreeTypeOptimized(8));
 
 
     //preload the light model...
@@ -64,18 +69,19 @@ void ObjectWorld::initialize(){
 }
 
 
-SP<OctTree> ObjectWorld::getOctTree(){
-    return ot;
+SP<OcTreeTypeOptimized> ObjectWorld::getOctTreeStaticEntities(){
+    return ot_static_entities;
 }
 
-SP<OctTreeFast> ObjectWorld::getOctTreeFastDynamicModels(){
-    return ot_dynamic_model;
+SP<OcTreeTypeOptimized> ObjectWorld::getOctTreeDynamicModelEntitites(){
+    return ot_dynamic_model_entities;
 }
 
-SP<OctTreeFast> ObjectWorld::getOctTreeFastDynamicLights(){
-    return ot_dynamic_lights;
+SP<OcTreeTypeOptimized> ObjectWorld::getOctTreeDynamicLightEntities(){
+    return ot_dynamic_light_entities;
 }
 
+/*
 
 //dynamic light
 SP<CompositeObject> ObjectWorld::loadLightobject(QString name){
@@ -139,8 +145,6 @@ SP<CompositeObject> ObjectWorld::loadModelobject(QString name, QString path){
 SP<CompositeObject> ObjectWorld::loadModelobject(QString name, QString path, SP<Positation> posi){
     SP<CompositeObject> co(new CompositeObject(name, CompositeObject::MovementStatic));
 
-
-
     co->setPositation(posi);
 
     co->addListener(me_eventListener);
@@ -154,6 +158,41 @@ SP<CompositeObject> ObjectWorld::loadModelobject(QString name, QString path, SP<
     return co;
 }
 
+*/
+
+Entity& ObjectWorld::loadLightobject(QString name){
+    auto& entity(em->addEntity());
+    entity.addComponent<Model>();
+    entity.addGroup(Entity::Graphics);
+
+/*
+
+    entity.addComponent<Positation>();
+    entity.getComponent<Positation>().set_position((double)((rand() & 1000)-500),
+                       (double)((rand() & 1000)-500),
+                       (double)((rand() & 1000)-500));
+
+
+
+    entity.addComponent<Light>();
+
+    //co->addListener(me_eventListener);
+
+
+    entity.addComponent<Model>();
+    entity.getComponent<Model>().set_path(light_model_path);
+*/
+    //this->loadModel(light_mdl);
+
+}
+
+Entity& ObjectWorld::loadModelobject(QString name, QString path){
+
+}
+
+Entity& ObjectWorld::loadModelobject(QString name, QString path, SP<Positation> posi){
+
+}
 
 
 
@@ -172,7 +211,7 @@ void ObjectWorld::loadModel(SP<Model> m){
 
 
 //EVENT LISTENER
-//do not invoke the parents method...
+//do not invoke the base method...
 void ObjectWorld::eventRecieved(Event e){
 
     /*
@@ -181,38 +220,31 @@ void ObjectWorld::eventRecieved(Event e){
     qDebug(debug_output.toUtf8());
     */
 
+    /*
     if(e.type == Event::EventCompositeObjectModelLoaded){
         SP<CompositeObject> obj = e.compositeObject->getCompositeObject();
         //dispatch to correct tree
         if(obj->hasLight()){
             debugMessage("light...");
             //add it to the light dynamic tree...
-            ot_dynamic_lights->addCompositeObject(obj);
+            ot_dynamic_light_entities->addCompositeObject(obj);
             return;
         }
         else{
             //has no light... but should have a model
             if(obj->getObjectMovementType() == CompositeObject::MovementDynamic){
                 debugMessage("dynamic...");
-                ot_dynamic_model->addCompositeObject(obj);
-
-
-                //count_models_out += 1;
-                /*
-                debugMessage("ObjectWorld : dyn_object in/out:  " +
-                             QString::number(count_models_in) + " / " +
-                             QString::number(count_models_out) + " ... " +
-                             QString::number(obj->getAllListeners().size()));
-                */
+                ot_dynamic_model_entities->addCompositeObject(obj);
                 return;
             }
             if(obj->getObjectMovementType() == CompositeObject::MovementStatic){
                 debugMessage("static...");
-                ot->addModel(obj);
+                ot_static_entities->addModel(obj);
                 return;
             }
         }
     }
+    */
 }
 
 //EVENT TRANSMITTER

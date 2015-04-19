@@ -10,16 +10,19 @@
 
 #include "Graphics/Model/modelloader.h"
 
-#include "Graphics/World/DataStructure/octtree.h"
-#include "Graphics/World/DataStructure/octtreefast.h"
+#include "Graphics/World/DataStructure/octreetypeoptimized.h"
 
 #include <QList>
 
 #include "Object/SmartPointer/smartpointer.h"
 
+#include "Object/entity.h"
+#include "Object/entitymanager.h"
+
 class Event;
 class CompositeObject;
 class Positation;
+
 
 class ObjectWorld : virtual public EventListener, virtual public EventTransmitter
 {
@@ -28,6 +31,7 @@ public:
     ~ObjectWorld();
 
     void setModelLoader(SP<ModelLoader> ml);
+    void setEntityManager(SP<EntityManager> em);
     void setModelsPerThread(int model_count);
     void setLightModelPath(QString path);
     void setUnitCubeModelPath(QString path);
@@ -36,15 +40,22 @@ public:
 
     void initialize();
 
-    SP<OctTree> getOctTree();
-    SP<OctTreeFast> getOctTreeFastDynamicModels();
-    SP<OctTreeFast> getOctTreeFastDynamicLights();
+    SP<OcTreeTypeOptimized> getOctTreeStaticEntities();
+    SP<OcTreeTypeOptimized> getOctTreeDynamicModelEntitites();
+    SP<OcTreeTypeOptimized> getOctTreeDynamicLightEntities();
 
     //creates an empty CompositeObject with Positation so the user can already interact
     //even if the model isn't loaded yet... model is bound later to this object...
+    /*
     SP<CompositeObject> loadLightobject(QString name);
     SP<CompositeObject> loadModelobject(QString name, QString path);
     SP<CompositeObject> loadModelobject(QString name, QString path, SP<Positation> posi);
+    */
+
+    Entity& loadLightobject(QString name);
+    Entity& loadModelobject(QString name, QString path);
+    Entity& loadModelobject(QString name, QString path, SP<Positation> posi);
+
 
 private:
 
@@ -52,6 +63,7 @@ private:
 
     SP<ThreadAccountant> ta;
     SP<ModelLoader> ml;
+    SP<EntityManager> em;
 
     QString light_model_path;
     SP<Model> light_model;
@@ -59,10 +71,10 @@ private:
     QString unitcube_model_path;
     SP<Model> unitcube_model;
 
-    SP<OctTree> ot;
+    SP<OcTreeTypeOptimized> ot_static_entities;
 
-    SP<OctTreeFast> ot_dynamic_model;
-    SP<OctTreeFast> ot_dynamic_lights;
+    SP<OcTreeTypeOptimized> ot_dynamic_model_entities;
+    SP<OcTreeTypeOptimized> ot_dynamic_light_entities;
 
     //private functions...
     void loadModel(SP<Model> m);
@@ -79,7 +91,7 @@ private:
 
 
     //temporary store all Composite objects so we dont delete them accidently...
-    QList<SP<CompositeObject> > all_comp_objs;
+    QList<SP<Entity> > all_comp_objs;
 };
 
 #endif // OBJECTWORLD_H

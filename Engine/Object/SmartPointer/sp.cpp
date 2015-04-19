@@ -26,6 +26,14 @@ SP<T>::SP(T* pValue) :
 }
 
 template<typename T>
+SP<T>::SP(T* pValue, ReferenceCounter * rc) :
+    pData(pValue),
+    refCount(rc)
+{
+    refCount->AddRef();
+}
+
+template<typename T>
 SP<T>::SP(const SP<T>& sp) :
     pData(sp.pData),
     refCount(sp.refCount)

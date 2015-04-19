@@ -7,6 +7,8 @@
 #include "Event/event.h"
 #include "Object/compositeobject.h"
 
+#include "Object/entity.h"
+
 ModelLibrary::ModelLibrary(SP<ThreadAccountant> ta) :
     EventListener(),
     EventTransmitter(),
@@ -297,7 +299,7 @@ void ModelLibrary_v2::initialize(){
     debugMessage("modellibrary v2 initializing...");
 
     //preallocate some memory  
-    compositeobject_list.reserve(reserve_all);
+    entity_list.reserve(reserve_all);
     model_list.reserve(reserve_all);
 
     debugMessage("modellibrary v2 initialized.");
@@ -307,8 +309,8 @@ QList<SP<Model> > ModelLibrary_v2::getModels() const{
     return model_list;
 }
 
-QList<SP<CompositeObject> > ModelLibrary_v2::getCompositeObjects() const{
-    return compositeobject_list;
+QList<SP<Entity> > ModelLibrary_v2::getEntities() const{
+    return entity_list;
 }
 
 
@@ -318,8 +320,8 @@ int ModelLibrary_v2::modelCount(){
 
 
 
-QList<QList<SP<CompositeObject> > > ModelLibrary_v2::getCompositeobjectMeshList(){
-    return compositeobject_mesh_list;
+QList<QList<SP<Entity> > > ModelLibrary_v2::getEntityMeshList(){
+    return entity_mesh_list;
 }
 
 QList<QList<SP<Mesh> > > ModelLibrary_v2::getMeshModelList(){
@@ -350,12 +352,12 @@ void ModelLibrary_v2::debugModelData(){
 }
 
 void ModelLibrary_v2::clearLib(){
-    compositeobject_list.clear();       //all compositeobjects (includes model instances)
+    entity_list.clear();       //all compositeobjects (includes model instances)
     model_list.clear();               //all models (includes instances)
 
 
     //model data sorted by material / single mesh
-    compositeobject_mesh_list.clear();
+    entity_mesh_list.clear();
     mesh_model_list.clear();
     model_mesh_list.clear();
     material_mesh_list.clear();
@@ -363,12 +365,12 @@ void ModelLibrary_v2::clearLib(){
 
 //private
 //add the model to the model list (contains also instances)
-void ModelLibrary_v2::addModel(SP<CompositeObject> co){
+void ModelLibrary_v2::addEntity(SP<Entity> ent){
     //check if CompositeObject was build properly...
-    if(co->hasModel()){
+    if(ent->hasComponent<Model>()){
         //check if it was added already...
-        if(containsCompositeObject(co) == 0){
-            addModelData(co);
+        if(containsEntity(ent) == 0){
+            addModelData(ent);
         }
     }
     else{
@@ -381,14 +383,14 @@ void ModelLibrary_v2::addModel(SP<CompositeObject> co){
 
 
 //sort in the model data so we can skip several render setup calls...
-void ModelLibrary_v2::addModelData(SP<CompositeObject> co){
+void ModelLibrary_v2::addModelData(SP<Entity> ent){
 
-    SP<Model> mdl = co->getModel();
+    SP<Model> mdl = ent->getComponent<Model>();
 
     //add it to the lists...
 
     model_list.push_back(mdl);
-    compositeobject_list.push_back(co);
+    entity_list.push_back(ent);
 
 
 
@@ -414,18 +416,18 @@ void ModelLibrary_v2::addModelData(SP<CompositeObject> co){
         if(sort_in){
             mesh_model_list[sort_in_index].append(mesh);
             model_mesh_list[sort_in_index].append(mdl);
-            compositeobject_mesh_list[sort_in_index].append(co);
+            entity_mesh_list[sort_in_index].append(ent);
         }
         else{
             //model is not found in the lists, create a new entry
             material_mesh_list.append(mesh_mtl);
             mesh_model_list.append(QList<SP<Mesh> >());
             model_mesh_list.append(QList<SP<Model> >());
-            compositeobject_mesh_list.append(QList<SP<CompositeObject> >());
+            entity_mesh_list.append(QList<SP<Entity> >());
             int size_index = mesh_model_list.size()-1;
             mesh_model_list[size_index].append(mesh);
             model_mesh_list[size_index].append(mdl);
-            compositeobject_mesh_list[size_index].append(co);
+            entity_mesh_list[size_index].append(ent);
         }
     }
 }
@@ -454,31 +456,31 @@ SP<Model> ModelLibrary_v2::containsModel(SP<Model> mdl){
     return SP<Model>();
 }
 
-SP<CompositeObject> ModelLibrary_v2::containsCompositeObject(SP<CompositeObject> co){
-    QList<SP<CompositeObject> >::iterator i;
-    for (i = compositeobject_list.begin(); i != compositeobject_list.end(); ++i){
-        SP<CompositeObject> c = *i;
+SP<Entity> ModelLibrary_v2::containsEntity(SP<Entity> ent){
+    QList<SP<Entity> >::iterator i;
+    for (i = entity_list.begin(); i != entity_list.end(); ++i){
+        SP<Entity> c = *i;
         //if(*c == *co){
-        if(c->EventListener::id() == co->EventListener::id() ){
+        if(c->id() == ent->id() ){
             return c;
         }
     }
-    return SP<CompositeObject>();
+    return SP<Entity>();
 }
 
 //untested crappy delete function ...
 //guessed O(over 9000)
-bool ModelLibrary_v2::removeModel(SP<CompositeObject> co){
+bool ModelLibrary_v2::removeEntity(SP<Entity> ent){
 
     //delete from the simple list...
-    QList<SP<CompositeObject> >::iterator i;
+    QList<SP<Entity> >::iterator i;
     int j = 0;
-    for (i = compositeobject_list.begin(); i != compositeobject_list.end(); ++i){
-        SP<CompositeObject> c = *i;
+    for (i = entity_list.begin(); i != entity_list.end(); ++i){
+        SP<Entity> c = *i;
         //if(*c == *co){
-        if(c->EventListener::id() == co->EventListener::id() ){
+        if(c->id() == ent->id() ){
             model_list.removeAt(j);
-            compositeobject_list.removeAt(j);
+            entity_list.removeAt(j);
             break;
         }
         j++;
@@ -489,11 +491,11 @@ bool ModelLibrary_v2::removeModel(SP<CompositeObject> co){
 
 
     //delete the model from the data lists...
-    for(int i = 0; i < compositeobject_mesh_list.size(); i++){
+    for(int i = 0; i < entity_mesh_list.size(); i++){
         bool created = false;
-        for(int k = 0; k < compositeobject_mesh_list.at(i).size(); k++){
+        for(int k = 0; k < entity_mesh_list.at(i).size(); k++){
             //if(*compositeobject_mesh_list.at(i).at(k) == *co){
-            if(compositeobject_mesh_list[i][k]->EventListener::id() == co->EventListener::id()){
+            if(entity_mesh_list[i][k]->id() == ent->id()){
                 if(!created){
                     index_i.append(i);
                     index_i_k.append(QList<int>());
@@ -506,7 +508,7 @@ bool ModelLibrary_v2::removeModel(SP<CompositeObject> co){
 
     for(int i = 0; i < index_i.size(); i++){
         for(int k = 0; k < index_i_k.size(); k++){
-            compositeobject_mesh_list[index_i.at(i)].removeAt(index_i_k.at(i).at(k));
+            entity_mesh_list[index_i.at(i)].removeAt(index_i_k.at(i).at(k));
             mesh_model_list[index_i.at(i)].removeAt(index_i_k.at(i).at(k));
             model_mesh_list[index_i.at(i)].removeAt(index_i_k.at(i).at(k));
         }

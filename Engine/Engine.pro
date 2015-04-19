@@ -51,14 +51,12 @@ SOURCES += main.cpp\
     Graphics/Camera/frustum.cpp \
     test.cpp \
     Graphics/World/objectworld.cpp \
-    Graphics/World/DataStructure/octtree.cpp \
     Graphics/Model/modelloader.cpp \
     Event/Events/eventmodel.cpp \
     Object/compositeobject.cpp \
     Object/positation.cpp \
     Event/Events/eventcompositeobject.cpp \
     Debug/Ui/customgraph.cpp \
-    Graphics/World/DataStructure/octtreefast.cpp \
     Object/SmartPointer/sp.cpp \
     Object/SmartPointer/referencecounter.cpp \
     Graphics/Model/Parser/Format_assimp/loader_assimp.cpp \
@@ -66,7 +64,8 @@ SOURCES += main.cpp\
     Graphics/Model/Components/texturemapcube.cpp \
     Object/component.cpp \
     Object/entity.cpp \
-    Object/entitymanager.cpp
+    Object/entitymanager.cpp \
+    Graphics/World/DataStructure/octreetypeoptimized.cpp
 
 
 
@@ -105,14 +104,12 @@ HEADERS  += \
     test.h \
     Physics/Physics.h \
     Graphics/World/objectworld.h \
-    Graphics/World/DataStructure/octtree.h \
     Graphics/Model/modelloader.h \
     Event/Events/eventmodel.h \
     Object/compositeobject.h \
     Object/positation.h \
     Event/Events/eventcompositeobject.h \
     Debug/Ui/customgraph.h \
-    Graphics/World/DataStructure/octtreefast.h \
     Object/SmartPointer/sp.h \
     Object/SmartPointer/referencecounter.h \
     Object/SmartPointer/smartpointer.h \
@@ -122,7 +119,8 @@ HEADERS  += \
     Object/component.h \
     Object/entity.h \
     Object/entitymanager.h \
-    Object/CompositionHelper.h
+    Object/CompositionHelper.h \
+    Graphics/World/DataStructure/octreetypeoptimized.h
 
 
 

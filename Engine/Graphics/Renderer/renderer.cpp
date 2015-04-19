@@ -9,8 +9,9 @@
 #include "Event/event.h"
 
 #include "Object/positation.h"
-#include "Object/compositeobject.h"
 #include "Graphics/World/objectworld.h"
+
+#include "Object/positation.h"
 
 #include <QApplication>
 
@@ -81,7 +82,7 @@ void Renderer::setWindow(SP<Window> win){
 bool Renderer::meshInFrustum(SP<Frustum> f, SP<Model> mdl, SP<Mesh> mesh, Matrix4x4 &pvm_mat){
     //get the spherical bounds
 
-    SP<Positation> posi = mdl->getParentCompositeObject()->getPositation();
+    SP<Positation> posi = mdl->getParent()->getComponent<Positation>();
 
     Vector3 mdl_pos = posi->getPosition();
 
@@ -148,14 +149,14 @@ void Renderer::render_v2(){
 
 
         //setup the octtree stuff so we cen loop trough the octtree nodes...
-        SP<OctTree> ot = objectworld->getOctTree();
-        SP<OctTreeFast> ot_dynamic_models = objectworld->getOctTreeFastDynamicModels();
-        SP<OctTreeFast> ot_dynamic_lights = objectworld->getOctTreeFastDynamicLights();
+        SP<OcTreeTypeOptimized> ot = objectworld->getOctTreeStaticEntities();
+        SP<OcTreeTypeOptimized> ot_dynamic_models = objectworld->getOctTreeDynamicModelEntitites();
+        SP<OcTreeTypeOptimized> ot_dynamic_lights = objectworld->getOctTreeDynamicLightEntities();
 
 
-        QList<SP<OctTree> > ot_nodes = ot->getNodesInFrustum(frustum);
-        QList<SP<OctTreeFast> > ot_dynamic_models_nodes = ot_dynamic_models->getNodesInFrustum(frustum);
-        QList<SP<OctTreeFast> > ot_dynamic_lights_nodes = ot_dynamic_lights->getNodesInFrustum(frustum);
+        QList<SP<OcTreeTypeOptimized> > ot_nodes = ot->getNodesInFrustum(frustum);
+        QList<SP<OcTreeTypeOptimized> > ot_dynamic_models_nodes = ot_dynamic_models->getNodesInFrustum(frustum);
+        QList<SP<OcTreeTypeOptimized> > ot_dynamic_lights_nodes = ot_dynamic_lights->getNodesInFrustum(frustum);
 
         //debugMessage("Nodes: " + QString::number(ot_nodes.size()));
 
@@ -194,7 +195,7 @@ void Renderer::render_v2(){
                 //render one node...
 
                 //copy the lists so we can itterate through them
-                QList<QList<SP<CompositeObject> > > compositeobject_mesh_list = ot_nodes[i]->getModelLibrary()->getCompositeobjectMeshList();
+                QList<QList<SP<Entity> > > entity_mesh_list = ot_nodes[i]->getModelLibrary()->getEntityMeshList();
                 QList<QList<SP<Mesh> > > mesh_model_list = ot_nodes[i]->getModelLibrary()->getMeshModelList();
                 QList<QList<SP<Model> > > model_mesh_list = ot_nodes[i]->getModelLibrary()->getModelMeshList();
                 QList<SP<Material> > material_mesh_list = ot_nodes[i]->getModelLibrary()->getMaterialMeshList();
@@ -273,7 +274,7 @@ void Renderer::render_v2(){
                                     qDebug("mdl not ready to render...");
                                 }
 
-                                SP<Positation> posi = compositeobject_mesh_list[index][mdl_index]->getPositation();
+                                SP<Positation> posi = entity_mesh_list[index][mdl_index]->getComponent<Positation>();
 
                                 m_m = posi->get_model_matrix();
                                 vm_m = v_m * m_m;
@@ -322,14 +323,14 @@ void Renderer::render_v2(){
                 //render one node...
 
                 //copy the lists so we can itterate through them
-                QList<SP<CompositeObject> > compositeobject_list = ot_dynamic_models_nodes[i]->getCompositeObjects();
+                QList<SP<Entity> > entity_list = ot_dynamic_models_nodes[i]->getEntities();
 
                 //loop trough the material_mesh_list
-                for(int index = 0; index < compositeobject_list.size(); index++){
+                for(int index = 0; index < entity_list.size(); index++){
 
-                    SP<CompositeObject> compobj = compositeobject_list.at(index);
-                    SP<Positation> posi = compobj->getPositation();
-                    QList<SP<Mesh> > mesh_list = compobj->getModel()->get_meshs();
+                    SP<Entity> entity = entity_list.at(index);
+                    SP<Positation> posi = entity->getComponent<Positation>();
+                    QList<SP<Mesh> > mesh_list = entity->getComponent<Model>()->get_meshs();
 
                     //loop trough mesh...
                     for(int meshs = 0; meshs < mesh_list.size(); meshs++){
@@ -339,7 +340,7 @@ void Renderer::render_v2(){
                         //now set up the material and mesh
 
                         //tex
-                        glActiveTexture (GL_TEXTURE0+firstTextureIndex);              
+                        glActiveTexture (GL_TEXTURE0+firstTextureIndex);
                         SP<TextureMap> texmap = mesh->get_material()->getTextureMap(Material::Diffuse);
                         glBindTexture(GL_TEXTURE_2D, texmap->getGLTextureMap());
                         glUniform1i(glGetUniformLocation(DR_FirstPassProgramIdId, "sampler1"), firstTextureIndex);
@@ -473,15 +474,15 @@ void Renderer::render_v2(){
                 //render one node...
 
                 //copy the lists so we can itterate through them
-                QList<SP<CompositeObject> > compositeobject_list = ot_dynamic_lights_nodes[i]->getCompositeObjects();
+                QList<SP<Entity> > entity_list = ot_dynamic_lights_nodes[i]->getEntities();
 
                 //loop trough the material_mesh_list
-                for(int index = 0; index < compositeobject_list.size(); index++){
+                for(int index = 0; index < entity_list.size(); index++){
 
-                    SP<CompositeObject> compobj = compositeobject_list.at(index);
-                    SP<Positation> posi = compobj->getPositation();
-                    QList<SP<Mesh> > mesh_list = compobj->getModel()->get_meshs();
-                    SP<Light> light = compobj->getLight();
+                    SP<Entity> entity = entity_list.at(index);
+                    SP<Positation> posi = entity->getComponent<Positation>();
+                    QList<SP<Mesh> > mesh_list = entity->getComponent<Model>()->get_meshs();
+                    SP<Light> light = entity->getComponent<Light>();
 
                     //loop trough mesh...
                     for(int meshs = 0; meshs < mesh_list.size(); meshs++){
@@ -1263,7 +1264,7 @@ void Renderer::render_v2(){
                 //render one node...
 
                 //copy the lists so we can itterate through them
-                QList<QList<SP<CompositeObject> > > compositeobject_mesh_list = ot_nodes[i]->getModelLibrary()->getCompositeobjectMeshList();
+                QList<QList<SP<Entity> > > entity_mesh_list = ot_nodes[i]->getModelLibrary()->getEntityMeshList();
                 QList<QList<SP<Mesh> > > mesh_model_list = ot_nodes[i]->getModelLibrary()->getMeshModelList();
                 QList<QList<SP<Model> > > model_mesh_list = ot_nodes[i]->getModelLibrary()->getModelMeshList();
                 QList<SP<Material> > material_mesh_list = ot_nodes[i]->getModelLibrary()->getMaterialMeshList();
@@ -1327,7 +1328,7 @@ void Renderer::render_v2(){
                                     qDebug("mdl not ready to render...");
                                 }
 
-                                SP<Positation> posi = compositeobject_mesh_list[index][mdl_index]->getPositation();
+                                SP<Positation> posi = entity_mesh_list[index][mdl_index]->getComponent<Positation>();
 
                                 m_m = posi->get_model_matrix();
                                 pvm_m = p_m * v_m * m_m;
@@ -1366,14 +1367,14 @@ void Renderer::render_v2(){
                 //render one node...
 
                 //copy the lists so we can itterate through them
-                QList<SP<CompositeObject> > compositeobject_list = ot_dynamic_models_nodes[i]->getCompositeObjects();
+                QList<SP<Entity> > entity_list = ot_dynamic_models_nodes[i]->getEntities();
 
                 //loop trough the material_mesh_list
-                for(int index = 0; index < compositeobject_list.size(); index++){
+                for(int index = 0; index < entity_list.size(); index++){
 
-                    SP<CompositeObject> compobj = compositeobject_list.at(index);
-                    SP<Positation> posi = compobj->getPositation();
-                    QList<SP<Mesh> > mesh_list = compobj->getModel()->get_meshs();
+                    SP<Entity> entity = entity_list.at(index);
+                    SP<Positation> posi = entity->getComponent<Positation>();
+                    QList<SP<Mesh> > mesh_list = entity->getComponent<Model>()->get_meshs();
 
                     //loop trough mesh...
                     for(int meshs = 0; meshs < mesh_list.size(); meshs++){
@@ -1477,7 +1478,7 @@ void Renderer::render_v2(){
                 //render one node...
 
                 //copy the lists so we can itterate through them
-                QList<QList<SP<CompositeObject> > > compositeobject_mesh_list = ot_nodes[i]->getModelLibrary()->getCompositeobjectMeshList();
+                QList<QList<SP<Entity> > > entity_mesh_list = ot_nodes[i]->getModelLibrary()->getEntityMeshList();
                 QList<QList<SP<Mesh> > > mesh_model_list = ot_nodes[i]->getModelLibrary()->getMeshModelList();
                 QList<QList<SP<Model> > > model_mesh_list = ot_nodes[i]->getModelLibrary()->getModelMeshList();
                 QList<SP<Material> > material_mesh_list = ot_nodes[i]->getModelLibrary()->getMaterialMeshList();
@@ -1541,7 +1542,7 @@ void Renderer::render_v2(){
                                     qDebug("mdl not ready to render...");
                                 }
 
-                                SP<Positation> posi = compositeobject_mesh_list[index][mdl_index]->getPositation();
+                                SP<Positation> posi = entity_mesh_list[index][mdl_index]->getComponent<Positation>();
 
                                 m_m = posi->get_model_matrix();
                                 pvm_m = p_m * v_m * m_m;
@@ -1580,14 +1581,14 @@ void Renderer::render_v2(){
                 //render one node...
 
                 //copy the lists so we can itterate through them
-                QList<SP<CompositeObject> > compositeobject_list = ot_dynamic_models_nodes[i]->getCompositeObjects();
+                QList<SP<Entity> > entity_list = ot_dynamic_models_nodes[i]->getEntities();
 
                 //loop trough the material_mesh_list
-                for(int index = 0; index < compositeobject_list.size(); index++){
+                for(int index = 0; index < entity_list.size(); index++){
 
-                    SP<CompositeObject> compobj = compositeobject_list.at(index);
-                    SP<Positation> posi = compobj->getPositation();
-                    QList<SP<Mesh> > mesh_list = compobj->getModel()->get_meshs();
+                    SP<Entity> entity = entity_list.at(index);
+                    SP<Positation> posi = entity->getComponent<Positation>();
+                    QList<SP<Mesh> > mesh_list = entity->getComponent<Model>()->get_meshs();
 
                     //loop trough mesh...
                     for(int meshs = 0; meshs < mesh_list.size(); meshs++){
@@ -1695,14 +1696,14 @@ void Renderer::render_v2(){
                 //render one node...
 
                 //copy the lists so we can itterate through them
-                QList<SP<CompositeObject> > compositeobject_list = ot_dynamic_lights_nodes[i]->getCompositeObjects();
+                QList<SP<Entity> > entity_list = ot_dynamic_lights_nodes[i]->getEntities();
 
                 //loop trough the material_mesh_list
-                for(int index = 0; index < compositeobject_list.size(); index++){
+                for(int index = 0; index < entity_list.size(); index++){
 
-                    SP<CompositeObject> compobj = compositeobject_list.at(index);
-                    SP<Positation> posi = compobj->getPositation();
-                    QList<SP<Mesh> > mesh_list = compobj->getModel()->get_meshs();
+                    SP<Entity> entity = entity_list.at(index);
+                    SP<Positation> posi = entity->getComponent<Positation>();
+                    QList<SP<Mesh> > mesh_list = entity->getComponent<Model>()->get_meshs();
 
                     //loop trough mesh...
                     for(int meshs = 0; meshs < mesh_list.size(); meshs++){
@@ -1798,14 +1799,14 @@ void Renderer::render_v2(){
                 //render one node...
 
                 //copy the lists so we can itterate through them
-                QList<SP<CompositeObject> > compositeobject_list = ot_dynamic_lights_nodes[i]->getCompositeObjects();
+                QList<SP<Entity> > entity_list = ot_dynamic_lights_nodes[i]->getEntities();
 
                 //loop trough the material_mesh_list
-                for(int index = 0; index < compositeobject_list.size(); index++){
+                for(int index = 0; index < entity_list.size(); index++){
 
-                    SP<CompositeObject> compobj = compositeobject_list.at(index);
-                    SP<Positation> posi = compobj->getPositation();
-                    QList<SP<Mesh> > mesh_list = compobj->getModel()->get_meshs();
+                    SP<Entity> entity = entity_list.at(index);
+                    SP<Positation> posi = entity->getComponent<Positation>();
+                    QList<SP<Mesh> > mesh_list = entity->getComponent<Model>()->get_meshs();
 
                     //loop trough mesh...
                     for(int meshs = 0; meshs < mesh_list.size(); meshs++){
@@ -1921,7 +1922,7 @@ void Renderer::render_v2(){
                 for(int i = 0; i < ot_nodes.size(); i++){
                     //render one node...
 
-                    SP<OctTree> ot_n = ot_nodes.at(i);
+                    SP<OcTreeTypeOptimized> ot_n = ot_nodes.at(i);
 
                     if(ot_n->getModelLibrary()->modelCount() > 0){
                         SP<Positation> posi(new Positation());
@@ -1958,7 +1959,7 @@ void Renderer::render_v2(){
                 for(int i = 0; i < ot_dynamic_models_nodes.size(); i++){
                     //render one node...
 
-                    SP<OctTreeFast> ot_n = ot_dynamic_models_nodes.at(i);
+                    SP<OcTreeTypeOptimized> ot_n = ot_dynamic_models_nodes.at(i);
 
                     if(ot_n->getObjectCount() > 0){
 
@@ -1998,7 +1999,7 @@ void Renderer::render_v2(){
                 for(int i = 0; i < ot_dynamic_lights_nodes.size(); i++){
                     //render one node...
 
-                    SP<OctTreeFast> ot_n = ot_dynamic_lights_nodes.at(i);
+                    SP<OcTreeTypeOptimized> ot_n = ot_dynamic_lights_nodes.at(i);
 
                     if(ot_n->getObjectCount() > 0){
 
@@ -2068,7 +2069,7 @@ void Renderer::render_v2(){
                 for(int i = 0; i < ot_nodes.size(); i++){
                     //render one node...
 
-                    SP<OctTree> ot_n = ot_nodes.at(i);
+                    SP<OcTreeTypeOptimized> ot_n = ot_nodes.at(i);
 
 
                     if(ot_n->getModelLibrary()->modelCount() > 0){
@@ -2107,7 +2108,7 @@ void Renderer::render_v2(){
                 for(int i = 0; i < ot_dynamic_models_nodes.size(); i++){
                     //render one node...
 
-                    SP<OctTreeFast> ot_n = ot_dynamic_models_nodes.at(i);
+                    SP<OcTreeTypeOptimized> ot_n = ot_dynamic_models_nodes.at(i);
 
                     if(ot_n->getObjectCount() > 0){
 
@@ -2146,7 +2147,7 @@ void Renderer::render_v2(){
                 for(int i = 0; i < ot_dynamic_lights_nodes.size(); i++){
                     //render one node...
 
-                    SP<OctTreeFast> ot_n = ot_dynamic_lights_nodes.at(i);
+                    SP<OcTreeTypeOptimized> ot_n = ot_dynamic_lights_nodes.at(i);
 
                     if(ot_n->getObjectCount() > 0){
 
@@ -2204,8 +2205,6 @@ void Renderer::render_v2(){
     }//end of objectworld
 
 }
-
-
 
 
 

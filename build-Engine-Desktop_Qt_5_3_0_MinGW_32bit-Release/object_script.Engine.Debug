@@ -32,14 +32,12 @@ INPUT(
 ./debug\frustum.o
 ./debug\test.o
 ./debug\objectworld.o
-./debug\octtree.o
 ./debug\modelloader.o
 ./debug\eventmodel.o
 ./debug\compositeobject.o
 ./debug\positation.o
 ./debug\eventcompositeobject.o
 ./debug\customgraph.o
-./debug\octtreefast.o
 ./debug\referencecounter.o
 ./debug\loader_assimp.o
 ./debug\texturemap.o
@@ -47,6 +45,7 @@ INPUT(
 ./debug\component.o
 ./debug\entity.o
 ./debug\entitymanager.o
+./debug\octreetypeoptimized.o
 ./debug\moc_debugwindow.o
 ./debug\moc_engine.o
 ./debug\moc_streamToDisk.o

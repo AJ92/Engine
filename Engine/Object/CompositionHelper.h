@@ -6,7 +6,8 @@
 #include <memory>
 #include <array>
 
-//#include "Object/component.h"
+#include "Object/component.h"
+#include "Object/SmartPointer/smartpointer.h"
 
 class Component;
 
@@ -36,7 +37,7 @@ using Group = std::size_t;
 
 constexpr std::size_t maxComponents{32};
 using ComponentBitset = std::bitset<maxComponents>;
-using ComponentArray = std::array<Component*, maxComponents>;
+using ComponentArray = std::array<SP<Component>, maxComponents>;
 
 constexpr std::size_t maxGroups{32};
 using GroupBitset = std::bitset<maxGroups>;

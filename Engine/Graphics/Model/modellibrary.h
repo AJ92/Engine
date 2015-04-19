@@ -86,14 +86,14 @@ public:
 
     void initialize();
 
-    void addModel(SP<CompositeObject> co);
-    bool removeModel(SP<CompositeObject> co);
+    void addEntity(SP<Entity> ent);
+    bool removeEntity(SP<Entity> ent);
 
     void clearLib();
 
     QList<SP<Model> > getModels() const;
 
-    QList<SP<CompositeObject> > getCompositeObjects() const;
+    QList<SP<Entity> > getEntities() const;
 
 
     // should be unsigned long long or so
@@ -102,7 +102,7 @@ public:
 
     //getter for the renderer... shouldn't be manipulated
 
-    QList<QList<SP<CompositeObject> > > getCompositeobjectMeshList();
+    QList<QList<SP<Entity> > > getEntityMeshList();
 
     QList<QList<SP<Mesh> > > getMeshModelList();
     QList<QList<SP<Model> > > getModelMeshList();
@@ -114,12 +114,12 @@ public:
 private:
 
     QList<SP<Model> > model_list;               //all models (includes instances)
-    QList<SP<CompositeObject> > compositeobject_list;        //all compositeobjects
+    QList<SP<Entity> > entity_list;        //all compositeobjects
 
 
     //model data sorted by material / single mesh
 
-    QList<QList<SP<CompositeObject> > > compositeobject_mesh_list;
+    QList<QList<SP<Entity> > > entity_mesh_list;
     QList<QList<SP<Mesh> > > mesh_model_list;
     QList<QList<SP<Model> > > model_mesh_list;
     QList<SP<Material> > material_mesh_list;
@@ -128,13 +128,13 @@ private:
     void debugMessage(QString message);
 
 
-    void addModelData(SP<CompositeObject> co);
+    void addModelData(SP<Entity> ent);
 
     //next 2 not needed ?
     SP<Model> containsModelData(SP<Model> mdl);
     SP<Model> containsModel(SP<Model> mdl);
 
-    SP<CompositeObject> containsCompositeObject(SP<CompositeObject> co);
+    SP<Entity> containsEntity(SP<Entity> ent);
 
     int reserve_unique;
     int reserve_all;

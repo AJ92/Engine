@@ -194,7 +194,7 @@ void Test::keyFunction(double fs){
             }
 
             posi->set_scale(5.5,5.5,5.5);
-            SP<CompositeObject> coTest = loadModelObject("box", getApplicationDir() + "//box.obj", posi);
+            //SP<CompositeObject> coTest = loadModelObject("box", getApplicationDir() + "//box.obj", posi);
         }
         /*
         model_library->setModelsPerThread(1);
@@ -228,7 +228,7 @@ void Test::keyFunction(double fs){
                           (double)((rand() & 2000)-1000),
                           (double)((rand() & 2000)-1000));
         posi->set_scale(0.5,0.5,0.5);
-        SP<CompositeObject> coTest = loadModelObject("box", getApplicationDir() + "//box.obj", posi);
+        //SP<CompositeObject> coTest = loadModelObject("box", getApplicationDir() + "//box.obj", posi);
     }
 
     //c
@@ -247,6 +247,7 @@ void Test::keyFunction(double fs){
 
         int count = 1;
         for(int i = 0; i < count; i++){
+            /*
             SP<CompositeObject> coTest = loadLightObject("light");
             coTest->getPositation()->set_position((double)((rand() & 2000)-1000),
                                                 (double)((rand() & 2000)-1000),
@@ -261,11 +262,11 @@ void Test::keyFunction(double fs){
             double blue = ((double)(rand() & 200))* 0.011;
 
 
-            /*
+
             double red = 0.5;
             double green = 0.5;
             double blue = 0.5;
-            */
+
 
             l->setDiffuseColor(red,
                                green,
@@ -275,6 +276,9 @@ void Test::keyFunction(double fs){
                                 blue);
 
             lights.append(coTest);
+            */
+
+            object_world->loadLightobject("light");
         }
     }
 
@@ -284,10 +288,11 @@ void Test::keyFunction(double fs){
         if(level_loaded < 1){
             for(int i = 0; i < test_amount; i++){
                 //betty
-
+                /*
                 compositeobjecttest.append(loadModelObject("betty",
                                                            getApplicationDir() +
                                                            "//betty.obj")); 
+                                                           */
 
 
                 //HN48-flying
@@ -343,7 +348,7 @@ void Test::keyFunction(double fs){
 
             posi->set_scale(1.0,1.0,1.0);
             posi->set_rotation(90.0f,1.0f,0.0f,0.0f);
-            SP<CompositeObject> coTest = loadModelObject("f16model", getApplicationDir() + "//f16//f16.obj", posi);
+            //SP<CompositeObject> coTest = loadModelObject("f16model", getApplicationDir() + "//f16//f16.obj", posi);
             //SP<CompositeObject> coTest = loadModelObject("city", getApplicationDir() + "//city2//Organodron City.obj", posi);
             //SP<CompositeObject> coTest = loadModelObject("city", getApplicationDir() + "//sponza//sponzalvl.obj", posi);
             lvl_loaded = true;
@@ -364,7 +369,7 @@ void Test::keyFunction(double fs){
 
             posi->set_scale(1.0,1.0,1.0);
             posi->set_rotation(90.0f,1.0f,0.0f,0.0f);
-            SP<CompositeObject> coTest = loadModelObject("city", getApplicationDir() + "//Paris//paris2.obj", posi);
+            //SP<CompositeObject> coTest = loadModelObject("city", getApplicationDir() + "//Paris//paris2.obj", posi);
             //SP<CompositeObject> coTest = loadModelObject("city", getApplicationDir() + "//city2//Organodron City.obj", posi);
             //SP<CompositeObject> coTest = loadModelObject("city", getApplicationDir() + "//sponza//sponzalvl.obj", posi);
             lvl_loaded = true;

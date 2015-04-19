@@ -53,6 +53,11 @@ public:
 
     friend bool operator==(const Model &mdl1, const Model &mdl2);
 
+
+    //COMPONENT STUFF
+    virtual void init();
+    virtual void update(float mFT);
+
 private:
     bool isReady;
 

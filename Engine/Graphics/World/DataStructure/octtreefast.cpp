@@ -197,6 +197,16 @@ double OctTreeFast::getSize(){
     return node_size;
 }
 
+
+void OctTreeFast::init(){
+
+}
+
+void OctTreeFast::update(float mFT){
+
+}
+
+
 int OctTreeFast::addCompositeObject(SP<CompositeObject> obj){
     if(obj == 0){
         debugMessage("OctTreeFast::addCompositeObject(CompositeObject * obj) : obj is null...");

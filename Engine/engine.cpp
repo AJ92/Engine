@@ -96,9 +96,6 @@ QE::Engine::Engine(QObject *parent) :
 
 
 
-    //create a manager for enitities
-    entityManager = new EntityManager();
-
 
 
 
@@ -107,10 +104,14 @@ QE::Engine::Engine(QObject *parent) :
     model_loader = new ModelLoader(threadAccountant);
     model_loader->addListener(debuggerListener);
 
+    entity_manager = new EntityManager();
+
+
     //our world with all the fancy objects...
     object_world = SP<ObjectWorld>(new ObjectWorld(threadAccountant));
     object_world->addListener(debuggerListener);
     object_world->setModelLoader(model_loader);
+    object_world->setEntityManager(entity_manager);
     object_world->setLightModelPath(getApplicationDir() + "//light_sphere.obj");
     object_world->setUnitCubeModelPath(getApplicationDir() + "//cube.obj");
 
@@ -345,10 +346,12 @@ void QE::Engine::update()
     while (accumulator >= frameSlice){
         accumulator -= frameSlice;
         //simulation here...
+        entity_manager->update(framestep);
         eventCall(framestep);
     }
 
-
+    //possible clean up
+    entity_manager->refresh();
 }
 
 void QE::Engine::render(){
@@ -389,6 +392,7 @@ void QE::Engine::eventLoop(){
     render();
 }
 
+/*
 //dynamic light
 SP<CompositeObject> QE::Engine::loadLightObject(QString name){
     return object_world->loadLightobject(name);
@@ -403,23 +407,24 @@ SP<CompositeObject> QE::Engine::loadModelObject(QString name, QString path){
 SP<CompositeObject> QE::Engine::loadModelObject(QString name, QString path, SP<Positation> posi){
     return object_world->loadModelobject(name, path, posi);
 }
+*/
 
 
 //new antity manager style loading functions...
 Entity & QE::Engine::loadLightObjectE(QString name){
-    auto& entity(entityManager->addEntity());
+    auto& entity(entity_manager->addEntity());
 
     return entity;
 }
 
 Entity & QE::Engine::loadModelObjectE(QString name, QString path){
-    auto& entity(entityManager->addEntity());
+    auto& entity(entity_manager->addEntity());
 
     return entity;
 }
 
 Entity & QE::Engine::loadModelObjectE(QString name, QString path, SP<Positation> posi){
-    auto& entity(entityManager->addEntity());
+    auto& entity(entity_manager->addEntity());
 
     return entity;
 }

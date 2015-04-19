@@ -94,10 +94,11 @@ namespace QE
         //KEYBOARD (override if needed)
         //void keyFunction();
 
+        /*
         SP<CompositeObject> loadLightObject(QString name);
         SP<CompositeObject> loadModelObject(QString name, QString path);
         SP<CompositeObject> loadModelObject(QString name, QString path, SP<Positation> posi);
-
+        */
 
         Entity & loadLightObjectE(QString name);
         Entity & loadModelObjectE(QString name, QString path);
@@ -146,9 +147,9 @@ namespace QE
         //LightLibrary * light_library;
 
 
-        EntityManager * entityManager;
 
         ModelLoader * model_loader;
+        EntityManager * entity_manager;
         //holds all objects ... soooooon...
         SP<ObjectWorld> object_world;
 

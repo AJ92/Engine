@@ -411,20 +411,20 @@ SP<CompositeObject> QE::Engine::loadModelObject(QString name, QString path, SP<P
 
 
 //new antity manager style loading functions...
-Entity & QE::Engine::loadLightObjectE(QString name){
-    auto& entity(entity_manager->addEntity());
+SP<Entity> QE::Engine::loadLightObjectE(QString name){
+    SP<Entity> entity(entity_manager->addEntity());
 
     return entity;
 }
 
-Entity & QE::Engine::loadModelObjectE(QString name, QString path){
-    auto& entity(entity_manager->addEntity());
+SP<Entity> QE::Engine::loadModelObjectE(QString name, QString path){
+    SP<Entity> entity(entity_manager->addEntity());
 
     return entity;
 }
 
-Entity & QE::Engine::loadModelObjectE(QString name, QString path, SP<Positation> posi){
-    auto& entity(entity_manager->addEntity());
+SP<Entity> QE::Engine::loadModelObjectE(QString name, QString path, SP<Positation> posi){
+    SP<Entity> entity(entity_manager->addEntity());
 
     return entity;
 }

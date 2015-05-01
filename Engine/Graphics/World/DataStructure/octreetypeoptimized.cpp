@@ -4,8 +4,9 @@
 #include "Object/compositeobject.h"
 #include "Object/positation.h"
 
-OcTreeTypeOptimized::OcTreeTypeOptimized(int max_amount_objects)
+OcTreeTypeOptimized::OcTreeTypeOptimized(int max_amount_objects, OcTreeTypeOptimized::OptimizationType type)
 {
+    this->optimizationType = type;
     this->subdivision_level = 0;
     this->max_amount_objects = max_amount_objects;
     this->is_subdivided = false;
@@ -23,8 +24,9 @@ OcTreeTypeOptimized::OcTreeTypeOptimized(int max_amount_objects)
     me_eventListener = SP<EventListener> (this);
 }
 
-OcTreeTypeOptimized::OcTreeTypeOptimized(int subdiv_lvl,Vector3 pos, double node_size, int max_amount_objects)
+OcTreeTypeOptimized::OcTreeTypeOptimized(int subdiv_lvl,Vector3 pos, double node_size, int max_amount_objects, OcTreeTypeOptimized::OptimizationType type)
 {
+    this->optimizationType = type;
     this->subdivision_level = subdiv_lvl;
     this->is_subdivided = false;
     this->pos = pos;
@@ -80,6 +82,10 @@ void OcTreeTypeOptimized::constructNodePoints(){
 OcTreeTypeOptimized::~OcTreeTypeOptimized(){
     //DESTRUCTOR... soon
     //qDebug("OctTree::~OctTree");
+}
+
+OcTreeTypeOptimized::OptimizationType OcTreeTypeOptimized::getOptimizationType(){
+    return optimizationType;
 }
 
 QList<SP<OcTreeTypeOptimized> > OcTreeTypeOptimized::getNodesInFrustum(SP<Frustum> f){
@@ -211,6 +217,8 @@ int OcTreeTypeOptimized::addEntity(SP<Entity> obj){
 
     //qDebug("adding to octree...");
 
+
+
     if(obj->hasComponent<Model>()){
         if(!obj->getComponent<Model>()->isReadyToRender()){
             debugMessage("OctTree::addEntity(SP<Entity> obj) : model of Enitity not ready...");
@@ -276,9 +284,9 @@ int OcTreeTypeOptimized::addEntity(SP<Entity> obj){
         //ok the obj obviously fits into more than one node... lets add it to the parent node...
         else{
             result_added += 1;
-            //if it is has a model...
+            //if is has a model...
             //TODO: adjust the mdllib to load entities...
-            //mdllib->addEntity(obj);
+            mdllib->addEntity(obj);
         }
 
         //add model to hash if it fitted this node or its child
@@ -297,7 +305,7 @@ int OcTreeTypeOptimized::addEntity(SP<Entity> obj){
 
 
     //TODO: fix mdl lib to load entities...
-    //mdllib->addModel(obj);
+    mdllib->addEntity(obj);
     id_compositeobject_hash.insert(obj->id(),obj);
 
     amount_objects += 1;
@@ -338,6 +346,8 @@ QList<SP<Entity> > OcTreeTypeOptimized::getEntities(){
 
 void OcTreeTypeOptimized::subdivide(){
 
+    qDebug("OcTreeTypeOptimized::subdivide()");
+
     SP<ModelLibrary_v2> old_lib = mdllib;
     mdllib = SP<ModelLibrary_v2>(new ModelLibrary_v2(max_amount_objects,max_amount_objects));
     mdllib->initialize();
@@ -354,7 +364,8 @@ void OcTreeTypeOptimized::subdivide(){
                                               this->pos.y()+new_node_pos,
                                               this->pos.z()+new_node_pos),
                                       new_node_size,
-                                      this->max_amount_objects));
+                                      this->max_amount_objects,
+                                      this->optimizationType));
     //amount_objects += tree_northwest_high->addModels(old_lib);
 
     tree_northeast_high = SP<OcTreeTypeOptimized>(new OcTreeTypeOptimized(this->subdivision_level+1,
@@ -362,7 +373,8 @@ void OcTreeTypeOptimized::subdivide(){
                                               this->pos.y()+new_node_pos,
                                               this->pos.z()+new_node_pos),
                                       new_node_size,
-                                      this->max_amount_objects));
+                                      this->max_amount_objects,
+                                      this->optimizationType));
     //amount_objects += tree_northeast_high->addModels(old_lib);
 
     tree_southwest_high = SP<OcTreeTypeOptimized>(new OcTreeTypeOptimized(this->subdivision_level+1,
@@ -370,7 +382,8 @@ void OcTreeTypeOptimized::subdivide(){
                                               this->pos.y()-new_node_pos,
                                               this->pos.z()+new_node_pos),
                                       new_node_size,
-                                      this->max_amount_objects));
+                                      this->max_amount_objects,
+                                      this->optimizationType));
     //amount_objects += tree_southwest_high->addModels(old_lib);
 
     tree_southeast_high = SP<OcTreeTypeOptimized>(new OcTreeTypeOptimized(this->subdivision_level+1,
@@ -378,7 +391,8 @@ void OcTreeTypeOptimized::subdivide(){
                                               this->pos.y()-new_node_pos,
                                               this->pos.z()+new_node_pos),
                                       new_node_size,
-                                      this->max_amount_objects));
+                                      this->max_amount_objects,
+                                      this->optimizationType));
     //amount_objects += tree_southeast_high->addModels(old_lib);
 
 
@@ -388,7 +402,8 @@ void OcTreeTypeOptimized::subdivide(){
                                              this->pos.y()+new_node_pos,
                                              this->pos.z()-new_node_pos),
                                      new_node_size,
-                                     this->max_amount_objects));
+                                     this->max_amount_objects,
+                                     this->optimizationType));
     //amount_objects += tree_northwest_low->addModels(old_lib);
 
     tree_northeast_low = SP<OcTreeTypeOptimized>(new OcTreeTypeOptimized(this->subdivision_level+1,
@@ -396,7 +411,8 @@ void OcTreeTypeOptimized::subdivide(){
                                              this->pos.y()+new_node_pos,
                                              this->pos.z()-new_node_pos),
                                      new_node_size,
-                                     this->max_amount_objects));
+                                     this->max_amount_objects,
+                                     this->optimizationType));
     //amount_objects += tree_northeast_low->addModels(old_lib);
 
     tree_southwest_low = SP<OcTreeTypeOptimized>(new OcTreeTypeOptimized(this->subdivision_level+1,
@@ -404,7 +420,8 @@ void OcTreeTypeOptimized::subdivide(){
                                              this->pos.y()-new_node_pos,
                                              this->pos.z()-new_node_pos),
                                      new_node_size,
-                                     this->max_amount_objects));
+                                     this->max_amount_objects,
+                                     this->optimizationType));
     //amount_objects += tree_southwest_low->addModels(old_lib);
 
     tree_southeast_low = SP<OcTreeTypeOptimized>(new OcTreeTypeOptimized(this->subdivision_level+1,
@@ -412,7 +429,8 @@ void OcTreeTypeOptimized::subdivide(){
                                              this->pos.y()-new_node_pos,
                                              this->pos.z()-new_node_pos),
                                      new_node_size,
-                                     this->max_amount_objects));
+                                     this->max_amount_objects,
+                                     this->optimizationType));
     //amount_objects += tree_southeast_low->addModels(old_lib);
 
     this->is_subdivided = true;

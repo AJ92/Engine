@@ -26,10 +26,9 @@ Model::Model(const Model &mdl) :
     this->meshs = mdl.meshs;
     this->size = 0.0;
     */
-    this->parent_co = mdl.parent_co;
+
     this->path = mdl.path;
     this->isReady = mdl.isReady;
-    this->parent_co = mdl.parent_co;
     this->size = 0.0;
 }
 
@@ -161,6 +160,7 @@ bool operator==(const Model &mdl1, const Model &mdl2){
 
 
 
+//Component stuff
 
 void Model::init(){
     qDebug() << "Model::init()";

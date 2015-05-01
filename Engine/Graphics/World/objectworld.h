@@ -52,9 +52,9 @@ public:
     SP<CompositeObject> loadModelobject(QString name, QString path, SP<Positation> posi);
     */
 
-    Entity& loadLightobject(QString name);
-    Entity& loadModelobject(QString name, QString path);
-    Entity& loadModelobject(QString name, QString path, SP<Positation> posi);
+    SP<Entity> loadLightobject(QString name);
+    SP<Entity> loadModelobject(QString name, QString path);
+    SP<Entity> loadModelobject(QString name, QString path, SP<Positation> posi);
 
 
 private:

@@ -157,7 +157,7 @@ void Positation::set_matrix_pos(){
     this->sphere = Sphere(pos.x(), pos.y(), pos.z(), size_scaled);
 
     Event e;
-    e.type = Event::EventCompositeObjectMoved;
+    e.type = Event::EventEntityMoved;
     this->transmit(e);
 }
 
@@ -177,7 +177,7 @@ void Positation::set_matrix_rot(){
     matrix_changed = true;
 
     Event e;
-    e.type = Event::EventCompositeObjectRotated;
+    e.type = Event::EventEntityRotated;
     this->transmit(e);
 }
 
@@ -189,7 +189,7 @@ void Positation::set_matrix_scl(){
     this->sphere = Sphere(pos.x(), pos.y(), pos.z(), size_scaled);
 
     Event e;
-    e.type = Event::EventCompositeObjectScaled;
+    e.type = Event::EventEntityScaled;
     this->transmit(e);
 }
 

@@ -4,7 +4,7 @@
 #include "Object/object.h"
 #include "Object/CompositionHelper.h"
 //#include "Object/entity.h"
-
+#include "Object/SmartPointer/smartpointer.h"
 
 #include <vector>
 #include <bitset>
@@ -21,17 +21,17 @@ public:
     void update(float mFT);
     //void draw();
 
-    void addToGroup(Entity* mEntity, Group mGroup);
+    void addToGroup(SP<Entity> mEntity, Group mGroup);
 
-    std::vector<Entity*>& getEntitiesByGroup(Group mGroup);
+    std::vector<SP<Entity>>& getEntitiesByGroup(Group mGroup);
 
     void refresh();
 
-    Entity& addEntity();
+    SP<Entity> addEntity();
 
 private:
-    std::vector<std::unique_ptr<Entity>> entities;
-    std::array<std::vector<Entity*>, maxGroups> groupedEntities;
+    std::vector<SP<Entity>> entities;
+    std::array<std::vector<SP<Entity>>, maxGroups> groupedEntities;
 };
 
 #endif // ENTITYMANAGER_H

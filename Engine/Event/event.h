@@ -9,7 +9,8 @@
 #include "Event/Events/eventstreamer.h"
 #include "Event/Events/eventwindow.h"
 #include "Event/Events/eventmodel.h"
-#include "Event/Events/eventcompositeobject.h"
+//#include "Event/Events/eventcompositeobject.h"
+#include "Event/Events/evententity.h"
 
 #include "Object/SmartPointer/smartpointer.h"
 
@@ -41,6 +42,8 @@ public:
         EventModelRemoved           = 0x0010,
         EventModelDeleted           = 0x0011,
 
+        //removing old compisite object stuff...
+        /*
         EventCompositeObjectModelLoaded       = 0x0012,
         EventCompositeObjectMoved             = 0x0013,
         EventCompositeObjectRotated           = 0x0014,
@@ -48,8 +51,16 @@ public:
         EventCompositeObjectLoaded            = 0x0016,
         EventCompositeObjectRemoved           = 0x0017,
         EventCompositeObjectDeleted           = 0x0018,
+        */
 
 
+        EventEntityModelLoaded       = 0x0012,
+        EventEntityMoved             = 0x0013,
+        EventEntityRotated           = 0x0014,
+        EventEntityScaled            = 0x0015,
+        EventEntityLoaded            = 0x0016,
+        EventEntityRemoved           = 0x0017,
+        EventEntityDeleted           = 0x0018,
 
         EventDebuggerFPS                =0x1000,
         EventDebuggerNSPerFrame         =0x1001,
@@ -70,7 +81,8 @@ public:
     SP<EventStreamer>           streamer;  //streamer is same as model and will be removed one day...
     SP<EventWindow>             window;
     SP<EventModel>              model;
-    SP<EventCompositeObject>    compositeObject;
+    //SP<EventCompositeObject>    compositeObject;
+    SP<EventEntity>             entity;
     //more to follow...
 
 

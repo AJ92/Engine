@@ -27,7 +27,7 @@ void Streamer::initialize(){
 
 
     t = new QTimer(this);
-    QObject::connect(t,SIGNAL(timeout()),this,SLOT(assignModeltoThread()));
+    QObject::connect(t,SIGNAL(timeout()),this,SLOT(timerEvent()));
     //every 200 ms
     t->setInterval(200);
     t->start();
@@ -54,6 +54,9 @@ void Streamer::setModelsPerThread(int model_count){
 
 
 //slots
+void Streamer::timerEvent(){
+    assignModeltoThread();
+}
 
 void Streamer::assignModeltoThread(){
     //remove model from list if there is any

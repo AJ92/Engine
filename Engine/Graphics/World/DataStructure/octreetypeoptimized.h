@@ -23,10 +23,24 @@
 class OcTreeTypeOptimized : public Component, virtual public EventListener, virtual public EventTransmitter
 {
 public:
+
+    enum NodeType {
+        NodeRoot                    = 0x0000,
+        NodeInner                   = 0x0001,
+        NodeLeaf                    = 0x0002
+    };
+
+    enum OptimizationType {
+        OptimizationEntityModelStatic   = 0x0000,
+        OptimizationEntityModelDynamic  = 0x0001,
+        OptimizationEntityLightDynamic  = 0x0002,
+        OptimizationEntityLogic         = 0x0003
+    };
+
     //for root node
-    OcTreeTypeOptimized(int max_amount_objects);
+    OcTreeTypeOptimized(int max_amount_objects, OptimizationType type);
     //for inner/leaf nodes
-    OcTreeTypeOptimized(int subdiv_lvl, Vector3 pos, double node_size, int max_amount_objects);
+    OcTreeTypeOptimized(int subdiv_lvl, Vector3 pos, double node_size, int max_amount_objects, OptimizationType type);
     virtual ~OcTreeTypeOptimized();
 
     void constructNodePoints();
@@ -43,18 +57,7 @@ public:
 
     QString debug_string();
 
-    enum NodeType {
-        NodeRoot                    = 0x0000,
-        NodeInner                   = 0x0001,
-        NodeLeaf                    = 0x0002
-    };
-
-    enum OptimizationType {
-        OptimizationStatic          = 0x0000,
-        OptimizationDynamic         = 0x0001,
-        OptimizationLogic           = 0x0002
-    };
-
+    OptimizationType getOptimizationType();
 
     int getObjectCount();
     Vector3 getPosition();

@@ -1,5 +1,4 @@
 #include "sp.h"
-#include "referencecounter.h"
 #include <QString>
 
 template<typename T>
@@ -47,6 +46,7 @@ SP<T>::~SP(){
     // Destructor
     // Decrement the reference count
     // if reference Counter become zero delete the data
+
     int refC_rel = refCount->Release();
     if(refC_rel < 0){
         qDebug("FUCKIN OVER OR UNDERFLOW!!!");
@@ -54,8 +54,11 @@ SP<T>::~SP(){
     }
     if(refC_rel == 0)
     {
+        //pData might be a nullptr!!! but delete should do a noop instead of crash!
         delete pData;
         delete refCount;
+        pData = nullptr;
+        refCount = nullptr;
     }
 }
 

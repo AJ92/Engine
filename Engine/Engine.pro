@@ -53,9 +53,7 @@ SOURCES += main.cpp\
     Graphics/World/objectworld.cpp \
     Graphics/Model/modelloader.cpp \
     Event/Events/eventmodel.cpp \
-    Object/compositeobject.cpp \
     Object/positation.cpp \
-    Event/Events/eventcompositeobject.cpp \
     Debug/Ui/customgraph.cpp \
     Object/SmartPointer/sp.cpp \
     Object/SmartPointer/referencecounter.cpp \
@@ -65,7 +63,8 @@ SOURCES += main.cpp\
     Object/component.cpp \
     Object/entity.cpp \
     Object/entitymanager.cpp \
-    Graphics/World/DataStructure/octreetypeoptimized.cpp
+    Graphics/World/DataStructure/octreetypeoptimized.cpp \
+    Event/Events/evententity.cpp
 
 
 
@@ -106,9 +105,7 @@ HEADERS  += \
     Graphics/World/objectworld.h \
     Graphics/Model/modelloader.h \
     Event/Events/eventmodel.h \
-    Object/compositeobject.h \
     Object/positation.h \
-    Event/Events/eventcompositeobject.h \
     Debug/Ui/customgraph.h \
     Object/SmartPointer/sp.h \
     Object/SmartPointer/referencecounter.h \
@@ -120,7 +117,8 @@ HEADERS  += \
     Object/entity.h \
     Object/entitymanager.h \
     Object/CompositionHelper.h \
-    Graphics/World/DataStructure/octreetypeoptimized.h
+    Graphics/World/DataStructure/octreetypeoptimized.h \
+    Event/Events/evententity.h
 
 
 
@@ -197,10 +195,10 @@ windows: {
 
 
     #Python 3.4
-    INCLUDEPATH += C:/Python34/include
-    DEPENDPATH += C:/Python34/include
+    INCLUDEPATH += Python34/include
+    DEPENDPATH += Python34/include
 
-    LIBS += -LC:/Python34/libs
+    LIBS += -L$$_PRO_FILE_PWD_/Python34/libs
     CONFIG(release, debug|release): LIBS += -lpython34
     CONFIG(debug, debug|release): LIBS += -lpython34
 

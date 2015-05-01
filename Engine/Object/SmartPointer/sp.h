@@ -1,7 +1,8 @@
 #ifndef SP_H
 #define SP_H
 
-class ReferenceCounter;
+#include "referencecounter.h"
+//class ReferenceCounter;
 
 template < typename T > class SP
 {
@@ -18,11 +19,23 @@ public:
         return SP<TCast>(data, this->refCount);
     }
 
+    //very dangerous!
     //reinterpret cast
     template<typename TCast> SP<TCast> reinterpretCastTo(){
         TCast* data = reinterpret_cast<TCast*>(this->pData);
         return SP<TCast>(data, this->refCount);
     }
+
+    //dynamic cast
+    template<typename TCast> SP<TCast> dynamicCastTo(){
+        TCast* data = dynamic_cast<TCast*>(this->pData);
+        if(data != nullptr)
+            return SP<TCast>(data, this->refCount);
+        else
+            return SP<TCast>(data, new ReferenceCounter());
+    }
+
+
     //destructor...
     ~SP();
 

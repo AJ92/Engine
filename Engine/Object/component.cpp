@@ -6,10 +6,10 @@ Component::Component() :
     //do nothing actually..
 }
 
-Entity * Component::getParent(){
+SP<Entity> Component::getParent(){
     return entity;
 }
 
-void Component::setParent(Entity * parentEntity){
+void Component::setParent(SP<Entity> parentEntity){
     this->entity = parentEntity;
 }

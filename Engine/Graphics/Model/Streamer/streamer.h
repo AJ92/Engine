@@ -58,6 +58,8 @@ private:
 public slots:
     void debugMessage(QString message);
 
+    void timerEvent();
+
     //called by timer to assign model to a thread
     void assignModeltoThread();
 

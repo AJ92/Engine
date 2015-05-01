@@ -34,9 +34,7 @@ INPUT(
 ./release\objectworld.o
 ./release\modelloader.o
 ./release\eventmodel.o
-./release\compositeobject.o
 ./release\positation.o
-./release\eventcompositeobject.o
 ./release\customgraph.o
 ./release\referencecounter.o
 ./release\loader_assimp.o
@@ -46,6 +44,7 @@ INPUT(
 ./release\entity.o
 ./release\entitymanager.o
 ./release\octreetypeoptimized.o
+./release\evententity.o
 ./release\moc_debugwindow.o
 ./release\moc_engine.o
 ./release\moc_streamToDisk.o

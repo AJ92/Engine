@@ -1,6 +1,9 @@
 //python test
+
 #include <cmath>
 #include "Python.h"
+
+
 
 
 
@@ -25,7 +28,7 @@ Test::Test() :
     initialize(0, 0);
 
 
-    window->setWindowTitle("Quark v1.0b");
+    window->setWindowTitle("Quasi v1.0b");
     window->setWindowSize(800,600);
 
 
@@ -55,12 +58,21 @@ Test::Test() :
     mPosY = 0;
 
 
-    //python test...
-    Py_SetProgramName(L"python test");  /* optional but recommended */
-    Py_Initialize();
-    PyRun_SimpleString("from time import time,ctime\n"
-                       "print (ctime(time()))\n");
-    Py_Finalize();
+    try{
+        qDebug() << "###########################";
+        qDebug() << "# testing Python...";
+        //python test...
+        Py_SetProgramName(L"python test");  // optional but recommended
+        Py_Initialize();
+        PyRun_SimpleString("from time import time,ctime\n"
+                           "print (ctime(time()))\n");
+        Py_Finalize();
+        qDebug() << "# done.";
+        qDebug() << "###########################";
+    }
+    catch(...){
+        qDebug() << "python failed to init...";
+    }
 
 
 }
@@ -285,58 +297,29 @@ void Test::keyFunction(double fs){
     //J
     if(k->isPressed(36))
     {
-        if(level_loaded < 1){
-            for(int i = 0; i < test_amount; i++){
-                //betty
-                /*
-                compositeobjecttest.append(loadModelObject("betty",
-                                                           getApplicationDir() +
-                                                           "//betty.obj")); 
-                                                           */
+        for(int i = 0; i < test_amount; i++){
+            //betty
+            /*
+            compositeobjecttest.append(loadModelObject("betty",
+                                                       getApplicationDir() +
+                                                       "//betty.obj"));
+                                                       */
 
 
-                //HN48-flying
-                /*
-                compositeobjecttest.append(loadModelObject("HN48-flying",
-                                                           getApplicationDir() +
-                                                           "/HN48/HN48-flying.obj"));
-                                                           */
+            //HN48-flying
+            /*
+            compositeobjecttest.append(loadModelObject("HN48-flying",
+                                                       getApplicationDir() +
+                                                       "/HN48/HN48-flying.obj"));
+                                                       */
 
-                //sd85
-                /*
-                compositeobjecttest.append(loadModelObject("sd85",
-                                                           getApplicationDir() +
-                                                           "/sd85/sd85.obj"));
-                                                           */
+            //sd85
+            /*
+            compositeobjecttest.append(loadModelObject("sd85",
+                                                       getApplicationDir() +
+                                                       "/sd85/sd85.obj"));
+                                                       */
 
-            }
-            level_loaded += 1;
-        }
-        else{
-            for(int i = 0; i < compositeobjecttest.size(); i++){
-                SP<CompositeObject> coTest = compositeobjecttest.at(i);
-                coTest->getPositation()->set_position(  (double)((rand() & 2000)-1000),
-                                                        (double)((rand() & 2000)-1000),
-                                                        (double)((rand() & 2000)-1000));
-
-
-                /*
-                int rand_rot = (rand() & 2);
-                if(rand_rot == 0){
-                    coTest->getPositation()->set_rotation((double) (rand() & 360), 1, 0, 0);
-                }
-                else if(rand_rot == 1){
-                    coTest->getPositation()->set_rotation((double) (rand() & 360), 0, 1, 0);
-                }
-                else if(rand_rot == 2){
-                    coTest->getPositation()->set_rotation((double) (rand() & 360), 0, 0, 1);
-                }
-                */
-
-                coTest->getPositation()->set_scale(0.3,0.3,0.3);
-
-
-            }
         }
     }
 
@@ -480,12 +463,14 @@ void Test::eventCall(double fs){
     keyFunction(fs);
     mouseFunction(fs);
 
+    /*
     for(int i = 0; i < lights.size(); i++){
         lights[i]->getPositation()->set_position(
                     lights[i]->getPositation()->getPosition().x()+sin(lighttime)*1.0,
                     lights[i]->getPositation()->getPosition().y()+cos(lighttime)*1.0,
                     lights[i]->getPositation()->getPosition().z());
     }
+    */
 
     lighttime += 0.005 * fs;
 

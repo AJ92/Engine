@@ -17,11 +17,11 @@ void EntityManager::draw(){
 }
 */
 
-void EntityManager::addToGroup(Entity* mEntity, Group mGroup){
+void EntityManager::addToGroup(SP<Entity> mEntity, Group mGroup){
     groupedEntities[mGroup].emplace_back(mEntity);
 }
 
-std::vector<Entity*>& EntityManager::getEntitiesByGroup(Group mGroup){
+std::vector<SP<Entity> > &EntityManager::getEntitiesByGroup(Group mGroup){
     return groupedEntities[mGroup];
 }
 
@@ -32,7 +32,7 @@ void EntityManager::refresh(){
 
         v.erase(
             std::remove_if(std::begin(v), std::end(v),
-            [i](Entity* mEntity)
+            [i](SP<Entity> mEntity)
             {
                 return !mEntity->isAlive() || !mEntity->hasGroup(i);
             }),
@@ -42,7 +42,7 @@ void EntityManager::refresh(){
 
     entities.erase(
         std::remove_if(std::begin(entities), std::end(entities),
-        [](const std::unique_ptr<Entity>& mEntity)
+        [](SP<Entity> mEntity)
         {
             return !mEntity->isAlive();
         }),
@@ -50,9 +50,8 @@ void EntityManager::refresh(){
     );
 }
 
-Entity& EntityManager::addEntity(){
-    Entity* e(new Entity(*this));
-    std::unique_ptr<Entity> uPtr{e};
-    entities.emplace_back(std::move(uPtr));
-    return *e;
+SP<Entity> EntityManager::addEntity(){
+    SP<Entity> e(new Entity(*this));
+    entities.emplace_back(e);
+    return e;
 }

@@ -77,7 +77,9 @@ public:
         //template keyword is needed, other wise symbols '<' and '>' might get interpreted
         //as less and greater ...
         //reinterpret casting the pointer in our smartpointer , but keeping the same refcounter
-        return s_ptr.template reinterpretCastTo<T>();
+        ///////reinterpretcast is EVIL !!!
+        //return s_ptr.template reinterpretCastTo<T>();
+        return s_ptr.template dynamicCastTo<T>();
     }
 
 

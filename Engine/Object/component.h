@@ -4,6 +4,7 @@
 #include "Object/object.h"
 //#include "Object/entity.h"
 #include "Object/CompositionHelper.h"
+#include "Object/SmartPointer/smartpointer.h"
 
 class Entity;
 
@@ -19,11 +20,11 @@ public:
     //virtual void draw() { }
     virtual ~Component() { }
 
-    Entity * getParent();
-    void setParent(Entity * parentEntity);
+    SP<Entity> getParent();
+    void setParent(SP<Entity> parentEntity);
 
 private:
-    Entity * entity;
+    SP<Entity> entity;
 
 };
 

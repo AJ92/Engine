@@ -49,10 +49,10 @@ void ObjectWorld::initialize(){
     ml->addListener(me_eventListener);
     ml->initialize();
 
-    ot_static_entities = SP<OcTreeTypeOptimized>(new OcTreeTypeOptimized(32));
+    ot_static_entities = SP<OcTreeTypeOptimized>(new OcTreeTypeOptimized(32, OcTreeTypeOptimized::OptimizationEntityModelStatic));
 
-    ot_dynamic_model_entities = SP<OcTreeTypeOptimized>(new OcTreeTypeOptimized(16));
-    ot_dynamic_light_entities = SP<OcTreeTypeOptimized>(new OcTreeTypeOptimized(8));
+    ot_dynamic_model_entities = SP<OcTreeTypeOptimized>(new OcTreeTypeOptimized(16, OcTreeTypeOptimized::OptimizationEntityModelDynamic));
+    ot_dynamic_light_entities = SP<OcTreeTypeOptimized>(new OcTreeTypeOptimized(8, OcTreeTypeOptimized::OptimizationEntityLightDynamic));
 
 
     //preload the light model...
@@ -160,10 +160,18 @@ SP<CompositeObject> ObjectWorld::loadModelobject(QString name, QString path, SP<
 
 */
 
-Entity& ObjectWorld::loadLightobject(QString name){
-    auto& entity(em->addEntity());
-    entity.addComponent<Model>();
-    entity.addGroup(Entity::Graphics);
+SP<Entity> ObjectWorld::loadLightobject(QString name){
+    SP<Entity> entity(em->addEntity());
+    entity->addComponent<Positation>();
+    SP<Model> light_mdl = entity->addComponent<Model>();
+    light_mdl->set_path(light_model_path);
+    light_mdl->addListener(me_eventListener);
+    this->loadModel(light_mdl);    
+    entity->addGroup(Entity::Graphics);
+
+    all_comp_objs.append(entity);
+
+    return entity;
 
 /*
 
@@ -186,11 +194,11 @@ Entity& ObjectWorld::loadLightobject(QString name){
 
 }
 
-Entity& ObjectWorld::loadModelobject(QString name, QString path){
+SP<Entity> ObjectWorld::loadModelobject(QString name, QString path){
 
 }
 
-Entity& ObjectWorld::loadModelobject(QString name, QString path, SP<Positation> posi){
+SP<Entity> ObjectWorld::loadModelobject(QString name, QString path, SP<Positation> posi){
 
 }
 
@@ -214,11 +222,19 @@ void ObjectWorld::loadModel(SP<Model> m){
 //do not invoke the base method...
 void ObjectWorld::eventRecieved(Event e){
 
-    /*
+
     QString debug_output =  "Ow  ID: " + QString::number(this->EventTransmitter::id()) +
                             "   Event: " + QString::number(e.type);
     qDebug(debug_output.toUtf8());
-    */
+
+    if(e.type == Event::EventModelLoaded){
+        SP<Model> mdl = e.streamer->getModel();
+        QString mdl_output =  "Ow Mdl ID: " + QString::number(mdl->Component::id());
+        qDebug(mdl_output.toUtf8());
+
+        //retrieve model's parent, e.g. it's entity
+        ot_dynamic_light_entities->addEntity(mdl->getParent());
+    }
 
     /*
     if(e.type == Event::EventCompositeObjectModelLoaded){

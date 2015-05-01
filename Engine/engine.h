@@ -100,9 +100,9 @@ namespace QE
         SP<CompositeObject> loadModelObject(QString name, QString path, SP<Positation> posi);
         */
 
-        Entity & loadLightObjectE(QString name);
-        Entity & loadModelObjectE(QString name, QString path);
-        Entity & loadModelObjectE(QString name, QString path, SP<Positation> posi);
+        SP<Entity> loadLightObjectE(QString name);
+        SP<Entity> loadModelObjectE(QString name, QString path);
+        SP<Entity> loadModelObjectE(QString name, QString path, SP<Positation> posi);
 
 
 

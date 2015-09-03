@@ -12,4 +12,7 @@ Youtube video:
 
 [![demo showcase](http://img.youtube.com/vi/FSn4M5o-yX8/0.jpg)](http://www.youtube.com/watch?v=FSn4M5o-yX8)
 
+[![demo showcase](http://img.youtube.com/vi/ZwmGpWpB2Ic/0.jpg)](http://www.youtube.com/watch?v=ZwmGpWpB2Ic)
+
+
 Current version: 0.01a
